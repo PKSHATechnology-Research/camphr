@@ -1,0 +1,6 @@
+[submodule "bedore-ner-module"]
+	path = bedore-ner-module
+	url = https://github.com/PKSHATechnology/bedore-ner-module
+[submodule "bedore-nlp-modules"]
+	path = bedore-nlp-modules
+	url = https://github.com/PKSHATechnology/bedore-nlp-modules.git
