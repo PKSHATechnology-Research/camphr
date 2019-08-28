@@ -1,5 +1,5 @@
 import re
-from typing import *
+from typing import Optional
 from collections import namedtuple
 
 from .stop_words import STOP_WORDS
@@ -102,7 +102,7 @@ class Japanese(Language):
     lang = "ja"
     Defaults = JapaneseDefaults
 
-    def make_doc(self, text):
+    def make_doc(self, text: str) -> Doc:
         return self.tokenizer(text)
 
 
