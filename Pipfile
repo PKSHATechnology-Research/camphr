@@ -15,6 +15,9 @@ spacy = "*"
 mecab-python3 = "*"
 pyknp = "*"
 regex = "*"
+jaconv = "*"
+fire = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.7"

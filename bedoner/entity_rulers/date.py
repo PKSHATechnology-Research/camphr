@@ -1,3 +1,8 @@
+"""Date extraction component for spacy pipeline (wip). Partialy copied from Sumino's ner module.
+
+Attributes:
+    def date_ruler(doc: Doc) -> Doc:
+"""
 from spacy.tokens.doc import Doc
 import regex as re
 from typing import List, Tuple, Union  # noqa # pylint: disable=unused-import
@@ -15,6 +20,7 @@ def _is_valid_seireki(found_expressions: Tuple[str, str, str, str]) -> bool:
 
 
 def date_ruler(doc: Doc) -> Doc:
+    """date_ruler is NLP pipeline component"""
     for m in REGEXP_WAREKI_YMD.finditer(doc.text):
         span = doc.char_span(*m.span(), label=L.DATE)
         doc.ents = doc.ents + (span,)
@@ -24,3 +30,6 @@ def date_ruler(doc: Doc) -> Doc:
             span = doc.char_span(*m.span(), label=L.DATE)
             doc.ents = doc.ents + (span,)
     return doc
+
+
+__all__ = ["date_ruler"]
