@@ -1,6 +1,6 @@
 from bedoner import Japanese
 from bedoner.entity_rulers import create_person_ruler
-from bedoner.entity_rulers.labels import L
+import bedoner.ner_labels.labels_ontonotes as L
 from spacy.tokens.doc import Doc
 from spacy.tokens.span import Span
 from collections import namedtuple

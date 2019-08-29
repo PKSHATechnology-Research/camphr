@@ -1,0 +1,4 @@
+LOC = 'LOC'
+MISC = 'MISC'
+ORG = 'ORG'
+PER = 'PER'

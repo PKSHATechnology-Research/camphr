@@ -9,6 +9,8 @@ isort = "*"
 pylint = "*"
 pytest = "*"
 flake8 = "*"
+yq = "*"
+pyyaml = "*"
 
 [packages]
 spacy = "*"
@@ -18,6 +20,8 @@ regex = "*"
 jaconv = "*"
 fire = "*"
 pandas = "*"
+sklearn = "*"
+sklearn-crfsuite = "*"
 
 [requires]
 python_version = "3.7"

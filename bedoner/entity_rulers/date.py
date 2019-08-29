@@ -6,7 +6,7 @@ Attributes:
 from spacy.tokens.doc import Doc
 import regex as re
 from typing import List, Tuple, Union  # noqa # pylint: disable=unused-import
-from .labels import L
+import bedoner.ner_labels.labels_ontonotes as L
 
 REGEXP_WAREKI_YMD = re.compile(r"(?:平成|昭和)(?:\d{1,2}|元)[/\\-年]\d{1,2}[/\\-月]\d{1,2}日?")
 REGEXP_SEIREKI_YMD = re.compile(r"(\d{4})[/\\-年](\d{1,2})[/\\-月](\d{1,2})日?")

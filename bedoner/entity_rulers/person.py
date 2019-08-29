@@ -1,6 +1,6 @@
 from spacy.pipeline.entityruler import EntityRuler
 from spacy.language import Language
-from .labels import L
+import bedoner.ner_labels.labels_ontonotes as L
 
 person_patterns = [
     {"label": L.PERSON, "pattern": [{"TAG": "名詞,固有名詞,人名,姓"}, {"TAG": "名詞,固有名詞,人名,名"}]},
