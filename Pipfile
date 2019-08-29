@@ -11,6 +11,7 @@ pytest = "*"
 flake8 = "*"
 yq = "*"
 pyyaml = "*"
+rope = "*"
 
 [packages]
 spacy = "*"
@@ -22,6 +23,7 @@ fire = "*"
 pandas = "*"
 sklearn = "*"
 sklearn-crfsuite = "*"
+mojimoji = "*"
 
 [requires]
 python_version = "3.7"

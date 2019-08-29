@@ -1,4 +1,4 @@
-from bedoner import Japanese
+from bedoner.languages.mecab import Japanese
 from bedoner.entity_rulers import create_person_ruler
 import bedoner.ner_labels.labels_ontonotes as L
 from spacy.tokens.doc import Doc
