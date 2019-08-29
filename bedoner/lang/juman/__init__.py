@@ -15,8 +15,6 @@ ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos"])
 
 
 def try_mecab_import():
-    """Mecab is required for Japanese support, so check for it.
-    It it's not available blow up and explain how to fix it."""
     try:
         import MeCab
 
