@@ -2,7 +2,7 @@ import re
 from typing import Optional, List, Dict, Any
 from collections import namedtuple
 
-from pyknp import Juman, Morpheme
+from pyknp import KNP, Morpheme
 from bedoner.lang.stop_words import STOP_WORDS
 from spacy.attrs import LANG
 from spacy.language import Language
@@ -14,7 +14,7 @@ from spacy.util import DummyTokenizer
 ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "fstring"])
 
 
-def detailed_tokens(tokenizer: Juman, text) -> List[Morpheme]:
+def detailed_tokens(tokenizer: KNP, text) -> List[Morpheme]:
     """Format juman output for tokenizing"""
     words = []
     ml = tokenizer.parse(text).mrph_list()
@@ -34,14 +34,14 @@ class Tokenizer(DummyTokenizer):
         self,
         cls,
         nlp: Optional[Language] = None,
-        juman_kwargs: Optional[Dict[str, str]] = None,
+        knp_kwargs: Optional[Dict[str, str]] = None,
         key_fstring: str = "fstring",
     ):
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
-        if juman_kwargs:
-            self.tokenizer = Juman(**juman_kwargs)
+        if knp_kwargs:
+            self.tokenizer = KNP(**knp_kwargs)
         else:
-            self.tokenizer = Juman()
+            self.tokenizer = KNP()
         self.key_fstring = key_fstring
         Token.set_extension(key_fstring, default="")
 
@@ -64,8 +64,8 @@ class Defaults(Language.Defaults):
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
     @classmethod
-    def create_tokenizer(cls, nlp=None, juman_kwargs: Optional[Dict[str, Any]] = None):
-        return Tokenizer(cls, nlp, juman_kwargs=juman_kwargs)
+    def create_tokenizer(cls, nlp=None, knp_kwargs: Optional[Dict[str, Any]] = None):
+        return Tokenizer(cls, nlp, knp_kwargs=knp_kwargs)
 
 
 class Japanese(Language):

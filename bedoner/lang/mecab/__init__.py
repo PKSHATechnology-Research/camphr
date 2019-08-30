@@ -3,7 +3,7 @@ from typing import Optional, List
 from collections import namedtuple
 
 import MeCab
-from .stop_words import STOP_WORDS
+from bedoner.lang.stop_words import STOP_WORDS
 from .tag_map import TAG_MAP
 from spacy.attrs import LANG
 from spacy.language import Language
@@ -16,21 +16,7 @@ ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos"])
 
 
 def resolve_pos(token):
-    """If necessary, add a field to the POS tag for UD mapping.
-    Under Universal Dependencies, sometimes the same Unidic POS tag can
-    be mapped differently depending on the literal token or its context
-    in the sentence. This function adds information to the POS tag to
-    resolve ambiguous mappings.
-    """
-    # TODO: This is a first take. The rules here are crude approximations.
-    # For many of these, full dependencies are needed to properly resolve
-    # PoS mappings.
-    if token.pos == "連体詞,*,*,*":
-        if re.match(r"[こそあど此其彼]の", token.surface):
-            return token.pos + ",DET"
-        if re.match(r"[こそあど此其彼]", token.surface):
-            return token.pos + ",PRON"
-        return token.pos + ",ADJ"
+    """TODO"""
     return token.pos
 
 
