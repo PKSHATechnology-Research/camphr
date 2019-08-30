@@ -69,7 +69,7 @@ class Defaults(Language.Defaults):
 
 
 class Japanese(Language):
-    lang = "ja_knp"
+    lang = "ja_juman"
     Defaults = Defaults
 
     def make_doc(self, text: str) -> Doc:

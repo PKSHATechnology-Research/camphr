@@ -59,7 +59,7 @@ class Tokenizer(DummyTokenizer):
 
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    lex_attr_getters[LANG] = lambda _text: "ja"
+    lex_attr_getters[LANG] = lambda _text: "ja_mecab"
     stop_words = STOP_WORDS
     tag_map = TAG_MAP
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
