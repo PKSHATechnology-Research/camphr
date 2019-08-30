@@ -28,7 +28,7 @@ def detailed_tokens(tokenizer: Juman, text) -> List[Morpheme]:
 
 
 class Tokenizer(DummyTokenizer):
-    """knp tokenizer"""
+    """juman tokenizer"""
 
     def __init__(
         self,
