@@ -17,7 +17,7 @@ ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "fstring
 def detailed_tokens(tokenizer: Juman, text) -> List[Morpheme]:
     """Format juman output for tokenizing"""
     words = []
-    ml = tokenizer.parse(text).mrph_list()
+    ml = tokenizer.analysis(text).mrph_list()
     for m in ml:
         # m: Morpheme = m
         surface = m.midasi
@@ -43,7 +43,8 @@ class Tokenizer(DummyTokenizer):
         else:
             self.tokenizer = Juman()
         self.key_fstring = key_fstring
-        Token.set_extension(key_fstring, default="")
+        if not Token.has_extension(key_fstring):
+            Token.set_extension(key_fstring, default="")
 
     def __call__(self, text):
         dtokens = detailed_tokens(self.tokenizer, text)
@@ -53,7 +54,7 @@ class Tokenizer(DummyTokenizer):
         for token, dtoken in zip(doc, dtokens):
             token.lemma_ = dtoken.lemma
             token.tag_ = dtoken.pos
-            token.set(self.key_fstring, dtoken.fstring)
+            token._.set(self.key_fstring, dtoken.fstring)
         return doc
 
 

@@ -1,4 +1,3 @@
-import re
 from typing import Optional, List, Dict, Any
 from collections import namedtuple
 
@@ -42,8 +41,11 @@ class Tokenizer(DummyTokenizer):
             self.tokenizer = KNP(**knp_kwargs)
         else:
             self.tokenizer = KNP()
+
         self.key_fstring = key_fstring
         Token.set_extension(key_fstring, default="")
+        if not Token.has_extension(key_fstring):
+            Token.set_extension(key_fstring, default="")
 
     def __call__(self, text):
         dtokens = detailed_tokens(self.tokenizer, text)
@@ -53,7 +55,7 @@ class Tokenizer(DummyTokenizer):
         for token, dtoken in zip(doc, dtokens):
             token.lemma_ = dtoken.lemma
             token.tag_ = dtoken.pos
-            token.set(self.key_fstring, dtoken.fstring)
+            token._.set(self.key_fstring, dtoken.fstring)
         return doc
 
 
