@@ -1,6 +1,6 @@
 # NER統合 
 
-[![CircleCI](https://circleci.com/gh/PKSHATechnology/bedore-ner.svg?style=svg)](https://circleci.com/gh/PKSHATechnology/bedore-ner)
+![CircleCI](https://circleci.com/gh/PKSHATechnology/bedore-ner.svg?style=svg)
 
 ## Refs.
 
