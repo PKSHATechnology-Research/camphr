@@ -27,4 +27,3 @@ if __name__ == "__main__":
             d = yaml.safe_load(f)
             keys = sorted(extract_keys(d))
             generate_py(fw, keys)
-

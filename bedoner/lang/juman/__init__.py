@@ -1,4 +1,3 @@
-import re
 from typing import Optional, List, Dict, Any
 from collections import namedtuple
 

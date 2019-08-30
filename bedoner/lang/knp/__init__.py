@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict, Any, overload
+from typing import Optional, List, Dict, Any
 import re
 from collections import namedtuple
 
@@ -10,7 +10,6 @@ from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy.compat import copy_reg
 from spacy.util import DummyTokenizer
-from spacy.matcher import PhraseMatcher
 
 
 ShortUnitWord = namedtuple(

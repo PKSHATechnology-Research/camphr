@@ -76,4 +76,3 @@ def test_ja_tokenizer(mecab_tokenizer, text, expected_tokens):
 def test_ja_tokenizer_tags(mecab_tokenizer, text, expected_tags):
     tags = [token.tag_ for token in mecab_tokenizer(text)]
     assert tags == expected_tags
-

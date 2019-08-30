@@ -14,14 +14,9 @@ jobs:
 
       - run:
           name: run flake8
-          command: docker run bedore/nlp-modules:${CIRCLE_SHA1} flake8 .
+          command: docker run ner flake8 .
 
       - run:
           name: run tests
-          command: docker run bedore/nlp-modules:${CIRCLE_SHA1} pytest
+          command: docker run ner pytest
       
-      - run:
-          name: push base image
-          command: |
-            docker push bedore/nlp-modules-base
-            docker push bedore/nlp-modules:${CIRCLE_SHA1}

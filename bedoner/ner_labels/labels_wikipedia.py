@@ -1,4 +1,4 @@
-LOC = 'LOC'
-MISC = 'MISC'
-ORG = 'ORG'
-PER = 'PER'
+LOC = "LOC"
+MISC = "MISC"
+ORG = "ORG"
+PER = "PER"

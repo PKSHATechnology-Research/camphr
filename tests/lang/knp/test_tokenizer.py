@@ -16,4 +16,3 @@ def test_knp_tokenizer(knp_tokenizer, text, expected_tokens):
 def test_knp_tokenizer_tags(knp_tokenizer, text, expected_tags):
     tags = [token.tag_ for token in knp_tokenizer(text)]
     assert tags == expected_tags
-

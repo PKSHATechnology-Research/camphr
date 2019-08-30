@@ -11,4 +11,3 @@ for t in TOKENIZER_TESTS:
         surfl.append(surf)
         posl.append(pos)
     print((t[0], posl), ",")
-

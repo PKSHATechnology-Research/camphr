@@ -1,7 +1,7 @@
 from typing import List, Any
 from functools import reduce
 from spacy.tokens import Doc, Span, Token
-from bedoner.consts import KEY_FSTRING, KEY_KNP_ENT, KEY_KNP_ENT_IOB
+from bedoner.consts import KEY_KNP_ENT, KEY_KNP_ENT_IOB
 
 
 def _extract_ents(ents: List[List[Any]], token: Token) -> List[List[Any]]:
