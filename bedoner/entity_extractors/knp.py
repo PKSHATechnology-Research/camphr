@@ -7,10 +7,9 @@ from bedoner.consts import KEY_KNP_ENT, KEY_KNP_ENT_IOB
 def _extract_ents(ents: List[List[Any]], token: Token) -> List[List[Any]]:
     if token._.get(KEY_KNP_ENT_IOB) == "B":
         ents.append([token._.get(KEY_KNP_ENT), token.i, token.i + 1])
-        return ents
-    if token._.get(KEY_KNP_ENT_IOB) == "I":
+    elif token._.get(KEY_KNP_ENT_IOB) == "I":
         ents[-1][2] = token.i + 1
-        return ents
+
     return ents
 
 
