@@ -2,6 +2,7 @@ import re
 from typing import Optional, List, Dict, Any
 from collections import namedtuple
 
+from bedoner.consts import KEY_FSTRING
 from pyknp import Juman, Morpheme
 from bedoner.lang.stop_words import STOP_WORDS
 from spacy.attrs import LANG
@@ -35,16 +36,15 @@ class Tokenizer(DummyTokenizer):
         cls,
         nlp: Optional[Language] = None,
         juman_kwargs: Optional[Dict[str, str]] = None,
-        key_fstring: str = "fstring",
     ):
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         if juman_kwargs:
             self.tokenizer = Juman(**juman_kwargs)
         else:
             self.tokenizer = Juman()
-        self.key_fstring = key_fstring
-        if not Token.has_extension(key_fstring):
-            Token.set_extension(key_fstring, default="")
+
+        self.key_fstring = KEY_FSTRING
+        Token.set_extension(self.key_fstring, default=False, force=True)
 
     def __call__(self, text):
         dtokens = detailed_tokens(self.tokenizer, text)

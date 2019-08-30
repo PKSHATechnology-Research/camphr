@@ -1,6 +1,8 @@
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, overload
+import re
 from collections import namedtuple
 
+from bedoner.consts import KEY_FSTRING, KEY_KNP_ENT, KEY_KNP_ENT_IOB
 from pyknp import KNP, Morpheme
 from bedoner.lang.stop_words import STOP_WORDS
 from spacy.attrs import LANG
@@ -8,9 +10,14 @@ from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy.compat import copy_reg
 from spacy.util import DummyTokenizer
+from spacy.matcher import PhraseMatcher
 
 
-ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "fstring"])
+ShortUnitWord = namedtuple(
+    "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "ent", "ent_iob"]
+)
+
+LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
 
 
 def detailed_tokens(tokenizer: KNP, text) -> List[Morpheme]:
@@ -22,7 +29,14 @@ def detailed_tokens(tokenizer: KNP, text) -> List[Morpheme]:
         surface = m.midasi
         pos = m.hinsi + "/" + m.bunrui
         lemma = m.genkei or surface
-        words.append(ShortUnitWord(surface, lemma, pos, m.fstring))
+
+        ent, iob = "", ""
+        ents = re.findall(r"\<NE\:(\w+)\:(.*)?\>", m.fstring)
+        if ents:
+            ent, loc = ents[0]
+            iob = LOC2IOB[loc]
+
+        words.append(ShortUnitWord(surface, lemma, pos, m.fstring, ent, iob))
     return words
 
 
@@ -34,7 +48,6 @@ class Tokenizer(DummyTokenizer):
         cls,
         nlp: Optional[Language] = None,
         knp_kwargs: Optional[Dict[str, str]] = None,
-        key_fstring: str = "fstring",
     ):
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         if knp_kwargs:
@@ -42,10 +55,12 @@ class Tokenizer(DummyTokenizer):
         else:
             self.tokenizer = KNP()
 
-        self.key_fstring = key_fstring
-        Token.set_extension(key_fstring, default="")
-        if not Token.has_extension(key_fstring):
-            Token.set_extension(key_fstring, default="")
+        self.key_fstring = KEY_FSTRING
+        self.key_ent = KEY_KNP_ENT
+        self.key_ent_iob = KEY_KNP_ENT_IOB
+        Token.set_extension(self.key_fstring, default="", force=True)
+        Token.set_extension(self.key_ent, default="", force=True)
+        Token.set_extension(self.key_ent_iob, default="", force=True)
 
     def __call__(self, text):
         dtokens = detailed_tokens(self.tokenizer, text)
@@ -56,6 +71,8 @@ class Tokenizer(DummyTokenizer):
             token.lemma_ = dtoken.lemma
             token.tag_ = dtoken.pos
             token._.set(self.key_fstring, dtoken.fstring)
+            token._.set(self.key_ent, dtoken.ent)
+            token._.set(self.key_ent_iob, dtoken.ent_iob)
         return doc
 
 
