@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Callable
 import re
 from collections import namedtuple
 
@@ -47,6 +47,7 @@ class Tokenizer(DummyTokenizer):
         cls,
         nlp: Optional[Language] = None,
         knp_kwargs: Optional[Dict[str, str]] = None,
+        preprocessor: Callable[[str], str] = None,
     ):
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         if knp_kwargs:
@@ -60,8 +61,11 @@ class Tokenizer(DummyTokenizer):
         Token.set_extension(self.key_fstring, default="", force=True)
         Token.set_extension(self.key_ent, default="", force=True)
         Token.set_extension(self.key_ent_iob, default="", force=True)
+        self.preprocessor = preprocessor
 
     def __call__(self, text):
+        if self.preprocessor:
+            text = self.preprocessor(text)
         dtokens = detailed_tokens(self.tokenizer, text)
         words = [x.surface for x in dtokens]
         spaces = [False] * len(words)
@@ -77,7 +81,7 @@ class Tokenizer(DummyTokenizer):
 
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    lex_attr_getters[LANG] = lambda _text: "ja_knp"
+    lex_attr_getters[LANG] = lambda _text: "ja"
     stop_words = STOP_WORDS
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
@@ -87,7 +91,7 @@ class Defaults(Language.Defaults):
 
 
 class Japanese(Language):
-    lang = "ja_knp"
+    lang = "ja"
     Defaults = Defaults
 
     def make_doc(self, text: str) -> Doc:

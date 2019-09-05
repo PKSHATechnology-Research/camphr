@@ -27,16 +27,17 @@ def create_estimator(
     model_dir: str,
     num_labels: int,
     init_checkpoint: str,
-    use_onehot_embeddings,
+    use_one_hot_embeddings,
     max_seq_length: int,
     batch_size: int = 10,
+    id2label=None,
 ) -> tf.estimator.Estimator:
     bert_config = BertConfig.from_json_file(os.path.join(bert_dir, "bert_config.json"))
     model_fn = model_fn_builder(
         bert_config=bert_config,
         num_labels=num_labels,
         init_checkpoint=init_checkpoint,
-        use_one_hot_embeddings=None,
+        use_one_hot_embeddings=use_one_hot_embeddings,
         max_seq_length=max_seq_length,
     )
 
@@ -46,9 +47,9 @@ def create_estimator(
     )
 
 
-class BertNerPredictor(Pipe):
+class BertEntityExtractor(Pipe):
     @classmethod
-    def from_nlp(cls, nlp: Language, **cfg) -> BertNerPredictor:
+    def from_nlp(cls, nlp: Language, **cfg) -> BertEntityExtractor:
         """Factory to add to Language.factories via entry point."""
         return cls(nlp.vocab, **cfg)
 
@@ -57,7 +58,7 @@ class BertNerPredictor(Pipe):
         vocab: Vocab,
         model=True,
         tokenizer: Optional[SerializableBertTokenizer] = None,
-        **cfg
+        **cfg,
     ):
         """Initialize the component.
 
@@ -67,6 +68,8 @@ class BertNerPredictor(Pipe):
         self.model = create_estimator(**cfg)
         self.tokenizer = tokenizer
         self.cfg = cfg
+        self.id2label = cfg["id2label"]
+        self.max_length = cfg["max_seq_length"]
 
     def zero_pad(self, a: List[int]):
         if len(a) >= self.max_length:
@@ -76,36 +79,41 @@ class BertNerPredictor(Pipe):
     def __call__(self, doc: Doc) -> Doc:
         """TODO: hash index base"""
         input_fn = self.create_input_fn([doc])
-        _res = self.model.predict(input_fn)
-        res = [self.tokenizer.convert_ids_to_tokens(r) for r in _res if r != 0]
+        preds = list(self.model.predict(input_fn))
+        return self.set_annotations([doc], preds)[0]
 
-        new_ents = []
-        cur = []
-        for i, a in enumerate(doc._.pytt_alignment):
-            l = res[a[0]]
-            doc[i].ent_type_ = l
-            if l.startswith("B-"):
-                if cur:
-                    new_ents.append(Span(doc, cur[0], cur[1], cur[2]))
-                cur = [i, i + 1, l]
-            elif l.startswith("I-"):
-                cur[1] += 1
-        if cur:
-            new_ents.append(Span(doc, cur[0], cur[1], cur[2]))
+    def set_annotations(
+        self, docs: List[Doc], preds: Sequence[Sequence[int]]
+    ) -> List[Doc]:
+        assert len(docs) == len(preds)
+        # TODO: res = [self.tokenizer.convert_ids_to_tokens(r) for r in _res if r != 0]
+        labels_list = [[self.id2label[r] for r in line if r != 0] for line in preds]
 
-        doc.ents = new_ents
-        return doc
+        for doc, labels in zip(docs, labels_list):
+            new_ents = []
+            cur = []
+            for i, a in enumerate(doc._.pytt_alignment):
+                l = labels[a[0]]
+                doc[i].ent_type_ = l
+                if l.startswith("B-"):
+                    if cur:
+                        new_ents.append(Span(doc, cur[0], cur[1], cur[2]))
+                    cur = [i, i + 1, l.lstrip("B-")]
+                elif l.startswith("I-"):
+                    cur[1] += 1
+            if cur:
+                new_ents.append(Span(doc, cur[0], cur[1], cur[2]))
+            doc.ents = new_ents
+        return docs
 
     def create_input_fn(self, docs: List[Doc]) -> Callable:
         features = {}
         features["input_ids"] = np.array(
-            [self.pad(doc._.pytt_word_pieces, self.max_seq_length) for doc in docs]
+            [self.zero_pad(doc._.pytt_word_pieces) for doc in docs]
         )
         features["input_mask"] = np.array(
             [
-                self.pad(
-                    [1 for _ in range(len(doc._.pytt_word_pieces))], self.max_seq_length
-                )
+                self.zero_pad([1 for _ in range(len(doc._.pytt_word_pieces))])
                 for doc in docs
             ]
         )
@@ -114,7 +122,7 @@ class BertNerPredictor(Pipe):
             seg = []
             for i, s in enumerate(doc._.pytt_segments):
                 seg += [i] * len(s._.pytt_word_pieces)
-            segs.append(self.pad(seg, self.max_seq_length))
+            segs.append(self.zero_pad(seg))
         features["segment_ids"] = np.array(segs)
         label_ids = []
         O, X = (
@@ -125,7 +133,7 @@ class BertNerPredictor(Pipe):
             label_id = [self.tokenizer.cls_token_id]
             for a in doc._.pytt_alignment:
                 label_id + [O] + [X] * (len(a) - 1)
-            label_ids.append(self.pad(label_id, self.max_seq_length))
+            label_ids.append(self.zero_pad(label_id))
         features["label_ids"] = np.array(label_ids)
         return tf.estimator.inputs.numpy_input_fn(features, shuffle=False)
 

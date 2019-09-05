@@ -59,7 +59,7 @@ class Tokenizer(DummyTokenizer):
 
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    lex_attr_getters[LANG] = lambda _text: "ja_mecab"
+    lex_attr_getters[LANG] = lambda _text: "ja"
     stop_words = STOP_WORDS
     tag_map = TAG_MAP
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
@@ -70,7 +70,7 @@ class Defaults(Language.Defaults):
 
 
 class Japanese(Language):
-    lang = "ja_mecab"
+    lang = "ja"
     Defaults = Defaults
 
     def make_doc(self, text: str) -> Doc:

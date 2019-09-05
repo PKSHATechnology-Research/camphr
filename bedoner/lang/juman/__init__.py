@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Callable
 from collections import namedtuple
 
 from bedoner.consts import KEY_FSTRING
@@ -9,6 +9,7 @@ from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy.compat import copy_reg
 from spacy.util import DummyTokenizer
+from mojimoji import han_to_zen
 
 
 ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "fstring"])
@@ -35,17 +36,20 @@ class Tokenizer(DummyTokenizer):
         cls,
         nlp: Optional[Language] = None,
         juman_kwargs: Optional[Dict[str, str]] = None,
+        preprocessor: Callable[[str], str] = None,
     ):
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         if juman_kwargs:
             self.tokenizer = Juman(**juman_kwargs)
         else:
             self.tokenizer = Juman()
-
         self.key_fstring = KEY_FSTRING
         Token.set_extension(self.key_fstring, default=False, force=True)
+        self.preprocessor = preprocessor
 
     def __call__(self, text):
+        if self.preprocessor:
+            text = self.preprocessor(text)
         dtokens = detailed_tokens(self.tokenizer, text)
         words = [x.surface for x in dtokens]
         spaces = [False] * len(words)
@@ -59,17 +63,17 @@ class Tokenizer(DummyTokenizer):
 
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    lex_attr_getters[LANG] = lambda _text: "ja_juman"
+    lex_attr_getters[LANG] = lambda _text: "ja"
     stop_words = STOP_WORDS
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
     @classmethod
     def create_tokenizer(cls, nlp=None, juman_kwargs: Optional[Dict[str, Any]] = None):
-        return Tokenizer(cls, nlp, juman_kwargs=juman_kwargs)
+        return Tokenizer(cls, nlp, juman_kwargs=juman_kwargs, preprocessor=han_to_zen)
 
 
 class Japanese(Language):
-    lang = "ja_juman"
+    lang = "ja"
     Defaults = Defaults
 
     def make_doc(self, text: str) -> Doc:
