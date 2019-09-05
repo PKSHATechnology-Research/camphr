@@ -24,6 +24,7 @@ pandas = "*"
 sklearn = "*"
 sklearn-crfsuite = "*"
 mojimoji = "*"
+tensorflow = "*"
 
 [requires]
 python_version = "3.7"
