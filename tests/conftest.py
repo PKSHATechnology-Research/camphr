@@ -13,7 +13,7 @@ from spacy_pytorch_transformers._tokenizers import SerializableBertTokenizer
 
 @pytest.fixture(scope="session")
 def mecab_tokenizer():
-    return Mecab.Defaults.create_tokenizer()
+    return Mecab.Defaults.create_tokenizer(opt="-d /usr/local/lib/mecab/dic/ipadic")
 
 
 @pytest.fixture(scope="session")
