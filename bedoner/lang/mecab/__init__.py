@@ -1,5 +1,7 @@
 from typing import Optional, List
 from collections import namedtuple
+from pathlib import Path
+import shutil
 
 import MeCab
 from bedoner.lang.stop_words import STOP_WORDS
@@ -38,10 +40,20 @@ def detailed_tokens(tokenizer: MeCab.Tagger, text: str) -> List[ShortUnitWord]:
 
 
 class Tokenizer(DummyTokenizer):
-    def __init__(self, cls, nlp: Optional[Language] = None, opt=""):
+    USERDIC = "user.dic"
+    ASSETS = "assets"
+
+    def __init__(
+        self,
+        cls,
+        nlp: Optional[Language] = None,
+        dicdir: str = None,
+        userdic: str = None,
+        assets: str = None,
+    ):
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
-        self.tokenizer = MeCab.Tagger(opt)
-        self.tokenizer.parseToNode("")  # see #2901
+        self.tokenizer = self.get_mecab(dicdir=dicdir, userdic=userdic)
+        self.assets = assets
 
     def __call__(self, text):
         dtokens = detailed_tokens(self.tokenizer, text)
@@ -56,21 +68,53 @@ class Tokenizer(DummyTokenizer):
         doc.user_data["mecab_tags"] = mecab_tags
         return doc
 
+    def get_mecab(
+        self, dicdir: Optional[str] = None, userdic: Optional[str] = None
+    ) -> MeCab.Tagger:
+        opt = ""
+        if userdic:
+            opt += f"-u {userdic}"
+        if dicdir:
+            opt += f"-d {dicdir}"
+        self.userdic = userdic
+        self.dicdir = dicdir
+        tokenizer = MeCab.Tagger(opt)
+        tokenizer.parseToNode("")
+        return tokenizer
+
+    def to_disk(self, path: Path, **kwargs):
+        path.mkdir(exist_ok=True)
+        if self.userdic:
+            shutil.copy(self.userdic, path / self.USERDIC)
+        if self.assets:
+            shutil.copy(self.assets, path / self.ASSETS)
+
+    def from_disk(self, path: Path, **kwargs):
+        userdic = (path / self.USERDIC).absolute()
+        if userdic.exists():
+            self.userdic = str(userdic)
+        self.tokenizer = self.get_mecab(userdic=self.userdic)
+
+        assets = (path / self.ASSETS).absolute()
+        if assets.exists():
+            self.assets = assets
+        return self
+
 
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    lex_attr_getters[LANG] = lambda _text: "ja"
+    lex_attr_getters[LANG] = lambda _text: "mecab"
     stop_words = STOP_WORDS
     tag_map = TAG_MAP
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
     @classmethod
-    def create_tokenizer(cls, nlp=None, opt: str = ""):
-        return Tokenizer(cls, nlp, opt=opt)
+    def create_tokenizer(cls, nlp=None, dicdir: str = None, userdic: str = None):
+        return Tokenizer(cls, nlp, dicdir=dicdir, userdic=userdic)
 
 
 class Japanese(Language):
-    lang = "ja"
+    lang = "mecab"
     Defaults = Defaults
 
     def make_doc(self, text: str) -> Doc:

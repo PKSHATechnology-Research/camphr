@@ -25,26 +25,42 @@ def filter_names(name):
     return True
 
 
+def _create_mecab_user_dic_df_from_jinmei_data(data: pd.DataFrame) -> pd.DataFrame:
+    dic = pd.DataFrame()
+    dic["表層形"] = data["表層形"]
+    dic["左文脈ID"] = None
+    dic["右文脈ID"] = None
+    dic["コスト"] = None
+    dic["品詞"] = "名詞"
+    dic["品詞細分類1"] = "固有名詞"
+    dic["品詞細分類2"] = "人名"
+    dic["品詞細分類3"] = data["品詞細分類3"]
+    dic["活用型"] = "*"
+    dic["活用形"] = "*"
+    dic["原形"] = data["表層形"]
+    dic["読み"] = data[0].apply(lambda x: jaconv.hira2kata(x))
+    dic["発音"] = dic["読み"]
+    return dic
+
+
+requires = [
+    "表層形",
+    "左文脈ID",
+    "右文脈ID",
+    "コスト",
+    "品詞",
+    "品詞細分類1",
+    "品詞細分類2",
+    "品詞細分類3",
+    "活用型",
+    "活用形",
+    "原形",
+    "読み",
+    "発音",
+]
+
+
 def load_jinmei_list():
-    def _create_mecab_user_dic_df_from_jinmei_data(data: pd.DataFrame) -> pd.DataFrame:
-        dic = pd.DataFrame()
-        dic["表層形"] = data["表層形"]
-        dic["左文脈ID"] = None
-        dic["右文脈ID"] = None
-        dic["コスト"] = None
-        dic["品詞"] = "名詞"
-        dic["品詞細分類1"] = "固有名詞"
-        dic["品詞細分類2"] = "人名"
-        dic["品詞細分類3"] = data["品詞細分類3"]
-        dic["活用型"] = "*"
-        dic["活用形"] = "*"
-        dic["原形"] = data["表層形"]
-        dic["読み"] = data[0].apply(lambda x: jaconv.hira2kata(x))
-        dic["発音"] = dic["読み"]
-        return dic
-
-        # f"{BASE_PATH}/data/JINMEI30.csv", encoding="shift-jis", header=None
-
     jinmei = pd.read_csv(
         f"{BASE_PATH}/data/JINMEI30.csv", encoding="utf-8", header=None
     )

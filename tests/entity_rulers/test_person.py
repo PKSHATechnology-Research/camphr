@@ -1,7 +1,7 @@
 import pytest
 from bedoner.lang.mecab import Japanese
 from bedoner.entity_rulers import create_person_ruler
-import bedoner.ner_labels.labels_ontonotes as L
+from bedoner.ner_labels.labels_ontonotes import Labels as L
 from spacy.tokens.doc import Doc
 from spacy.tokens.span import Span
 from collections import namedtuple

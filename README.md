@@ -1,6 +1,12 @@
-# NER統合 
+# NER統合 ![CircleCI](https://circleci.com/gh/PKSHATechnology/bedore-ner.svg?style=svg)
 
-![CircleCI](https://circleci.com/gh/PKSHATechnology/bedore-ner.svg?style=svg)
+# Installation
+
+## requrements
+
+- mecab, juman(pp), knp
+
+## pip
 
 ## Refs.
 
