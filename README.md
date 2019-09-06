@@ -8,11 +8,11 @@
 
 ## 完成品
 
-- release pageからtar.gzをダウンロードしてください
+- [release page](https://github.com/PKSHATechnology/bedore-ner/releases)からtar.gzをダウンロードしてください
 - `pip install foo.tar.gz`でOKです．
 	- person_rulerにいては，MeCabの辞書がコンパイルされるのでちょっと時間がかかります．
 
-```
+```python
 >> import spacy
 >> nlp=spacy.load("knp_entity_extractor")
 >> nlp("2019年11月8日に高松隆と東京タワーに行った").ents
