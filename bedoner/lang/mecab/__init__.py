@@ -7,10 +7,13 @@ import MeCab
 from bedoner.lang.stop_words import STOP_WORDS
 from .tag_map import TAG_MAP
 from spacy.attrs import LANG
+from distutils.dir_util import copy_tree
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.compat import copy_reg
 from spacy.util import DummyTokenizer
+
+from shutil import copytree
 
 
 ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos"])
@@ -87,7 +90,7 @@ class Tokenizer(DummyTokenizer):
         if self.userdic:
             shutil.copy(self.userdic, path / self.USERDIC)
         if self.assets:
-            shutil.copy(self.assets, path / self.ASSETS)
+            copytree(self.assets, path / self.ASSETS)
 
     def from_disk(self, path: Path, **kwargs):
         userdic = (path / self.USERDIC).absolute()
@@ -109,8 +112,10 @@ class Defaults(Language.Defaults):
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
     @classmethod
-    def create_tokenizer(cls, nlp=None, dicdir: str = None, userdic: str = None):
-        return Tokenizer(cls, nlp, dicdir=dicdir, userdic=userdic)
+    def create_tokenizer(
+        cls, nlp=None, dicdir: str = None, userdic: str = None, assets: str = None
+    ):
+        return Tokenizer(cls, nlp, dicdir=dicdir, userdic=userdic, assets=assets)
 
 
 class Japanese(Language):
