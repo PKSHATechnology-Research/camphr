@@ -10,7 +10,7 @@
 
 - [release page](https://github.com/PKSHATechnology/bedore-ner/releases)からtar.gzをダウンロードしてください
 - `pip install foo.tar.gz`でOKです．
-	- person_rulerにいては，MeCabの辞書がコンパイルされるのでちょっと時間がかかります．
+	- 必要な辞書，パラメータ等全てセットアップされます．
 
 ### 例
 
