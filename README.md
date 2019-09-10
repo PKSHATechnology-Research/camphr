@@ -15,7 +15,7 @@
 ### 例
 
 - ルールベースNER
-```
+```bash
 $ pip install mecab_entity_ruler-0.0.0.tar.gz
 ```
 ```python
@@ -26,6 +26,9 @@ $ pip install mecab_entity_ruler-0.0.0.tar.gz
 ```
 
 - KNP NERとルールベースの組み合わせ
+```bash
+$ knp_entity_extractor-0.0.0.tar.gz
+```
 ```python
 >>> import spacy
 >>> nlp = spacy.load("knp_entity_extractor")
