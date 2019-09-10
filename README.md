@@ -6,7 +6,7 @@
 
 - mecab, juman(pp), knpが必要です．
 
-## 完成品
+## packaged piplines
 
 - [release page](https://github.com/PKSHATechnology/bedore-ner/releases)からtar.gzをダウンロードしてください
 - `pip install foo.tar.gz`でOKです．
