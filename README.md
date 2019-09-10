@@ -12,11 +12,16 @@
 - `pip install foo.tar.gz`でOKです．
 	- person_rulerにいては，MeCabの辞書がコンパイルされるのでちょっと時間がかかります．
 
+### 例
+
+```
+$ pip install mecab_entity_ruler-0.0.0.tar.gz
+```
 ```python
 >> import spacy
->> nlp=spacy.load("knp_entity_extractor")
+>> nlp=spacy.load("mecab_entity_ruler")
 >> nlp("2019年11月8日に高松隆と東京タワーに行った").ents
-(2019年11月8日, 高松隆, 東京タワー)
+(2019年11月8日, 高松隆)
 ```
 
 ## Refs.
