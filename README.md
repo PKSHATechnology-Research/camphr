@@ -31,6 +31,7 @@ $ pip install mecab_entity_ruler-0.0.0.tar.gz
 >>> nlp = spacy.load("knp_entity_extractor")
 >>> nlp("今日はPKSHAを訪問した").ents
 (今日,)
+
 >>> ruler = nlp.create_pipe("entity_ruler")
 >>> ruler.add_patterns([{"label": "ORG", "pattern": [{"TEXT": "PKSHA"}]}])
 >>> nlp.add_pipe(ruler)
