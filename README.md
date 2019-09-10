@@ -20,7 +20,7 @@ $ pip install mecab_entity_ruler-0.0.0.tar.gz
 ```
 ```python
 >> import spacy
->> nlp=spacy.load("mecab_entity_ruler")
+>> nlp = spacy.load("mecab_entity_ruler")
 >> nlp("2019年11月8日に高松隆と東京タワーに行った").ents
 (2019年11月8日, 高松隆)
 ```
