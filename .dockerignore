@@ -1,2 +1,5 @@
 bedore-ner-module/
 bedore-nlp-modules/
+data/
+pkgs/
+.git/
