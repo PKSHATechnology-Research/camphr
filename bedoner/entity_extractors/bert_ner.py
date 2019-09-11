@@ -32,6 +32,7 @@ from spacy.vocab import Vocab
 
 
 class BertEntityExtractor(Pipe):
+    name = "bert_entity_extractor"
     BERT_DIR = "bert_dir"
     MODEL_DIR = "model_dir"
     CHECKPOINT = "bert_model.ckpt"
@@ -106,7 +107,7 @@ class BertEntityExtractor(Pipe):
         label_ids = []
         O, X = self.label2id["O"], self.label2id["X"]
         for doc in docs:
-            label_id = [self.label2id["[CLS]"]] # TODO* avoid hard code
+            label_id = [self.label2id["[CLS]"]]  # TODO* avoid hard code
             for a in doc._.pytt_alignment:
                 label_id + [O] + [X] * (len(a) - 1)
             label_ids.append(self.zero_pad(label_id))
@@ -122,7 +123,6 @@ class BertEntityExtractor(Pipe):
         """Serialize the pipe to disk."""
         copy_tree(self.cfg[self.BERT_DIR], str(path / self.BERT_DIR))
         copy_tree(self.cfg[self.MODEL_DIR], str(path / self.MODEL_DIR))
-        shutil.copy(self.cfg[self.CHECKPOINT], path / self.CHECKPOINT)
         bert_cfgs = {k: self.cfg[k] for k in self.BERT_CFG_FIEZLDS}
         with (path / self.BERT_CFG_JSON).open("w") as f:
             json.dump(bert_cfgs, f)
@@ -132,14 +132,16 @@ class BertEntityExtractor(Pipe):
 
     def from_disk(self, path, exclude=tuple(), **kwargs):
         self.cfg = self.cfg or {}
+        with (path / "label2id.json").open() as f:
+            self.cfg["label2id"] = json.load(f)
         with (path / self.BERT_CFG_JSON).open() as f:
             bert_cfg = json.load(f)
-        for k, v in bert_cfg:
+        for k, v in bert_cfg.items():
             self.cfg[k] = v
         self.cfg[self.BERT_DIR] = bert_cfg["bert_dir"] = str(path / self.BERT_DIR)
-        self.cfg[self.MODEL_DIR] = bert_cfg["model_dir"] = str(path / self.BERT_DIR)
-        self.cfg[self.CHECKPOINT] = bert_cfg["init_checkpoint"] = str(
-            path / self.CHECKPOINT
+        self.cfg[self.MODEL_DIR] = bert_cfg["model_dir"] = str(path / self.MODEL_DIR)
+        self.cfg["init_checkpoint"] = bert_cfg["init_checkpoint"] = str(
+            path / self.BERT_DIR / self.CHECKPOINT
         )
 
         self.model = create_estimator(**bert_cfg)
@@ -307,4 +309,7 @@ def create_model(
         predict = tf.argmax(probabilities, axis=-1)
 
         return (loss, per_example_loss, logits, predict)
+
+
+Language.factories[BertEntityExtractor.name] = BertEntityExtractor
 

@@ -1,13 +1,17 @@
 from bedoner.entity_extractors.bert_modeling import BertModel
+import spacy
+import shutil
 import pytest
 from bedoner.entity_extractors.bert_ner import BertEntityExtractor, create_estimator
 from pathlib import Path
 import pickle
 from spacy.tokens import Doc
 import json
+from spacy.language import Language
+from numpy.testing import assert_array_almost_equal
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def nlp(bert_wordpiece_nlp):
     __dir__ = Path(__file__).parent
     bert_dir = __dir__ / "../../data/Japanese_L-12_H-768_A-12_E-30_BPE"
@@ -34,23 +38,32 @@ def nlp(bert_wordpiece_nlp):
     return bert_wordpiece_nlp
 
 
-@pytest.mark.parametrize(
-    "text,ents",
-    [
-        (
-            "EXILEのATSUSHIと中島美嘉が14日ニューヨーク入り",
-            [
-                ("ＥＸＩＬＥ", "Show_Organization"),
-                ("ＡＴＳＵＳＨＩ", "Person"),
-                ("中島美嘉", "Person"),
-                ("１４日", "Date"),
-                ("ニューヨーク", "City"),
-            ],
-        )
-    ],
-)
-def test_bert_ner(nlp, text, ents):
-    doc: Doc = nlp(text)
+TESTCASE = [
+    (
+        "EXILEのATSUSHIと中島美嘉が14日ニューヨーク入り",
+        [
+            ("ＥＸＩＬＥ", "Show_Organization"),
+            ("ＡＴＳＵＳＨＩ", "Person"),
+            ("中島美嘉", "Person"),
+            ("１４日", "Date"),
+            ("ニューヨーク", "City"),
+        ],
+    )
+]
+
+
+@pytest.fixture
+def saved_nlp(nlp):
+    nlp.to_disk("./foo")
+    nlp = spacy.load("./foo")
+    shutil.rmtree("./foo")
+    return nlp
+
+
+@pytest.mark.parametrize("text,ents", TESTCASE)
+def test_to_disk(saved_nlp: Language, text, ents):
+    doc: Doc = saved_nlp(text)
     for pred, ans in zip(doc.ents, ents):
         assert pred.text == ans[0]
         assert pred.label_ == ans[1]
+

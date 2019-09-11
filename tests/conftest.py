@@ -6,8 +6,7 @@ from pathlib import Path
 from pathlib import Path
 from spacy.strings import StringStore
 from spacy.vocab import Vocab
-from spacy_pytorch_transformers.pipeline.wordpiecer import PyTT_WordPiecer
-from spacy_pytorch_transformers._tokenizers import SerializableBertTokenizer
+from bedoner.wordpiecer import BertWordPiecer
 
 
 @pytest.fixture(scope="session")
@@ -41,15 +40,13 @@ def bert_wordpiece_nlp():
     s = StringStore(vs)
     v = Vocab(strings=s)
     nlp = Juman(v)
-    w = PyTT_WordPiecer(v)
-    wp = SerializableBertTokenizer(
-        str(
+    w = BertWordPiecer(
+        v,
+        vocab_file=str(
             Path(__file__).parent
             / "../data/Japanese_L-12_H-768_A-12_E-30_BPE/vocab.txt"
         ),
-        do_lower_case=False,
-        tokenize_chinese_chars=False,
     )
-    w.model = wp
+    w.model = w.Model(w.cfg["vocab_file"])
     nlp.add_pipe(w)
     return nlp
