@@ -6,7 +6,7 @@ additional_requirements = [
     "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner"
 ]
 
-pkgs = Path(__file__).parent / "pkgs"
+pkgs = Path(__file__).parent / "../pkgs"
 
 
 def create_package(nlp):
