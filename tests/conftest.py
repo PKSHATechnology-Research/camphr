@@ -3,7 +3,6 @@ from bedoner.lang.mecab import Japanese as Mecab
 from bedoner.lang.juman import Japanese as Juman
 from bedoner.lang.knp import Japanese as KNP
 from pathlib import Path
-from bedoner.lang.juman import Japanese
 from pathlib import Path
 from spacy.strings import StringStore
 from spacy.vocab import Vocab
@@ -41,7 +40,7 @@ def bert_wordpiece_nlp():
             vs.append(line[:-1])
     s = StringStore(vs)
     v = Vocab(strings=s)
-    nlp = Japanese(v)
+    nlp = Mecab(v)
     w = PyTT_WordPiecer(v)
     wp = SerializableBertTokenizer(
         str(

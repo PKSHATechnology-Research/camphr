@@ -1,4 +1,9 @@
 from __future__ import annotations
+from tensorflow.contrib import predictor
+import json
+import shutil
+from copy import copy
+from distutils.dir_util import copy_tree
 from typing import *
 import itertools as it
 import pickle
@@ -22,71 +27,41 @@ from spacy.tokens import Doc
 from spacy.vocab import Vocab
 
 
-def create_estimator(
-    bert_dir: str,
-    model_dir: str,
-    num_labels: int,
-    init_checkpoint: str,
-    use_one_hot_embeddings,
-    max_seq_length: int,
-    batch_size: int = 10,
-    id2label=None,
-) -> tf.estimator.Estimator:
-    bert_config = BertConfig.from_json_file(os.path.join(bert_dir, "bert_config.json"))
-    model_fn = model_fn_builder(
-        bert_config=bert_config,
-        num_labels=num_labels,
-        init_checkpoint=init_checkpoint,
-        use_one_hot_embeddings=use_one_hot_embeddings,
-        max_seq_length=max_seq_length,
-    )
-
-    run_config = tf.estimator.RunConfig(model_dir=model_dir)
-    return tf.estimator.Estimator(
-        model_fn=model_fn, config=run_config, params={"batch_size": batch_size}
-    )
-
-
 class BertEntityExtractor(Pipe):
+    BERT_DIR = "bert_dir"
+    MODEL_DIR = "model_dir"
+    CHECKPOINT = "bert_model.ckpt"
+    BERT_CFG_JSON = "bert_cfg.json"
+    BERT_CFG_FIEZLDS = [
+        "num_labels",
+        "use_one_hot_embeddings",
+        "max_seq_length",
+        "batch_size",
+    ]
+
     @classmethod
     def from_nlp(cls, nlp: Language, **cfg) -> BertEntityExtractor:
         """Factory to add to Language.factories via entry point."""
         return cls(nlp.vocab, **cfg)
 
-    def __init__(
-        self,
-        vocab: Vocab,
-        model=True,
-        tokenizer: Optional[SerializableBertTokenizer] = None,
-        **cfg,
-    ):
+    def __init__(self, vocab: Vocab, model=True, **cfg):
         """Initialize the component.
 
         **cfg: Optional config parameters.
         """
-        self.vocab = vocab
-        self.model = create_estimator(**cfg)
-        self.tokenizer = tokenizer
         self.cfg = cfg
-        self.id2label = cfg["id2label"]
-        self.max_length = cfg["max_seq_length"]
-
-    def zero_pad(self, a: List[int]):
-        if len(a) >= self.max_length:
-            return a[: self.max_length]
-        return a + [0] * (self.max_length - len(a))
+        self.model: tf.estimator.Estimator = model
+        self.vocab = vocab
 
     def __call__(self, doc: Doc) -> Doc:
-        """TODO: hash index base"""
-        input_fn = self.create_input_fn([doc])
-        preds = list(self.model.predict(input_fn))
+        features = self.create_features([doc])
+        preds = self.predictor(features)["output"]
         return self.set_annotations([doc], preds)[0]
 
     def set_annotations(
         self, docs: List[Doc], preds: Sequence[Sequence[int]]
     ) -> List[Doc]:
         assert len(docs) == len(preds)
-        # TODO: res = [self.tokenizer.convert_ids_to_tokens(r) for r in _res if r != 0]
         labels_list = [[self.id2label[r] for r in line if r != 0] for line in preds]
 
         for doc, labels in zip(docs, labels_list):
@@ -106,7 +81,7 @@ class BertEntityExtractor(Pipe):
             doc.ents = new_ents
         return docs
 
-    def create_input_fn(self, docs: List[Doc]) -> Callable:
+    def create_features(self, docs: List[Doc]) -> Dict:
         features = {}
         features["input_ids"] = np.array(
             [self.zero_pad(doc._.pytt_word_pieces) for doc in docs]
@@ -125,27 +100,112 @@ class BertEntityExtractor(Pipe):
             segs.append(self.zero_pad(seg))
         features["segment_ids"] = np.array(segs)
         label_ids = []
-        O, X = (
-            self.tokenizer.convert_tokens_to_ids("O"),
-            self.tokenizer.convert_tokens_to_ids("X"),
-        )
+        O, X = self.label2id["O"], self.label2id["X"]
         for doc in docs:
             label_id = [self.tokenizer.cls_token_id]
             for a in doc._.pytt_alignment:
                 label_id + [O] + [X] * (len(a) - 1)
             label_ids.append(self.zero_pad(label_id))
         features["label_ids"] = np.array(label_ids)
-        return tf.estimator.inputs.numpy_input_fn(features, shuffle=False)
+        return features
+
+    def zero_pad(self, a: List[int]):
+        if len(a) >= self.max_length:
+            return a[: self.max_length]
+        return a + [0] * (self.max_length - len(a))
+
+    def to_disk(self, path: Path, exclude=tuple(), **kwargs):
+        """Serialize the pipe to disk."""
+        copy_tree(self.cfg[self.BERT_DIR], str(path / self.BERT_DIR))
+        copy_tree(self.cfg[self.MODEL_DIR], str(path / self.MODEL_DIR))
+        shutil.copy(self.cfg[self.CHECKPOINT], path / self.CHECKPOINT)
+        bert_cfgs = {k: self.cfg[k] for k in self.BERT_CFG_FIEZLDS}
+        with (path / self.BERT_CFG_JSON).open("w") as f:
+            json.dump(bert_cfgs, f)
+
+        with (path / "label2id.json").open("w") as f:
+            json.dump(self.label2id, f)
+
+    def from_disk(self, path, exclude=tuple(), **kwargs):
+        self.cfg = self.cfg or {}
+        with (path / self.BERT_CFG_JSON).open() as f:
+            bert_cfg = json.load(f)
+        for k, v in bert_cfg:
+            self.cfg[k] = v
+        self.cfg[self.BERT_DIR] = bert_cfg["bert_dir"] = str(path / self.BERT_DIR)
+        self.cfg[self.MODEL_DIR] = bert_cfg["model_dir"] = str(path / self.BERT_DIR)
+        self.cfg[self.CHECKPOINT] = bert_cfg["init_checkpoint"] = str(
+            path / self.CHECKPOINT
+        )
+
+        self.model = create_estimator(**bert_cfg)
+        self.set_values()
+        self.create_predictor()
+
+    def create_predictor(self):
+        self.predictor = predictor.from_estimator(
+            self.model, create_serving_reciever_fn(self.max_length)
+        )
+
+    def set_values(self):
+        self.label2id: Dict[str, int] = self.cfg["label2id"]
+        self.id2label: Dict[int, str] = {v: k for k, v in self.label2id.items()}
+        self.max_length = self.cfg["max_seq_length"]
+
+
+def create_serving_reciever_fn(seq_length):
+    def serving_input_receiver_fn():
+        feature_spec = {
+            "label_ids": tf.placeholder(
+                dtype=tf.int32, shape=[None, seq_length], name="label_ids"
+            ),
+            "input_ids": tf.placeholder(
+                dtype=tf.int32, shape=[None, seq_length], name="input_ids"
+            ),
+            "input_mask": tf.placeholder(
+                dtype=tf.int32, shape=[None, seq_length], name="input_mask"
+            ),
+            "segment_ids": tf.placeholder(
+                dtype=tf.int32, shape=[None, seq_length], name="segment_ids"
+            ),
+        }
+        return tf.estimator.export.ServingInputReceiver(feature_spec, feature_spec)
+
+    return serving_input_receiver_fn
+
+
+def create_estimator(
+    bert_dir: str,
+    model_dir: str,
+    num_labels: int,
+    init_checkpoint: str,
+    use_one_hot_embeddings: bool,
+    max_seq_length: int,
+    batch_size: int,
+) -> tf.estimator.Estimator:
+    bert_config = BertConfig.from_json_file(os.path.join(bert_dir, "bert_config.json"))
+    model_fn = model_fn_builder(
+        bert_config=bert_config,
+        num_labels=num_labels,
+        init_checkpoint=init_checkpoint,
+        use_one_hot_embeddings=use_one_hot_embeddings,
+        max_seq_length=max_seq_length,
+    )
+
+    run_config = tf.estimator.RunConfig(model_dir=model_dir)
+    return tf.estimator.Estimator(
+        model_fn=model_fn, config=run_config, params={"batch_size": batch_size}
+    )
 
 
 def model_fn_builder(
-    bert_config, num_labels, init_checkpoint, use_one_hot_embeddings, max_seq_length
-):
-    """Returns `model_fn` closure for TPUEstimator."""
-
+    bert_config: tf.estimator.RunConfig,
+    num_labels: int,
+    init_checkpoint: str,
+    use_one_hot_embeddings: bool,
+    max_seq_length: int,
+) -> Callable:
     def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
-        """The `model_fn` for TPUEstimator."""
-
         tf.logging.info("*** Features ***")
         for name in sorted(features.keys()):
             tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
@@ -167,7 +227,7 @@ def model_fn_builder(
             num_labels,
             use_one_hot_embeddings,
             max_seq_length,
-        )
+        )  # pylint: disable=unused-variable
 
         tvars = tf.trainable_variables()
         assignment_map = None
@@ -243,3 +303,4 @@ def create_model(
         predict = tf.argmax(probabilities, axis=-1)
 
         return (loss, per_example_loss, logits, predict)
+

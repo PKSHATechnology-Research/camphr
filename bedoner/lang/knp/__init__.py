@@ -22,7 +22,11 @@ LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
 def detailed_tokens(tokenizer: KNP, text) -> List[Morpheme]:
     """Format juman output for tokenizing"""
     words = []
-    ml = tokenizer.parse(text).mrph_list()
+    try:
+        ml = tokenizer.parse(text).mrph_list()
+    except:
+        raise ValueError(f"Cannot parse '{text}'")
+
     for m in ml:
         # m: Morpheme = m
         surface = m.midasi
