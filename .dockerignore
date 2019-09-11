@@ -3,3 +3,4 @@ bedore-nlp-modules/
 data/
 pkgs/
 .git/
+*.tar.gz

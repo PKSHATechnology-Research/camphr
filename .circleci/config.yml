@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  aws-s3: circleci/aws-s3@1.0.0
+  aws-s3: circleci/aws-s3@1.0.11
 jobs:
   build:
     machine: 
@@ -18,9 +18,9 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           aws-region: AWS_REGION
-          overwrite: true
       - run: tar xzvf data.tar.gz
+      - run: docker-compose build
 
       - run:
           name: run pytest
-          command: docker-compose run ner pytest
+          command: docker-compose run ner pipenv run pytest
