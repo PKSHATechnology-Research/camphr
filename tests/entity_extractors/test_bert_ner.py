@@ -1,8 +1,10 @@
+from bedoner.entity_extractors.bert_modeling import BertModel
 import pytest
-from bedoner.entity_extractors.bert_ner import BertEntityExtractor
+from bedoner.entity_extractors.bert_ner import BertEntityExtractor, create_estimator
 from pathlib import Path
 import pickle
 from spacy.tokens import Doc
+import json
 
 
 @pytest.fixture
@@ -11,20 +13,23 @@ def nlp(bert_wordpiece_nlp):
     bert_dir = __dir__ / "../../data/Japanese_L-12_H-768_A-12_E-30_BPE"
     model_dir = __dir__ / "../../data/bert_result_ene_0/"
     init_checkpoint = str(bert_dir / "bert_model.ckpt")
-    with (model_dir / "id2label.pkl").open("rb") as f:
-        id2label = pickle.load(f)
+    with (model_dir / "label2id.json").open("r") as f:
+        label2id = json.load(f)
 
-    ee = BertEntityExtractor.from_nlp(
-        bert_wordpiece_nlp,
-        tokenizer=bert_wordpiece_nlp.get_pipe("pytt_wordpiecer").model,
+    bert_cfg = dict(
         bert_dir=str(bert_dir),
         model_dir=str(model_dir),
-        num_labels=len(id2label) + 1,
+        num_labels=len(label2id) + 1,
         init_checkpoint=init_checkpoint,
         use_one_hot_embeddings=None,
         max_seq_length=128,
-        id2label=id2label,
+        batch_size=10,
     )
+
+    ee = BertEntityExtractor.from_nlp(bert_wordpiece_nlp, label2id=label2id, **bert_cfg)
+    ee.model = create_estimator(**bert_cfg)
+    ee.set_values()
+    ee.create_predictor()
     bert_wordpiece_nlp.add_pipe(ee)
     return bert_wordpiece_nlp
 

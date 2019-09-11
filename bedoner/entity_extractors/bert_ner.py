@@ -17,8 +17,12 @@ from spacy.vocab import Vocab
 from spacy.pipeline import Pipe
 
 from bedoner.lang.juman import Japanese
-from bedore_nlp_modules.bert_modules import modeling
-from bedoner.entity_extractors.bert_modeling import BertConfig
+from bedoner.entity_extractors.bert_modeling import (
+    BertConfig,
+    get_assignment_map_from_checkpoint,
+    BertConfig,
+    BertModel,
+)
 from spacy_pytorch_transformers._tokenizers import SerializableBertTokenizer
 import tensorflow as tf
 import os
@@ -102,7 +106,7 @@ class BertEntityExtractor(Pipe):
         label_ids = []
         O, X = self.label2id["O"], self.label2id["X"]
         for doc in docs:
-            label_id = [self.tokenizer.cls_token_id]
+            label_id = [self.label2id["[CLS]"]] # TODO* avoid hard code
             for a in doc._.pytt_alignment:
                 label_id + [O] + [X] * (len(a) - 1)
             label_ids.append(self.zero_pad(label_id))
@@ -232,7 +236,7 @@ def model_fn_builder(
         tvars = tf.trainable_variables()
         assignment_map = None
         if init_checkpoint:
-            assignment_map, _ = modeling.get_assignment_map_from_checkpoint(
+            assignment_map, _ = get_assignment_map_from_checkpoint(
                 tvars, init_checkpoint
             )
 
@@ -260,7 +264,7 @@ def create_model(
     max_seq_length,
 ):
     """Creates a token-level classification model."""
-    model = modeling.BertModel(
+    model = BertModel(
         config=bert_config,
         is_training=is_training,
         input_ids=input_ids,
