@@ -2,6 +2,11 @@
 
 # Installation
 
+```bash
+$ pipenv install
+$ pipenv install --dev # for developer
+```
+
 ## requrements
 
 - mecab, juman(pp), knpが必要です．
