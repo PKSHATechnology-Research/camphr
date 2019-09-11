@@ -24,7 +24,8 @@ pandas = "*"
 sklearn = "*"
 sklearn-crfsuite = "*"
 mojimoji = "*"
-tensorflow = "*"
+spacy-pytorch-transformers = "*"
+tensorflow = "==1.14"
 
 [requires]
 python_version = "3.7"

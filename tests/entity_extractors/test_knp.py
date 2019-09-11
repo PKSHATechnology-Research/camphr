@@ -1,14 +1,14 @@
 from typing import Tuple
 import pytest
 from bedoner.lang.knp import Japanese
-from bedoner.entity_extractors.knp import knp_entity_extractor
+from bedoner.entity_extractors.knp import KnpEntityExtractor
 from spacy.tokens import Doc
 
 
 @pytest.fixture
 def nlp():
     _nlp = Japanese()
-    _nlp.add_pipe(knp_entity_extractor)
+    _nlp.add_pipe(KnpEntityExtractor(nlp))
     return _nlp
 
 

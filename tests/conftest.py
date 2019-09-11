@@ -11,7 +11,7 @@ from bedoner.wordpiecer import BertWordPiecer
 
 @pytest.fixture(scope="session")
 def mecab_tokenizer():
-    return Mecab.Defaults.create_tokenizer(opt="-d /usr/local/lib/mecab/dic/ipadic")
+    return Mecab.Defaults.create_tokenizer(dicdir="/usr/local/lib/mecab/dic/ipadic")
 
 
 @pytest.fixture(scope="session")

@@ -1,4 +1,6 @@
 from __future__ import annotations
+from os.path import exists
+import tensorflow
 from tensorflow.contrib import predictor
 import json
 import shutil
@@ -121,6 +123,7 @@ class BertEntityExtractor(Pipe):
 
     def to_disk(self, path: Path, exclude=tuple(), **kwargs):
         """Serialize the pipe to disk."""
+        path.mkdir(exist_ok=True)
         copy_tree(self.cfg[self.BERT_DIR], str(path / self.BERT_DIR))
         copy_tree(self.cfg[self.MODEL_DIR], str(path / self.MODEL_DIR))
         bert_cfgs = {k: self.cfg[k] for k in self.BERT_CFG_FIEZLDS}
