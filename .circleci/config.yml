@@ -12,9 +12,10 @@ jobs:
           name: login
           command: echo "$dockerhub_password" | docker login --username $dockerhub_username --password-stdin
 
-      - aws-s3/copy:
+      - run: mkdir data
+      - aws-s3/sync:
           from: 's3://bedoner/data'
-          to: .
+          to: data
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           aws-region: AWS_REGION
