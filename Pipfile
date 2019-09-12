@@ -12,6 +12,7 @@ flake8 = "*"
 yq = "*"
 pyyaml = "*"
 rope = "*"
+papermill = "*"
 
 [packages]
 spacy = "*"
@@ -26,6 +27,7 @@ sklearn-crfsuite = "*"
 mojimoji = "*"
 spacy-pytorch-transformers = "*"
 tensorflow = "==1.14"
+bedoner = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

@@ -3,8 +3,8 @@
 # Installation
 
 ```bash
-$ pipenv install
-$ pipenv install --dev # for developer
+$ pipenv install .
+$ pipenv install --dev -e . # for developer
 ```
 
 ## requrements
@@ -13,13 +13,14 @@ $ pipenv install --dev # for developer
 
 ## packaged piplines
 
-- [release page](https://github.com/PKSHATechnology/bedore-ner/releases)からtar.gzをダウンロードしてください
+- bedore-aws-solution-randdの`s3://bedoner/releases`からtar.gzをダウンロードしてください
 - `pip install foo.tar.gz`でOKです．
 	- 必要な辞書，パラメータ等全てセットアップされます．
 
 ### 例
 
 - ルールベースNER
+
 ```bash
 $ pip install mecab_entity_ruler-0.0.0.tar.gz
 ```
@@ -31,6 +32,12 @@ $ pip install mecab_entity_ruler-0.0.0.tar.gz
 ```
 
 - KNP NERとルールベースの組み合わせ
+
+```bash
+
+$ pip install mecab_entity_ruler-0.0.0.tar.gz
+```
+
 ```bash
 $ knp_entity_extractor-0.0.0.tar.gz
 ```
@@ -46,6 +53,21 @@ $ knp_entity_extractor-0.0.0.tar.gz
 >>> nlp("今日はPKSHAを訪問した").ents
 (今日, PKSHA)
 ```
+
+# Development
+
+## setup
+
+1. clone
+2. `$ pipenv install --dev -e .`
+3. `$ make download`
+4. `$ pipenv run pytest`
+
+## packaging
+
+- [Saving and Loading · spaCy Usage Documentation](https://spacy.io/usage/saving-loading)
+- `cd scripts && pipenv run papermill packaging.ipynb log.ipynb`
+
 
 ## Refs.
 

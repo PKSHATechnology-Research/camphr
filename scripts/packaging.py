@@ -7,6 +7,7 @@ additional_requirements = [
 ]
 
 pkgs = Path(__file__).parent / "../pkgs"
+pkgs.mkdir(exist_ok=True)
 
 
 def create_package(nlp):
