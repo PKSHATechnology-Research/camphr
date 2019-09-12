@@ -22,6 +22,7 @@ $ pipenv install --dev -e . # for developer
 - ルールベースNER
 
 ```bash
+$ aws s3 cp s3://bedoner/releases/mecab_entity_ruler-0.0.0.tar.gz .
 $ pip install mecab_entity_ruler-0.0.0.tar.gz
 ```
 ```python
@@ -31,15 +32,24 @@ $ pip install mecab_entity_ruler-0.0.0.tar.gz
 (2019年11月8日, 高松隆)
 ```
 
+- BERT NER
+
+```bash
+$ aws s3 cp s3://bedoner/releases/juman_bert_ner-0.0.0.tar.gz .
+$ pip install juman_bert_ner-0.0.0.tar.gz .
+```
+```python
+>> import spacy
+>> nlp = spacy.load("juman_bert_ner")
+>> nlp("EXILEのATSUSHIと中島美嘉が14日ニューヨーク入り").ents
+("ＥＸＩＬＥ", "ＡＴＳＵＳＨＩ", "中島美嘉", "１４日", "ニューヨーク")
+```
+
 - KNP NERとルールベースの組み合わせ
 
 ```bash
-
-$ pip install mecab_entity_ruler-0.0.0.tar.gz
-```
-
-```bash
-$ knp_entity_extractor-0.0.0.tar.gz
+$ aws s3 cp s3://bedoner/releases/knp_entity_extractor-0.0.0.tar.gz .
+$ pip install knp_entity_extractor-0.0.0.tar.gz
 ```
 ```python
 >>> import spacy
