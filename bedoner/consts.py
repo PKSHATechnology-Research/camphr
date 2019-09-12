@@ -1,3 +1,4 @@
+"""Constants used accross modules"""
 KEY_FSTRING = "fstring"
 KEY_KNP_ENT = "knp_ent"
 KEY_KNP_ENT_IOB = "knp_ent_iob"

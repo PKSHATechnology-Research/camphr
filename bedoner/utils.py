@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 
 class SerializationMixin:
-    """You must define the following attributes."""
+    """Serializes the items in `serialization_fields"""
 
     def from_bytes(self, bytes_data, exclude=tuple(), **kwargs):
         pkls = srsly.pickle_loads(bytes_data)

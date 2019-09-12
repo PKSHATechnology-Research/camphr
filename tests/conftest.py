@@ -1,3 +1,4 @@
+from bedoner.models import bert_wordpiecer
 import pytest
 from bedoner.lang.mecab import Japanese as Mecab
 from bedoner.lang.juman import Japanese as Juman
@@ -31,22 +32,4 @@ def knp_tokenizer():
 
 @pytest.fixture(scope="session")
 def bert_wordpiece_nlp():
-    with (
-        Path(__file__).parent / "../data/Japanese_L-12_H-768_A-12_E-30_BPE/vocab.txt"
-    ).open() as f:
-        vs = []
-        for line in f:
-            vs.append(line[:-1])
-    s = StringStore(vs)
-    v = Vocab(strings=s)
-    nlp = Juman(v)
-    w = BertWordPiecer(
-        v,
-        vocab_file=str(
-            Path(__file__).parent
-            / "../data/Japanese_L-12_H-768_A-12_E-30_BPE/vocab.txt"
-        ),
-    )
-    w.model = w.Model(w.cfg["vocab_file"])
-    nlp.add_pipe(w)
-    return nlp
+    return bert_wordpiecer()

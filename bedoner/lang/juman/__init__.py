@@ -8,49 +8,41 @@ from spacy.attrs import LANG
 from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy.compat import copy_reg
-from spacy.util import DummyTokenizer
-from mojimoji import han_to_zen
+from bedoner.utils import SerializationMixin
 
 
 ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "fstring"])
 
 
-def detailed_tokens(tokenizer: Juman, text) -> List[Morpheme]:
-    """Format juman output for tokenizing"""
-    words = []
-    ml = tokenizer.analysis(text).mrph_list()
-    for m in ml:
-        # m: Morpheme = m
-        surface = m.midasi
-        pos = m.hinsi + "/" + m.bunrui
-        lemma = m.genkei or surface
-        words.append(ShortUnitWord(surface, lemma, pos, m.fstring))
-    return words
+class Tokenizer(SerializationMixin):
+    """Juman tokenizer"""
 
-
-class Tokenizer(DummyTokenizer):
-    """juman tokenizer"""
+    serialization_fields = ["preprocessor", "juman_kwargs"]
 
     def __init__(
         self,
         cls,
         nlp: Optional[Language] = None,
         juman_kwargs: Optional[Dict[str, str]] = None,
-        preprocessor: Callable[[str], str] = None,
+        preprocessor: Optional[Callable[[str], str]] = None,
     ):
+        """Init
+
+        Args:
+            juman_kwargs: passed to pyknp.Juman's constructor
+            preprocessor: apply before tokenizing.
+        """
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
-        if juman_kwargs:
-            self.tokenizer = Juman(**juman_kwargs)
-        else:
-            self.tokenizer = Juman()
+        self.tokenizer = Juman(**juman_kwargs) if juman_kwargs else Juman()
         self.key_fstring = KEY_FSTRING
         Token.set_extension(self.key_fstring, default=False, force=True)
         self.preprocessor = preprocessor
 
-    def __call__(self, text):
+    def __call__(self, text: str) -> Doc:
+        """Make doc from text"""
         if self.preprocessor:
             text = self.preprocessor(text)
-        dtokens = detailed_tokens(self.tokenizer, text)
+        dtokens = self.detailed_tokens(text)
         words = [x.surface for x in dtokens]
         spaces = [False] * len(words)
         doc = Doc(self.vocab, words=words, spaces=spaces)
@@ -60,6 +52,18 @@ class Tokenizer(DummyTokenizer):
             token._.set(self.key_fstring, dtoken.fstring)
         return doc
 
+    def detailed_tokens(self, text) -> List[Morpheme]:
+        """Format juman output for tokenizing"""
+        words = []
+        ml = self.tokenizer.analysis(text).mrph_list()
+        for m in ml:
+            # m: Morpheme = m
+            surface = m.midasi
+            pos = m.hinsi + "/" + m.bunrui
+            lemma = m.genkei or surface
+            words.append(ShortUnitWord(surface, lemma, pos, m.fstring))
+        return words
+
 
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
@@ -68,8 +72,13 @@ class Defaults(Language.Defaults):
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
     @classmethod
-    def create_tokenizer(cls, nlp=None, juman_kwargs: Optional[Dict[str, Any]] = None):
-        return Tokenizer(cls, nlp, juman_kwargs=juman_kwargs, preprocessor=han_to_zen)
+    def create_tokenizer(
+        cls,
+        nlp=None,
+        juman_kwargs: Optional[Dict[str, Any]] = None,
+        preprocessor: Optional[Callable[[str], str]] = None,
+    ):
+        return Tokenizer(cls, nlp, juman_kwargs=juman_kwargs, preprocessor=preprocessor)
 
 
 class Japanese(Language):

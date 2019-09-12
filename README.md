@@ -66,12 +66,20 @@ $ pip install knp_entity_extractor-0.0.0.tar.gz
 
 # Development
 
+- 開発にあたり，spacyの仕組みについて公式ドキュメント([Architecture · spaCy API Documentation](https://spacy.io/api))を一読してください
+
 ## setup
 
 1. clone
 2. `$ pipenv install --dev -e .`
 3. `$ make download`
 4. `$ pipenv run pytest`
+
+## 構成
+
+- `bedoner`: package source
+- `tests`: test files
+- `scripts`: 細々としたスクリプト. packagingに必要なものなど
 
 ## packaging
 

@@ -1,3 +1,4 @@
+from bedoner.models import bert_ner
 from bedoner.entity_extractors.bert_modeling import BertModel
 import spacy
 import shutil
@@ -12,30 +13,8 @@ from numpy.testing import assert_array_almost_equal
 
 
 @pytest.fixture(scope="module")
-def nlp(bert_wordpiece_nlp):
-    __dir__ = Path(__file__).parent
-    bert_dir = __dir__ / "../../data/Japanese_L-12_H-768_A-12_E-30_BPE"
-    model_dir = __dir__ / "../../data/bert_result_ene_0/"
-    init_checkpoint = str(bert_dir / "bert_model.ckpt")
-    with (model_dir / "label2id.json").open("r") as f:
-        label2id = json.load(f)
-
-    bert_cfg = dict(
-        bert_dir=str(bert_dir),
-        model_dir=str(model_dir),
-        num_labels=len(label2id) + 1,
-        init_checkpoint=init_checkpoint,
-        use_one_hot_embeddings=None,
-        max_seq_length=128,
-        batch_size=10,
-    )
-
-    ee = BertEntityExtractor.from_nlp(bert_wordpiece_nlp, label2id=label2id, **bert_cfg)
-    ee.model = create_estimator(**bert_cfg)
-    ee.set_values()
-    ee.create_predictor()
-    bert_wordpiece_nlp.add_pipe(ee)
-    return bert_wordpiece_nlp
+def nlp():
+    return bert_ner()
 
 
 TESTCASE = [

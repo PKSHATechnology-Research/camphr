@@ -4,3 +4,4 @@ data/
 pkgs/
 .git/
 *.tar.gz
+foo/

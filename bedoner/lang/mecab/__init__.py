@@ -2,6 +2,7 @@ from typing import Optional, List
 from collections import namedtuple
 from pathlib import Path
 import shutil
+from bedoner.utils import SerializationMixin
 
 import MeCab
 from bedoner.lang.stop_words import STOP_WORDS
@@ -19,29 +20,6 @@ from shutil import copytree
 ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos"])
 
 
-def resolve_pos(token):
-    """TODO"""
-    return token.pos
-
-
-def detailed_tokens(tokenizer: MeCab.Tagger, text: str) -> List[ShortUnitWord]:
-    node = tokenizer.parseToNode(text)
-    node = node.next  # first node is beginning of sentence and empty, skip it
-    words = []
-    while node.posid != 0:
-        surface = node.surface
-        base = surface  # a default value. Updated if available later.
-        parts = node.feature.split(",")
-        pos = ",".join(parts[0:4])
-        if len(parts) > 6:
-            # this information is only available for words in the tokenizer
-            # dictionary
-            base = parts[6]
-        words.append(ShortUnitWord(surface, base, pos))
-        node = node.next
-    return words
-
-
 class Tokenizer(DummyTokenizer):
     USERDIC = "user.dic"
     ASSETS = "assets"
@@ -50,30 +28,53 @@ class Tokenizer(DummyTokenizer):
         self,
         cls,
         nlp: Optional[Language] = None,
-        dicdir: str = None,
-        userdic: str = None,
-        assets: str = None,
+        dicdir: Optional[str] = None,
+        userdic: Optional[str] = None,
+        assets: Optional[str] = None,
     ):
+        """Init
+
+        Args:
+            dicdir: mecab dictionary path. If `None`, apply system configuration (~/.mecabrc)
+            userdic: mecab user dictionary path. If `None`, apply system configuration (~/.mecabrc)
+            assets: Other assets to be with tokenizer. e.g. userdic definition csv path
+        """
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         self.tokenizer = self.get_mecab(dicdir=dicdir, userdic=userdic)
         self.assets = assets
 
-    def __call__(self, text):
-        dtokens = detailed_tokens(self.tokenizer, text)
+    def __call__(self, text: str) -> Doc:
+        dtokens = self.detailed_tokens(text)
         words = [x.surface for x in dtokens]
         spaces = [False] * len(words)
         doc = Doc(self.vocab, words=words, spaces=spaces)
         mecab_tags = []
         for token, dtoken in zip(doc, dtokens):
             mecab_tags.append(dtoken.pos)
-            token.tag_ = resolve_pos(dtoken)
             token.lemma_ = dtoken.lemma
         doc.user_data["mecab_tags"] = mecab_tags
         return doc
 
+    def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
+        """Format mecab output for tokenizer"""
+        node = self.tokenizer.parseToNode(text)
+        node = node.next
+        words = []
+        while node.posid != 0:
+            surface = node.surface
+            base = surface
+            parts = node.feature.split(",")
+            pos = ",".join(parts[0:4])
+            if len(parts) > 6:
+                base = parts[6]
+            words.append(ShortUnitWord(surface, base, pos))
+            node = node.next
+        return words
+
     def get_mecab(
         self, dicdir: Optional[str] = None, userdic: Optional[str] = None
     ) -> MeCab.Tagger:
+        """Create MeCab instance"""
         opt = ""
         if userdic:
             opt += f"-u {userdic}"
@@ -93,6 +94,7 @@ class Tokenizer(DummyTokenizer):
             copytree(self.assets, path / self.ASSETS)
 
     def from_disk(self, path: Path, **kwargs):
+        """TODO: is userdic portable?"""
         userdic = (path / self.USERDIC).absolute()
         if userdic.exists():
             self.userdic = str(userdic)
