@@ -48,15 +48,44 @@ TESTCASE = [
             ("１４日", "Date"),
             ("ニューヨーク", "City"),
         ],
-    )
+    ),
+    (
+        "夏休み真っただ中の8月26日の夕方。大勢の観光客でにぎわうハワイ・ホノルルにあるアラモアナセンターにいたのは藤原竜也（37）だ。",
+        [
+            ("夏休み", "Date"),
+            ("８月２６日", "Date"),
+            ("夕方", "Time"),
+            ("ハワイ", "Province"),
+            ("ホノルル", "City"),
+            ("アラモアナセンター", "GOE_Other"),
+            ("藤原竜也", "Person"),
+            ("３７", "Age"),
+        ],
+    ),
 ]
+
+
+@pytest.mark.parametrize("text,ents", TESTCASE)
+def test_call(nlp: Language, text, ents):
+    doc: Doc = nlp(text)
+    for pred, ans in zip(doc.ents, ents):
+        assert pred.text == ans[0]
+        assert pred.label_ == ans[1]
+
+
+def test_pipe(nlp: Language):
+    docs = nlp.pipe([text for text, _ in TESTCASE])
+    entsl = [ents for _, ents in TESTCASE]
+    for doc, ents in zip(docs, entsl):
+        for pred, ans in zip(doc.ents, ents):
+            assert pred.text == ans[0]
+            assert pred.label_ == ans[1]
 
 
 @pytest.fixture
 def saved_nlp(nlp):
     nlp.to_disk("./foo")
     nlp = spacy.load("./foo")
-    shutil.rmtree("./foo")
     return nlp
 
 
