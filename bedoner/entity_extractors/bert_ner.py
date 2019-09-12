@@ -60,14 +60,13 @@ class BertEntityExtractor(Pipe):
         self.model: tf.estimator.Estimator = model
         self.vocab = vocab
 
-    def __call__(self, doc: Doc) -> Doc:
-        features = self.create_features([doc])
-        preds = self.predictor(features)["output"]
-        return self.set_annotations([doc], preds)[0]
+    def predict(self, docs: Sequence[Doc]) -> List[Doc]:
+        features = self.create_features(docs)
+        return self.predictor(features)["output"]
 
     def set_annotations(
-        self, docs: List[Doc], preds: Sequence[Sequence[int]]
-    ) -> List[Doc]:
+        self, docs: Sequence[Doc], preds: Sequence[Sequence[int]]
+    ) -> Sequence[Doc]:
         assert len(docs) == len(preds)
         labels_list = [[self.id2label[r] for r in line if r != 0] for line in preds]
 
@@ -88,7 +87,7 @@ class BertEntityExtractor(Pipe):
             doc.ents = new_ents
         return docs
 
-    def create_features(self, docs: List[Doc]) -> Dict:
+    def create_features(self, docs: Sequence[Doc]) -> Dict:
         features = {}
         features["input_ids"] = np.array(
             [self.zero_pad(doc._.pytt_word_pieces) for doc in docs]
@@ -215,7 +214,6 @@ def model_fn_builder(
     max_seq_length: int,
 ) -> Callable:
     def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
-        tf.logging.info("*** Features ***")
         for name in sorted(features.keys()):
             tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
@@ -294,7 +292,7 @@ def create_model(
 
     with tf.variable_scope("loss"):
         if is_training:
-            # I.e., 0.1 dropout
+            # 0.1 dropout
             output_layer = tf.nn.dropout(output_layer, keep_prob=0.9)
         output_layer = tf.reshape(output_layer, [-1, hidden_size])
 
