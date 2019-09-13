@@ -1,3 +1,6 @@
+import spacy
+from bedoner.lang import juman
+import tempfile
 import pytest
 from bedoner.lang.mecab import Japanese
 
@@ -76,3 +79,12 @@ def test_ja_tokenizer(mecab_tokenizer, text, expected_tokens):
 def test_ja_tokenizer_tags(mecab_tokenizer, text, expected_tags):
     tags = [token.tag_ for token in mecab_tokenizer(text)]
     assert tags == expected_tags
+
+
+# def test_to_disk():
+#     dicdir = "/usr/local/lib/mecab/dic/ipadic"
+#     nlp = Japanese(meta={"tokenizer": {"dicdir": dicdir}})
+#     with tempfile.TemporaryDirectory() as tmpd:
+#         nlp.to_disk(tmpd)
+#         nlp2 = spacy.load(tmpd)
+#     assert nlp2.tokenizer.dicdir == dicdir

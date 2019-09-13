@@ -6,7 +6,6 @@ from bedoner.utils import SerializationMixin
 
 import MeCab
 from bedoner.lang.stop_words import STOP_WORDS
-from .tag_map import TAG_MAP
 from spacy.attrs import LANG
 from distutils.dir_util import copy_tree
 from spacy.language import Language
@@ -51,6 +50,7 @@ class Tokenizer(DummyTokenizer):
         mecab_tags = []
         for token, dtoken in zip(doc, dtokens):
             mecab_tags.append(dtoken.pos)
+            token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma
         doc.user_data["mecab_tags"] = mecab_tags
         return doc
@@ -110,7 +110,6 @@ class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
     lex_attr_getters[LANG] = lambda _text: "mecab"
     stop_words = STOP_WORDS
-    tag_map = TAG_MAP
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
     @classmethod
