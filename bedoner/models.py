@@ -4,12 +4,14 @@ from pathlib import Path
 
 import bedoner.lang.juman as juman
 import bedoner.lang.mecab as mecab
+import bedoner.lang.knp as knp
 import mojimoji
 from bedoner.lang.pytt_mixin import PyttJuman
 from bedoner.pipelines.date_ner import DateRuler
 from bedoner.pipelines.person_ner import create_person_ruler
 from bedoner.pipelines.pytt_model import PyttBertModel
 from bedoner.pipelines.pytt_ner import PyttBertForNamedEntityRecognition
+from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.wordpiecer import PyttWordPiecer
 from spacy.vocab import Vocab
 
@@ -70,4 +72,10 @@ def person_ruler(name="person_ruler") -> mecab.Japanese:
         }
     )
     nlp.add_pipe(create_person_ruler(nlp))
+    return nlp
+
+
+def knp_ner(name="knp_ner") -> knp.Japanese:
+    nlp = knp.Japanese(meta={"name": name, "requirements": ["pyknp"]})
+    nlp.add_pipe(KnpEntityExtractor(nlp))
     return nlp

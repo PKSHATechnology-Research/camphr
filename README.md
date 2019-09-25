@@ -11,7 +11,6 @@ $ pipenv install --dev -e . # for developer
 
 - mecab, juman(pp), knpが必要です．
 
-
 ### 例
 
 - ルールベースNER
