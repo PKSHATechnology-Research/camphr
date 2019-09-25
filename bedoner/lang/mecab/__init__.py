@@ -1,27 +1,25 @@
-from typing import Optional, List
+"""The package mecab defines Japanese spacy.Language with Mecab tokenizer."""
+import shutil
 from collections import namedtuple
 from pathlib import Path
-import shutil
-from bedoner.utils import SerializationMixin
+from shutil import copytree
+from typing import List, Optional
 
-import MeCab
-from bedoner.lang.stop_words import STOP_WORDS
+import MeCab  # TODO: lazy import?
 from spacy.attrs import LANG
-from distutils.dir_util import copy_tree
+from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc
-from spacy.compat import copy_reg
-from spacy.util import DummyTokenizer
 
-from shutil import copytree
-
+from bedoner.lang.stop_words import STOP_WORDS
+from bedoner.utils import SerializationMixin
 
 ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos"])
 
 
-class Tokenizer(DummyTokenizer):
-    USERDIC = "user.dic"
-    ASSETS = "assets"
+class Tokenizer(SerializationMixin):
+    USERDIC = "user.dic"  # used when saving
+    ASSETS = "assets"  # used when saving
 
     def __init__(
         self,
@@ -31,12 +29,12 @@ class Tokenizer(DummyTokenizer):
         userdic: Optional[str] = None,
         assets: Optional[str] = None,
     ):
-        """Init
+        """
 
         Args:
-            dicdir: mecab dictionary path. If `None`, apply system configuration (~/.mecabrc)
-            userdic: mecab user dictionary path. If `None`, apply system configuration (~/.mecabrc)
-            assets: Other assets to be with tokenizer. e.g. userdic definition csv path
+            dicdir: Mecab dictionary path. If `None`, use system configuration (~/.mecabrc or /usr/local/etc/mecabrc).
+            userdic: Mecab user dictionary path. If `None`, use system configuration (~/.mecabrc or /usr/local/etc/mecabrc).
+            assets: Other assets path saved with tokenizer. e.g. userdic definition csv path
         """
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         self.tokenizer = self.get_mecab(dicdir=dicdir, userdic=userdic)
@@ -52,14 +50,15 @@ class Tokenizer(DummyTokenizer):
             mecab_tags.append(dtoken.pos)
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma
+        doc.is_tagged = True
         doc.user_data["mecab_tags"] = mecab_tags
         return doc
 
     def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
-        """Format mecab output for tokenizer"""
+        """Tokenize text with Juman and format the outputs for further processing"""
         node = self.tokenizer.parseToNode(text)
         node = node.next
-        words = []
+        words: List[ShortUnitWord] = []
         while node.posid != 0:
             surface = node.surface
             base = surface
@@ -74,7 +73,7 @@ class Tokenizer(DummyTokenizer):
     def get_mecab(
         self, dicdir: Optional[str] = None, userdic: Optional[str] = None
     ) -> MeCab.Tagger:
-        """Create MeCab instance"""
+        """Create `MeCab.Tagger` instance"""
         opt = ""
         if userdic:
             opt += f"-u {userdic}"
@@ -83,7 +82,7 @@ class Tokenizer(DummyTokenizer):
         self.userdic = userdic
         self.dicdir = dicdir
         tokenizer = MeCab.Tagger(opt)
-        tokenizer.parseToNode("")
+        tokenizer.parseToNode("")  # see https://github.com/explosion/spaCy/issues/2901
         return tokenizer
 
     def to_disk(self, path: Path, **kwargs):
@@ -106,6 +105,7 @@ class Tokenizer(DummyTokenizer):
         return self
 
 
+# for pickling. see https://spacy.io/usage/adding-languages
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
     lex_attr_getters[LANG] = lambda _text: "mecab"
@@ -127,6 +127,7 @@ class Japanese(Language):
         return self.tokenizer(text)
 
 
+# avoid pickling problem (see https://github.com/explosion/spaCy/issues/3191)
 def pickle_japanese(instance):
     return Japanese, tuple()
 
@@ -134,4 +135,5 @@ def pickle_japanese(instance):
 copy_reg.pickle(Japanese, pickle_japanese)
 
 
+# for lazy loading. see https://spacy.io/usage/adding-languages
 __all__ = ["Japanese"]

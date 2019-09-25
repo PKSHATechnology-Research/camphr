@@ -1,9 +1,4 @@
-import spacy
-from bedoner.lang import juman
-import tempfile
 import pytest
-from bedoner.lang.mecab import Japanese
-
 
 TOKENIZER_TESTS = [
     ("日本語だよ", ["日本語", "だ", "よ"]),

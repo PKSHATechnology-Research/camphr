@@ -1,6 +1,4 @@
 import pytest
-from bedoner.lang.mecab import Japanese
-
 
 TOKENIZER_TESTS = [("日本語だよ", ["日本", "語", "だ", "よ"])]
 TAG_TESTS = [("日本語だよ", ["名詞/地名", "名詞/普通名詞", "判定詞/*", "助詞/終助詞"])]

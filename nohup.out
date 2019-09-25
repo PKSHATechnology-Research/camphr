@@ -1,0 +1,6 @@
+[I 19:27:47.875 LabApp] JupyterLab extension loaded from /Users/yohei_tamura/anaconda3/lib/python3.7/site-packages/jupyterlab
+[I 19:27:47.875 LabApp] JupyterLab application directory is /Users/yohei_tamura/anaconda3/share/jupyter/lab
+[I 19:27:47.877 LabApp] Serving notebooks from local directory: /Users/yohei_tamura
+[I 19:27:47.877 LabApp] The Jupyter Notebook is running at:
+[I 19:27:47.877 LabApp] http://localhost:8888/
+[I 19:27:47.877 LabApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).

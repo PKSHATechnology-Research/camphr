@@ -1,10 +1,8 @@
 import tempfile
-from pathlib import Path
+
+import pytest
 import spacy
 from bedoner.lang.juman import Japanese as Juman
-import pytest
-from bedoner.lang.mecab import Japanese
-
 
 TOKENIZER_TESTS = [("日本語だよ", ["日本", "語", "だ", "よ"])]
 TOKENIZER_TESTS_DIFFICULT = [
@@ -51,7 +49,9 @@ def test_jumanpp_tokenizer_difficult(jumanpp_tokenizer, text, expected_tokens, f
 
 
 def test_serialization():
-    foo = lambda x: 2 * x
+    def foo(x):
+        return 2 * x
+
     nlp = Juman(
         meta={"tokenizer": {"juman_kwargs": {"jumanpp": False}, "preprocessor": foo}}
     )
@@ -60,4 +60,3 @@ def test_serialization():
         nlp2 = spacy.load(tmpd)
     assert nlp.tokenizer.preprocessor(1) == nlp2.tokenizer.preprocessor(1)
     assert nlp2.tokenizer.tokenizer.command == "juman"
-

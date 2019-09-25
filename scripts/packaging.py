@@ -1,5 +1,6 @@
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
 from spacy.cli import package
 
 additional_requirements = [

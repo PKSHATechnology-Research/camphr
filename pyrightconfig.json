@@ -1,0 +1,6 @@
+{
+    "typingsPath": "./typings",
+    "include": [
+        "bedoner"
+    ]
+}

@@ -1,13 +1,8 @@
-from bedoner.models import bert_wordpiecer
 import pytest
-from bedoner.lang.mecab import Japanese as Mecab
 from bedoner.lang.juman import Japanese as Juman
 from bedoner.lang.knp import Japanese as KNP
-from pathlib import Path
-from pathlib import Path
-from spacy.strings import StringStore
-from spacy.vocab import Vocab
-from bedoner.wordpiecer import BertWordPiecer
+from bedoner.lang.mecab import Japanese as Mecab
+from bedoner.models import bert_wordpiecer
 
 
 @pytest.fixture(scope="session")

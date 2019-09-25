@@ -4,11 +4,12 @@ from __future__ import unicode_literals
 
 import io
 import json
-from os import path, walk
-from shutil import copy
-from setuptools import setup
 import subprocess
 import sys
+from os import path, walk
+from shutil import copy
+
+from setuptools import setup
 
 
 def load_meta(fp):

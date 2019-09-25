@@ -1,7 +1,8 @@
 bedore-ner-module/
 bedore-nlp-modules/
-data/
-pkgs/
+data/**/*
+pkgs/**/*
 .git/
 *.tar.gz
 foo/
+pkgs

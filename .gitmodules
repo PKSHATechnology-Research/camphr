@@ -1,0 +1,6 @@
+[submodule "bedore-nlp-resources"]
+	path = bedore-nlp-resources
+	url = git@github.com/PKSHATechnology/bedore-nlp-resources.git
+[submodule "spaCy"]
+	path = spaCy
+	url = git@github.com:explosion/spaCy.git

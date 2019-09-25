@@ -13,9 +13,13 @@ yq = "*"
 pyyaml = "*"
 rope = "*"
 papermill = "*"
+ipykernel = "*"
+hypothesis = "*"
+bedoner = {editable = true,path = "."}
+pre-commit = "*"
+mypy = "*"
 
 [packages]
-spacy = "*"
 mecab-python3 = "*"
 pyknp = "*"
 regex = "*"
@@ -26,8 +30,8 @@ sklearn = "*"
 sklearn-crfsuite = "*"
 mojimoji = "*"
 spacy-pytorch-transformers = "*"
-tensorflow = "==1.14"
-bedoner = {editable = true,path = "."}
+pytorch-transformers = "*"
+spacy = "*"
 
 [requires]
 python_version = "3.7"

@@ -134,3 +134,4 @@ pkgs
 *.tar.gz
 
 foo/
+data/
