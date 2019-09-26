@@ -16,7 +16,7 @@ from bedoner.pipelines.pytt_model import (
     BERT_PRETRAINED_CONFIG_ARCHIVE_MAP,
     PyttBertModel,
 )
-from bedoner.pipelines.utils import correct_biluo_tags
+from bedoner.pipelines.utils import correct_biluo_tags, UNK
 from bedoner.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
@@ -180,9 +180,16 @@ class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
     pytt_model_cls = BertClassifier
     pytt_config_cls = pytt.BertConfig
 
+    @property
+    def ignore_label_index(self) -> int:
+        if UNK in self.labels:
+            return self.labels.index(UNK)
+        return -1
+
     def update(self, docs: Iterable[Doc], golds: Iterable[GoldParse]):
         self.require_model()
         label2id = self.label2id
+        ignore_index = self.ignore_label_index
         # TODO: Batch
         x: TensorWrapper = next(iter(docs))._.pytt_last_hidden_state
         logits = self.model(x.batch_tensor)
@@ -190,7 +197,9 @@ class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
             # use first wordpiece for each tokens
             idx = list(map(lambda x: x[0], doc._.pytt_alignment))
             loss = F.cross_entropy(
-                logit[idx], torch.tensor([label2id[ner] for ner in gold.ner])
+                logit[idx],
+                torch.tensor([label2id[ner] for ner in gold.ner]),
+                ignore_index=ignore_index,
             )
 
             doc._.cls_logit = logit
