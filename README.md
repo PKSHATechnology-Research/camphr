@@ -11,10 +11,9 @@ $ pipenv install --dev # for developer
 
 - mecab, juman(pp), knpが必要です．
 
-### 例
+# Examples
 
-- ルールベースNER
-- Date
+##  Date
 
 ```python
 >>> from bedoner.models import date_ruler
@@ -24,7 +23,7 @@ $ pipenv install --dev # for developer
 (2019年11月8日,)
 ```
 
-- Person
+## Person
 
 ```python
 >>> from bedoner.models import person_ruler
@@ -34,7 +33,7 @@ $ pipenv install --dev # for developer
 (高松隆,)
 ```
 
-- knp ner
+## KNP
 
 ```python
 >>> from bedoner.models import knp_ner
@@ -44,7 +43,7 @@ $ pipenv install --dev # for developer
 (2019年11月8日, 高松隆, 東京タワー)
 ```
 
-- bert ner
+## BERT
 
 [リリースページ](https://spacy.io/api/annotation#json-input)からトレーニング済みモデルをダウンロードして，以下のようにpipでインストールしてください.  
 パラメータ等全て入っています．
@@ -60,7 +59,7 @@ $ pip install juman-bert-irex.VERSION.tar.gz
 (フランス, シラク, 元大統領, ２６日, フランス)
 ```
 
-- bert ner (training)
+### BERT (training)
 
 ```python
 from bedoner.models import bert_ner
