@@ -4,7 +4,7 @@
 
 ```bash
 $ pipenv install .
-$ pipenv install --dev -e . # for developer
+$ pipenv install --dev # for developer
 ```
 
 ## requrements
