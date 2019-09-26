@@ -12,7 +12,7 @@ from bedoner.models import *
 # In[2]:
 
 
-from bedoner.ner_labels.utils import make_biluo_labels
+from bedoner.ner_labels.utils import make_biluo_labels, make_bio_labels
 from bedoner.ner_labels.labels_irex import ALL_LABELS
 from spacy.util import minibatch
 from tqdm import tqdm
@@ -28,6 +28,8 @@ import random
 
 # In[13]:
 
+outd = sys.argv[1]
+os.mkdir(outd)
 
 data = []
 with (
@@ -40,7 +42,7 @@ with (
 # In[14]:
 
 
-ntrain, neval = 10000, 100
+ntrain, neval = 1000, 100
 random.shuffle(data)
 train_data = data[:ntrain]
 val_data = data[-neval:]
@@ -49,6 +51,7 @@ val_data = data[-neval:]
 # In[39]:
 
 
+# nlp = bert_ner(labels=make_bio_labels(ALL_LABELS))
 nlp = bert_ner(labels=make_biluo_labels(ALL_LABELS))
 
 
@@ -96,7 +99,7 @@ optim = nlp.resume_training(t_total=niter, enable_scheduler=False)
 for i in range(niter):
     random.shuffle(train_data)
     epoch_loss = 0
-    for i, batch in enumerate(minibatch(train_data, size=nbatch)):
+    for j, batch in enumerate(minibatch(train_data, size=nbatch)):
         texts, golds = zip(*batch)
         docs = [nlp.make_doc(text) for text in texts]
         try:
@@ -106,9 +109,9 @@ for i in range(niter):
             continue
         loss = sum(doc._.loss.detach().item() for doc in docs)
         epoch_loss += loss
-        print(f"{i*nbatch}/{ndata} loss: {loss}")
-        if i % 10 == 9:
+        print(f"{j*nbatch}/{ndata} loss: {loss}")
+        if j % 10 == 9:
             acc = val(nlp)
-            print(f"epoch {i} val: ", acc / neval)
+            print(f"batch {j} val: ", acc / neval)
     print(f"epoch {i} loss: ", epoch_loss)
-    nlp.to_disk(f"irex{i}")
+    nlp.to_disk(os.path.join(outd, str(i)))
