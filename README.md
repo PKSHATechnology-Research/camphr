@@ -18,7 +18,7 @@ $ pipenv install --dev # for developer
 
 ```python
 >>> from bedoner.models import date_ruler
->>> nlp=date_ruler()
+>>> nlp = date_ruler()
 >>> text = "2019年11月8日に高松隆と東京タワーに行った"
 >>> nlp(text).ents
 (2019年11月8日,)
@@ -28,7 +28,7 @@ $ pipenv install --dev # for developer
 
 ```python
 >>> from bedoner.models import person_ruler
->>> nlp=person_ruler()
+>>> nlp = person_ruler()
 >>> text = "2019年11月8日に高松隆と東京タワーに行った"
 >>> nlp(text).ents
 (高松隆,)
@@ -38,13 +38,29 @@ $ pipenv install --dev # for developer
 
 ```python
 >>> from bedoner.models import knp_ner
->>> nlp=knp_ner()
+>>> nlp = knp_ner()
 >>> text = "2019年11月8日に高松隆と東京タワーに行った"
 >>> nlp(text).ents
 (2019年11月8日, 高松隆, 東京タワー)
 ```
 
 - bert ner
+
+[リリースページ](https://spacy.io/api/annotation#json-input)からトレーニング済みモデルをダウンロードして，以下のようにpipでインストールしてください.  
+パラメータ等全て入っています．
+
+```bash
+$ pip install juman-bert-irex.VERSION.tar.gz
+```
+
+```python
+>>> import spacy
+>>> nlp=spacy.load("juman_bert_irex")
+>>> nlp("フランスのシラク元大統領が26日、死去した。86歳だった。フランスメディアが伝えた。").ents
+(フランス, シラク, 元大統領, ２６日, フランス)
+```
+
+- bert ner (training)
 
 ```python
 from bedoner.models import bert_ner
