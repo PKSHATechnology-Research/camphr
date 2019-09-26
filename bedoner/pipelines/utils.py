@@ -75,6 +75,18 @@ def bio_to_biluo(tags: List[str]) -> List[str]:
     return tags[:-1]
 
 
+def biluo_to_bio(tags: List[str]) -> List[str]:
+    """convert biluo tags to bio tags. Input `tags` is expected to be syntactically correct."""
+    tags = copy.copy(tags)
+    for i, tag in enumerate(tags):
+        t, b = deconstruct_biluo_tag(tag)
+        if t == L:
+            tags[i] = construct_biluo_tag(I, b)
+        elif t == U:
+            tags[i] = construct_biluo_tag(B, b)
+    return tags
+
+
 def correct_biluo_tags(tags: List[str]) -> List[str]:
     """Check and correct biluo tags list so that it can be assigned to `spacy.gold.spans_from_biluo_tags`.
 
@@ -102,3 +114,27 @@ def correct_biluo_tags(tags: List[str]) -> List[str]:
             # invalid pattern
             tags[i + 1] = UNK.value
     return tags[1:-1]
+
+
+def correct_bio_tags(tags: List[str]) -> List[str]:
+    """Check and correct bio tags list.
+
+    All invalid tags will be replaced with `-`
+    """
+    tags = ["O"] + copy.copy(tags)
+    for i in range(len(tags) - 1):
+        tagl = tags[i]
+        tagr = tags[i + 1]
+
+        tl, bl = deconstruct_biluo_tag(tagl)
+        tr, br = deconstruct_biluo_tag(tagr)
+        if tl == UNK:
+            tags[i] == UNK.value
+        if tr == UNK:
+            tags[i + 1] == UNK.value
+
+        # right check
+        if tr == I and not (tl in {B, I} and bl == br):
+            # invalid pattern
+            tags[i + 1] = UNK.value
+    return tags[1:]

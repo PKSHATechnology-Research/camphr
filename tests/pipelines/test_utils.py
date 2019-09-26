@@ -6,9 +6,11 @@ from bedoner.pipelines.utils import (
     B,
     I,
     O,
+    biluo_to_bio,
     bio_to_biluo,
     construct_biluo_tag,
     correct_biluo_tags,
+    correct_bio_tags,
 )
 from spacy.gold import spans_from_biluo_tags
 from spacy.language import Language
@@ -77,3 +79,23 @@ def test_bio_to_biluo():
         tags = create_bio_tags_sample(length)
         biluo_tags = bio_to_biluo(tags)
         assert biluo_tags == correct_biluo_tags(biluo_tags), tags
+
+
+TESTCAESES_BILUO_BIO = [
+    (["B-LOC", "L-LOC", "O", "U-PERSON"], ["B-LOC", "I-LOC", "O", "B-PERSON"])
+]
+
+
+@pytest.mark.parametrize("biluo,bio", TESTCAESES_BILUO_BIO)
+def test_biluo_to_bio(biluo, bio):
+    converted = biluo_to_bio(biluo)
+    assert bio == converted
+
+
+TESTCAESES_BIO = [(["B-LOC", "I-LOC", "O", "I-PERSON"], ["B-LOC", "I-LOC", "O", "-"])]
+
+
+@pytest.mark.parametrize("tags,expected", TESTCAESES_BIO)
+def test_correct_bio(tags, expected):
+    corrected = correct_bio_tags(tags)
+    assert corrected == expected

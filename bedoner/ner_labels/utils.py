@@ -28,6 +28,21 @@ def make_biluo_labels(entity_types: Iterable[str]) -> List[str]:
     return labels
 
 
+def make_bio_labels(entity_types: Iterable[str]) -> List[str]:
+    """Make BIO-style ner label from entity type list.
+
+    Examples:
+        >>> make_biluo_labels(["PERSON"])
+        ["-", "O", "B-PERSON", "I-PERSON", ...]
+    """
+    labels = ["-", "O"]
+    prefix = "BI"
+    for l in entity_types:
+        for pref in prefix:
+            labels.append(pref + "-" + l)
+    return labels
+
+
 def yml_to_py(yml_path: Union[str, Path], py_path: Union[str, Path]):
     """Convert ymlfile that defines ner labels to python script."""
     yml_path = Path(yml_path)
