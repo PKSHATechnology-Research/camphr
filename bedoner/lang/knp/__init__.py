@@ -63,6 +63,7 @@ class Tokenizer(SerializationMixin):
     def __call__(self, text: str) -> Doc:
         if self.preprocessor:
             text = self.preprocessor(text)
+            text = text.replace(" ", "\u3000")
         dtokens = self.detailed_tokens(text)
         words = [x.surface for x in dtokens]
         spaces = [x.space for x in dtokens]
