@@ -13,7 +13,6 @@ from spacy.tokens import Doc
 
 from bedoner.lang.stop_words import STOP_WORDS
 from bedoner.utils import SerializationMixin
-import spacy.tokenizer
 
 ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "space"])
 
@@ -82,12 +81,12 @@ class Tokenizer(SerializationMixin):
         """Create `MeCab.Tagger` instance"""
         opt = ""
         if userdic:
-            opt += f"-u {userdic}"
+            opt += f"-u {userdic} "
         if dicdir:
-            opt += f"-d {dicdir}"
+            opt += f"-d {dicdir} "
         self.userdic = userdic
         self.dicdir = dicdir
-        tokenizer = MeCab.Tagger(opt)
+        tokenizer = MeCab.Tagger(opt.strip())
         tokenizer.parseToNode("")  # see https://github.com/explosion/spaCy/issues/2901
         return tokenizer
 
