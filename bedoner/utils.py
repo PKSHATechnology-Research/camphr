@@ -47,3 +47,4 @@ def zero_pad(a: Iterable[List[int]]) -> List[List[int]]:
     """Padding the input so that the lengths of the inside lists are all equal."""
     max_length = max(len(el) for el in a)
     return [el + [0] * (max_length - len(el)) for el in a]
+

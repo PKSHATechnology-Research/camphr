@@ -1,4 +1,5 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
+from itertools import tee, zip_longest
 from collections import namedtuple
 from typing import Any, Callable, Dict, List, Optional
 
@@ -12,7 +13,9 @@ from bedoner.consts import KEY_FSTRING
 from bedoner.lang.stop_words import STOP_WORDS
 from bedoner.utils import SerializationMixin
 
-ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "fstring"])
+ShortUnitWord = namedtuple(
+    "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
+)
 
 
 class Tokenizer(SerializationMixin):
@@ -57,7 +60,7 @@ class Tokenizer(SerializationMixin):
             text = self.preprocessor(text)
         dtokens = self.detailed_tokens(text)
         words = [x.surface for x in dtokens]
-        spaces = [False] * len(words)
+        spaces = [x.space for x in dtokens]
         doc = Doc(self.vocab, words=words, spaces=spaces)
         for token, dtoken in zip(doc, dtokens):
             token.lemma_ = dtoken.lemma
@@ -75,12 +78,23 @@ class Tokenizer(SerializationMixin):
             # Juman is sometimes broken due to its subprocess management.
             self.reset_tokenizer()
             ml: List[Morpheme] = self.tokenizer.analysis(text).mrph_list()
-        for m in ml:
+        morphs, next_morphs = tee(ml)
+        next(next_morphs)
+        for m, nextm in zip_longest(morphs, next_morphs):
+            if is_space_morph(m):
+                continue
             surface = m.midasi
             pos = m.hinsi + "/" + m.bunrui
             lemma = m.genkei or surface
-            words.append(ShortUnitWord(surface, lemma, pos, m.fstring))
+            if nextm and is_space_morph(nextm):
+                words.append(ShortUnitWord(surface, lemma, pos, m.fstring, True))
+            else:
+                words.append(ShortUnitWord(surface, lemma, pos, m.fstring, False))
         return words
+
+
+def is_space_morph(m: Morpheme) -> bool:
+    return m.bunrui == "空白"
 
 
 # for pickling. see https://spacy.io/usage/adding-languages

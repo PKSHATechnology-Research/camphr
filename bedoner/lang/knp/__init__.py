@@ -1,4 +1,5 @@
 """The package knp defines Japanese spacy.Language with knp tokenizer."""
+from itertools import tee, zip_longest
 import re
 from collections import namedtuple
 from typing import Any, Callable, Dict, List, Optional
@@ -14,7 +15,7 @@ from bedoner.lang.stop_words import STOP_WORDS
 from bedoner.utils import SerializationMixin
 
 ShortUnitWord = namedtuple(
-    "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "ent", "ent_iob"]
+    "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "ent", "ent_iob", "space"]
 )
 
 LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
@@ -64,7 +65,7 @@ class Tokenizer(SerializationMixin):
             text = self.preprocessor(text)
         dtokens = self.detailed_tokens(text)
         words = [x.surface for x in dtokens]
-        spaces = [False] * len(words)
+        spaces = [x.space for x in dtokens]
         doc = Doc(self.vocab, words=words, spaces=spaces)
         for token, dtoken in zip(doc, dtokens):
             token.lemma_ = dtoken.lemma
@@ -79,7 +80,11 @@ class Tokenizer(SerializationMixin):
         """Tokenize text with KNP and format the outputs for further processing"""
         words: List[Morpheme] = []
         ml: List[Morpheme] = self.tokenizer.parse(text).mrph_list()
-        for m in ml:
+        morphs, next_morphs = tee(ml)
+        next(next_morphs)
+        for m, nextm in zip_longest(morphs, next_morphs):
+            if is_space_morph(m):
+                continue
             surface = m.midasi
             pos = m.hinsi + "/" + m.bunrui
             lemma = m.genkei or surface
@@ -89,8 +94,19 @@ class Tokenizer(SerializationMixin):
             if ents:
                 ent, loc = ents[0]
                 iob = LOC2IOB[loc]
-            words.append(ShortUnitWord(surface, lemma, pos, m.fstring, ent, iob))
+            if nextm and is_space_morph(nextm):
+                words.append(
+                    ShortUnitWord(surface, lemma, pos, m.fstring, ent, iob, True)
+                )
+            else:
+                words.append(
+                    ShortUnitWord(surface, lemma, pos, m.fstring, ent, iob, False)
+                )
         return words
+
+
+def is_space_morph(m: Morpheme) -> bool:
+    return m.bunrui == "空白"
 
 
 # for pickling. see https://spacy.io/usage/adding-languages

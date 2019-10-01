@@ -10,6 +10,7 @@ TOKENIZER_TESTS_DIFFICULT = [
 ]
 
 TAG_TESTS = [("日本語だよ", ["名詞/地名", "名詞/普通名詞", "判定詞/*", "助詞/終助詞"])]
+TEST_SPACE = ["今日は いい天気だ"]
 
 
 @pytest.mark.parametrize("text,expected_tokens", TOKENIZER_TESTS)
@@ -60,3 +61,9 @@ def test_serialization():
         nlp2 = spacy.load(tmpd)
     assert nlp.tokenizer.preprocessor(1) == nlp2.tokenizer.preprocessor(1)
     assert nlp2.tokenizer.tokenizer.command == "juman"
+
+
+@pytest.mark.parametrize("text", TEST_SPACE)
+def test_spaces(juman_tokenizer, text):
+    doc = juman_tokenizer(text)
+    assert doc.text == text
