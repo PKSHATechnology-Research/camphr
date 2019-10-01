@@ -1,3 +1,4 @@
+from bedoner.lang import mecab
 import pytest
 
 TOKENIZER_TESTS = [
@@ -7,6 +8,9 @@ TOKENIZER_TESTS = [
     ("月に代わって、お仕置きよ!", ["月", "に", "代わっ", "て", "、", "お仕置き", "よ", "!"]),
     ("すもももももももものうち", ["すもも", "も", "もも", "も", "もも", "の", "うち"]),
 ]
+
+TEST_SPACE = ["今日は いい天気だ"]
+
 
 TAG_TESTS = [
     ("日本語だよ", ["名詞,一般,*,*", "助動詞,*,*,*", "助詞,終助詞,*,*"]),
@@ -70,16 +74,14 @@ def test_ja_tokenizer(mecab_tokenizer, text, expected_tokens):
     assert tokens == expected_tokens
 
 
+@pytest.mark.parametrize("text", TEST_SPACE)
+def test_spaces(mecab_tokenizer, text):
+    doc = mecab_tokenizer(text)
+    assert doc.text == text
+
+
 @pytest.mark.parametrize("text,expected_tags", TAG_TESTS)
 def test_ja_tokenizer_tags(mecab_tokenizer, text, expected_tags):
     tags = [token.tag_ for token in mecab_tokenizer(text)]
     assert tags == expected_tags
 
-
-# def test_to_disk():
-#     dicdir = "/usr/local/lib/mecab/dic/ipadic"
-#     nlp = Japanese(meta={"tokenizer": {"dicdir": dicdir}})
-#     with tempfile.TemporaryDirectory() as tmpd:
-#         nlp.to_disk(tmpd)
-#         nlp2 = spacy.load(tmpd)
-#     assert nlp2.tokenizer.dicdir == dicdir

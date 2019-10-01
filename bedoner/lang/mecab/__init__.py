@@ -13,8 +13,9 @@ from spacy.tokens import Doc
 
 from bedoner.lang.stop_words import STOP_WORDS
 from bedoner.utils import SerializationMixin
+import spacy.tokenizer
 
-ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos"])
+ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "space"])
 
 
 class Tokenizer(SerializationMixin):
@@ -43,7 +44,7 @@ class Tokenizer(SerializationMixin):
     def __call__(self, text: str) -> Doc:
         dtokens = self.detailed_tokens(text)
         words = [x.surface for x in dtokens]
-        spaces = [False] * len(words)
+        spaces = [x.space for x in dtokens]
         doc = Doc(self.vocab, words=words, spaces=spaces)
         mecab_tags = []
         for token, dtoken in zip(doc, dtokens):
@@ -55,7 +56,7 @@ class Tokenizer(SerializationMixin):
         return doc
 
     def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
-        """Tokenize text with Juman and format the outputs for further processing"""
+        """Tokenize text with Mecab and format the outputs for further processing"""
         node = self.tokenizer.parseToNode(text)
         node = node.next
         words: List[ShortUnitWord] = []
@@ -66,8 +67,13 @@ class Tokenizer(SerializationMixin):
             pos = ",".join(parts[0:4])
             if len(parts) > 6:
                 base = parts[6]
-            words.append(ShortUnitWord(surface, base, pos))
-            node = node.next
+            nextnode = node.next
+            if nextnode.length != nextnode.rlength:
+                # next node contains space, so attach it to this node.
+                words.append(ShortUnitWord(surface, base, pos, True))
+            else:
+                words.append(ShortUnitWord(surface, base, pos, False))
+            node = nextnode
         return words
 
     def get_mecab(
