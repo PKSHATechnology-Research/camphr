@@ -20,14 +20,20 @@ __dir__ = Path(__file__).parent
 pytt_bert_dir = str(__dir__ / "../data/bert-ja-juman")
 
 
+def han_to_zen_normalizer(text):
+    return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
+
+
 def juman_nlp() -> juman.Japanese:
     return juman.Japanese(
-        Vocab(), meta={"tokenizer": {"preprocessor": mojimoji.han_to_zen}}
+        Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}}
     )
 
 
 def bert_wordpiecer() -> mecab.Japanese:
-    nlp = PyttJuman(Vocab(), meta={"tokenizer": {"preprocessor": mojimoji.han_to_zen}})
+    nlp = PyttJuman(
+        Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}}
+    )
     w = PyttWordPiecer.from_pretrained(Vocab(), pytt_bert_dir)
     nlp.add_pipe(w)
     return nlp
