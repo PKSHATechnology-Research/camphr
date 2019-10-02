@@ -30,7 +30,7 @@ from spacy.tokens import Doc, Token
 from spacy.vocab import Vocab
 
 
-class BertClassifier(nn.Module):
+class BertTokenClassifier(nn.Module):
     """A thin layer to classifier"""
 
     def __init__(self, config: BertConfig):
@@ -63,7 +63,7 @@ class PyttBertForTokenClassification(TorchPipe):
     """
 
     name = "pytt_bert_tokenclassifier"
-    pytt_model_cls = BertClassifier
+    pytt_model_cls = BertTokenClassifier
     pytt_config_cls = pytt.BertConfig
 
     def __init__(self, vocab, model=True, **cfg):
@@ -95,7 +95,7 @@ class PyttBertForTokenClassification(TorchPipe):
         return cls(vocab, model=model, **cfg)
 
     @classmethod
-    def Model(cls, **cfg) -> BertClassifier:
+    def Model(cls, **cfg) -> BertTokenClassifier:
         assert cfg.get("labels")
         cfg.setdefault("pytt_config", {})
         cfg["pytt_config"]["num_labels"] = len(cfg.get("labels", []))
@@ -106,7 +106,7 @@ class PyttBertForTokenClassification(TorchPipe):
             config = cls.pytt_config_cls.from_pretrained(
                 cfg["pytt_name"], **cfg["pytt_config"]
             )
-            model = BertClassifier(config)
+            model = BertTokenClassifier(config)
         else:
             if "vocab_size" in cfg["pytt_config"]:
                 vocab_size = cfg["pytt_config"]["vocab_size"]
@@ -148,7 +148,7 @@ class PyttBertForTokenClassification(TorchPipe):
 
     def to_disk(self, path: Path, exclude=tuple(), **kwargs):
         path.mkdir(exist_ok=True)
-        model: BertClassifier = self.model
+        model: BertTokenClassifier = self.model
         model.config.save_pretrained(path)
         torch.save(model.state_dict(), str(path / "model.pth"))
 
@@ -161,7 +161,7 @@ class PyttBertForTokenClassification(TorchPipe):
 
     def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> PyttBertModel:
         config = self.pytt_config_cls.from_pretrained(path)
-        model = BertClassifier(config)
+        model = BertTokenClassifier(config)
         model.load_state_dict(torch.load(str(path / "model.pth")))
         model.eval()
         self.model = model
@@ -177,7 +177,7 @@ class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
     """Named entity recognition component with pytorch-transformers."""
 
     name = "pytt_bert_ner"
-    pytt_model_cls = BertClassifier
+    pytt_model_cls = BertTokenClassifier
     pytt_config_cls = pytt.BertConfig
 
     @property
