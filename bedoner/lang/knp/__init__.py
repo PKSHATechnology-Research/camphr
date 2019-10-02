@@ -43,7 +43,7 @@ class Tokenizer(SerializationMixin):
 
     def __init__(
         self,
-        cls,
+        cls: Language,
         nlp: Optional[Language] = None,
         knp_kwargs: Optional[Dict[str, str]] = None,
         preprocessor: Callable[[str], str] = None,
