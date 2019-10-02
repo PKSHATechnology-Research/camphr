@@ -9,15 +9,11 @@ isort = "*"
 pylint = "*"
 pytest = "*"
 flake8 = "*"
-yq = "*"
 pyyaml = "*"
 rope = "*"
-papermill = "*"
-ipykernel = "*"
 hypothesis = "*"
 bedoner = {editable = true,path = "."}
 pre-commit = "*"
-mypy = "*"
 
 [packages]
 mecab-python3 = "*"
@@ -28,8 +24,6 @@ fire = "*"
 pandas = "*"
 mojimoji = "*"
 spacy-pytorch-transformers = "*"
-pytorch-transformers = "*"
-spacy = "*"
 
 [requires]
 python_version = "3.7"
