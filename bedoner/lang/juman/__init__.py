@@ -84,7 +84,7 @@ class Tokenizer(SerializationMixin):
             if is_space_morph(m):
                 continue
             surface = m.midasi
-            pos = m.hinsi + "/" + m.bunrui
+            pos = m.hinsi + "," + m.bunrui
             lemma = m.genkei or surface
             if nextm and is_space_morph(nextm):
                 words.append(ShortUnitWord(surface, lemma, pos, m.fstring, True))
