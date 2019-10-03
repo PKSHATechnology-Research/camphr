@@ -1,8 +1,10 @@
 """The utils module defines util functions used accross sub packages."""
 from collections import OrderedDict
 from pathlib import Path
+import bisect
 from typing import Iterable, List
 import re
+from spacy.tokens import Doc, Token
 
 import srsly
 
@@ -18,6 +20,8 @@ class SerializationMixin:
         >>> comp.to_disk(save_dir) # saved the component into directory
         >>> loaded_comp = spacy.from_disk(save_dir) # load from directory
     """
+
+    serialization_fields = []
 
     def from_bytes(self, bytes_data, exclude=tuple(), **kwargs):
         pkls = srsly.pickle_loads(bytes_data)
@@ -53,3 +57,16 @@ def zero_pad(a: Iterable[List[int]]) -> List[List[int]]:
 RE_URL = re.compile(
     r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
 )
+
+
+def token_from_char_pos(doc: Doc, i: int) -> Token:
+    token_idxs = [t.idx for t in doc]
+    return doc[bisect.bisect(token_idxs, i) - 1]
+
+
+def destruct_token(doc: Doc, *char_pos: int) -> Doc:
+    for i in char_pos:
+        with doc.retokenize() as retokenizer:
+            token = token_from_char_pos(doc, i)
+            heads = [token] * len(token)
+            retokenizer.split(doc[token.i], list(token.text), heads=heads)
