@@ -1,5 +1,5 @@
 import pytest
-from bedoner.pipelines.regex_ner import postcode_ruler
+from bedoner.pipelines.regex_ner import postcode_ruler, carcode_ruler
 
 TESTCASES_POSTCODE = [
     ("〒100-0001", ["〒100-0001"]),
@@ -27,3 +27,30 @@ def test_postcode_merge(mecab_tokenizer):
     doc = postcode_ruler(doc)
     assert len(doc.ents) == 2
     assert len(doc) == 2
+
+
+TESTCASES_CARCODE = [
+    ("自動車番号: 品川500 さ 2345", ["品川500 さ 2345"]),
+    ("自動車番号: 品川500 さ 2345, 横浜500 し 3456", ["品川500 さ 2345", "横浜500 し 3456"]),
+]
+
+TESTCASES_CARCODE_TODO = [("以下の契約の明細003と019について質問させていただきます。", [])]
+
+
+@pytest.mark.parametrize("text,expecteds", TESTCASES_CARCODE)
+def test_carcode_ruler(mecab_tokenizer, text, expecteds):
+    doc = mecab_tokenizer(text)
+    doc = carcode_ruler(doc)
+    assert len(doc.ents) == len(expecteds)
+    for ent, expected in zip(doc.ents, expecteds):
+        assert ent.text == expected
+
+
+@pytest.mark.xfail(reason="TODO", strict=True)
+@pytest.mark.parametrize("text,expecteds", TESTCASES_CARCODE_TODO)
+def test_carcode_ruler_todo(mecab_tokenizer, text, expecteds):
+    doc = mecab_tokenizer(text)
+    doc = carcode_ruler(doc)
+    assert len(doc.ents) == len(expecteds)
+    for ent, expected in zip(doc.ents, expecteds):
+        assert ent.text == expected

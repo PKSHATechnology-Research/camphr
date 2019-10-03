@@ -41,3 +41,7 @@ class RegexRuler(SerializationMixin):
 RE_POSTCODE = r"〒?(?<![\d-ー])\d{3}[\-ー]\d{4}(?![\d\-ー])"
 LABEL_POSTCODE = "POSTCODE"
 postcode_ruler = RegexRuler(label=LABEL_POSTCODE, pattern=RE_POSTCODE)
+
+RE_CARCODE = r"\p{Han}+\s*\d+\s*\p{Hiragana}\s*\d{2,4}"
+LABEL_CARCODE = "CARCODE"
+carcode_ruler = RegexRuler(label=LABEL_CARCODE, pattern=RE_CARCODE)
