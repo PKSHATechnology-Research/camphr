@@ -1,4 +1,3 @@
-from bedoner.lang import mecab
 import pytest
 
 TOKENIZER_TESTS = [
@@ -7,6 +6,10 @@ TOKENIZER_TESTS = [
     ("吾輩は猫である。", ["吾輩", "は", "猫", "で", "ある", "。"]),
     ("月に代わって、お仕置きよ!", ["月", "に", "代わっ", "て", "、", "お仕置き", "よ", "!"]),
     ("すもももももももものうち", ["すもも", "も", "もも", "も", "もも", "の", "うち"]),
+    (
+        "https://www.google.com/ で調べてください",
+        ["https://www.google.com/", "で", "調べ", "て", "ください"],
+    ),
 ]
 
 TEST_SPACE = ["今日は いい天気だ"]
@@ -84,4 +87,3 @@ def test_spaces(mecab_tokenizer, text):
 def test_ja_tokenizer_tags(mecab_tokenizer, text, expected_tags):
     tags = [token.tag_ for token in mecab_tokenizer(text)]
     assert tags == expected_tags
-

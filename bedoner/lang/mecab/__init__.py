@@ -12,7 +12,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 
 from bedoner.lang.stop_words import STOP_WORDS
-from bedoner.utils import SerializationMixin
+from bedoner.utils import SerializationMixin, RE_URL
 
 ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "space"])
 
@@ -50,6 +50,12 @@ class Tokenizer(SerializationMixin):
             mecab_tags.append(dtoken.pos)
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma
+
+        with doc.retokenize() as retokenizer:
+            for match in RE_URL.finditer(doc.text):
+                span = doc.char_span(*match.span())
+                if span:
+                    retokenizer.merge(span)
         doc.is_tagged = True
         doc.user_data["mecab_tags"] = mecab_tags
         return doc

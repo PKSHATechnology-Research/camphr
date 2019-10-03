@@ -2,6 +2,7 @@
 from collections import OrderedDict
 from pathlib import Path
 from typing import Iterable, List
+import re
 
 import srsly
 
@@ -48,3 +49,7 @@ def zero_pad(a: Iterable[List[int]]) -> List[List[int]]:
     max_length = max(len(el) for el in a)
     return [el + [0] * (max_length - len(el)) for el in a]
 
+
+RE_URL = re.compile(
+    r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
+)
