@@ -21,7 +21,6 @@ class MatcherNer(SerializationMixin):
         label: Optional[Union[int, str]] = None,
         matchid_to_label: Optional[Dict[int, Union[int, str]]] = None,
     ):
-        assert label or matchid_to_label
         self.matcher = matcher
         self.label = label
         self.matchid_to_label = matchid_to_label
@@ -38,4 +37,8 @@ class MatcherNer(SerializationMixin):
     def get_label(self, match_id: int) -> Union[int, str]:
         if self.label:
             return self.label
-        return self.matchid_to_label[match_id]
+        if self.matchid_to_label:
+            label = self.matchid_to_label.get(match_id)
+            if label:
+                return self.matchid_to_label[match_id]
+        return match_id
