@@ -12,8 +12,8 @@ class MatcherPipe(Protocol):
         ...
 
 
-class MatcherNer(SerializationMixin):
-    """Ner with spacy.matcher.Matcher and PhraseMatcher."""
+class MatcherRuler(SerializationMixin):
+    """Ruler with spacy.matcher.Matcher and PhraseMatcher."""
 
     def __init__(
         self,
@@ -26,7 +26,7 @@ class MatcherNer(SerializationMixin):
         self.matchid_to_label = matchid_to_label
 
     def __call__(self, doc: Doc) -> Doc:
-        matches: Iterable[Match] = self.matcher(doc)
+        matches = self.matcher(doc)
         ents = []
         for match_id, start, end in matches:
             span = Span(doc, start, end, label=self.get_label(match_id))

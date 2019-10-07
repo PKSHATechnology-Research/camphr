@@ -1,5 +1,5 @@
 import pytest
-from bedoner.pipelines.regex_ner import postcode_ruler, carcode_ruler
+from bedoner.pipelines.regex_ruler import postcode_ruler, carcode_ruler
 
 TESTCASES_POSTCODE = [
     ("〒100-0001", ["〒100-0001"]),
