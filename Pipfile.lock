@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "62effcb83a1abd46938e59cd5a834134e233bcd5dec63f14345a14956108a4ba"
+            "sha256": "2ce6b26a38ce8684e6a296546ae326cd0e2437f439961ac1010b521efc731c0e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1123,7 +1123,6 @@
                 "sha256:229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c",
                 "sha256:235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e"
             ],
-            "index": "pypi",
             "version": "==0.10.0"
         },
         "torch": {
@@ -1181,6 +1180,10 @@
             ],
             "markers": "python_version >= '3.4'",
             "version": "==1.25.6"
+        },
+        "versionup": {
+            "git": "https://github.com/tamuhey/pyversionup",
+            "ref": "8f0d5a069e84cddfb39bd99e2725a8c911b03173"
         },
         "virtualenv": {
             "hashes": [
