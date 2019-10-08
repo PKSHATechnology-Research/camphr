@@ -14,21 +14,23 @@ class DateRuler(SerializationMixin):
         r"(?:平成|昭和)(?:\d{1,2}|元)[/\\-年]\d{1,2}[/\\-月]\d{1,2}日?"
     )
     REGEXP_SEIREKI_YMD = re.compile(r"(\d{4})[/\\-年](\d{1,2})[/\\-月](\d{1,2})日?")
+    LABEL = L.DATE
 
-    serialization_fields = ["REGEXP_WAREKI_YMD", "REGEXP_SEIREKI_YMD"]
+    serialization_fields = ["REGEXP_WAREKI_YMD", "REGEXP_SEIREKI_YMD", "LABEL"]
 
-    def __init__(self, *args, **kwargs):
-        pass
+    @property
+    def labels(self):
+        return (self.LABEL,)
 
     def __call__(self, doc: Doc) -> Doc:
         """Extract date with regex"""
         for m in self.REGEXP_WAREKI_YMD.finditer(doc.text):
-            span = doc.char_span(*m.span(), label=L.DATE)
+            span = doc.char_span(*m.span(), label=self.LABEL)
             doc.ents = doc.ents + (span,)
 
         for m in self.REGEXP_SEIREKI_YMD.finditer(doc.text):
             if self._is_valid_seireki(m.groups()):
-                span = doc.char_span(*m.span(), label=L.DATE)
+                span = doc.char_span(*m.span(), label=self.LABEL)
                 doc.ents = doc.ents + (span,)
         return doc
 

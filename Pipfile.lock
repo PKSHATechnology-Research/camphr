@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2ce6b26a38ce8684e6a296546ae326cd0e2437f439961ac1010b521efc731c0e"
+            "sha256": "1dbb581f6159fe7156a080e9262187f4d1986ecdd366cc4fc18e517263746d79"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -36,17 +36,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:404acbecef8f4912f18312fcfaffe7eba7f10b3b7adf7853bdba59cdf2275ebb",
-                "sha256:c6e5a7e4548ce7586c354ff633f2a66ba3c471d15a8ae6a30f873122ab04e1cf"
+                "sha256:2efd0a9647ef8fd7bf9fbbfdeb77007050258aa39914569c689bdf9cc288cdc1",
+                "sha256:331b82e878f524be11c10d866a68b123b1c5e892d218a8250de10bf11cb14402"
             ],
-            "version": "==1.9.243"
+            "version": "==1.9.244"
         },
         "botocore": {
             "hashes": [
-                "sha256:397585a7881230274afb8d1877ef69a661b0a311745cd324f14a052fb2a2863a",
-                "sha256:4496f8da89cb496462a831897ad248e13e431d9fa7e41e06d426fd6658ab6e59"
+                "sha256:7b75482156ef93e7a463f80411dc76fc868cd9fb1dedf03250cec98f8459d765",
+                "sha256:e43e7d19f203d572f78c18a6a16cb87bbea10bc0543e0285f7b6a35d0c825bb6"
             ],
-            "version": "==1.12.243"
+            "version": "==1.12.244"
         },
         "certifi": {
             "hashes": [
@@ -557,17 +557,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:404acbecef8f4912f18312fcfaffe7eba7f10b3b7adf7853bdba59cdf2275ebb",
-                "sha256:c6e5a7e4548ce7586c354ff633f2a66ba3c471d15a8ae6a30f873122ab04e1cf"
+                "sha256:2efd0a9647ef8fd7bf9fbbfdeb77007050258aa39914569c689bdf9cc288cdc1",
+                "sha256:331b82e878f524be11c10d866a68b123b1c5e892d218a8250de10bf11cb14402"
             ],
-            "version": "==1.9.243"
+            "version": "==1.9.244"
         },
         "botocore": {
             "hashes": [
-                "sha256:397585a7881230274afb8d1877ef69a661b0a311745cd324f14a052fb2a2863a",
-                "sha256:4496f8da89cb496462a831897ad248e13e431d9fa7e41e06d426fd6658ab6e59"
+                "sha256:7b75482156ef93e7a463f80411dc76fc868cd9fb1dedf03250cec98f8459d765",
+                "sha256:e43e7d19f203d572f78c18a6a16cb87bbea10bc0543e0285f7b6a35d0c825bb6"
             ],
-            "version": "==1.12.243"
+            "version": "==1.12.244"
         },
         "certifi": {
             "hashes": [
@@ -663,11 +663,11 @@
         },
         "hypothesis": {
             "hashes": [
-                "sha256:966580e397c9f35810f5d8ee129f34709691f0ac348f70c10c6599401971ba39",
-                "sha256:a0fb2b63f3244e220917d5864c9963253ac22c2e273030b8fff7c0fefa79afb3"
+                "sha256:6186f742907e7c0173f5476aebe05c4b0d106d9f8d8c8ce68322f1d14f73ea03",
+                "sha256:8b399f52ee53bd154f0dbead4e7be60442ce7ff625b1d2d17eeb9cb7194c3989"
             ],
             "index": "pypi",
-            "version": "==4.38.3"
+            "version": "==4.39.0"
         },
         "identify": {
             "hashes": [
@@ -1180,10 +1180,6 @@
             ],
             "markers": "python_version >= '3.4'",
             "version": "==1.25.6"
-        },
-        "versionup": {
-            "git": "https://github.com/tamuhey/pyversionup",
-            "ref": "8f0d5a069e84cddfb39bd99e2725a8c911b03173"
         },
         "virtualenv": {
             "hashes": [
