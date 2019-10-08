@@ -8,6 +8,8 @@ person_patterns = [
     {"label": L.PERSON, "pattern": [{"TAG": "名詞,固有名詞,人名,名"}]},
 ]
 
+LABEL_PERSON = L.PERSON
+
 
 def create_person_ruler(nlp: Language) -> EntityRuler:
     """Create entity ruler that extracts person name with regex.
