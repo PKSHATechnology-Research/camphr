@@ -47,7 +47,6 @@ def test_matcher_ner_with_label(nlp: Language, matcher):
     assert len(doc.ents) == 2
     assert doc.ents[0].text == "Hello World"
     assert doc.ents[0].label_ == label
-    1
 
 
 def test_matcher_ner_with_matchid_to_label(nlp: Language, matcher):
