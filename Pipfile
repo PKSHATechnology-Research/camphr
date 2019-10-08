@@ -24,6 +24,7 @@ fire = "*"
 pandas = "*"
 mojimoji = "*"
 spacy-pytorch-transformers = "*"
+typing-extensions = "*"
 
 [requires]
 python_version = "3.7"
