@@ -9,7 +9,7 @@ from spacy.tokens.span import Span
 @pytest.fixture
 def nlp():
     _nlp = Japanese()
-    _nlp.add_pipe(DateRuler(_nlp))
+    _nlp.add_pipe(DateRuler())
     return _nlp
 
 

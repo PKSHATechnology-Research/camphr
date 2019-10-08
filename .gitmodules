@@ -1,0 +1,3 @@
+[submodule "bedore-ner"]
+	path = bedore-ner
+	url = git://github.com/PKSHATechnology/bedore-ner.git

@@ -1,5 +1,5 @@
 import pytest
-from bedoner.pipelines.matcher_ner import MatcherNer
+from bedoner.pipelines.matcher_ruler import MatcherRuler
 from spacy.lang.en import English
 from spacy.matcher import Matcher, PhraseMatcher
 from spacy.language import Language
@@ -29,7 +29,7 @@ def phrasematcher(nlp):
 
 
 def test_matcher_ner(nlp: Language, matcher):
-    ner = MatcherNer(matcher)
+    ner = MatcherRuler(matcher)
     nlp.add_pipe(ner)
     text = "I am writing Hello World in Python."
     doc = nlp(text)
@@ -40,7 +40,7 @@ def test_matcher_ner(nlp: Language, matcher):
 
 def test_matcher_ner_with_label(nlp: Language, matcher):
     label = "WoW"
-    ner = MatcherNer(matcher, label=label)
+    ner = MatcherRuler(matcher, label=label)
     nlp.add_pipe(ner)
     text = "I am writing Hello World in Python."
     doc = nlp(text)
@@ -53,7 +53,7 @@ def test_matcher_ner_with_label(nlp: Language, matcher):
 def test_matcher_ner_with_matchid_to_label(nlp: Language, matcher):
     label = "FOO"
     labelmap = {nlp.vocab.strings["HW"]: label}
-    ner = MatcherNer(matcher, matchid_to_label=labelmap)
+    ner = MatcherRuler(matcher, matchid_to_label=labelmap)
     nlp.add_pipe(ner)
     text = "I am writing Hello World in Python."
     doc = nlp(text)
@@ -65,7 +65,7 @@ def test_matcher_ner_with_matchid_to_label(nlp: Language, matcher):
 
 
 def test_phrase_matcher_ner(nlp: Language, phrasematcher):
-    ner = MatcherNer(phrasematcher)
+    ner = MatcherRuler(phrasematcher)
     nlp.add_pipe(ner)
     text = "I am writing hello world with Barack Obama."
     doc = nlp(text)
