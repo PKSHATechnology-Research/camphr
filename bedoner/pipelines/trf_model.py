@@ -128,7 +128,6 @@ class BertModel(TorchPipe):
         """Simply forward docs in training mode."""
         self.require_model()
         self.model.train()
-        self.model.cuda()
         x = self.docs_to_trfinput(docs)
         y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
         self.set_annotations(docs, y)

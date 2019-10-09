@@ -1,7 +1,9 @@
 """Copied from Spacy"""
+from ...utils import check_knp
 import pytest
 
 
+@pytest.mark.skipif(not check_knp(), reason="knp is not always necessary")
 @pytest.mark.parametrize(
     "word,lemma",
     [("新しく", "新しい"), ("赤く", "赤い"), ("すごく", "すごい"), ("いただきました", "いただく"), ("なった", "なる")],

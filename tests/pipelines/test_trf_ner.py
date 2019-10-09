@@ -66,11 +66,13 @@ def is_same_ner(doc: Doc, gold: GoldParse) -> bool:
 
 @pytest.mark.parametrize("text,gold", TESTCASE)
 def test_update(nlp: Language, text, gold):
+    assert nlp.device.type == "cpu"
     doc = nlp(text)
     gold = GoldParse(doc, **gold)
     assert not is_same_ner(doc, gold)
 
     optim = nlp.resume_training()
+    assert nlp.device.type == "cpu"
     doc = nlp.make_doc(text)
     assert doc._.loss is None
     nlp.update([doc], [gold], optim)
@@ -113,6 +115,13 @@ def test_pipe_irex(nlp_irex: Language):
 @pytest.fixture
 def cuda():
     return torch.device("cuda")
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
+@pytest.mark.parametrize("text,gold", TESTCASE)
+def test_call_cuda(nlp: Language, text, gold, cuda):
+    nlp.to(cuda)
+    nlp(text)
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")

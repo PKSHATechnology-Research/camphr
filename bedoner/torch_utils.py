@@ -18,13 +18,9 @@ class TorchPipe(Pipe):
 
     @property
     def device(self):
-        if not getattr(self, "_device"):
+        if not hasattr(self, "_device"):
             self._device = torch.device("cpu")
         return self._device
-
-    @device.setter
-    def device(self, device: torch.device):
-        self.to(device)
 
     def to(self, device: torch.device):
         self._device = device
