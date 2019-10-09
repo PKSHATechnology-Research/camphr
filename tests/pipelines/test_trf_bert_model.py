@@ -9,4 +9,4 @@ def nlp():
 
 def test_forward(nlp):
     doc = nlp("今日はいい天気です")
-    assert doc._.pytt_last_hidden_state is not None
+    assert doc._.trf_last_hidden_state is not None

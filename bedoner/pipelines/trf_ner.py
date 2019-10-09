@@ -1,6 +1,6 @@
-"""Module pytt_ner defines pytorch transformers NER model
+"""Module trf_ner defines pytorch transformers NER model
 
-Models defined in this modules must be used with `bedoner.pipelines.pytt_model`'s model in `spacy.Language` pipeline
+Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
 from __future__ import annotations
 
@@ -53,16 +53,16 @@ class BertTokenClassifier(nn.Module):
 class BertForTokenClassification(TorchPipe):
     """Base class for token classification task (e.g. NER).
 
-    Requires `PyttBertModel` before this model in the pipeline to use this model.
+    Requires `BertModel` before this model in the pipeline to use this model.
 
     Notes:
         `Token._.cls_logit` is set and stored the output of this model into. This is usefule to calculate the probability of the classification.
         `Doc._.cls_logit` is set and stored the output of this model into.
     """
 
-    name = "pytt_bert_tokenclassifier"
-    pytt_model_cls = BertTokenClassifier
-    pytt_config_cls = trf.BertConfig
+    name = "bert_tokenclassifier"
+    trf_model_cls = BertTokenClassifier
+    trf_config_cls = trf.BertConfig
 
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
@@ -87,29 +87,29 @@ class BertForTokenClassification(TorchPipe):
 
     @classmethod
     def from_pretrained(cls, vocab: Vocab, name: str, **cfg):
-        cfg["pytt_name"] = name
+        cfg["trf_name"] = name
         model = cls.Model(from_pretrained=True, **cfg)
-        cfg["pytt_config"] = dict(model.config.to_dict())
+        cfg["trf_config"] = dict(model.config.to_dict())
         return cls(vocab, model=model, **cfg)
 
     @classmethod
     def Model(cls, **cfg) -> BertTokenClassifier:
         assert cfg.get("labels")
-        cfg.setdefault("pytt_config", {})
-        cfg["pytt_config"]["num_labels"] = len(cfg.get("labels", []))
+        cfg.setdefault("trf_config", {})
+        cfg["trf_config"]["num_labels"] = len(cfg.get("labels", []))
         if cfg.get("from_pretrained"):
-            cls.pytt_config_cls.pretrained_config_archive_map.update(
+            cls.trf_config_cls.pretrained_config_archive_map.update(
                 BERT_PRETRAINED_CONFIG_ARCHIVE_MAP
             )
-            config = cls.pytt_config_cls.from_pretrained(
-                cfg["pytt_name"], **cfg["pytt_config"]
+            config = cls.trf_config_cls.from_pretrained(
+                cfg["trf_name"], **cfg["trf_config"]
             )
             model = BertTokenClassifier(config)
         else:
-            if "vocab_size" in cfg["pytt_config"]:
-                vocab_size = cfg["pytt_config"]["vocab_size"]
-                cfg["pytt_config"]["vocab_size_or_config_json_file"] = vocab_size
-            model = cls.BertClassifier(trf.BertConfig(**cfg["pytt_config"]))
+            if "vocab_size" in cfg["trf_config"]:
+                vocab_size = cfg["trf_config"]["vocab_size"]
+                cfg["trf_config"]["vocab_size_or_config_json_file"] = vocab_size
+            model = cls.BertClassifier(trf.BertConfig(**cfg["trf_config"]))
         assert model.config.num_labels == len(cfg["labels"])
         return model
 
@@ -127,7 +127,7 @@ class BertForTokenClassification(TorchPipe):
         with torch.no_grad():
             x: TensorWrapper = next(
                 iter(docs)
-            )._.pytt_last_hidden_state  # assumed that the batch tensor of all docs is stored into the extension.
+            )._.trf_last_hidden_state  # assumed that the batch tensor of all docs is stored into the extension.
             logits = self.model(x.batch_tensor)
         return logits
 
@@ -158,7 +158,7 @@ class BertForTokenClassification(TorchPipe):
             pickle.dump(self.vocab, f)
 
     def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> BertModel:
-        config = self.pytt_config_cls.from_pretrained(path)
+        config = self.trf_config_cls.from_pretrained(path)
         model = BertTokenClassifier(config)
         model.load_state_dict(torch.load(str(path / "model.pth")))
         model.eval()
@@ -174,9 +174,9 @@ class BertForTokenClassification(TorchPipe):
 class BertForNamedEntityRecognition(BertForTokenClassification):
     """Named entity recognition component with pytorch-transformers."""
 
-    name = "pytt_bert_ner"
-    pytt_model_cls = BertTokenClassifier
-    pytt_config_cls = trf.BertConfig
+    name = "bert_ner"
+    trf_model_cls = BertTokenClassifier
+    trf_config_cls = trf.BertConfig
 
     @property
     def ignore_label_index(self) -> int:
@@ -189,11 +189,11 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
         label2id = self.label2id
         ignore_index = self.ignore_label_index
         # TODO: Batch
-        x: TensorWrapper = next(iter(docs))._.pytt_last_hidden_state
+        x: TensorWrapper = next(iter(docs))._.trf_last_hidden_state
         logits = self.model(x.batch_tensor)
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
-            idx = list(map(lambda x: x[0], doc._.pytt_alignment))
+            idx = list(map(lambda x: x[0], doc._.trf_alignment))
             loss = F.cross_entropy(
                 logit[idx],
                 torch.tensor([label2id[ner] for ner in gold.ner]),
@@ -215,7 +215,7 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
             labels = [id2label[r] for r in cast(Iterable, ids)]
             doc._.cls_logit = logit
             biluo_tags = []
-            for token, a in zip(doc, doc._.pytt_alignment):
+            for token, a in zip(doc, doc._.trf_alignment):
                 token._.cls_logit = logit[a[0]]
                 label = labels[a[0]]
                 biluo_tags.append(label)
