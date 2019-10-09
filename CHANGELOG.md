@@ -5,6 +5,7 @@
 - postcoder ruler の追加 (#43)
 - matcher_ruler の追加 (#45)
 - person_ner, date_ner について，LABELをexport
+- `bedoner.__version__` の追加
 
 # v0.1
 
