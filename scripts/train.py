@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Dict
 import json
+from spacy.scorer import Scorer
 import fire
 import random
 import sys
@@ -76,7 +77,10 @@ def main(
             epoch_loss += loss
             print(f"{j*nbatch}/{ndata} loss: {loss}")
             if j % 10 == 9:
-                score = nlp.evaluate(val_data, verbose=True)
+                scorer: Scorer = nlp.evaluate(val_data)
+                print("p: ", scorer.ents_p)
+                print("r: ", scorer.ents_r)
+                print("f: ", scorer.ents_f)
         print(f"epoch {i} loss: ", epoch_loss)
         nlp.to_disk(os.path.join(outd, str(i)))
 
