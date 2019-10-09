@@ -1,5 +1,10 @@
 """Copied from Spacy"""
 import pytest
+from ...utils import check_mecab
+
+pytestmark = pytest.mark.skipif(
+    not check_mecab(), reason="mecab is not always necessary"
+)
 
 
 @pytest.mark.parametrize(

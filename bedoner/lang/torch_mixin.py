@@ -1,4 +1,5 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
+from bedoner import pipelines
 from bedoner.pipelines.trf_model import BertModel
 import itertools
 from typing import List, Optional, Type, cast
@@ -74,12 +75,25 @@ class TorchLanguageMixin:
         )
         return self.make_optimizers(params, **kwargs)
 
+    @property
+    def device(self) -> torch.device:
+        if not hasattr(self, "_device"):
+            self._device = torch.device("cpu")
+            self.to(self._device)
+        else:
+            for pipe in self.get_torch_pipes():
+                assert self._device.type == pipe.device.type
+        return self._device
+
+    def get_torch_pipes(self) -> List[TorchPipe]:
+        return [pipe for _, pipe in self.pipeline if isinstance(pipe, TorchPipe)]
+
     def to(self, device: torch.device) -> bool:
         flag = False
-        for _, pipe in self.pipeline:
-            if isinstance(pipe, TorchPipe):
-                flag = True
-                pipe.to(device)
+        for pipe in self.get_torch_pipes():
+            flag = True
+            pipe.to(device)
+        self._device = device
         return flag
 
     def make_optimizers(

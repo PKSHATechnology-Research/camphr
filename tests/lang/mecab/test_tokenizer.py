@@ -1,4 +1,9 @@
 import pytest
+from ...utils import check_mecab
+
+pytestmark = pytest.mark.skipif(
+    not check_mecab(), reason="mecab is not always necessary"
+)
 
 TOKENIZER_TESTS = [
     ("日本語だよ", ["日本語", "だ", "よ"]),
