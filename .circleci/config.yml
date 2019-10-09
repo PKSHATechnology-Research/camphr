@@ -1,0 +1,25 @@
+version: 2.1
+orbs:
+  aws-s3: circleci/aws-s3@1.0.11
+jobs:
+  build:
+    machine: 
+      docker_layer_caching: true
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: login
+          command: echo "$dockerhub_password" | docker login --username $dockerhub_username --password-stdin
+      - run: mkdir data
+      - aws-s3/copy:
+          from: "s3://bedoner/pytt_models/bert/bert-ja-juman.tar.gz"
+          to: data/
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws-region: AWS_REGION
+      - run: cd data && tar xzvf bert-ja-juman.tar.gz
+      - run: docker-compose build
+      - run:
+          name: run pytest
+          command: docker-compose run ner pipenv run pytest

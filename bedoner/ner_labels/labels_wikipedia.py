@@ -1,0 +1,6 @@
+LOC = "LOC"
+MISC = "MISC"
+ORG = "ORG"
+PER = "PER"
+
+ALL_LABELS = [LOC, MISC, ORG, PER]

@@ -1,0 +1,7 @@
+*
+!*.py
+!*.ipynb
+Untitled*ipynb
+log.ipynb
+!mecab_person_dictionary
+!mecab_person_dictionary/*

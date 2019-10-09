@@ -1,0 +1,32 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+black = "*"
+isort = "*"
+pylint = "*"
+pytest = "*"
+flake8 = "*"
+pyyaml = "*"
+rope = "*"
+hypothesis = "*"
+bedoner = {editable = true,path = "."}
+pre-commit = "*"
+
+[packages]
+mecab-python3 = "*"
+pyknp = "*"
+regex = "*"
+jaconv = "*"
+fire = "*"
+pandas = "*"
+mojimoji = "*"
+spacy-pytorch-transformers = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
