@@ -3,6 +3,8 @@
 - mecabについて，urlを1トークンとして扱うようにした (#42)
 - regex pipe の追加 (#43)
 - postcoder ruler の追加 (#43)
+- matcher_ruler の追加 (#45)
+- person_ner, date_ner について，LABELをexport
 
 # v0.1
 
