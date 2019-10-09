@@ -26,6 +26,7 @@ BERT_PRETRAINED_CONFIG_ARCHIVE_MAP = {
     "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman-config.json"
 }
 
+
 @dataclasses.dataclass
 class BertModelInputs:
     """Container for BERT model input. See `trf.BertModel`'s docstring for detail."""
@@ -47,7 +48,6 @@ class BertModelOutputs:
     # list of (one for the output of each layer + the output of the embeddings) of shape ``(batch_size, sequence_length, hidden_size)``
     attensions: Optional[torch.FloatTensor] = None
     # list of (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``
-
 
 
 class BertModel(TorchPipe):
@@ -136,10 +136,13 @@ class BertModel(TorchPipe):
     def docs_to_trfinput(self, docs: List[Doc]) -> BertModelInputs:
         """Generate input data for trf model from docs."""
         inputs = BertModelInputs(
-            input_ids=torch.tensor(zero_pad([doc._.trf_word_pieces for doc in docs]))
+            input_ids=torch.tensor(
+                zero_pad([doc._.trf_word_pieces for doc in docs]), device=self.device
+            )
         )
         inputs.attention_mask = torch.tensor(
-            zero_pad([[1 for _ in range(len(doc._.trf_word_pieces))] for doc in docs])
+            zero_pad([[1 for _ in range(len(doc._.trf_word_pieces))] for doc in docs]),
+            device=self.device,
         )
 
         segments = []
@@ -147,8 +150,8 @@ class BertModel(TorchPipe):
             seg = []
             for i, s in enumerate(doc._.trf_segments):
                 seg += [i] * len(s._.trf_word_pieces)
-            segments.append((seg))
-        inputs.token_type_ids = torch.tensor(zero_pad(segments))
+            segments.append(seg)
+        inputs.token_type_ids = torch.tensor(zero_pad(segments), device=self.device)
         return inputs
 
     def optim_parameters(self) -> OptimizerParameters:
@@ -174,7 +177,6 @@ class BertModel(TorchPipe):
             self.vocab = pickle.load(f)
         self.model = self.trf_model_cls.from_pretrained(path)
         return self
-
 
 
 Language.factories[BertModel.name] = BertModel
