@@ -8,6 +8,7 @@ from bedoner.torch_utils import OptimizerParameters
 from transformers import AdamW, WarmupLinearSchedule
 from spacy.tokens import Doc
 from spacy_transformers.language import TransformersLanguage
+from spacy_transformers.util import ATTRS
 
 
 class TransformersLanguageMixin(torch_mixin.TorchLanguageMixin):
@@ -30,7 +31,7 @@ class TransformersLanguageMixin(torch_mixin.TorchLanguageMixin):
 
         See https://github.com/explosion/spacy-pytorch-transformers#extension-attributes for details.
         """
-        if Doc.get_extension("pytt_alignment") is None:
+        if Doc.get_extension(ATTRS.alignment) is None:
             TransformersLanguage.install_extensions()
 
     def make_optimizers(

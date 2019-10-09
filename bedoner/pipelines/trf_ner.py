@@ -227,4 +227,3 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
 BertForTokenClassification.install_extensions()
 Language.factories[BertForTokenClassification.name] = BertForTokenClassification
 Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition
-
