@@ -36,7 +36,6 @@ class Tokenizer(SerializationMixin):
 
     @classmethod
     def install_extensions(cls):
-        """See https://github.com/explosion/spacy-pytorch-transformers#extension-attributes."""
         Token.set_extension(cls.key_fstring, default=None, force=True)
         Token.set_extension(cls.key_ent, default=None, force=True)
         Token.set_extension(cls.key_ent_iob, default=None, force=True)
@@ -87,7 +86,7 @@ class Tokenizer(SerializationMixin):
             if is_space_morph(m):
                 continue
             surface = m.midasi
-            pos = m.hinsi + "/" + m.bunrui
+            pos = m.hinsi + "," + m.bunrui
             lemma = m.genkei or surface
 
             ent, iob = "", ""

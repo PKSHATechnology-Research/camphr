@@ -9,17 +9,25 @@ import MeCab  # TODO: lazy import?
 from spacy.attrs import LANG
 from spacy.compat import copy_reg
 from spacy.language import Language
-from spacy.tokens import Doc
+from spacy.tokens import Doc, Token
 
 from bedoner.lang.stop_words import STOP_WORDS
 from bedoner.utils import SerializationMixin, RE_URL
+from bedoner.consts import KEY_FSTRING
 
-ShortUnitWord = namedtuple("ShortUnitWord", ["surface", "lemma", "pos", "space"])
+ShortUnitWord = namedtuple(
+    "ShortUnitWord", ["surface", "lemma", "pos", "space", "fstring"]
+)
 
 
 class Tokenizer(SerializationMixin):
     USERDIC = "user.dic"  # used when saving
     ASSETS = "assets"  # used when saving
+    key_fstring = KEY_FSTRING
+
+    @classmethod
+    def install_extensions(cls):
+        Token.set_extension(cls.key_fstring, default=None, force=True)
 
     def __init__(
         self,
@@ -45,19 +53,20 @@ class Tokenizer(SerializationMixin):
         words = [x.surface for x in dtokens]
         spaces = [x.space for x in dtokens]
         doc = Doc(self.vocab, words=words, spaces=spaces)
-        mecab_tags = []
         for token, dtoken in zip(doc, dtokens):
-            mecab_tags.append(dtoken.pos)
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma
+<<<<<<< HEAD
 
         with doc.retokenize() as retokenizer:
             for match in RE_URL.finditer(doc.text):
                 span = doc.char_span(*match.span())
                 if span:
                     retokenizer.merge(span)
+=======
+            token._.set(self.key_fstring, dtoken.fstring)
+>>>>>>> master
         doc.is_tagged = True
-        doc.user_data["mecab_tags"] = mecab_tags
         return doc
 
     def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
@@ -75,9 +84,9 @@ class Tokenizer(SerializationMixin):
             nextnode = node.next
             if nextnode.length != nextnode.rlength:
                 # next node contains space, so attach it to this node.
-                words.append(ShortUnitWord(surface, base, pos, True))
+                words.append(ShortUnitWord(surface, base, pos, True, node.feature))
             else:
-                words.append(ShortUnitWord(surface, base, pos, False))
+                words.append(ShortUnitWord(surface, base, pos, False, node.feature))
             node = nextnode
         return words
 
