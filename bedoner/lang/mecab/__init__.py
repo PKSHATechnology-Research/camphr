@@ -56,16 +56,13 @@ class Tokenizer(SerializationMixin):
         for token, dtoken in zip(doc, dtokens):
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma
-<<<<<<< HEAD
+            token._.set(self.key_fstring, dtoken.fstring)
 
         with doc.retokenize() as retokenizer:
             for match in RE_URL.finditer(doc.text):
                 span = doc.char_span(*match.span())
                 if span:
                     retokenizer.merge(span)
-=======
-            token._.set(self.key_fstring, dtoken.fstring)
->>>>>>> master
         doc.is_tagged = True
         return doc
 
