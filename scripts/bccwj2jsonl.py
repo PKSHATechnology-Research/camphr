@@ -1,3 +1,5 @@
+"""Script to convert bccwj NER dataset to jsonl"""
+import io
 import json
 import xml.etree.ElementTree as ET
 from collections import namedtuple
@@ -51,44 +53,34 @@ def check_conversion(item: Entry, xml_text, is_tag_removed=False) -> bool:
     return expected == text
 
 
-def preprocess(text: str) -> str:
-    return text.replace("\u3000", "-")
-
-
 def proc(
-    xml_file: Union[Path, str], output_jsonl: Union[Path, str] = "", tag_mapping=""
+    xml: IO[str], output: IO[str], tag_mapping=""
 ) -> Tuple[int, List[Any]]:
-    xml_file = Path(xml_file)
-    failed = []
-    if not output_jsonl:
-        output_jsonl = xml_file.parent / (xml_file.stem + ".jsonl")
-    else:
-        output_jsonl = Path(output_jsonl)
+    """Convert xml to jsonl."""
     count = 0
-    with xml_file.open() as f, output_jsonl.open("w") as fw:
-        flag = False
-        for i, line in enumerate(f):
-            line = line.strip()
-            if not line:
+    flag = False
+    failed=[]
+    for i, line in enumerate(xml):
+        line = line.strip()
+        if not line:
+            continue
+        if not flag:
+            if line == "<TEXT>":
+                flag = True
+            continue
+        if line == "</TEXT>":
+            break
+        for sent in line.split("。"):
+            sent += "。"
+            if tag_mapping == "irex":
+                ent = convert(sent, mapping=IREXMAP)
+            else:
+                ent = convert(sent)
+            if not check_conversion(ent, sent, is_tag_removed=tag_mapping != ""):
+                failed.append(i)
                 continue
-            if not flag:
-                if line == "<TEXT>":
-                    flag = True
-                continue
-            if line == "</TEXT>":
-                break
-            line = preprocess(line)
-            for sent in line.split("。"):
-                sent += "。"
-                if tag_mapping == "irex":
-                    ent = convert(sent, mapping=IREXMAP)
-                else:
-                    ent = convert(sent)
-                if not check_conversion(ent, sent, is_tag_removed=tag_mapping != ""):
-                    failed.append(f"{xml_file} {i} failed")
-                    continue
-                fw.write(json.dumps(ent, ensure_ascii=False) + "\n")
-                count += 1
+            output.write(json.dumps(ent, ensure_ascii=False) + "\n")
+            count += 1
     return count, failed
 
 
@@ -98,6 +90,7 @@ def main(
     tag_mapping="",
     failed_log="log.txt",
 ):
+    """Convert all xml files in xml_dir to jsonl, and save them in jsonl_dir."""
     xml_dir = Path(xml_dir)
     jsonl_dir = Path(jsonl_dir)
     assert xml_dir.exists()
@@ -107,8 +100,11 @@ def main(
         for xml in tqdm(xml_dir.glob("**/*.xml")):
             outputpath = jsonl_dir / (str(xml).lstrip(str(xml_dir)) + ".jsonl")
             outputpath.parent.mkdir(exist_ok=True, parents=True)
-            c, failed = proc(xml, outputpath, tag_mapping=tag_mapping)
-            fw.write("\n".join(failed))
+            failed = []
+
+            with open(xml) as f, outputpath.open("w") as fw:
+                c, failed = proc(f, fw, tag_mapping=tag_mapping)
+                fw.write("\n".join(failed))
             itemcount += c
             fcount += 1
     print(f"{fcount} files, {itemcount} items parsed.")
