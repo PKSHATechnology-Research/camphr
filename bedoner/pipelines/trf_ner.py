@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import pickle
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, cast
 
 import torch
 import torch.nn as nn
@@ -210,9 +210,9 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
         assert len(logits.shape) == 3  # (batch, length, nclass)
         id2label = self.labels
 
-        for doc, logit in zip(docs, logits):
+        for doc, logit in zip(docs, cast(Iterable, logits)):
             ids = torch.argmax(logit, dim=1)
-            labels = [id2label[r] for r in ids]
+            labels = [id2label[r] for r in cast(Iterable, ids)]
             doc._.cls_logit = logit
             biluo_tags = []
             for token, a in zip(doc, doc._.pytt_alignment):
