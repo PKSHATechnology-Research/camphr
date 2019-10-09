@@ -13,6 +13,7 @@ pyyaml = "*"
 rope = "*"
 hypothesis = "*"
 pre-commit = "*"
+bedoner = {editable = true,path = "."}
 
 [packages]
 mecab-python3 = "*"
