@@ -2,8 +2,6 @@
 
 Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
-from __future__ import annotations
-
 import pickle
 from pathlib import Path
 from typing import Iterable, cast

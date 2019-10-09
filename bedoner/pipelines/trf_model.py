@@ -1,6 +1,4 @@
 """Module trf_model defines pytorch-transformers components."""
-from __future__ import annotations
-
 import pickle
 from pathlib import Path
 from typing import List, Optional, cast, Iterable
@@ -27,6 +25,29 @@ BERT_PRETRAINED_MODEL_ARCHIVE_MAP = {
 BERT_PRETRAINED_CONFIG_ARCHIVE_MAP = {
     "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman-config.json"
 }
+
+@dataclasses.dataclass
+class BertModelInputs:
+    """Container for BERT model input. See `trf.BertModel`'s docstring for detail."""
+
+    input_ids: torch.Tensor
+    token_type_ids: Optional[torch.Tensor] = None
+    attention_mask: Optional[torch.Tensor] = None
+    position_ids: Optional[torch.Tensor] = None
+    head_mask: Optional[torch.Tensor] = None
+
+
+@dataclasses.dataclass
+class BertModelOutputs:
+    """A container for BertModel outputs. See `trf.BertModel`'s docstring for detail."""
+
+    laste_hidden_state: torch.FloatTensor  # shape ``(batch_size, sequence_length, hidden_size)``
+    pooler_output: torch.FloatTensor  # shape ``(batch_size, hidden_size)``
+    hidden_states: Optional[torch.FloatTensor] = None
+    # list of (one for the output of each layer + the output of the embeddings) of shape ``(batch_size, sequence_length, hidden_size)``
+    attensions: Optional[torch.FloatTensor] = None
+    # list of (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``
+
 
 
 class BertModel(TorchPipe):
@@ -107,6 +128,7 @@ class BertModel(TorchPipe):
         """Simply forward docs in training mode."""
         self.require_model()
         self.model.train()
+        self.model.cuda()
         x = self.docs_to_trfinput(docs)
         y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
         self.set_annotations(docs, y)
@@ -145,7 +167,7 @@ class BertModel(TorchPipe):
         with (path / "vocab.pkl").open("wb") as f:
             pickle.dump(self.vocab, f)
 
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> BertModel:
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> "BertModel":
         with (path / "cfg.pkl").open("rb") as f:
             self.cfg = pickle.load(f)
         with (path / "vocab.pkl").open("rb") as f:
@@ -153,28 +175,6 @@ class BertModel(TorchPipe):
         self.model = self.trf_model_cls.from_pretrained(path)
         return self
 
-
-@dataclasses.dataclass
-class BertModelInputs:
-    """Container for BERT model input. See `trf.BertModel`'s docstring for detail."""
-
-    input_ids: torch.Tensor
-    token_type_ids: Optional[torch.Tensor] = None
-    attention_mask: Optional[torch.Tensor] = None
-    position_ids: Optional[torch.Tensor] = None
-    head_mask: Optional[torch.Tensor] = None
-
-
-@dataclasses.dataclass
-class BertModelOutputs:
-    """A container for BertModel outputs. See `trf.BertModel`'s docstring for detail."""
-
-    laste_hidden_state: torch.FloatTensor  # shape ``(batch_size, sequence_length, hidden_size)``
-    pooler_output: torch.FloatTensor  # shape ``(batch_size, hidden_size)``
-    hidden_states: Optional[torch.FloatTensor] = None
-    # list of (one for the output of each layer + the output of the embeddings) of shape ``(batch_size, sequence_length, hidden_size)``
-    attensions: Optional[torch.FloatTensor] = None
-    # list of (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``
 
 
 Language.factories[BertModel.name] = BertModel

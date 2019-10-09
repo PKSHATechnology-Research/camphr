@@ -54,8 +54,9 @@ def main(
     config.niter = niter
     config.nbatch = nbatch
     config.label_type = label_type
+    print(config)
 
-    os.mkdir(outd)
+    # os.mkdir(outd)
     data = random.sample(load_data(data_jsonl), k=ndata)
     train_data, val_data = train_test_split(data, test_size=0.1)
 

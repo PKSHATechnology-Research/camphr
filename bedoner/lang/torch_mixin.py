@@ -1,6 +1,4 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
-from __future__ import annotations
-
 import itertools
 from typing import List, Optional, Type, cast
 
@@ -11,6 +9,23 @@ from dataclasses import dataclass
 from spacy.errors import Errors as SpacyErrors
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.tokens import Doc
+
+@dataclass
+class Optimizers:
+    """Container for optimizer and scheduler."""
+
+    optimizer: optim.Optimizer
+    lr_scheduler: Optional[optim.lr_scheduler._LRScheduler] = None
+
+    def zero_grad(self):
+        self.optimizer.zero_grad()
+
+    def step(self):
+        self.optimizer.step()
+        if self.lr_scheduler:
+            # TODO: remove cast once bug in pytorch stub file is fixed (https://github.com/pytorch/pytorch/pull/26531).
+            self.lr_scheduler.step(cast(int, None))
+
 
 
 class TorchLanguageMixin:
@@ -112,23 +127,6 @@ class TorchLanguageMixin:
         optimizers.step()
         if debug:
             print(loss)
-
-
-@dataclass
-class Optimizers:
-    """Container for optimizer and scheduler."""
-
-    optimizer: optim.Optimizer
-    lr_scheduler: Optional[optim.lr_scheduler._LRScheduler] = None
-
-    def zero_grad(self):
-        self.optimizer.zero_grad()
-
-    def step(self):
-        self.optimizer.step()
-        if self.lr_scheduler:
-            # TODO: remove cast once bug in pytorch stub file is fixed (https://github.com/pytorch/pytorch/pull/26531).
-            self.lr_scheduler.step(cast(int, None))
 
 
 TorchLanguageMixin.install_extensions()
