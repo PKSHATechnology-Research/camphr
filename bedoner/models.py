@@ -6,13 +6,13 @@ import bedoner.lang.juman as juman
 import bedoner.lang.mecab as mecab
 import bedoner.lang.knp as knp
 import mojimoji
-from bedoner.lang.pytt_mixin import PyttJuman
+from bedoner.lang.trf_mixin import TransformersJuman
 from bedoner.pipelines.date_ner import DateRuler
 from bedoner.pipelines.person_ner import create_person_ruler
-from bedoner.pipelines.pytt_model import PyttBertModel
-from bedoner.pipelines.pytt_ner import PyttBertForNamedEntityRecognition
+from bedoner.pipelines.trf_model import BertModel
+from bedoner.pipelines.trf_ner import BertForNamedEntityRecognition
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
-from bedoner.pipelines.wordpiecer import PyttWordPiecer
+from bedoner.pipelines.wordpiecer import WordPiecer
 from spacy.vocab import Vocab
 
 __dir__ = Path(__file__).parent
@@ -31,26 +31,24 @@ def juman_nlp() -> juman.Japanese:
 
 
 def bert_wordpiecer() -> mecab.Japanese:
-    nlp = PyttJuman(
+    nlp = TransformersJuman(
         Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}}
     )
-    w = PyttWordPiecer.from_pretrained(Vocab(), pytt_bert_dir)
+    w = WordPiecer.from_pretrained(Vocab(), pytt_bert_dir)
     nlp.add_pipe(w)
     return nlp
 
 
 def bert_model():
     nlp = bert_wordpiecer()
-    bert = PyttBertModel.from_pretrained(Vocab(), pytt_bert_dir)
+    bert = BertModel.from_pretrained(Vocab(), pytt_bert_dir)
     nlp.add_pipe(bert)
     return nlp
 
 
 def bert_ner(**cfg):
     nlp = bert_model()
-    ner = PyttBertForNamedEntityRecognition.from_pretrained(
-        Vocab(), pytt_bert_dir, **cfg
-    )
+    ner = BertForNamedEntityRecognition.from_pretrained(Vocab(), pytt_bert_dir, **cfg)
     nlp.add_pipe(ner)
     return nlp
 
