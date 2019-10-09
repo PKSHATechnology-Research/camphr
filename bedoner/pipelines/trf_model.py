@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pickle
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, cast, Iterable
 
 import dataclasses
 import transformers as trf
@@ -93,12 +93,13 @@ class BertModel(TorchPipe):
             doc._.pytt_pooler_output = TensorWrapper(outputs.pooler_output, i, length)
             if outputs.hidden_states:
                 doc._.pytt_all_hidden_states = [
-                    TensorWrapper(hid_layer, i) for hid_layer in outputs.hidden_states
+                    TensorWrapper(hid_layer, i)
+                    for hid_layer in cast(Iterable, outputs.hidden_states)
                 ]
             if outputs.attensions:
                 doc._.pytt_all_attentions = [
                     TensorWrapper(attention_layer, i)
-                    for attention_layer in outputs.attensions
+                    for attention_layer in cast(Iterable, outputs.attensions)
                 ]
 
     def update(self, docs: List[Doc], golds: List[GoldParse]):
@@ -143,7 +144,7 @@ class BertModel(TorchPipe):
         with (path / "vocab.pkl").open("wb") as f:
             pickle.dump(self.vocab, f)
 
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> PyttBertModel:
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> BertModel:
         with (path / "cfg.pkl").open("rb") as f:
             self.cfg = pickle.load(f)
         with (path / "vocab.pkl").open("rb") as f:
@@ -175,4 +176,4 @@ class BertModelOutputs:
     # list of (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``
 
 
-Language.factories[PyttBertModel.name] = PyttBertModel
+Language.factories[BertModel.name] = BertModel
