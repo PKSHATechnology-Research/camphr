@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import List, Optional
 
 import dataclasses
-import pytorch_transformers as pytt
+import transformers as trf
 import torch
 from bedoner.torch_utils import (
     OptimizerParameters,
@@ -28,15 +28,15 @@ BERT_PRETRAINED_CONFIG_ARCHIVE_MAP = {
 }
 
 
-class PyttBertModel(TorchPipe):
+class BertModel(TorchPipe):
     """Pytorch transformers BertModel component.
 
     Attach BERT outputs to doc.
     """
 
     name = "pytt_bert"
-    pytt_model_cls = pytt.BertModel
-    pytt_config_cls = pytt.BertConfig
+    pytt_model_cls = trf.BertModel
+    pytt_config_cls = trf.BertConfig
 
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
@@ -56,7 +56,7 @@ class PyttBertModel(TorchPipe):
         return cls(vocab, model=model, **cfg)
 
     @classmethod
-    def Model(cls, **cfg) -> pytt.BertModel:
+    def Model(cls, **cfg) -> trf.BertModel:
         """Create `pytt.BertModel`"""
         if cfg.get("from_pretrained"):
             cls.pytt_model_cls.pretrained_model_archive_map.update(
@@ -134,7 +134,7 @@ class PyttBertModel(TorchPipe):
 
     def to_disk(self, path: Path, exclude=tuple(), **kwargs):
         path.mkdir(exist_ok=True)
-        model: pytt.PreTrainedModel = self.model
+        model: trf.PreTrainedModel = self.model
         model.save_pretrained(str(path))
         with (path / "cfg.pkl").open("wb") as f:
             pickle.dump(self.cfg, f)

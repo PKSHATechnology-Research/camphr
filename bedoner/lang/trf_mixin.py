@@ -2,16 +2,16 @@
 from typing import Optional, Type
 
 import bedoner.lang.juman as juman
-import torch.optim as optim
+from torch.optim.optimizer import Optimizer
 from bedoner.lang import torch_mixin
 from bedoner.torch_utils import OptimizerParameters
-from pytorch_transformers import AdamW, WarmupLinearSchedule
+from transformers import AdamW, WarmupLinearSchedule
 from spacy.tokens import Doc
-from spacy_pytorch_transformers.language import PyTT_Language
+from spacy_transformers.language import TransformersLanguage
 
 
-class PyttLanguageMixin(torch_mixin.TorchLanguageMixin):
-    """Language mixin for pytorch transformers.
+class TransformersLanguageMixin(torch_mixin.TorchLanguageMixin):
+    """Language mixin for transformers.
 
     All pytt components can be used with this Mixin.
 
@@ -31,12 +31,12 @@ class PyttLanguageMixin(torch_mixin.TorchLanguageMixin):
         See https://github.com/explosion/spacy-pytorch-transformers#extension-attributes for details.
         """
         if Doc.get_extension("pytt_alignment") is None:
-            PyTT_Language.install_extensions()
+            TransformersLanguage.install_extensions()
 
     def make_optimizers(
         self,
         params: OptimizerParameters,
-        optim_cls: Optional[Type[optim.Optimizer]] = None,
+        optim_cls: Optional[Type[Optimizer]] = None,
         enable_scheduler: bool = True,
         **cfg
     ):
@@ -68,8 +68,8 @@ class PyttLanguageMixin(torch_mixin.TorchLanguageMixin):
         return torch_mixin.Optimizers(optimizer=optimizer, lr_scheduler=scheduler)
 
 
-class PyttJuman(PyttLanguageMixin, juman.Japanese):
+class TransformersJuman(TransformersLanguageMixin, juman.Japanese):
     """Juman language to manage pytorch-transformers components"""
 
 
-PyttLanguageMixin.install_extensions()
+TransformersLanguageMixin.install_extensions()

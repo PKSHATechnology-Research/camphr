@@ -8,26 +8,24 @@ import pickle
 from pathlib import Path
 from typing import Iterable
 
-import pytorch_transformers as pytt
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from bedoner.pipelines.pytt_model import (
-    BERT_PRETRAINED_CONFIG_ARCHIVE_MAP,
-    PyttBertModel,
-)
-from bedoner.pipelines.utils import correct_biluo_tags, UNK
+import transformers as trf
+from spacy.gold import GoldParse, spans_from_biluo_tags
+from spacy.language import Language
+from spacy.tokens import Doc, Token
+from spacy.vocab import Vocab
+from transformers.modeling_bert import BertConfig
+
+from bedoner.pipelines.trf_model import BERT_PRETRAINED_CONFIG_ARCHIVE_MAP, BertModel
+from bedoner.pipelines.utils import UNK, correct_biluo_tags
 from bedoner.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
     TorchPipe,
     get_parameters_with_decay,
 )
-from pytorch_transformers.modeling_bert import BertConfig
-from spacy.gold import GoldParse, spans_from_biluo_tags
-from spacy.language import Language
-from spacy.tokens import Doc, Token
-from spacy.vocab import Vocab
 
 
 class BertTokenClassifier(nn.Module):
@@ -52,7 +50,7 @@ class BertTokenClassifier(nn.Module):
         return logits
 
 
-class PyttBertForTokenClassification(TorchPipe):
+class BertForTokenClassification(TorchPipe):
     """Base class for token classification task (e.g. NER).
 
     Requires `PyttBertModel` before this model in the pipeline to use this model.
@@ -64,7 +62,7 @@ class PyttBertForTokenClassification(TorchPipe):
 
     name = "pytt_bert_tokenclassifier"
     pytt_model_cls = BertTokenClassifier
-    pytt_config_cls = pytt.BertConfig
+    pytt_config_cls = trf.BertConfig
 
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
@@ -111,7 +109,7 @@ class PyttBertForTokenClassification(TorchPipe):
             if "vocab_size" in cfg["pytt_config"]:
                 vocab_size = cfg["pytt_config"]["vocab_size"]
                 cfg["pytt_config"]["vocab_size_or_config_json_file"] = vocab_size
-            model = cls.BertClassifier(pytt.BertConfig(**cfg["pytt_config"]))
+            model = cls.BertClassifier(trf.BertConfig(**cfg["pytt_config"]))
         assert model.config.num_labels == len(cfg["labels"])
         return model
 
@@ -159,7 +157,7 @@ class PyttBertForTokenClassification(TorchPipe):
         with (path / "vocab.pkl").open("wb") as f:
             pickle.dump(self.vocab, f)
 
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> PyttBertModel:
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> BertModel:
         config = self.pytt_config_cls.from_pretrained(path)
         model = BertTokenClassifier(config)
         model.load_state_dict(torch.load(str(path / "model.pth")))
@@ -173,12 +171,12 @@ class PyttBertForTokenClassification(TorchPipe):
         return self
 
 
-class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
+class BertForNamedEntityRecognition(BertForTokenClassification):
     """Named entity recognition component with pytorch-transformers."""
 
     name = "pytt_bert_ner"
     pytt_model_cls = BertTokenClassifier
-    pytt_config_cls = pytt.BertConfig
+    pytt_config_cls = trf.BertConfig
 
     @property
     def ignore_label_index(self) -> int:
@@ -226,8 +224,7 @@ class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
         return docs
 
 
-PyttBertForTokenClassification.install_extensions()
-Language.factories[PyttBertForTokenClassification.name] = PyttBertForTokenClassification
-Language.factories[
-    PyttBertForNamedEntityRecognition.name
-] = PyttBertForNamedEntityRecognition
+BertForTokenClassification.install_extensions()
+Language.factories[BertForTokenClassification.name] = BertForTokenClassification
+Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition
+

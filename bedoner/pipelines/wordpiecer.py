@@ -18,8 +18,8 @@ PRETRAINED_INIT_CONFIGURATION = {
 PRETRAINED_POSITIONAL_EMBEDDINGS_SIZES = {"bert-ja-juman": 512}
 
 
-class PyttWordPiecer(TransformersWordPiecer):
-    name = "pytt_wordpiecer"
+class WordPiecer(TransformersWordPiecer):
+    name = "trf_wordpiecer"
 
     @classmethod
     def from_pretrained(cls, vocab: Vocab, pytt_name: str, **cfg):
