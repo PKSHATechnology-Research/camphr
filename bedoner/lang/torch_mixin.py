@@ -78,7 +78,6 @@ class TorchLanguageMixin:
         flag = False
         for _, pipe in self.pipeline:
             if isinstance(pipe, TorchPipe):
-                print(pipe)
                 flag = True
                 pipe.to(device)
         return flag
