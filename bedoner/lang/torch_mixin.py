@@ -1,4 +1,5 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
+from bedoner.pipelines.trf_model import BertModel
 import itertools
 from typing import List, Optional, Type, cast
 
@@ -9,6 +10,7 @@ from dataclasses import dataclass
 from spacy.errors import Errors as SpacyErrors
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.tokens import Doc
+
 
 @dataclass
 class Optimizers:
@@ -25,7 +27,6 @@ class Optimizers:
         if self.lr_scheduler:
             # TODO: remove cast once bug in pytorch stub file is fixed (https://github.com/pytorch/pytorch/pull/26531).
             self.lr_scheduler.step(cast(int, None))
-
 
 
 class TorchLanguageMixin:
@@ -72,6 +73,15 @@ class TorchLanguageMixin:
             if isinstance(pipe, TorchPipe)
         )
         return self.make_optimizers(params, **kwargs)
+
+    def to(self, device: torch.device) -> bool:
+        flag = False
+        for _, pipe in self.pipeline:
+            if isinstance(pipe, TorchPipe):
+                print(pipe)
+                flag = True
+                pipe.to(device)
+        return flag
 
     def make_optimizers(
         self,

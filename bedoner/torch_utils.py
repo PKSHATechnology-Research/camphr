@@ -1,5 +1,6 @@
 """The module torch_utils defines utilities for pytorch."""
 from typing import Any, Dict, Iterable, Optional, Union
+import warnings
 
 import torch
 import torch.nn as nn
@@ -11,6 +12,24 @@ OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]
 
 class TorchPipe(Pipe):
     """Pipe wrapper for pytorch. This provides interface used by `TorchLanguageMixin`"""
+
+    def __init__(self, device: torch.device = torch.device("cpu")):
+        self._device = device
+
+    @property
+    def device(self):
+        if not getattr(self, "_device"):
+            self._device = torch.device("cpu")
+        return self._device
+
+    @device.setter
+    def device(self, device: torch.device):
+        self.to(device)
+
+    def to(self, device: torch.device):
+        self._device = device
+        if self.model and not isinstance(self.model, bool):
+            self.model.to(device)
 
     def optim_parameters(self) -> OptimizerParameters:
         """Return parameters to be optimized.

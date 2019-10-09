@@ -194,7 +194,7 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
             idx = list(map(lambda x: x[0], doc._.trf_alignment))
             loss = F.cross_entropy(
                 logit[idx],
-                torch.tensor([label2id[ner] for ner in gold.ner]),
+                torch.tensor([label2id[ner] for ner in gold.ner], device=self.device),
                 ignore_index=ignore_index,
             )
 
