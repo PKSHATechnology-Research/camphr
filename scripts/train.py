@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import torch
 from typing import List, Dict
 import json
 from spacy.scorer import Scorer
@@ -17,6 +18,7 @@ from bedoner.models import *
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
 from bedoner.ner_labels.labels_ene import ALL_LABELS as ene_labels
 from bedoner.ner_labels.utils import make_biluo_labels, make_bio_labels
+
 
 @dataclass
 class Config:
@@ -56,7 +58,7 @@ def main(
     config.label_type = label_type
     print(config)
 
-    # os.mkdir(outd)
+    os.mkdir(outd)
     data = random.sample(load_data(data_jsonl), k=ndata)
     train_data, val_data = train_test_split(data, test_size=0.1)
 
@@ -64,6 +66,8 @@ def main(
     with open("foo.txt", "w") as f:
         f.write("\n".join(labels))
     nlp = bert_ner(labels=make_biluo_labels(labels))
+    if torch.cuda.is_available():
+        nlp.to(torch.device("cuda"))
 
     optim = nlp.resume_training(t_total=niter, enable_scheduler=False)
 
