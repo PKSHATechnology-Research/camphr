@@ -25,6 +25,7 @@ pandas = "*"
 mojimoji = "*"
 spacy-transformers = "*"
 typing-extensions = "*"
+bedoner = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

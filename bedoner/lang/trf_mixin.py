@@ -1,4 +1,4 @@
-"""The module pytt_mixin defindes Language mixin for pytorch transformers."""
+"""The module trf_mixin defindes Language mixin for pytorch transformers."""
 from typing import Optional, Type
 
 import bedoner.lang.juman as juman
@@ -14,13 +14,13 @@ from spacy_transformers.util import ATTRS
 class TransformersLanguageMixin(torch_mixin.TorchLanguageMixin):
     """Language mixin for transformers.
 
-    All pytt components can be used with this Mixin.
+    All trf components can be used with this Mixin.
 
     Examples:
-        >>> class FooLang(PyttLanguage, juman.Japanese): # The order of inheritance is very important to properly override methods. Otherwise it will not work.
+        >>> class FooLang(TransformersLanguageMixin, juman.Japanese): # The order of inheritance is very important to properly override methods. Otherwise it will not work.
         >>>     pass
         >>> nlp = FooLang(Vocab())
-        >>> nlp.add_pipe(pytt_bert_component)
+        >>> nlp.add_pipe(trf_bert_component)
         >>> optim = nlp.resume_training()
         >>> nlp.update(docs, golds, optim)
     """

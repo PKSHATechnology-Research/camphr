@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d133b2ab10e11028941f578443213b81f8f138f20b70e75892aa1102c7589d2e"
+            "sha256": "e02c5dffd17961fcd6e7a61cad3045d1216c2a17f6e5a453db889c079dc57837"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,6 +16,10 @@
         ]
     },
     "default": {
+        "bedoner": {
+            "editable": true,
+            "path": "."
+        },
         "blis": {
             "hashes": [
                 "sha256:03c368c9716ca814c436550a5f1e02ccf74850e613602519e3941d212e5aa177",

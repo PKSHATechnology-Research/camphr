@@ -17,7 +17,7 @@ from spacy.vocab import Vocab
 
 __dir__ = Path(__file__).parent
 
-pytt_bert_dir = str(__dir__ / "../data/bert-ja-juman")
+bert_dir = str(__dir__ / "../data/bert-ja-juman")
 
 
 def han_to_zen_normalizer(text):
@@ -34,21 +34,21 @@ def bert_wordpiecer() -> mecab.Japanese:
     nlp = TransformersJuman(
         Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}}
     )
-    w = WordPiecer.from_pretrained(Vocab(), pytt_bert_dir)
+    w = WordPiecer.from_pretrained(Vocab(), bert_dir)
     nlp.add_pipe(w)
     return nlp
 
 
 def bert_model():
     nlp = bert_wordpiecer()
-    bert = BertModel.from_pretrained(Vocab(), pytt_bert_dir)
+    bert = BertModel.from_pretrained(Vocab(), bert_dir)
     nlp.add_pipe(bert)
     return nlp
 
 
 def bert_ner(**cfg):
     nlp = bert_model()
-    ner = BertForNamedEntityRecognition.from_pretrained(Vocab(), pytt_bert_dir, **cfg)
+    ner = BertForNamedEntityRecognition.from_pretrained(Vocab(), bert_dir, **cfg)
     nlp.add_pipe(ner)
     return nlp
 

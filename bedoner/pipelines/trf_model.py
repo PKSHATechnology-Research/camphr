@@ -1,4 +1,4 @@
-"""Module pytt_model defines pytorch-transformers components."""
+"""Module trf_model defines pytorch-transformers components."""
 from __future__ import annotations
 
 import pickle
@@ -19,12 +19,13 @@ from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
+from spacy_transformers.util import ATTRS
 
 BERT_PRETRAINED_MODEL_ARCHIVE_MAP = {
-    "bert-ja-juman": "s3://bedoner/pytt_models/bert/bert-ja-juman.bin"
+    "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman.bin"
 }
 BERT_PRETRAINED_CONFIG_ARCHIVE_MAP = {
-    "bert-ja-juman": "s3://bedoner/pytt_models/bert/bert-ja-juman-config.json"
+    "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman-config.json"
 }
 
 
@@ -34,9 +35,9 @@ class BertModel(TorchPipe):
     Attach BERT outputs to doc.
     """
 
-    name = "pytt_bert"
-    pytt_model_cls = trf.BertModel
-    pytt_config_cls = trf.BertConfig
+    name = "bert"
+    trf_model_cls = trf.BertModel
+    trf_config_cls = trf.BertConfig
 
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
@@ -50,33 +51,33 @@ class BertModel(TorchPipe):
     @classmethod
     def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
         """Load pretrained model."""
-        cfg["pytt_name"] = name_or_path
+        cfg["trf_name"] = name_or_path
         model = cls.Model(from_pretrained=True, **cfg)
-        cfg["pytt_config"] = dict(model.config.to_dict())
+        cfg["trf_config"] = dict(model.config.to_dict())
         return cls(vocab, model=model, **cfg)
 
     @classmethod
     def Model(cls, **cfg) -> trf.BertModel:
-        """Create `pytt.BertModel`"""
+        """Create `trf.BertModel`"""
         if cfg.get("from_pretrained"):
-            cls.pytt_model_cls.pretrained_model_archive_map.update(
+            cls.trf_model_cls.pretrained_model_archive_map.update(
                 BERT_PRETRAINED_MODEL_ARCHIVE_MAP
             )
-            cls.pytt_model_cls.config_class.pretrained_config_archive_map.update(
+            cls.trf_model_cls.config_class.pretrained_config_archive_map.update(
                 BERT_PRETRAINED_CONFIG_ARCHIVE_MAP
             )
-            model = cls.pytt_model_cls.from_pretrained(cfg.get("pytt_name"))
+            model = cls.trf_model_cls.from_pretrained(cfg.get("trf_name"))
         else:
-            if "vocab_size" in cfg["pytt_config"]:
-                vocab_size = cfg["pytt_config"]["vocab_size"]
-                cfg["pytt_config"]["vocab_size_or_config_json_file"] = vocab_size
-            model = cls.pytt_model_cls(cls.pytt_config_cls(**cfg["pytt_config"]))
+            if "vocab_size" in cfg["trf_config"]:
+                vocab_size = cfg["trf_config"]["vocab_size"]
+                cfg["trf_config"]["vocab_size_or_config_json_file"] = vocab_size
+            model = cls.trf_model_cls(cls.trf_config_cls(**cfg["trf_config"]))
         return model
 
     def predict(self, docs: List[Doc]) -> BertModelOutputs:
         self.require_model()
         self.model.eval()
-        x = self.docs_to_pyttinput(docs)
+        x = self.docs_to_trfinput(docs)
         with torch.no_grad():
             y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
         return y
@@ -84,20 +85,20 @@ class BertModel(TorchPipe):
     def set_annotations(self, docs: List[Doc], outputs: BertModelOutputs) -> None:
         """Assign the extracted features to the Doc."""
         for i, doc in enumerate(docs):
-            length = len(doc._.pytt_word_pieces)
+            length = len(doc._.trf_word_pieces)
             # Instead of assigning tensor directory, assign `TensorWrapper`
             # so that trailing pipe can handle batch tensor efficiently.
-            doc._.pytt_last_hidden_state = TensorWrapper(
+            doc._.trf_last_hidden_state = TensorWrapper(
                 outputs.laste_hidden_state, i, length
             )
-            doc._.pytt_pooler_output = TensorWrapper(outputs.pooler_output, i, length)
+            doc._.trf_pooler_output = TensorWrapper(outputs.pooler_output, i, length)
             if outputs.hidden_states:
-                doc._.pytt_all_hidden_states = [
+                doc._.trf_all_hidden_states = [
                     TensorWrapper(hid_layer, i)
                     for hid_layer in cast(Iterable, outputs.hidden_states)
                 ]
             if outputs.attensions:
-                doc._.pytt_all_attentions = [
+                doc._.trf_all_attentions = [
                     TensorWrapper(attention_layer, i)
                     for attention_layer in cast(Iterable, outputs.attensions)
                 ]
@@ -106,24 +107,24 @@ class BertModel(TorchPipe):
         """Simply forward docs in training mode."""
         self.require_model()
         self.model.train()
-        x = self.docs_to_pyttinput(docs)
+        x = self.docs_to_trfinput(docs)
         y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
         self.set_annotations(docs, y)
 
-    def docs_to_pyttinput(self, docs: List[Doc]) -> BertModelInputs:
-        """Generate input data for pytt model from docs."""
+    def docs_to_trfinput(self, docs: List[Doc]) -> BertModelInputs:
+        """Generate input data for trf model from docs."""
         inputs = BertModelInputs(
-            input_ids=torch.tensor(zero_pad([doc._.pytt_word_pieces for doc in docs]))
+            input_ids=torch.tensor(zero_pad([doc._.trf_word_pieces for doc in docs]))
         )
         inputs.attention_mask = torch.tensor(
-            zero_pad([[1 for _ in range(len(doc._.pytt_word_pieces))] for doc in docs])
+            zero_pad([[1 for _ in range(len(doc._.trf_word_pieces))] for doc in docs])
         )
 
         segments = []
         for doc in docs:
             seg = []
-            for i, s in enumerate(doc._.pytt_segments):
-                seg += [i] * len(s._.pytt_word_pieces)
+            for i, s in enumerate(doc._.trf_segments):
+                seg += [i] * len(s._.trf_word_pieces)
             segments.append((seg))
         inputs.token_type_ids = torch.tensor(zero_pad(segments))
         return inputs
@@ -149,13 +150,13 @@ class BertModel(TorchPipe):
             self.cfg = pickle.load(f)
         with (path / "vocab.pkl").open("rb") as f:
             self.vocab = pickle.load(f)
-        self.model = self.pytt_model_cls.from_pretrained(path)
+        self.model = self.trf_model_cls.from_pretrained(path)
         return self
 
 
 @dataclasses.dataclass
 class BertModelInputs:
-    """Container for BERT model input. See `pytt.BertModel`'s docstring for detail."""
+    """Container for BERT model input. See `trf.BertModel`'s docstring for detail."""
 
     input_ids: torch.Tensor
     token_type_ids: Optional[torch.Tensor] = None
@@ -166,7 +167,7 @@ class BertModelInputs:
 
 @dataclasses.dataclass
 class BertModelOutputs:
-    """A container for BertModel outputs. See `pytt.BertModel`'s docstring for detail."""
+    """A container for BertModel outputs. See `trf.BertModel`'s docstring for detail."""
 
     laste_hidden_state: torch.FloatTensor  # shape ``(batch_size, sequence_length, hidden_size)``
     pooler_output: torch.FloatTensor  # shape ``(batch_size, hidden_size)``
