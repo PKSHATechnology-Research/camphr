@@ -4,13 +4,12 @@ from bedoner.lang.mecab import Japanese
 from bedoner.pipelines.date_ner import DateRuler
 from spacy.tokens.doc import Doc
 from spacy.tokens.span import Span
+from bedoner.models import date_ruler
 
 
 @pytest.fixture
-def nlp():
-    _nlp = Japanese()
-    _nlp.add_pipe(DateRuler())
-    return _nlp
+def nlp(date_ruler):
+    return date_ruler
 
 
 TESTS = [("今日は2019年11月30日だ", "2019年11月30日"), ("僕は平成元年4月10日生まれだ", "平成元年4月10日")]
