@@ -57,7 +57,7 @@ def date_ruler(name="date_ruler") -> mecab.Japanese:
     nlp = mecab.Japanese(
         meta={"name": name, "requirements": ["mecab-python3", "regex"]}
     )
-    nlp.add_pipe(DateRuler(nlp))
+    nlp.add_pipe(DateRuler())
     return nlp
 
 
