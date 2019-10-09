@@ -1,10 +1,20 @@
-"""Script to convert bccwj NER dataset to jsonl"""
+"""Script to convert bccwj NER dataset to jsonl
+
+Usage:
+
+$ python bccwj2jsonl xml/ output/
+
+# convert to irex
+
+$ pythonn bccwj2jsonl xml/ output/ irex
+"""
 import io
 import json
 import xml.etree.ElementTree as ET
 from collections import namedtuple
 from pathlib import Path
 from typing import *
+from typing import IO
 
 import fire
 import regex as re
@@ -91,8 +101,8 @@ def main(
     failed_log="log.txt",
 ):
     """Convert all xml files in xml_dir to jsonl, and save them in jsonl_dir."""
-    xml_dir = Path(xml_dir)
-    jsonl_dir = Path(jsonl_dir)
+    xml_dir = Path(xml_dir).absolute()
+    jsonl_dir = Path(jsonl_dir).absolute()
     assert xml_dir.exists()
     fcount = 0
     itemcount = 0
@@ -102,13 +112,13 @@ def main(
             outputpath.parent.mkdir(exist_ok=True, parents=True)
             failed = []
 
-            with open(xml) as f, outputpath.open("w") as fw:
-                c, failed = proc(f, fw, tag_mapping=tag_mapping)
-                fw.write("\n".join(failed))
+            with open(xml) as f, outputpath.open("w") as fj:
+                c, failed = proc(f, fj, tag_mapping=tag_mapping)
+            fw.write("\n".join(map(lambda x: str(xml)+f": {x}", failed)))
             itemcount += c
             fcount += 1
     print(f"{fcount} files, {itemcount} items parsed.")
 
 
 if __name__ == "__main__":
-    fire.Fire()
+    fire.Fire(main)
