@@ -12,7 +12,6 @@ flake8 = "*"
 pyyaml = "*"
 rope = "*"
 hypothesis = "*"
-bedoner = {editable = true,path = "."}
 pre-commit = "*"
 
 [packages]
@@ -23,7 +22,7 @@ jaconv = "*"
 fire = "*"
 pandas = "*"
 mojimoji = "*"
-spacy-pytorch-transformers = "*"
+spacy-transformers = "*"
 typing-extensions = "*"
 
 [requires]

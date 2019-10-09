@@ -1,13 +1,10 @@
 """Module wordpiecer defines wordpiecer for pytorch transformers."""
 from typing import Iterable, List
 
-import pytorch_transformers as pytt
+import transformers as trf
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
-from spacy_pytorch_transformers.pipeline.wordpiecer import (
-    PyTT_WordPiecer,
-    get_pytt_tokenizer,
-)
+from spacy_transformers.pipeline.wordpiecer import TransformersWordPiecer, get_tokenizer
 
 BERT_PRETRAINED_VOCAB_ARCHIVE_MAP = {
     "bert-ja-juman": "s3://bedoner/pytt_models/bert/bert-ja-juman-vocab.txt"  # bedore-ranndd aws account
@@ -21,7 +18,7 @@ PRETRAINED_INIT_CONFIGURATION = {
 PRETRAINED_POSITIONAL_EMBEDDINGS_SIZES = {"bert-ja-juman": 512}
 
 
-class PyttWordPiecer(PyTT_WordPiecer):
+class PyttWordPiecer(TransformersWordPiecer):
     name = "pytt_wordpiecer"
 
     @classmethod
@@ -31,7 +28,7 @@ class PyttWordPiecer(PyTT_WordPiecer):
         Examples:
             >>> nlp = PyttWordPiecer.from_pretrained("bert-ja-juman")
         """
-        pytt_tokenizer_cls: pytt.PreTrainedTokenizer = get_pytt_tokenizer(pytt_name)
+        pytt_tokenizer_cls: trf.PreTrainedTokenizer = get_tokenizer(pytt_name)
 
         # tell `pytt_tokenizer_cls` where to find the model
         pytt_tokenizer_cls.pretrained_vocab_files_map["vocab_file"].update(
