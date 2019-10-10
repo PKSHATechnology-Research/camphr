@@ -27,6 +27,7 @@ class Config(omegaconf.Config):
     label: str
     scheduler: bool
     test_size: float
+    lang: str
 
 
 def get_labels(name: str) -> List[str]:
@@ -59,7 +60,7 @@ def main(cfg: Config):
     train_data, val_data = train_test_split(data, test_size=cfg.test_size)
 
     labels = get_labels(cfg.label)
-    nlp = bert_ner(labels=make_biluo_labels(labels))
+    nlp = bert_ner(lang=cfg.lang, labels=make_biluo_labels(labels))
     if torch.cuda.is_available():
         nlp.to(torch.device("cuda"))
 
