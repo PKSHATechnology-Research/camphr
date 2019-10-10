@@ -1,4 +1,7 @@
 """The models module defines functions to create spacy models."""
+from bedoner.utils import inject_mixin
+from typing import Type
+from bedoner.ner_labels.labels_ontonotes import LANGUAGE
 import os
 from pathlib import Path
 
@@ -6,7 +9,7 @@ import bedoner.lang.juman as juman
 import bedoner.lang.mecab as mecab
 import bedoner.lang.knp as knp
 import mojimoji
-from bedoner.lang.trf_mixin import TransformersJuman
+from bedoner.lang.trf_mixin import TransformersLanguageMixin
 from bedoner.pipelines.date_ner import DateRuler
 from bedoner.pipelines.person_ner import create_person_ruler
 from bedoner.pipelines.trf_model import BertModel
@@ -14,6 +17,7 @@ from bedoner.pipelines.trf_ner import BertForNamedEntityRecognition
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.wordpiecer import WordPiecer
 from spacy.vocab import Vocab
+from spacy.language import Language
 
 __dir__ = Path(__file__).parent
 
@@ -30,23 +34,29 @@ def juman_nlp() -> juman.Japanese:
     )
 
 
-def bert_wordpiecer() -> mecab.Japanese:
-    nlp = TransformersJuman(
-        Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}}
-    )
-    w = WordPiecer.from_pretrained(Vocab(), bert_dir)
+def bert_wordpiecer(lang="juman", bert_dir=bert_dir) -> Language:
+    if lang == "juman":
+        cls = inject_mixin(TransformersLanguageMixin, juman.Japanese)
+        nlp = cls(Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}})
+    elif lang == "mecab":
+        cls = inject_mixin(TransformersLanguageMixin, mecab.Japanese)
+        nlp = cls(Vocab())
+    else:
+        raise ValueError(f"Unsupported lang: {lang}")
+    w = WordPiecer.from_pretrained(nlp.vocab, bert_dir)
     nlp.add_pipe(w)
     return nlp
 
 
-def bert_model():
-    nlp = bert_wordpiecer()
+def bert_model(lang="juman", bert_dir=bert_dir):
+    nlp = bert_wordpiecer(lang)
     bert = BertModel.from_pretrained(Vocab(), bert_dir)
     nlp.add_pipe(bert)
     return nlp
 
 
-def bert_ner(**cfg):
+def bert_ner(lang="juman", bert_dir=bert_dir, **cfg):
+    nlp = bert_wordpiecer(lang)
     nlp = bert_model()
     ner = BertForNamedEntityRecognition.from_pretrained(Vocab(), bert_dir, **cfg)
     nlp.add_pipe(ner)

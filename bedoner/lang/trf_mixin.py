@@ -69,8 +69,4 @@ class TransformersLanguageMixin(torch_mixin.TorchLanguageMixin):
         return torch_mixin.Optimizers(optimizer=optimizer, lr_scheduler=scheduler)
 
 
-class TransformersJuman(TransformersLanguageMixin, juman.Japanese):
-    """Juman language to manage pytorch-transformers components"""
-
-
 TransformersLanguageMixin.install_extensions()
