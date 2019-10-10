@@ -80,10 +80,10 @@ def main(cfg: Config):
             print(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
             if j % 10 == 9:
                 scorer: Scorer = nlp.evaluate(val_data)
-                print("p: ", scorer.ents_p)
-                print("r: ", scorer.ents_r)
-                print("f: ", scorer.ents_f)
-        print(f"epoch {i} loss: ", epoch_loss)
+                log.info("p: ", scorer.ents_p)
+                log.info("r: ", scorer.ents_r)
+                log.info("f: ", scorer.ents_f)
+        log.info(f"epoch {i} loss: ", epoch_loss)
         scorer: Scorer = nlp.evaluate(val_data)
         nlp.meta = {"score": scorer.scores, "config": cfg.to_container()}
         nlp.to_disk(modelsdir / str(i))
