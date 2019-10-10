@@ -158,7 +158,9 @@ class BertForTokenClassification(TorchPipe):
     def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> BertModel:
         config = self.trf_config_cls.from_pretrained(path)
         model = BertTokenClassifier(config)
-        model.load_state_dict(torch.load(str(path / "model.pth")))
+        model.load_state_dict(
+            torch.load(str(path / "model.pth"), map_location=self.device)
+        )
         model.eval()
         self.model = model
 
