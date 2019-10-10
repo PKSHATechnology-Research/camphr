@@ -1,3 +1,17 @@
+# v0.2
+
+- change dependency
+  - pytorch-transformers -> transformers
+  - spacy-pytorch-transformers - > pytorch-transformers
+- gpu support
+
+```
+nlp.to(torch.device("cuda"))
+```
+
+- python3.6 conpatibility
+- training script: scripts/train.py
+
 # v0.1.1
 
 - mecabについて，urlを1トークンとして扱うようにした (#42)
