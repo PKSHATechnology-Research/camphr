@@ -1,6 +1,6 @@
-ndata: 1000
+ndata: -1
 niter: 5
-nbatch: 32
+nbatch: 16
 scheduler: true
 test_size: 0.1
 data: ~/datasets/ner-bccwj-ene.jsonl
