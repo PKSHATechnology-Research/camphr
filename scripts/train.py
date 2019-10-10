@@ -49,7 +49,7 @@ def load_data(name: str) -> List[Dict]:
 
 @hydra.main(config_path="conf/train.yml")
 def main(cfg: Config):
-    print(cfg.pretty())
+    log.info(cfg.pretty())
     outputd = os.getcwd()
     log.info("output dir: {}".format(outputd))
     data = load_data(cfg.data)
@@ -78,7 +78,7 @@ def main(cfg: Config):
             nlp.update(docs, golds, optim)
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
-            print(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
+            log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
             if j % 10 == 9:
                 scorer: Scorer = nlp.evaluate(val_data)
                 log.info("p: ", scorer.ents_p)
