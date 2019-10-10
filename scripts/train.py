@@ -27,6 +27,7 @@ class Config(omegaconf.Config):
     label: str
     scheduler: bool
     test_size: float
+    lang: str
 
 
 def get_labels(name: str) -> List[str]:
@@ -48,7 +49,7 @@ def load_data(name: str) -> List[Dict]:
 
 @hydra.main(config_path="conf/train.yml")
 def main(cfg: Config):
-    print(cfg.pretty())
+    log.info(cfg.pretty())
     outputd = os.getcwd()
     log.info("output dir: {}".format(outputd))
     data = load_data(cfg.data)
@@ -59,8 +60,9 @@ def main(cfg: Config):
     train_data, val_data = train_test_split(data, test_size=cfg.test_size)
 
     labels = get_labels(cfg.label)
-    nlp = bert_ner(labels=make_biluo_labels(labels))
+    nlp = bert_ner(lang=cfg.lang, labels=make_biluo_labels(labels))
     if torch.cuda.is_available():
+        log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
 
     optim = nlp.resume_training(t_total=cfg.niter, enable_scheduler=cfg.scheduler)
@@ -76,13 +78,13 @@ def main(cfg: Config):
             nlp.update(docs, golds, optim)
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
-            print(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
+            log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
             if j % 10 == 9:
                 scorer: Scorer = nlp.evaluate(val_data)
-                print("p: ", scorer.ents_p)
-                print("r: ", scorer.ents_r)
-                print("f: ", scorer.ents_f)
-        print(f"epoch {i} loss: ", epoch_loss)
+                log.info("p: ", scorer.ents_p)
+                log.info("r: ", scorer.ents_r)
+                log.info("f: ", scorer.ents_f)
+        log.info(f"epoch {i} loss: ", epoch_loss)
         scorer: Scorer = nlp.evaluate(val_data)
         nlp.meta = {"score": scorer.scores, "config": cfg.to_container()}
         nlp.to_disk(modelsdir / str(i))
