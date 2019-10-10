@@ -1,33 +1,32 @@
-from dataclasses import dataclass
+import hydra
 import torch
 from typing import List, Dict
 import json
 from spacy.scorer import Scorer
-import fire
 import random
-import sys
-from itertools import zip_longest
 from pathlib import Path
 
-from spacy.gold import GoldParse, spans_from_biluo_tags
 from spacy.util import minibatch
-from tqdm import tqdm
+import logging
 from sklearn.model_selection import train_test_split
+import omegaconf
 
 from bedoner.models import *
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
 from bedoner.ner_labels.labels_ene import ALL_LABELS as ene_labels
 from bedoner.ner_labels.utils import make_biluo_labels, make_bio_labels
 
+log = logging.getLogger(__name__)
 
-@dataclass
-class Config:
-    data_jsonl: str = ""
-    outd: str = ""
-    ndata: int = 0
-    niter: int = 0
-    nbatch: int = 32
-    label_type: str = "irex"
+
+class Config(omegaconf.Config):
+    data: str
+    ndata: int
+    niter: int
+    nbatch: int
+    label: str
+    scheduler: bool
+    test_size: float
 
 
 def get_labels(name: str) -> List[str]:
@@ -39,6 +38,7 @@ def get_labels(name: str) -> List[str]:
 
 
 def load_data(name: str) -> List[Dict]:
+    name = os.path.expanduser(name)
     data = []
     with open(name) as f:
         for line in f:
@@ -46,49 +46,47 @@ def load_data(name: str) -> List[Dict]:
     return data
 
 
-def main(
-    data_jsonl: str, outd: str, ndata=1000, niter=20, nbatch=32, label_type="irex"
-):
-    config = Config()
-    config.data_jsonl = data_jsonl
-    config.outd = outd
-    config.ndata = ndata
-    config.niter = niter
-    config.nbatch = nbatch
-    config.label_type = label_type
-    print(config)
+@hydra.main(config_path="conf/train.yml")
+def main(cfg: Config):
+    print(cfg.pretty())
+    outputd = os.getcwd()
+    log.info("output dir: {}".format(outputd))
+    data = load_data(cfg.data)
+    if cfg.ndata != -1:
+        data = random.sample(data, k=cfg.ndata)
+    else:
+        cfg.ndata = len(data)
+    train_data, val_data = train_test_split(data, test_size=cfg.test_size)
 
-    os.mkdir(outd)
-    data = random.sample(load_data(data_jsonl), k=ndata)
-    train_data, val_data = train_test_split(data, test_size=0.1)
-
-    labels = get_labels(label_type)
-    with open("foo.txt", "w") as f:
-        f.write("\n".join(labels))
+    labels = get_labels(cfg.label)
     nlp = bert_ner(labels=make_biluo_labels(labels))
     if torch.cuda.is_available():
         nlp.to(torch.device("cuda"))
 
-    optim = nlp.resume_training(t_total=niter, enable_scheduler=False)
+    optim = nlp.resume_training(t_total=cfg.niter, enable_scheduler=cfg.scheduler)
+    modelsdir = Path.cwd() / "models"
+    modelsdir.mkdir()
 
-    for i in range(niter):
+    for i in range(cfg.niter):
         random.shuffle(train_data)
         epoch_loss = 0
-        for j, batch in enumerate(minibatch(train_data, size=nbatch)):
+        for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
             texts, golds = zip(*batch)
             docs = [nlp.make_doc(text) for text in texts]
             nlp.update(docs, golds, optim)
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
-            print(f"{j*nbatch}/{ndata} loss: {loss}")
+            print(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
             if j % 10 == 9:
                 scorer: Scorer = nlp.evaluate(val_data)
                 print("p: ", scorer.ents_p)
                 print("r: ", scorer.ents_r)
                 print("f: ", scorer.ents_f)
         print(f"epoch {i} loss: ", epoch_loss)
-        nlp.to_disk(os.path.join(outd, str(i)))
+        scorer: Scorer = nlp.evaluate(val_data)
+        nlp.meta = {"score": scorer.scores, "config": cfg.to_container()}
+        nlp.to_disk(modelsdir / str(i))
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    main()
