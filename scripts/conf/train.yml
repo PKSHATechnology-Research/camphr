@@ -1,7 +1,8 @@
-ndata: 1000
-niter: 5
-nbatch: 32
-scheduler: true
+ndata: -1
+niter: 10
+nbatch: 16
+scheduler: false
 test_size: 0.1
 data: ~/datasets/ner-bccwj-ene.jsonl
 label: ene
+lang: juman
