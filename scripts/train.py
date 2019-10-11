@@ -62,7 +62,7 @@ def main(cfg: Config):
 
     labels = get_labels(cfg.label)
     nlp = bert_ner(lang=cfg.lang, labels=make_biluo_labels(labels))
-    nlp.meta["name"] = cfg.name
+    nlp.meta["name"] = cfg.name + "_" + cfg.label
     if torch.cuda.is_available():
         log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
