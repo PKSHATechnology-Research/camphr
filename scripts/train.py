@@ -93,7 +93,7 @@ def main(cfg: Config):
                 log.info(f"f: {scorer.ents_f}")
         log.info(f"epoch {i} loss: {epoch_loss}")
         scorer: Scorer = nlp.evaluate(val_data)
-        nlp.meta = {"score": scorer.scores, "config": cfg.to_container()}
+        nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
         nlp.to_disk(modelsdir / str(i))
 
 
