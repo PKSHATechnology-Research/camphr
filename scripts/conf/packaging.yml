@@ -1,6 +1,6 @@
 model:
 ref_module:
-packages_dir:
+packages_dir: ../pkgs
 version:
 hydra:
   run:
