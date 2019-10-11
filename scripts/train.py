@@ -19,17 +19,6 @@ from bedoner.ner_labels.utils import make_biluo_labels, make_bio_labels
 log = logging.getLogger(__name__)
 
 
-class Config(omegaconf.Config):
-    data: str
-    ndata: int
-    niter: int
-    nbatch: int
-    label: str
-    scheduler: bool
-    test_size: float
-    lang: str
-
-
 def get_labels(name: str) -> List[str]:
     if name == "irex":
         return irex_labels
@@ -47,6 +36,18 @@ def load_data(name: str) -> List[Dict]:
     return data
 
 
+class Config(omegaconf.Config):
+    data: str
+    ndata: int
+    niter: int
+    nbatch: int
+    label: str
+    scheduler: bool
+    test_size: float
+    lang: str
+    name: str
+
+
 @hydra.main(config_path="conf/train.yml")
 def main(cfg: Config):
     log.info(cfg.pretty())
@@ -61,6 +62,7 @@ def main(cfg: Config):
 
     labels = get_labels(cfg.label)
     nlp = bert_ner(lang=cfg.lang, labels=make_biluo_labels(labels))
+    nlp.meta["name"] = cfg.name
     if torch.cuda.is_available():
         log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
@@ -79,7 +81,7 @@ def main(cfg: Config):
                 nlp.update(docs, golds, optim)
             except:
                 with open("fail.json", "w") as f:
-                    json.dump(batch,f)
+                    json.dump(batch, f)
                 raise
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
