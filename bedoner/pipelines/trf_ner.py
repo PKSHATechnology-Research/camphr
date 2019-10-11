@@ -1,33 +1,29 @@
-"""Module pytt_ner defines pytorch transformers NER model
+"""Module trf_ner defines pytorch transformers NER model
 
-Models defined in this modules must be used with `bedoner.pipelines.pytt_model`'s model in `spacy.Language` pipeline
+Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
-from __future__ import annotations
-
 import pickle
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, cast
 
-import pytorch_transformers as pytt
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from bedoner.pipelines.pytt_model import (
-    BERT_PRETRAINED_CONFIG_ARCHIVE_MAP,
-    PyttBertModel,
-)
-from bedoner.pipelines.utils import correct_biluo_tags, UNK
+import transformers as trf
+from spacy.gold import GoldParse, spans_from_biluo_tags
+from spacy.language import Language
+from spacy.tokens import Doc, Token
+from spacy.vocab import Vocab
+from transformers.modeling_bert import BertConfig
+
+from bedoner.pipelines.trf_model import BERT_PRETRAINED_CONFIG_ARCHIVE_MAP, BertModel
+from bedoner.pipelines.utils import UNK, correct_biluo_tags
 from bedoner.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
     TorchPipe,
     get_parameters_with_decay,
 )
-from pytorch_transformers.modeling_bert import BertConfig
-from spacy.gold import GoldParse, spans_from_biluo_tags
-from spacy.language import Language
-from spacy.tokens import Doc, Token
-from spacy.vocab import Vocab
 
 
 class BertTokenClassifier(nn.Module):
@@ -52,19 +48,19 @@ class BertTokenClassifier(nn.Module):
         return logits
 
 
-class PyttBertForTokenClassification(TorchPipe):
+class BertForTokenClassification(TorchPipe):
     """Base class for token classification task (e.g. NER).
 
-    Requires `PyttBertModel` before this model in the pipeline to use this model.
+    Requires `BertModel` before this model in the pipeline to use this model.
 
     Notes:
         `Token._.cls_logit` is set and stored the output of this model into. This is usefule to calculate the probability of the classification.
         `Doc._.cls_logit` is set and stored the output of this model into.
     """
 
-    name = "pytt_bert_tokenclassifier"
-    pytt_model_cls = BertTokenClassifier
-    pytt_config_cls = pytt.BertConfig
+    name = "bert_tokenclassifier"
+    trf_model_cls = BertTokenClassifier
+    trf_config_cls = trf.BertConfig
 
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
@@ -89,29 +85,29 @@ class PyttBertForTokenClassification(TorchPipe):
 
     @classmethod
     def from_pretrained(cls, vocab: Vocab, name: str, **cfg):
-        cfg["pytt_name"] = name
+        cfg["trf_name"] = name
         model = cls.Model(from_pretrained=True, **cfg)
-        cfg["pytt_config"] = dict(model.config.to_dict())
+        cfg["trf_config"] = dict(model.config.to_dict())
         return cls(vocab, model=model, **cfg)
 
     @classmethod
     def Model(cls, **cfg) -> BertTokenClassifier:
         assert cfg.get("labels")
-        cfg.setdefault("pytt_config", {})
-        cfg["pytt_config"]["num_labels"] = len(cfg.get("labels", []))
+        cfg.setdefault("trf_config", {})
+        cfg["trf_config"]["num_labels"] = len(cfg.get("labels", []))
         if cfg.get("from_pretrained"):
-            cls.pytt_config_cls.pretrained_config_archive_map.update(
+            cls.trf_config_cls.pretrained_config_archive_map.update(
                 BERT_PRETRAINED_CONFIG_ARCHIVE_MAP
             )
-            config = cls.pytt_config_cls.from_pretrained(
-                cfg["pytt_name"], **cfg["pytt_config"]
+            config = cls.trf_config_cls.from_pretrained(
+                cfg["trf_name"], **cfg["trf_config"]
             )
             model = BertTokenClassifier(config)
         else:
-            if "vocab_size" in cfg["pytt_config"]:
-                vocab_size = cfg["pytt_config"]["vocab_size"]
-                cfg["pytt_config"]["vocab_size_or_config_json_file"] = vocab_size
-            model = cls.BertClassifier(pytt.BertConfig(**cfg["pytt_config"]))
+            if "vocab_size" in cfg["trf_config"]:
+                vocab_size = cfg["trf_config"]["vocab_size"]
+                cfg["trf_config"]["vocab_size_or_config_json_file"] = vocab_size
+            model = cls.BertClassifier(trf.BertConfig(**cfg["trf_config"]))
         assert model.config.num_labels == len(cfg["labels"])
         return model
 
@@ -129,7 +125,7 @@ class PyttBertForTokenClassification(TorchPipe):
         with torch.no_grad():
             x: TensorWrapper = next(
                 iter(docs)
-            )._.pytt_last_hidden_state  # assumed that the batch tensor of all docs is stored into the extension.
+            )._.trf_last_hidden_state  # assumed that the batch tensor of all docs is stored into the extension.
             logits = self.model(x.batch_tensor)
         return logits
 
@@ -159,8 +155,8 @@ class PyttBertForTokenClassification(TorchPipe):
         with (path / "vocab.pkl").open("wb") as f:
             pickle.dump(self.vocab, f)
 
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> PyttBertModel:
-        config = self.pytt_config_cls.from_pretrained(path)
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> BertModel:
+        config = self.trf_config_cls.from_pretrained(path)
         model = BertTokenClassifier(config)
         model.load_state_dict(torch.load(str(path / "model.pth")))
         model.eval()
@@ -173,12 +169,12 @@ class PyttBertForTokenClassification(TorchPipe):
         return self
 
 
-class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
+class BertForNamedEntityRecognition(BertForTokenClassification):
     """Named entity recognition component with pytorch-transformers."""
 
-    name = "pytt_bert_ner"
-    pytt_model_cls = BertTokenClassifier
-    pytt_config_cls = pytt.BertConfig
+    name = "bert_ner"
+    trf_model_cls = BertTokenClassifier
+    trf_config_cls = trf.BertConfig
 
     @property
     def ignore_label_index(self) -> int:
@@ -191,14 +187,14 @@ class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
         label2id = self.label2id
         ignore_index = self.ignore_label_index
         # TODO: Batch
-        x: TensorWrapper = next(iter(docs))._.pytt_last_hidden_state
+        x: TensorWrapper = next(iter(docs))._.trf_last_hidden_state
         logits = self.model(x.batch_tensor)
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
-            idx = list(map(lambda x: x[0], doc._.pytt_alignment))
+            idx = list(map(lambda x: x[0], doc._.trf_alignment))
             loss = F.cross_entropy(
                 logit[idx],
-                torch.tensor([label2id[ner] for ner in gold.ner]),
+                torch.tensor([label2id[ner] for ner in gold.ner], device=self.device),
                 ignore_index=ignore_index,
             )
 
@@ -212,12 +208,12 @@ class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
         assert len(logits.shape) == 3  # (batch, length, nclass)
         id2label = self.labels
 
-        for doc, logit in zip(docs, logits):
+        for doc, logit in zip(docs, cast(Iterable, logits)):
             ids = torch.argmax(logit, dim=1)
-            labels = [id2label[r] for r in ids]
+            labels = [id2label[r] for r in cast(Iterable, ids)]
             doc._.cls_logit = logit
             biluo_tags = []
-            for token, a in zip(doc, doc._.pytt_alignment):
+            for token, a in zip(doc, doc._.trf_alignment):
                 token._.cls_logit = logit[a[0]]
                 label = labels[a[0]]
                 biluo_tags.append(label)
@@ -226,8 +222,6 @@ class PyttBertForNamedEntityRecognition(PyttBertForTokenClassification):
         return docs
 
 
-PyttBertForTokenClassification.install_extensions()
-Language.factories[PyttBertForTokenClassification.name] = PyttBertForTokenClassification
-Language.factories[
-    PyttBertForNamedEntityRecognition.name
-] = PyttBertForNamedEntityRecognition
+BertForTokenClassification.install_extensions()
+Language.factories[BertForTokenClassification.name] = BertForTokenClassification
+Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition

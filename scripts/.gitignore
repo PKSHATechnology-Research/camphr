@@ -5,3 +5,6 @@ Untitled*ipynb
 log.ipynb
 !mecab_person_dictionary
 !mecab_person_dictionary/*
+!ene2irexmap.json
+!conf
+!conf/**/*

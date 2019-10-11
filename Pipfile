@@ -12,8 +12,9 @@ flake8 = "*"
 pyyaml = "*"
 rope = "*"
 hypothesis = "*"
-bedoner = {editable = true,path = "."}
 pre-commit = "*"
+bedoner = {editable = true,path = "."}
+hydra-core = "*"
 
 [packages]
 mecab-python3 = "*"
@@ -23,8 +24,9 @@ jaconv = "*"
 fire = "*"
 pandas = "*"
 mojimoji = "*"
-spacy-pytorch-transformers = "*"
+spacy-transformers = "*"
 typing-extensions = "*"
+bedoner = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

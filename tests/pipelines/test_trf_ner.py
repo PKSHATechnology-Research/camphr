@@ -1,6 +1,7 @@
 import tempfile
 import os
 
+import torch
 import pytest
 import spacy
 from bedoner.models import bert_ner
@@ -65,11 +66,13 @@ def is_same_ner(doc: Doc, gold: GoldParse) -> bool:
 
 @pytest.mark.parametrize("text,gold", TESTCASE)
 def test_update(nlp: Language, text, gold):
+    assert nlp.device.type == "cpu"
     doc = nlp(text)
     gold = GoldParse(doc, **gold)
     assert not is_same_ner(doc, gold)
 
     optim = nlp.resume_training()
+    assert nlp.device.type == "cpu"
     doc = nlp.make_doc(text)
     assert doc._.loss is None
     nlp.update([doc], [gold], optim)
@@ -107,3 +110,38 @@ def test_irex_call(nlp_irex: Language, text):
 
 def test_pipe_irex(nlp_irex: Language):
     list(nlp_irex.pipe(["今日はいい天気なので外で遊びたい", "明日は晴れ"]))
+
+
+@pytest.fixture
+def cuda():
+    return torch.device("cuda")
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
+@pytest.mark.parametrize("text,gold", TESTCASE)
+def test_call_cuda(nlp: Language, text, gold, cuda):
+    nlp.to(cuda)
+    nlp(text)
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
+@pytest.mark.parametrize("text,gold", TESTCASE)
+def test_update_cuda(nlp: Language, text, gold, cuda):
+    nlp.to(cuda)
+    doc = nlp(text)
+    gold = GoldParse(doc, **gold)
+    assert not is_same_ner(doc, gold)
+
+    optim = nlp.resume_training()
+    doc = nlp.make_doc(text)
+    assert doc._.loss is None
+    nlp.update([doc], [gold], optim)
+    assert doc._.loss
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
+def test_update_batch_cuda(nlp: Language, cuda):
+    nlp.to(cuda)
+    texts, golds = zip(*TESTCASE)
+    optim = nlp.resume_training()
+    nlp.update(texts, golds, optim)

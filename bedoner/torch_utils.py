@@ -12,6 +12,20 @@ OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]
 class TorchPipe(Pipe):
     """Pipe wrapper for pytorch. This provides interface used by `TorchLanguageMixin`"""
 
+    def __init__(self, device: torch.device = torch.device("cpu")):
+        self._device = device
+
+    @property
+    def device(self):
+        if not hasattr(self, "_device"):
+            self._device = torch.device("cpu")
+        return self._device
+
+    def to(self, device: torch.device):
+        self._device = device
+        if self.model and not isinstance(self.model, bool):
+            self.model.to(device)
+
     def optim_parameters(self) -> OptimizerParameters:
         """Return parameters to be optimized.
 

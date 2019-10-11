@@ -29,4 +29,4 @@ import pytest
 )
 def test_bert_wordpiecer(bert_wordpiece_nlp, text, pieces):
     doc = bert_wordpiece_nlp(text)
-    assert doc._.pytt_word_pieces_ == pieces
+    assert doc._.trf_word_pieces_ == pieces

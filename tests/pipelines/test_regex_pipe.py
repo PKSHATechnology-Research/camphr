@@ -1,5 +1,10 @@
 import pytest
 from bedoner.pipelines.regex_ruler import postcode_ruler, carcode_ruler
+from ..utils import check_mecab
+
+pytestmark = pytest.mark.skipif(
+    not check_mecab(), reason="mecab is not always necessary"
+)
 
 TESTCASES_POSTCODE = [
     ("〒100-0001", ["〒100-0001"]),
