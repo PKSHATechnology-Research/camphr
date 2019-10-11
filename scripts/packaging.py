@@ -1,4 +1,5 @@
 import tempfile
+import os
 import json
 import spacy
 import subprocess
@@ -11,7 +12,7 @@ from spacy.cli import package
 import hydra
 import logging
 
-log = logging.Logger(__name__)
+log = logging.getLogger(__name__)
 
 
 __dir__ = Path(__file__).parent
@@ -47,17 +48,11 @@ def meta_to_modelname(meta: Dict[str, Any]) -> str:
 def create_package(
     model_dir: Pathlike, pkgsdir: Pathlike, meta: Dict[str, Any]
 ) -> Path:
+    pkgsdir = Path(pkgsdir)
     package(model_dir, pkgsdir, force=True)
     model_name = meta_to_modelname(meta)
     pkgd = pkgsdir / (model_name + "-" + meta["version"])
     return pkgd
-
-
-class Config(omegaconf.Config):
-    model: str  # path to model dir
-    ref_module: str = ""  # git ref to bedoner
-    packages_dir: Pathlike = ""  # directory containing models
-    version: str = ""  # model version. Should be same as git tag.
 
 
 T = TypeVar("T")
@@ -82,24 +77,36 @@ def set_meta(model_dir: Pathlike, meta: Dict[str, Any]):
         json.dump(meta, f)
 
 
-@hydra.main()
+def abs_path(path: str) -> str:
+    return os.path.abspath(os.path.join("../../../../", path))
+
+
+class Config(omegaconf.Config):
+    model: str  # path to model dir
+    ref_module: str = ""  # git ref to bedoner
+    packages_dir: Pathlike = ""  # directory containing models
+    version: str = ""  # model version. Should be same as git tag.
+
+
+@hydra.main(config_path="conf/packaging.yml")
 def main(cfg: Config):
-    cfg.ref_module = cfg.get("ref_module") or get_commit()
-    cfg.packages_dir = cfg.get("packages_dir") or PACKAGES_DIR
+    assert cfg.model, "Model path is required, e.g. model=path_to_model_dir"
+    cfg.model = abs_path(cfg.model)
+    cfg.ref_module = cfg.ref_module or get_commit()
+    cfg.packages_dir = abs_path(cfg.packages_dir or str(PACKAGES_DIR))
 
     meta = get_meta(cfg.model)
-    cfg.version = meta.setdefault("version", cfg.version)
-    assert cfg.version, "You should specify model version, e.g. version=1.0.0.dev3"
+    cfg.version = cfg.version or meta.get("version", "")
+    assert cfg.version, "Model version is required, e.g. version=1.0.0.dev3"
+    meta["version"] = cfg.version
     log.info(cfg.pretty())
 
     meta["requirements"] = log_val(requirements(meta), "Requirements")
+    set_meta(cfg.model, meta)
 
-    pkgsdir = cfg.packages_dir
-    if isinstance(pkgsdir, str):
-        pkgsdir = Path(pkgsdir)
-    pkgsdir.mkdir(exist_ok=True)
+    Path(cfg.packages_dir).mkdir(exist_ok=True)
 
-    log_val(create_package(cfg.model, pkgsdir, meta), "Saved")
+    log_val(create_package(cfg.model, cfg.packages_dir, meta), "Saved")
 
 
 if __name__ == "__main__":
