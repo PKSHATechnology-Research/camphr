@@ -49,7 +49,7 @@ def load_data(name: str) -> List[Dict]:
 
 @hydra.main(config_path="conf/train.yml")
 def main(cfg: Config):
-    print(cfg.pretty())
+    log.info(cfg.pretty())
     outputd = os.getcwd()
     log.info("output dir: {}".format(outputd))
     data = load_data(cfg.data)
@@ -75,15 +75,20 @@ def main(cfg: Config):
         for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
             texts, golds = zip(*batch)
             docs = [nlp.make_doc(text) for text in texts]
-            nlp.update(docs, golds, optim)
+            try:
+                nlp.update(docs, golds, optim)
+            except:
+                with open("fail.json", "w") as f:
+                    json.dump(batch,f)
+                raise
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
-            print(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
+            log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
             if j % 10 == 9:
                 scorer: Scorer = nlp.evaluate(val_data)
-                log.info("p: ", scorer.ents_p)
-                log.info("r: ", scorer.ents_r)
-                log.info("f: ", scorer.ents_f)
+                log.info(f"p: {scorer.ents_p}")
+                log.info(f"r: {scorer.ents_r}")
+                log.info(f"f: {scorer.ents_f}")
         log.info(f"epoch {i} loss: ", epoch_loss)
         scorer: Scorer = nlp.evaluate(val_data)
         nlp.meta = {"score": scorer.scores, "config": cfg.to_container()}
