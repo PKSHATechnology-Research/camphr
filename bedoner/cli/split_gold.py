@@ -21,7 +21,7 @@ def _split_gold_jsonl(reader: IO[str], writer: IO[str], sep: str, verbose=False)
 
         texts = split_keepsep(text, sep)
         if len(texts) == 1:
-            writer.write(line + "\n")
+            writer.write(line)
             continue
 
         gold_ents = gold[K.ents]
@@ -40,7 +40,7 @@ def _split_gold_jsonl(reader: IO[str], writer: IO[str], sep: str, verbose=False)
 
 def split_gold(fname: str, output: str, sep: str):
     with open(fname) as f, open(output, "w") as fw:
-        _split_gold_jsonl(f, fw, sep)
+        _split_gold_jsonl(f, fw, sep, verbose=True)
 
 
 if __name__ == "__main__":
