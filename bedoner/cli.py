@@ -12,14 +12,14 @@ class K:
 def _split_gold_jsonl(reader: IO[str], writer: IO[str], sep: str, verbose=False):
     for line in tqdm.tqdm(reader, disable=not verbose):
         data: Tuple[str, Dict[str, Any]] = json.loads(line)
-        assert len(data) != 2, line
+        assert len(data) == 2, line
         text, gold = data
         assert isinstance(text, str), text
         assert isinstance(gold, dict), gold
 
         texts = split_keepsep(text, sep)
         if len(texts) == 1:
-            writer.write(line)
+            writer.write(line + "\n")
             continue
 
         gold_ents = gold[K.ents]
@@ -27,12 +27,12 @@ def _split_gold_jsonl(reader: IO[str], writer: IO[str], sep: str, verbose=False)
         for t in texts:
             next_offset = offset + len(t)
             ents = [
-                (start, end, label)
+                (start - offset, end - offset, label)
                 for start, end, label in gold_ents
                 if start >= offset and end <= next_offset
             ]
             new_line = [t, {K.ents: ents}]
-            writer.write(json.dumps(new_line))
+            writer.write(json.dumps(new_line) + "\n")
             offset = next_offset
 
 

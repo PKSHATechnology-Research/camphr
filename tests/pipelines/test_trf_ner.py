@@ -150,25 +150,22 @@ def test_update_batch_cuda(nlp: Language, cuda):
     nlp.update(texts, golds, optim)
 
 
-DATADIR = Path(__file__).parent / "../data/"
-
-
 @pytest.fixture(scope="module", params=["ner/ner.json"])
-def example_irex(request):
+def example_irex(request, DATADIR):
     with (DATADIR / request.param).open() as f:
         d = json.load(f)
     return d
 
 
 @pytest.fixture(scope="module", params=["ner/ner2.json"])
-def example_ene(request):
+def example_ene(request, DATADIR):
     with (DATADIR / request.param).open() as f:
         d = json.load(f)
     return d
 
 
 @pytest.fixture(scope="module", params=["ner/long.json"])
-def example_long(request):
+def example_long(request, DATADIR):
     with (DATADIR / request.param).open() as f:
         d = json.load(f)
     return d

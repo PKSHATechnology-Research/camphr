@@ -1,4 +1,5 @@
 from .utils import check_juman, check_knp, check_mecab
+from pathlib import Path
 import pytest
 from bedoner.lang.juman import Japanese as Juman
 from bedoner.lang.knp import Japanese as KNP
@@ -32,3 +33,8 @@ def knp_tokenizer():
 @pytest.fixture(scope="session")
 def bert_wordpiece_nlp():
     return bert_wordpiecer()
+
+
+@pytest.fixture(scope="session")
+def DATADIR():
+    return Path(__file__).parent / "data/"
