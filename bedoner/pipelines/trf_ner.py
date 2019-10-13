@@ -193,7 +193,13 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
         logits = self.model(x.batch_tensor)
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
-            idx = list(map(lambda x: x[0], doc._.trf_alignment))
+            try:
+                idx = list(map(lambda x: x[0], doc._.trf_alignment))
+            except RuntimeError as e:
+                raise ValueError(
+                    f"Internal error is occured when processing '{doc}'. This seems to be an error about wordpiecer mapping, please notify maintainer.\n"
+                    + e.message
+                )
             loss = F.cross_entropy(
                 logit[idx],
                 torch.tensor([label2id[ner] for ner in gold.ner], device=self.device),
