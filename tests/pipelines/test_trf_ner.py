@@ -91,7 +91,7 @@ def test_update_batch(nlp: Language):
     nlp.update(texts, golds, optim)
 
 
-@pytest.mark.skip(in_ci(), reason="Fail in circleci due to memory allocation error")
+@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_save_and_load(nlp: Language):
     with tempfile.TemporaryDirectory() as d:
         nlp.to_disk(d)
@@ -134,7 +134,6 @@ def test_update_cuda(nlp: Language, text, gold, cuda):
     nlp.to(cuda)
     doc = nlp(text)
     gold = GoldParse(doc, **gold)
-    assert not is_same_ner(doc, gold)
 
     optim = nlp.resume_training()
     doc = nlp.make_doc(text)
@@ -179,14 +178,14 @@ def example_long(request, DATADIR):
     return d
 
 
-@pytest.mark.skip(in_ci(), reason="Fail in circleci due to memory allocation error")
+@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_example_batch_irex(nlp_irex: Language, example_irex):
     texts, golds = zip(*example_irex)
     optim = nlp_irex.resume_training()
     nlp_irex.update(texts, golds, optim)
 
 
-@pytest.mark.skip(in_ci(), reason="Fail in circleci due to memory allocation error")
+@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_example_batch_ene(nlp: Language, example_ene):
     texts, golds = zip(*example_ene)
     optim = nlp.resume_training()
@@ -200,8 +199,13 @@ def test_long_input(nlp: Language, example_long):
         nlp.update(texts, golds, optim)
 
 
-@pytest.mark.skip(in_ci(), reason="Fail in circleci due to memory allocation error")
-def test_example_batch_ene2(nlp: Language, example_ene):
-    texts, golds = zip(*example_ene)
+@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
+def test_example_batch_ene2(nlp: Language, example_ene2):
+    texts, golds = zip(*example_ene2)
     optim = nlp.resume_training()
     nlp.update(texts, golds, optim)
+
+
+@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
+def test_example_batch_ene2_eval(nlp: Language, example_ene2):
+    nlp.evaluate(example_ene2)
