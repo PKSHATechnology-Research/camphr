@@ -5,9 +5,9 @@ from bedoner.torch_utils import TorchPipe
 from bedoner.pipelines.trf_model import BertModel
 
 
-@pytest.fixture
-def nlp():
-    return bert_model()
+@pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
+def nlp(request):
+    return bert_model(lang=request.param)
 
 
 def test_forward(nlp):

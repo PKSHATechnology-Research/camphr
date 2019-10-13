@@ -1,11 +1,14 @@
+from pathlib import Path
+import json
 import tempfile
 import os
+from typing import List, Dict, Tuple
 
 import torch
 import pytest
 import spacy
 from bedoner.models import bert_ner
-from bedoner.ner_labels.labels_ene import ALL_LABELS
+from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexs
 from bedoner.ner_labels.utils import make_biluo_labels
 from spacy.gold import GoldParse, spans_from_biluo_tags
@@ -13,14 +16,14 @@ from spacy.language import Language
 from spacy.tokens import Doc
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def labels():
-    return make_biluo_labels(ALL_LABELS)
+    return make_biluo_labels(enes)
 
 
-@pytest.fixture
-def nlp(labels):
-    return bert_ner(labels=["-"] + labels)
+@pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
+def nlp(labels, request):
+    return bert_ner(lang=request.param, labels=["-"] + labels)
 
 
 TESTCASE = [
@@ -145,3 +148,46 @@ def test_update_batch_cuda(nlp: Language, cuda):
     texts, golds = zip(*TESTCASE)
     optim = nlp.resume_training()
     nlp.update(texts, golds, optim)
+
+
+DATADIR = Path(__file__).parent / "../data/"
+
+
+@pytest.fixture(scope="module", params=["ner/ner.json"])
+def example_irex(request):
+    with (DATADIR / request.param).open() as f:
+        d = json.load(f)
+    return d
+
+
+@pytest.fixture(scope="module", params=["ner/ner2.json"])
+def example_ene(request):
+    with (DATADIR / request.param).open() as f:
+        d = json.load(f)
+    return d
+
+
+@pytest.fixture(scope="module", params=["ner/long.json"])
+def example_long(request):
+    with (DATADIR / request.param).open() as f:
+        d = json.load(f)
+    return d
+
+
+def test_example_batch_irex(nlp_irex: Language, example_irex):
+    texts, golds = zip(*example_irex)
+    optim = nlp_irex.resume_training()
+    nlp_irex.update(texts, golds, optim)
+
+
+def test_example_batch_ene(nlp: Language, example_ene):
+    texts, golds = zip(*example_ene)
+    optim = nlp.resume_training()
+    nlp.update(texts, golds, optim)
+
+
+def test_long_input(nlp: Language, example_long):
+    texts, golds = zip(*example_long)
+    optim = nlp.resume_training()
+    with pytest.raises(ValueError):
+        nlp.update(texts, golds, optim)

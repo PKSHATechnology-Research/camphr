@@ -95,10 +95,21 @@ class BertModel(TorchPipe):
             model = cls.trf_model_cls(cls.trf_config_cls(**cfg["trf_config"]))
         return model
 
+    @property
+    def max_length(self) -> int:
+        return self.model.config.max_position_embeddings
+
+    def assert_length(self, x: BertModelInputs):
+        if x.input_ids.shape[1] > self.max_length:
+            raise ValueError(
+                f"Too long input_ids. Expected {self.max_length}, but got {x.input_ids.shape[1]}"
+            )
+
     def predict(self, docs: List[Doc]) -> BertModelOutputs:
         self.require_model()
         self.model.eval()
         x = self.docs_to_trfinput(docs)
+        self.assert_length(x)
         with torch.no_grad():
             y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
         return y
@@ -129,6 +140,7 @@ class BertModel(TorchPipe):
         self.require_model()
         self.model.train()
         x = self.docs_to_trfinput(docs)
+        self.assert_length(x)
         y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
         self.set_annotations(docs, y)
 
