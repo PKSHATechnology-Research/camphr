@@ -1,7 +1,7 @@
-import shutil
 import json
+import shutil
 from itertools import zip_longest
-from typing import Tuple, Any
+from typing import Any, Tuple
 
 
 def check_juman():
@@ -24,4 +24,3 @@ def comp_jsonl(fname1: str, fname2: str) -> Tuple[bool, Any]:
             if d1 != d2:
                 return False, (d1, d2)
     return True, ()
-

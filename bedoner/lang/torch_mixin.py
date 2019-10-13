@@ -1,14 +1,15 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
 import itertools
+from dataclasses import dataclass
 from typing import List, Optional, Type, cast
 
 import torch
 import torch.optim as optim
-from bedoner.torch_utils import OptimizerParameters, TorchPipe
-from dataclasses import dataclass
 from spacy.errors import Errors as SpacyErrors
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.tokens import Doc
+
+from bedoner.torch_utils import OptimizerParameters, TorchPipe
 
 
 @dataclass

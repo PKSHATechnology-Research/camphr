@@ -1,9 +1,8 @@
-import bedoner.ner_labels.labels_ontonotes as L
 import pytest
-from bedoner.lang.mecab import Japanese
-from bedoner.pipelines.date_ner import DateRuler
 from spacy.tokens.doc import Doc
 from spacy.tokens.span import Span
+
+import bedoner.ner_labels.labels_ontonotes as L
 from bedoner.models import date_ruler
 
 

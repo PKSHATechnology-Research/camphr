@@ -1,8 +1,7 @@
-import torch
 import pytest
+import torch
+
 from bedoner.models import bert_model
-from bedoner.torch_utils import TorchPipe
-from bedoner.pipelines.trf_model import BertModel
 
 
 @pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])

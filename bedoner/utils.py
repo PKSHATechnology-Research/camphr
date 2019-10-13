@@ -1,12 +1,12 @@
 """The utils module defines util functions used accross sub packages."""
+import bisect
+import re
 from collections import OrderedDict
 from pathlib import Path
-import bisect
 from typing import Iterable, List, Type
-import re
-from spacy.tokens import Doc, Token
 
 import srsly
+from spacy.tokens import Doc, Token
 
 
 class SerializationMixin:

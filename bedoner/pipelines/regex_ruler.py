@@ -1,6 +1,7 @@
 import regex as re
-from bedoner.utils import SerializationMixin, destruct_token
 from spacy.tokens import Doc
+
+from bedoner.utils import SerializationMixin, destruct_token
 
 
 class RegexRuler(SerializationMixin):

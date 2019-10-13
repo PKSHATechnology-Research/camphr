@@ -1,19 +1,19 @@
-import hydra
-import torch
-from typing import List, Dict
 import json
-from spacy.scorer import Scorer
+import logging
 import random
 from pathlib import Path
+from typing import Dict, List
 
-from spacy.util import minibatch
-import logging
-from sklearn.model_selection import train_test_split
+import hydra
 import omegaconf
+import torch
+from sklearn.model_selection import train_test_split
+from spacy.scorer import Scorer
+from spacy.util import minibatch
 
 from bedoner.models import *
-from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
 from bedoner.ner_labels.labels_ene import ALL_LABELS as ene_labels
+from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
 from bedoner.ner_labels.utils import make_biluo_labels
 
 log = logging.getLogger(__name__)

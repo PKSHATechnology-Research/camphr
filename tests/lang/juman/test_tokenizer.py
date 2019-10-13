@@ -2,7 +2,9 @@ import tempfile
 
 import pytest
 import spacy
+
 from bedoner.lang.juman import Japanese as Juman
+
 from ...utils import check_juman
 
 TOKENIZER_TESTS = [("日本語だよ", ["日本", "語", "だ", "よ"])]

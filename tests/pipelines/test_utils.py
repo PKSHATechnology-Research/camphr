@@ -2,6 +2,9 @@ import random
 from typing import List
 
 import pytest
+from spacy.gold import spans_from_biluo_tags
+from spacy.language import Language
+
 from bedoner.pipelines.utils import (
     B,
     I,
@@ -12,8 +15,6 @@ from bedoner.pipelines.utils import (
     correct_biluo_tags,
     correct_bio_tags,
 )
-from spacy.gold import spans_from_biluo_tags
-from spacy.language import Language
 
 
 @pytest.fixture

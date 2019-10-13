@@ -1,6 +1,6 @@
-import spacy
-import py
 import pytest
+import spacy
+
 from bedoner.models import bert_wordpiecer
 
 
@@ -13,4 +13,3 @@ def test_bert_wordpiecer(lang, tmpdir):
 
     nlp2 = spacy.load(d)
     assert nlp2.meta["lang"] == lang
-

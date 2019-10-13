@@ -1,8 +1,9 @@
-from typing_extensions import Protocol
 from typing import Dict, Iterable, Optional, Tuple, Union
-from spacy.tokens import Doc, Span
-from bedoner.utils import SerializationMixin
 
+from spacy.tokens import Doc, Span
+from typing_extensions import Protocol
+
+from bedoner.utils import SerializationMixin
 
 Match = Tuple[int, int, int]
 

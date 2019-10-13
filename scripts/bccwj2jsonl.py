@@ -20,8 +20,8 @@ import regex as re
 from tqdm import tqdm
 
 __dir__ = Path(__file__).parent
-with open(__dir__/"ene2irexmap.json") as f:
-    IREXMAP=json.load(f)
+with open(__dir__ / "ene2irexmap.json") as f:
+    IREXMAP = json.load(f)
 
 r = re.compile("<(?P<tag>[a-zA-Z-_]+)>(?P<body>.*?)</[a-zA-Z-_]+>")
 rtag = re.compile("</?[a-zA-Z-_]+>")
@@ -62,13 +62,11 @@ def check_conversion(item: Entry, xml_text, is_tag_removed=False) -> bool:
     return expected == text
 
 
-def proc(
-    xml: IO[str], output: IO[str], tag_mapping=""
-) -> Tuple[int, List[Any]]:
+def proc(xml: IO[str], output: IO[str], tag_mapping="") -> Tuple[int, List[Any]]:
     """Convert xml to jsonl."""
     count = 0
     flag = False
-    failed=[]
+    failed = []
     for i, line in enumerate(xml):
         line = line.strip()
         if not line:
@@ -113,7 +111,7 @@ def main(
 
             with open(xml) as f, outputpath.open("w") as fj:
                 c, failed = proc(f, fj, tag_mapping=tag_mapping)
-            fw.write("\n".join(map(lambda x: str(xml)+f": {x}", failed)))
+            fw.write("\n".join(map(lambda x: str(xml) + f": {x}", failed)))
             itemcount += c
             fcount += 1
     print(f"{fcount} files, {itemcount} items parsed.")

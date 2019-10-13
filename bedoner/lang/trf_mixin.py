@@ -1,13 +1,14 @@
 """The module trf_mixin defindes Language mixin for pytorch transformers."""
 from typing import Optional, Type
 
-from torch.optim.optimizer import Optimizer
-from bedoner.lang import torch_mixin
-from bedoner.torch_utils import OptimizerParameters
-from transformers import AdamW, WarmupLinearSchedule
 from spacy.tokens import Doc
 from spacy_transformers.language import TransformersLanguage
 from spacy_transformers.util import ATTRS
+from torch.optim.optimizer import Optimizer
+from transformers import AdamW, WarmupLinearSchedule
+
+from bedoner.lang import torch_mixin
+from bedoner.torch_utils import OptimizerParameters
 
 
 class TransformersLanguageMixin(torch_mixin.TorchLanguageMixin):

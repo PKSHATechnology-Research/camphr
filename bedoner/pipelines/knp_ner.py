@@ -1,9 +1,10 @@
 from functools import reduce
 from typing import Any, List
 
-from bedoner.consts import KEY_KNP_ENT, KEY_KNP_ENT_IOB
 from spacy.language import Language
 from spacy.tokens import Doc, Span, Token
+
+from bedoner.consts import KEY_KNP_ENT, KEY_KNP_ENT_IOB
 
 
 class KnpEntityExtractor:

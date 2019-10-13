@@ -11,9 +11,9 @@ from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc, Token
 
-from bedoner.lang.stop_words import STOP_WORDS
-from bedoner.utils import SerializationMixin, RE_URL
 from bedoner.consts import KEY_FSTRING
+from bedoner.lang.stop_words import STOP_WORDS
+from bedoner.utils import RE_URL, SerializationMixin
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "space", "fstring"]

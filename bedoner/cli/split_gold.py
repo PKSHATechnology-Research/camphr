@@ -1,8 +1,10 @@
-from typing import Any, Dict, IO, Tuple
-import fire
 import json
-from bedoner.utils import split_keepsep
+from typing import IO, Any, Dict, Tuple
+
+import fire
 import tqdm
+
+from bedoner.utils import split_keepsep
 
 
 class K:

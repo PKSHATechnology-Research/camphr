@@ -1,8 +1,9 @@
 import pytest
-from bedoner.utils import zero_pad, inject_mixin, split_keepsep
+
 import bedoner.lang.juman as juman
 import bedoner.lang.mecab as mecab
 from bedoner.lang.torch_mixin import TorchLanguageMixin
+from bedoner.utils import inject_mixin, split_keepsep, zero_pad
 
 
 def test_zero_pad():

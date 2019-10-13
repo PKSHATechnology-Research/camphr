@@ -1,5 +1,7 @@
 import pytest
-from bedoner.pipelines.regex_ruler import postcode_ruler, carcode_ruler
+
+from bedoner.pipelines.regex_ruler import carcode_ruler, postcode_ruler
+
 from ..utils import check_mecab
 
 pytestmark = pytest.mark.skipif(

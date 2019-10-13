@@ -1,19 +1,18 @@
-from pathlib import Path
 import json
-import tempfile
 import os
-from typing import List, Dict, Tuple
+import tempfile
 
-import torch
 import pytest
 import spacy
+import torch
+from spacy.gold import GoldParse, spans_from_biluo_tags
+from spacy.language import Language
+from spacy.tokens import Doc
+
 from bedoner.models import bert_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexs
 from bedoner.ner_labels.utils import make_biluo_labels
-from spacy.gold import GoldParse, spans_from_biluo_tags
-from spacy.language import Language
-from spacy.tokens import Doc
 
 
 @pytest.fixture(scope="module")

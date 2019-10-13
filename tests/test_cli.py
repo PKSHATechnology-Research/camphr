@@ -1,8 +1,10 @@
 from pathlib import Path
+
 import pytest
+
 from bedoner.cli import split_gold
+
 from .utils import comp_jsonl
-import filecmp
 
 
 @pytest.fixture(scope="module")

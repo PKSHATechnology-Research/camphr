@@ -1,21 +1,22 @@
 """The models module defines functions to create spacy models."""
-from bedoner.utils import inject_mixin
 import os
 from pathlib import Path
 
-import bedoner.lang.juman as juman
-import bedoner.lang.mecab as mecab
-import bedoner.lang.knp as knp
 import mojimoji
+from spacy.language import Language
+from spacy.vocab import Vocab
+
+import bedoner.lang.juman as juman
+import bedoner.lang.knp as knp
+import bedoner.lang.mecab as mecab
 from bedoner.lang.trf_mixin import TransformersLanguageMixin
 from bedoner.pipelines.date_ner import DateRuler
+from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.person_ner import create_person_ruler
 from bedoner.pipelines.trf_model import BertModel
 from bedoner.pipelines.trf_ner import BertForNamedEntityRecognition
-from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.wordpiecer import WordPiecer
-from spacy.vocab import Vocab
-from spacy.language import Language
+from bedoner.utils import inject_mixin
 
 __dir__ = Path(__file__).parent
 

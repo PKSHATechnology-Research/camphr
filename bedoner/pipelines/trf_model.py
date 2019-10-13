@@ -1,11 +1,16 @@
 """Module trf_model defines pytorch-transformers components."""
+import dataclasses
 import pickle
 from pathlib import Path
-from typing import List, Optional, cast, Iterable
+from typing import Iterable, List, Optional, cast
 
-import dataclasses
-import transformers as trf
 import torch
+import transformers as trf
+from spacy.gold import GoldParse
+from spacy.language import Language
+from spacy.tokens import Doc
+from spacy.vocab import Vocab
+
 from bedoner.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
@@ -13,10 +18,6 @@ from bedoner.torch_utils import (
     get_parameters_with_decay,
 )
 from bedoner.utils import zero_pad
-from spacy.gold import GoldParse
-from spacy.language import Language
-from spacy.tokens import Doc
-from spacy.vocab import Vocab
 
 BERT_PRETRAINED_MODEL_ARCHIVE_MAP = {
     "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman.bin"

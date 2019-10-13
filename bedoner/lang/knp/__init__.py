@@ -1,7 +1,7 @@
 """The package knp defines Japanese spacy.Language with knp tokenizer."""
-from itertools import tee, zip_longest
 import re
 from collections import namedtuple
+from itertools import tee, zip_longest
 from typing import Any, Callable, Dict, List, Optional
 
 from pyknp import KNP, Morpheme

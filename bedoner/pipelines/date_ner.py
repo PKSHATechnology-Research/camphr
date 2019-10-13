@@ -1,11 +1,12 @@
 """Date extraction component for spacy pipeline. Partialy copied from https://github.com/PKSHATechnology/bedore-ner-module."""
 from typing import Tuple
 
-import bedoner.ner_labels.labels_ontonotes as L
 import regex as re
-from bedoner.utils import SerializationMixin
 from spacy.language import Language
 from spacy.tokens import Doc
+
+import bedoner.ner_labels.labels_ontonotes as L
+from bedoner.utils import SerializationMixin
 
 
 class DateRuler(SerializationMixin):

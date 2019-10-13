@@ -1,15 +1,15 @@
-import tempfile
-import os
 import json
-import subprocess
-from pathlib import Path
-from spacy.language import Language
-from typing import List, Any, Dict, TypeVar, Union
-import omegaconf
-
-from spacy.cli import package
-import hydra
 import logging
+import os
+import subprocess
+import tempfile
+from pathlib import Path
+from typing import Any, Dict, List, TypeVar, Union
+
+import hydra
+import omegaconf
+from spacy.cli import package
+from spacy.language import Language
 
 log = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
-import pandas as pd
 import fire
 import jaconv
+import pandas as pd
 
 requires = [
     "表層形",

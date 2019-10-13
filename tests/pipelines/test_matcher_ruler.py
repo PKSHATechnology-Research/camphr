@@ -1,8 +1,9 @@
 import pytest
-from bedoner.pipelines.matcher_ruler import MatcherRuler
 from spacy.lang.en import English
-from spacy.matcher import Matcher, PhraseMatcher
 from spacy.language import Language
+from spacy.matcher import Matcher, PhraseMatcher
+
+from bedoner.pipelines.matcher_ruler import MatcherRuler
 
 
 @pytest.fixture
