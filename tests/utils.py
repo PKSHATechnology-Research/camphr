@@ -1,3 +1,4 @@
+import os
 import json
 import shutil
 from itertools import zip_longest
@@ -24,3 +25,7 @@ def comp_jsonl(fname1: str, fname2: str) -> Tuple[bool, Any]:
             if d1 != d2:
                 return False, (d1, d2)
     return True, ()
+
+
+def in_ci():
+    return os.getenv("CI", "") == "true"

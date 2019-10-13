@@ -1,5 +1,4 @@
 import json
-import os
 import tempfile
 
 import pytest
@@ -13,6 +12,8 @@ from bedoner.models import bert_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexs
 from bedoner.ner_labels.utils import make_biluo_labels
+
+from ..utils import in_ci
 
 
 @pytest.fixture(scope="module")
@@ -45,6 +46,7 @@ TESTCASE = [
         "夏休み真っただ中の8月26日の夕方。",
         {"entities": [(0, 3, "DATE"), (9, 14, "DATE"), (15, 17, "TIME")]},
     ),
+    ("。", {"entities": []}),
 ]
 
 
@@ -74,7 +76,6 @@ def test_update(nlp: Language, text, gold):
     assert nlp.device.type == "cpu"
     doc = nlp(text)
     gold = GoldParse(doc, **gold)
-    assert not is_same_ner(doc, gold)
 
     optim = nlp.resume_training()
     assert nlp.device.type == "cpu"
@@ -90,9 +91,7 @@ def test_update_batch(nlp: Language):
     nlp.update(texts, golds, optim)
 
 
-@pytest.mark.skip(
-    os.getenv("CI"), reason="Fail in circleci due to memory allocation error"
-)
+@pytest.mark.skip(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_save_and_load(nlp: Language):
     with tempfile.TemporaryDirectory() as d:
         nlp.to_disk(d)
@@ -166,6 +165,13 @@ def example_ene(request, DATADIR):
     return d
 
 
+@pytest.fixture(scope="module", params=["ner/ner_ene.json"])
+def example_ene2(request, DATADIR):
+    with (DATADIR / request.param).open() as f:
+        d = json.load(f)
+    return d
+
+
 @pytest.fixture(scope="module", params=["ner/long.json"])
 def example_long(request, DATADIR):
     with (DATADIR / request.param).open() as f:
@@ -173,18 +179,14 @@ def example_long(request, DATADIR):
     return d
 
 
-@pytest.mark.skip(
-    os.getenv("CI"), reason="Fail in circleci due to memory allocation error"
-)
+@pytest.mark.skip(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_example_batch_irex(nlp_irex: Language, example_irex):
     texts, golds = zip(*example_irex)
     optim = nlp_irex.resume_training()
     nlp_irex.update(texts, golds, optim)
 
 
-@pytest.mark.skip(
-    os.getenv("CI"), reason="Fail in circleci due to memory allocation error"
-)
+@pytest.mark.skip(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_example_batch_ene(nlp: Language, example_ene):
     texts, golds = zip(*example_ene)
     optim = nlp.resume_training()
@@ -196,3 +198,10 @@ def test_long_input(nlp: Language, example_long):
     optim = nlp.resume_training()
     with pytest.raises(ValueError):
         nlp.update(texts, golds, optim)
+
+
+@pytest.mark.skip(in_ci(), reason="Fail in circleci due to memory allocation error")
+def test_example_batch_ene2(nlp: Language, example_ene):
+    texts, golds = zip(*example_ene)
+    optim = nlp.resume_training()
+    nlp.update(texts, golds, optim)
