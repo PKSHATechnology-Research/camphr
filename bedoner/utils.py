@@ -77,3 +77,17 @@ def inject_mixin(mixin: Type, base_cls: Type) -> Type:
         pass
 
     return _Mixined
+
+
+def split_keepsep(text: str, sep: str):
+    texts = text.split(sep)
+    if len(texts) == 1:
+        return [text]
+
+    res = [t + sep for t in texts[:-1]]
+    last = texts[-1]
+    if len(last):
+        if text.endswith(sep):
+            last += sep
+        res.append(last)
+    return res
