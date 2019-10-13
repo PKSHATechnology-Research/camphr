@@ -22,4 +22,4 @@ jobs:
       - run: docker-compose build
       - run:
           name: run pytest
-          command: docker-compose run ner pipenv run pytest
+          command: docker-compose run ner pipenv run pytest -v
