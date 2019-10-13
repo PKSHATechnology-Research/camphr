@@ -82,6 +82,10 @@ class Tokenizer(SerializationMixin):
             if nextnode.length != nextnode.rlength:
                 # next node contains space, so attach it to this node.
                 words.append(ShortUnitWord(surface, base, pos, True, node.feature))
+            elif nextnode.surface == "\u3000":
+                # next node is full space, so attatch it to this node and skip the nextnode.
+                words.append(ShortUnitWord(surface, base, pos, True, node.feature))
+                nextnode = nextnode.next
             else:
                 words.append(ShortUnitWord(surface, base, pos, False, node.feature))
             node = nextnode
