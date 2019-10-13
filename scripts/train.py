@@ -81,7 +81,7 @@ def main(cfg: Config):
                 nlp.update(docs, golds, optim)
             except:
                 with open("fail.json", "w") as f:
-                    json.dump(batch, f)
+                    json.dump(batch, f, ensure_ascii=False)
                 raise
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
@@ -91,7 +91,7 @@ def main(cfg: Config):
                     scorer: Scorer = nlp.evaluate(val_data)
                 except:
                     with open("fail.json", "w") as f:
-                        json.dump(batch, f)
+                        json.dump(val_data, f, ensure_ascii=False)
                         raise
                 log.info(f"p: {scorer.ents_p}")
                 log.info(f"r: {scorer.ents_r}")
@@ -101,7 +101,7 @@ def main(cfg: Config):
             scorer: Scorer = nlp.evaluate(val_data)
         except:
             with open("fail.json", "w") as f:
-                json.dump(batch, f)
+                json.dump(val_data, f, ensure_ascii=False)
             raise
         nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
         nlp.to_disk(modelsdir / str(i))
