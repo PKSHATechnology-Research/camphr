@@ -1,7 +1,5 @@
 """The models module defines functions to create spacy models."""
 from bedoner.utils import inject_mixin
-from typing import Type
-from bedoner.ner_labels.labels_ontonotes import LANGUAGE
 import os
 from pathlib import Path
 

@@ -1,7 +1,6 @@
 """The module trf_mixin defindes Language mixin for pytorch transformers."""
 from typing import Optional, Type
 
-import bedoner.lang.juman as juman
 from torch.optim.optimizer import Optimizer
 from bedoner.lang import torch_mixin
 from bedoner.torch_utils import OptimizerParameters

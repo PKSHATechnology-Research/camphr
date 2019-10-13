@@ -1,4 +1,4 @@
-from typing import List, Dict, IO, Iterable, Any, Sequence, Text, Tuple, cast, TextIO
+from typing import Any, Dict, IO, Tuple
 import fire
 import json
 from bedoner.utils import split_keepsep
@@ -42,4 +42,4 @@ def split_gold(fname: str, output: str, sep: str):
 
 
 if __name__ == "__main__":
-    fire.Fire()
+    fire.Fire(split_gold)

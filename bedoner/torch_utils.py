@@ -1,6 +1,5 @@
 """The module torch_utils defines utilities for pytorch."""
 from typing import Any, Dict, Iterable, Optional, Union
-import warnings
 
 import torch
 import torch.nn as nn

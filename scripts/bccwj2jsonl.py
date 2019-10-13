@@ -8,7 +8,6 @@ $ python bccwj2jsonl xml/ output/
 
 $ pythonn bccwj2jsonl xml/ output/ irex
 """
-import io
 import json
 import xml.etree.ElementTree as ET
 from collections import namedtuple

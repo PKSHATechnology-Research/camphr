@@ -1,7 +1,6 @@
 import tempfile
 import os
 import json
-import spacy
 import subprocess
 from pathlib import Path
 from spacy.language import Language

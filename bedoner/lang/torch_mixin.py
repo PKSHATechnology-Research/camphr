@@ -1,6 +1,4 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
-from bedoner import pipelines
-from bedoner.pipelines.trf_model import BertModel
 import itertools
 from typing import List, Optional, Type, cast
 

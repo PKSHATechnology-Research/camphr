@@ -33,3 +33,6 @@ python_version = "3.7"
 
 [pipenv]
 allow_prereleases = true
+
+[scripts]
+remove-unused-imports = "autoflake --in-place --remove-all-unused-imports -r scripts bedoner"

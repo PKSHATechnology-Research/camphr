@@ -17,7 +17,6 @@ from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
-from spacy_transformers.util import ATTRS
 
 BERT_PRETRAINED_MODEL_ARCHIVE_MAP = {
     "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman.bin"

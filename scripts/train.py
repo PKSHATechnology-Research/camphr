@@ -14,7 +14,7 @@ import omegaconf
 from bedoner.models import *
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
 from bedoner.ner_labels.labels_ene import ALL_LABELS as ene_labels
-from bedoner.ner_labels.utils import make_biluo_labels, make_bio_labels
+from bedoner.ner_labels.utils import make_biluo_labels
 
 log = logging.getLogger(__name__)
 
