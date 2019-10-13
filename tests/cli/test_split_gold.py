@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pytest
 
-from bedoner.cli import split_gold
+from bedoner.cli.split_gold import split_gold
 
-from .utils import comp_jsonl
+from ..utils import comp_jsonl
 
 
 @pytest.fixture(scope="module")
