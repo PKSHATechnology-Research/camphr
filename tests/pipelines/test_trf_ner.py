@@ -174,12 +174,18 @@ def example_long(request, DATADIR):
     return d
 
 
+@pytest.mark.skip(
+    os.getenv("CI"), reason="Fail in circleci due to memory allocation error"
+)
 def test_example_batch_irex(nlp_irex: Language, example_irex):
     texts, golds = zip(*example_irex)
     optim = nlp_irex.resume_training()
     nlp_irex.update(texts, golds, optim)
 
 
+@pytest.mark.skip(
+    os.getenv("CI"), reason="Fail in circleci due to memory allocation error"
+)
 def test_example_batch_ene(nlp: Language, example_ene):
     texts, golds = zip(*example_ene)
     optim = nlp.resume_training()
