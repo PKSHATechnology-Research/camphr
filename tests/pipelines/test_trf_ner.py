@@ -23,7 +23,10 @@ def labels():
 
 @pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
 def nlp(labels, request):
-    return bert_ner(lang=request.param, labels=["-"] + labels)
+    lang = request.param
+    _nlp = bert_ner(lang=lang, labels=["-"] + labels)
+    assert _nlp.meta["lang"] == lang
+    return _nlp
 
 
 TESTCASE = [
