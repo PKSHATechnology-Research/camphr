@@ -1,5 +1,88 @@
 # pipelines
 
+## BERT
+
+文章から固定長ベクトルを計算するパイプです．[BERT as a service](https://github.com/hanxiao/bert-as-service)と同じです．
+[リリースページ](https://github.com/PKSHATechnology/bedore-ner/releases)から pre-trained モデルをダウンロードして，以下のようにpipでインストールしてください.  
+パラメータ等全て入っています．
+
+```bash
+$ pip install mecab-bert-model.VERSION.tar.gz
+```
+
+Example:
+
+計算されたvectorは`doc.vector`に入っています．
+
+```python
+import spacy
+nlp = spacy.load("mecab_bert_model")
+doc = nlp("今日はいい天気だった")
+doc.vector
+```
+```
+tensor([ 3.6809e+00,  4.4274e+00...
+```
+
+2つの文章のコサイン類似度を計算するには, `doc.similarity`を使います．
+
+```python
+doc1 = nlp("今日はいい天気だった")
+doc2 = nlp("明日は晴れるかな")
+doc1.similarity(doc2)
+```
+```
+tensor([ 3.6809e+00,  4.4274e+00...
+```
+
+`token.similarity`を使えば，tokenごとの類似度を計算することもできます．
+
+```python
+doc = nlp("私は犬と猫が好きだ")
+I, dog, cat = doc[0], doc[2], doc[4]
+print(I, dog, I.similarity(dog))
+print(I, cat, I.similarity(cat))
+print(cat, dog, cat.similarity(dog))
+```
+```
+私 犬 0.32778844237327576
+私 猫 0.32199826836586
+猫 犬 0.6300971508026123
+```
+
+tokenとspanの類似度を計算することもできます．
+
+```python
+doc = nlp("麩はこんにゃくというよりスカスカした餅のようなものだ")
+hu, konnyaku, sukasukamochi = doc[0], doc[2], doc[6:9]
+print(hu, konnyaku, hu.similarity(konnyaku))
+print(hu, sukasukamochi, hu.similarity(sukasukamochi))
+```
+```
+麩 こんにゃく 0.3782161474227905
+麩 スカスカした餅 0.4847041666507721
+```
+
+### Note
+
+BERTの出力は，[extension](https://spacy.io/usage/processing-pipelines/#custom-components-attributes)に格納されています．  
+
+```python
+doc._.trf_last_hidden_state.get()
+```
+```
+tensor([[ 0.7485,  0.4472, -0.8713,  ...,  1.4357, -0.8676, -0.9460],
+        [-0.0795,  0.6541,  0.2983,  ...,  1.4968, -1.3029, -0.7141],
+        [ 0.2558, -1.0429, -0.6292,  ...,  1.8136, -1.3327,  1.2303],
+        ...,
+        [ 0.2756,  1.6950, -0.5470,  ...,  1.3305, -0.6078, -1.2043],
+        [ 1.1879, -0.3951,  0.2410,  ...,  0.7852, -0.4615,  0.1637],
+        [ 0.4241,  0.5678,  0.0574,  ...,  0.8235, -0.6994, -0.1566]])
+```
+
+propertyはspacy-transformersと統一してあります．詳しくは: https://github.com/explosion/spacy-transformers#extension-attributes
+
+
 ## BERT NER
 
 [BERT](https://github.com/google-research/bert)を用いたNERです．  
@@ -11,11 +94,13 @@ $ pip install mecab-bert-ene.VERSION.tar.gz
 ```
 
 ```python
->>> import spacy
->>> nlp = spacy.load("mecab_bert_ene")
->>> doc = nlp("10日発表されたノーベル文学賞の受賞者をめぐり、選考機関のスウェーデン・アカデミーが批判されている。")
->>> for e in doc.ents:
->>>     print(e.text, e.label_)
+import spacy
+nlp = spacy.load("mecab_bert_ene")
+doc = nlp("10日発表されたノーベル文学賞の受賞者をめぐり、選考機関のスウェーデン・アカデミーが批判されている。")
+for e in doc.ents:
+    print(e.text, e.label_)
+```
+```
 10日 DATE
 ノーベル文学賞 AWARD
 スウェーデン COUNTRY
@@ -24,18 +109,29 @@ $ pip install mecab-bert-ene.VERSION.tar.gz
 大量の入力を処理したいときは，`nlp.pipe`を使いましょう．遅延評価であり，無限長の入力にも対応しています．
 
 ```python
->>> texts: Iterable[str] = ...
->>> docs = nlp(texts)
->>> for doc in docs:
->>>   ...
+texts: Iterable[str] = ...
+docs = nlp(texts)
+for doc in docs:
+  ...
 ```
 
 GPUを使うことでさらに高速に処理できます．(内部ではpytorchを使用しています)
 
 ```python
->>> import torch
->>> nlp.to(torch.device("gpu"))
->>> docs = nlp(texts)
+import torch
+nlp.to(torch.device("gpu"))
+docs = nlp(texts)
+```
+
+上で説明した[BERT](#BERT)と同じ機能が使えます．例えば`doc.similarity`を使うと，2つの文章の類似度を計算することができます:
+
+```python
+doc1 = nlp("今日はいい天気だった")
+doc2 = nlp("明日は晴れるかな")
+doc1.similarity(doc2)
+```
+```
+tensor([ 3.6809e+00,  4.4274e+00...
 ```
 
 ### Training
