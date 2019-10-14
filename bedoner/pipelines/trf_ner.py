@@ -193,16 +193,17 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
         logits = self.model(x.batch_tensor)
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
-            try:
-                idx = list(map(lambda x: x[0], doc._.trf_alignment))
-            except RuntimeError as e:
-                raise ValueError(
-                    f"Internal error is occured when processing '{doc}'. This seems to be an error about wordpiecer mapping, please notify maintainer.\n"
-                    + e.message
-                )
+            idx = []
+            ners = list(gold.ner)
+            for i, align in enumerate(doc._.trf_alignment):
+                if len(align):
+                    idx.append(align[0])
+                else:
+                    ners[i] = UNK.value  # avoid calculate loss
+                    idx.append(-1)
             loss = F.cross_entropy(
                 logit[idx],
-                torch.tensor([label2id[ner] for ner in gold.ner], device=self.device),
+                torch.tensor([label2id[ner] for ner in ners], device=self.device),
                 ignore_index=ignore_index,
             )
 
@@ -222,9 +223,11 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
             doc._.cls_logit = logit
             biluo_tags = []
             for token, a in zip(doc, doc._.trf_alignment):
-                token._.cls_logit = logit[a[0]]
-                label = labels[a[0]]
-                biluo_tags.append(label)
+                if len(a):
+                    token._.cls_logit = logit[a[0]]
+                    biluo_tags.append(labels[a[0]])
+                else:
+                    biluo_tags.append(UNK.value)
             biluo_tags = correct_biluo_tags(biluo_tags)
             doc.ents = spans_from_biluo_tags(doc, biluo_tags)
         return docs

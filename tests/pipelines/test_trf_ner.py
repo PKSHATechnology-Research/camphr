@@ -4,9 +4,8 @@ import tempfile
 import pytest
 import spacy
 import torch
-from spacy.gold import GoldParse, spans_from_biluo_tags
+from spacy.gold import GoldParse
 from spacy.language import Language
-from spacy.tokens import Doc
 
 from bedoner.models import bert_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
@@ -47,6 +46,8 @@ TESTCASE = [
         {"entities": [(0, 3, "DATE"), (9, 14, "DATE"), (15, 17, "TIME")]},
     ),
     ("。", {"entities": []}),
+    (" おはよう", {"entities": []}),
+    ("　おはよう", {"entities": []}),
 ]
 
 
@@ -57,18 +58,6 @@ def test_call(nlp: Language, text, gold):
 
 def test_pipe(nlp: Language):
     list(nlp.pipe(["今日はいい天気なので外で遊びたい", "明日は晴れ"]))
-
-
-def is_same_ner(doc: Doc, gold: GoldParse) -> bool:
-    if len(doc) != len(gold.ner):
-        return False
-    gold_spans = spans_from_biluo_tags(doc, gold.ner)
-    if len(gold_spans) != len(doc.ents):
-        return False
-    res = True
-    for e, e2 in zip(doc.ents, gold_spans):
-        res &= e == e2
-    return res
 
 
 @pytest.mark.parametrize("text,gold", TESTCASE)
@@ -89,6 +78,10 @@ def test_update_batch(nlp: Language):
     texts, golds = zip(*TESTCASE)
     optim = nlp.resume_training()
     nlp.update(texts, golds, optim)
+
+
+def test_evaluate(nlp: Language):
+    nlp.evaluate(TESTCASE)
 
 
 @pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
