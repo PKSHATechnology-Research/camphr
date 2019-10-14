@@ -3,7 +3,6 @@ from collections import namedtuple
 from itertools import tee, zip_longest
 from typing import Any, Callable, Dict, List, Optional
 
-from pyknp import Juman, Morpheme
 from spacy.attrs import LANG
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -46,12 +45,16 @@ class Tokenizer(SerializationMixin):
             juman_kwargs: passed to `pyknp.Juman.__init__`
             preprocessor: applied to text before tokenizing. `mojimoji.han_to_zen` is often used.
         """
+        from pyknp import Juman
+
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         self.tokenizer = Juman(**juman_kwargs) if juman_kwargs else Juman()
         self.juman_kwargs = juman_kwargs
         self.preprocessor = preprocessor
 
     def reset_tokenizer(self):
+        from pyknp import Juman
+
         self.tokenizer = Juman(**self.juman_kwargs) if self.juman_kwargs else Juman()
 
     def __call__(self, text: str) -> Doc:
@@ -71,6 +74,8 @@ class Tokenizer(SerializationMixin):
 
     def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
         """Tokenize text with Juman and format the outputs for further processing"""
+        from pyknp import Morpheme
+
         words: List[ShortUnitWord] = []
         try:
             ml: List[Morpheme] = self.tokenizer.analysis(text).mrph_list()
@@ -93,7 +98,7 @@ class Tokenizer(SerializationMixin):
         return words
 
 
-def is_space_morph(m: Morpheme) -> bool:
+def is_space_morph(m) -> bool:
     return m.bunrui == "空白"
 
 
