@@ -2,6 +2,7 @@ import regex as re
 from spacy.tokens import Doc
 
 from bedoner.utils import SerializationMixin, destruct_token
+from bedoner.pipelines.utils import merge_entities
 
 
 class RegexRuler(SerializationMixin):
@@ -41,7 +42,7 @@ class RegexRuler(SerializationMixin):
                 span = doc.char_span(i, j, label=self.label)
             if span:
                 spans.append(span)
-        doc.ents += tuple(spans)
+        doc.ents = merge_entities(doc.ents, tuple(spans))
         if self.merge:
             with doc.retokenize() as retokenizer:
                 for span in spans:

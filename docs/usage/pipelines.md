@@ -94,7 +94,19 @@ nlp(text).ents
 (080-1234-7667,)
 ```
 
-recallを100%にしたい場合は，`pipe.destructive = True`にします．分かち書きで作成したtokenを分解し，確実にマッチするようになりますが，他のパイプの性能を落とす可能性があります．
+### Compose with BERT
+
+BERTと正規表現pipeを組み合わせて使うこともできます．特定の表現についてrecallを100%にしたいときなどに有用です．  
+例えばルールベースの電話番号検出をBERTに加える場合，以下の通りです．  
+
+```python
+import spacy
+nlp = spacy.load("mecab_bert_ene")
+doc = nlp("10日発表されたノーベル文学賞の受賞者をめぐり、選考機関のスウェーデン・アカデミーが批判されている。")
+for e in doc.ents:
+    print(e.text, e.label_)
+```
+
 
 ### Built-In regex pipes
 
@@ -103,11 +115,25 @@ recallを100%にしたい場合は，`pipe.destructive = True`にします．分
 - postcode
 - carcode
 
+Example: 
+
 ```python
+import spacy
 from bedoner.pipelines import postcode_ruler, carcode_ruler
+
+nlp = spacy.blank("mecab")
+nlp.add_pipe(postcode_ruler)
+nlp.add_pipe(carcode_ruler)
+
+nlp("郵便番号は〒100-0001で，車の番号は品川500 さ 2345です").ents
+```
+```
+(〒100-0001, 品川500 さ 2345)
 ```
 
+### Advanced
 
+recallを100%にしたい場合は，`pipe.destructive = True`にします．分かち書きで作成したtokenを分解し，確実にマッチするようになりますが，他のパイプの性能を落とす可能性があります．
 
 ## Person NER
 

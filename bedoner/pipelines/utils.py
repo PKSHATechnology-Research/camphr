@@ -1,6 +1,7 @@
 import copy
 from enum import Enum
-from typing import List, Tuple
+from typing import List, Tuple, Iterable
+from spacy.tokens import Span
 
 
 class BILUO(Enum):
@@ -138,3 +139,36 @@ def correct_bio_tags(tags: List[str]) -> List[str]:
             # invalid pattern
             tags[i + 1] = UNK.value
     return tags[1:]
+
+
+def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:
+    """Merge two ents. If ents0 and ents1 conflict, give priority to ents1."""
+    lents0 = sorted(ents0, key=lambda span: span.start)
+    lents1 = sorted(ents1, key=lambda span: span.start)
+    if len(lents0) == 0:
+        return lents1
+    if len(lents1) == 0:
+        return lents0
+
+    new_ents0 = []
+    cur = 0
+    left = 0
+    right = lents1[cur].start
+
+    for ent0 in lents0:
+        start, end = ent0.start, ent0.end
+        while True:
+            if start >= left and end <= right:
+                new_ents0.append(ent0)
+                break
+            elif start > right:
+                left = lents1[cur].end
+                cur += 1
+                if len(lents1) <= cur:
+                    right = len(ent0.doc) + 100
+                else:
+                    right = lents1[cur].start
+            else:
+                break
+
+    return lents1 + new_ents0

@@ -1,9 +1,13 @@
 import random
-from typing import List
+from typing import List, Tuple
+from itertools import zip_longest
 
 import pytest
 from spacy.gold import spans_from_biluo_tags
 from spacy.language import Language
+from spacy.tokens import Span
+from spacy.vocab import Vocab
+from spacy.tests.util import get_doc
 
 from bedoner.pipelines.utils import (
     B,
@@ -14,6 +18,7 @@ from bedoner.pipelines.utils import (
     construct_biluo_tag,
     correct_biluo_tags,
     correct_bio_tags,
+    merge_entities,
 )
 
 
@@ -100,3 +105,55 @@ TESTCAESES_BIO = [(["B-LOC", "I-LOC", "O", "I-PERSON"], ["B-LOC", "I-LOC", "O", 
 def test_correct_bio(tags, expected):
     corrected = correct_bio_tags(tags)
     assert corrected == expected
+
+
+TESTCASES_MERGE_ENTS = [
+    (
+        ["This", "is", "an", "example", "text", "case"],
+        [(0, 1, "A"), (2, 4, "B"), (5, 6, "E")],
+        [(2, 3, "C"), (4, 5, "D")],
+        [(0, 1, "A"), (2, 3, "C"), (4, 5, "D"), (5, 6, "E")],
+    ),
+    (
+        ["This", "is", "an", "example", "text", "case"],
+        [(0, 2, "A"), (4, 6, "E")],
+        [(2, 3, "C"), (4, 5, "D")],
+        [(0, 2, "A"), (2, 3, "C"), (4, 5, "D")],
+    ),
+    (
+        ["This", "is", "an", "example", "text", "case"],
+        [(0, 2, "A"), (5, 6, "E")],
+        [(2, 3, "C"), (4, 5, "D")],
+        [(0, 2, "A"), (2, 3, "C"), (4, 5, "D"), (5, 6, "E")],
+    ),
+    (
+        ["This", "is", "an", "example", "text", "case", "foo", "bar", "a", "b", "c"],
+        [(0, 3, "A"), (4, 5, "E"), (7, 9, "F")],
+        [(2, 4, "C"), (5, 7, "D")],
+        [(2, 4, "C"), (4, 5, "E"), (5, 7, "D"), (7, 9, "F")],
+    ),
+    (
+        ["This", "is", "an", "example", "text", "case", "foo", "bar", "a", "b", "c"],
+        [(0, 1, "A"), (4, 6, "E"), (6, 9, "F")],
+        [(2, 4, "C"), (5, 7, "D")],
+        [(0, 1, "A"), (2, 4, "C"), (5, 7, "D")],
+    ),
+]
+
+
+def make_ents(doc, spans: List[Tuple[int, int, str]]) -> List[Span]:
+    return [Span(doc, span[0], span[1], label=span[2]) for span in spans]
+
+
+@pytest.mark.parametrize("words,spans0,spans1,expected_spans", TESTCASES_MERGE_ENTS)
+def test_merge_ents(words, spans0, spans1, expected_spans):
+    doc = get_doc(Vocab(), words=words)
+    ents0 = make_ents(doc, spans0)
+    ents1 = make_ents(doc, spans1)
+    expected = make_ents(doc, expected_spans)
+
+    merged = sorted(merge_entities(ents0, ents1), key=lambda span: span.start)
+    for a, b in zip_longest(expected, merged):
+        assert a.label_ == b.label_
+        assert a.start == b.start
+        assert a.end == b.end

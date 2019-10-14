@@ -2,7 +2,7 @@ from bedoner.lang import mecab
 import pytest
 from spacy.language import Language
 
-from bedoner.pipelines.regex_ruler import carcode_ruler, postcode_ruler
+from bedoner.pipelines.regex_ruler import carcode_ruler, RegexRuler, postcode_ruler
 
 from ..utils import check_mecab
 
@@ -76,3 +76,11 @@ def test_compose_pipes(nlp: Language):
     text = "郵便番号は〒100-0001で，車の番号は品川500 さ 2345です"
     doc = nlp(text)
     assert len(doc.ents) == 2
+
+
+def test_conflict_label(nlp: Language):
+    text = "郵便番号は〒100-0001で，車の番号は品川500 さ 2345です"
+    nlp.add_pipe(carcode_ruler)
+    nlp.add_pipe(RegexRuler(r"\d*", label="NUMBER"))
+    doc = nlp(text)
+    assert len(doc.ents) == 4
