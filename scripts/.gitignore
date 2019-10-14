@@ -8,3 +8,4 @@ log.ipynb
 !ene2irexmap.json
 !conf
 !conf/**/*
+!test-package.sh
