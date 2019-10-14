@@ -7,6 +7,7 @@ from spacy.tokens import Doc
 
 import bedoner.ner_labels.labels_ontonotes as L
 from bedoner.utils import SerializationMixin
+from bedoner.pipelines.utils import merge_entities
 
 
 class DateRuler(SerializationMixin):
@@ -25,14 +26,16 @@ class DateRuler(SerializationMixin):
 
     def __call__(self, doc: Doc) -> Doc:
         """Extract date with regex"""
+        ents = []
         for m in self.REGEXP_WAREKI_YMD.finditer(doc.text):
             span = doc.char_span(*m.span(), label=self.LABEL)
-            doc.ents = doc.ents + (span,)
+            ents.append(span)
 
         for m in self.REGEXP_SEIREKI_YMD.finditer(doc.text):
             if self._is_valid_seireki(m.groups()):
                 span = doc.char_span(*m.span(), label=self.LABEL)
-                doc.ents = doc.ents + (span,)
+                ents.append(span)
+        doc.ents = merge_entities(doc.ents, ents)
         return doc
 
     @staticmethod
