@@ -5,7 +5,6 @@ from pathlib import Path
 from shutil import copytree
 from typing import List, Optional
 
-import MeCab  # TODO: lazy import?
 from spacy.attrs import LANG
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -91,10 +90,10 @@ class Tokenizer(SerializationMixin):
             node = nextnode
         return words
 
-    def get_mecab(
-        self, dicdir: Optional[str] = None, userdic: Optional[str] = None
-    ) -> MeCab.Tagger:
+    def get_mecab(self, dicdir: Optional[str] = None, userdic: Optional[str] = None):
         """Create `MeCab.Tagger` instance"""
+        import MeCab
+
         opt = ""
         if userdic:
             opt += f"-u {userdic} "
