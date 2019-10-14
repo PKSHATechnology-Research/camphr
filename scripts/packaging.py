@@ -1,4 +1,5 @@
 import json
+import sys
 import logging
 import os
 import subprocess
@@ -105,8 +106,15 @@ def main(cfg: Config):
     set_meta(cfg.model, meta)
 
     Path(cfg.packages_dir).mkdir(exist_ok=True)
+    pkgd = create_package(cfg.model, cfg.packages_dir, meta)
+    log_val(pkgd, "Saved")
 
-    log_val(create_package(cfg.model, cfg.packages_dir, meta), "Saved")
+    if cfg.sdist:
+        os.chdir(pkgd)
+        log.info(
+            subprocess.check_output([sys.executable, "setup.py", "sdist"]).decode()
+        )
+        log.info(f"Created sdist in {(pkgd / 'dist').absolute()}")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# test-package.sh
+## test-package.sh
 
 spacy packageでつくったpackageのテストスクリプトです．venvを作成し，その中でちゃんと動くかをテストします．  
 
@@ -6,7 +6,7 @@ spacy packageでつくったpackageのテストスクリプトです．venvを�
 $ scripts/test-package.sh foo.tar.gz
 ```
 
-# versionup_package.py
+## versionup_package.py
 
 model packageのバージョンをあげるスクリプトです．`bedoner`の依存バージョンを変更します．  
 以前のリリースと同じモデルを再リリースするときに便利です．
@@ -14,3 +14,14 @@ model packageのバージョンをあげるスクリプトです．`bedoner`の�
 ```bash
 $ scripts/test-package.sh foo.tar.gz
 ```
+
+## packaging.py
+
+`nlp.to_disk`を使って保存したモデルから，パッケージを作るスクリプトです．  
+requrements等を設定したのち，`spacy.cli.package`に渡しています．
+
+example: 
+```bash
+$ python packaging.py model=foo/ version=v0.1.0
+```
+

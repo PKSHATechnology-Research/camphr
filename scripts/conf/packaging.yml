@@ -2,6 +2,7 @@ model:
 ref_module:
 packages_dir: ../pkgs
 version:
+sdist: true
 hydra:
   run:
       dir: ./outputs/packaging/${now:%Y-%m-%d}/${now:%H-%M-%S}
