@@ -2,14 +2,16 @@
 import dataclasses
 import pickle
 from pathlib import Path
-from typing import Iterable, List, Optional, cast
+from typing import Iterable, List, Optional, Union, cast
 
 import torch
 import transformers as trf
 from spacy.gold import GoldParse
 from spacy.language import Language
-from spacy.tokens import Doc
+from spacy.tokens import Doc, Span, Token
 from spacy.vocab import Vocab
+from spacy_transformers.util import ATTRS
+
 
 from bedoner.torch_utils import (
     OptimizerParameters,
@@ -124,6 +126,21 @@ class BertModel(TorchPipe):
                 outputs.laste_hidden_state, i, length
             )
             doc._.trf_pooler_output = TensorWrapper(outputs.pooler_output, i, length)
+            lh: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
+
+            doc_tensor = lh.new_zeros((len(doc), lh.shape[-1]))
+            # TODO: Inefficient
+            # TODO: Store the functionality into user_hooks after https://github.com/explosion/spaCy/issues/4439 was released
+            for i, a in enumerate(doc._.get(ATTRS.alignment)):
+                doc_tensor[i] += lh[a].sum(0)
+            doc.tensor = doc_tensor
+            doc.user_hooks["vector"] = get_doc_vector_via_tensor
+            doc.user_span_hooks["vector"] = get_span_vector_via_tensor
+            doc.user_token_hooks["vector"] = get_token_vector_via_tensor
+            doc.user_hooks["similarity"] = get_similarity
+            doc.user_span_hooks["similarity"] = get_similarity
+            doc.user_token_hooks["similarity"] = get_similarity
+
             if outputs.hidden_states:
                 doc._.trf_all_hidden_states = [
                     TensorWrapper(hid_layer, i)
@@ -188,6 +205,24 @@ class BertModel(TorchPipe):
             self.vocab = pickle.load(f)
         self.model = self.trf_model_cls.from_pretrained(path)
         return self
+
+
+def get_doc_vector_via_tensor(doc) -> torch.Tensor:
+    return doc.tensor.sum(0)
+
+
+def get_span_vector_via_tensor(span) -> torch.Tensor:
+    return span.doc.tensor[span.start : span.end].sum(0)
+
+
+def get_token_vector_via_tensor(token) -> torch.Tensor:
+    return token.doc.tensor[token.i]
+
+
+def get_similarity(o1: Union[Doc, Span, Token], o2: Union[Doc, Span, Token]) -> int:
+    v1: torch.Tensor = o1.vector
+    v2: torch.Tensor = o2.vector
+    return (v1.dot(v2) / (v1.norm() * v2.norm())).item()
 
 
 Language.factories[BertModel.name] = BertModel
