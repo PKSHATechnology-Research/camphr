@@ -6,7 +6,12 @@ from bedoner.utils import SerializationMixin, destruct_token
 
 class RegexRuler(SerializationMixin):
     def __init__(
-        self, pattern, label: str, destructive: bool = False, merge: bool = False
+        self,
+        pattern,
+        label: str,
+        destructive: bool = False,
+        merge: bool = False,
+        name: str = "",
     ):
         self.pattern = re.compile(pattern)
         self.destructive = destructive
@@ -20,6 +25,11 @@ class RegexRuler(SerializationMixin):
             "labels",
             "merge",
         ]
+
+        if name:
+            self.name = name
+        else:
+            self.name = "regex_ruler_" + label
 
     def __call__(self, doc: Doc) -> Doc:
         spans = []

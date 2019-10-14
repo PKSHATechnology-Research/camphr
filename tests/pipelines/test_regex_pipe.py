@@ -1,4 +1,6 @@
+from bedoner.lang import mecab
 import pytest
+from spacy.language import Language
 
 from bedoner.pipelines.regex_ruler import carcode_ruler, postcode_ruler
 
@@ -61,3 +63,16 @@ def test_carcode_ruler_todo(mecab_tokenizer, text, expecteds):
     assert len(doc.ents) == len(expecteds)
     for ent, expected in zip(doc.ents, expecteds):
         assert ent.text == expected
+
+
+@pytest.fixture
+def nlp():
+    return mecab.Japanese()
+
+
+def test_compose_pipes(nlp: Language):
+    nlp.add_pipe(carcode_ruler)
+    nlp.add_pipe(postcode_ruler)
+    text = "郵便番号は〒100-0001で，車の番号は品川500 さ 2345です"
+    doc = nlp(text)
+    assert len(doc.ents) == 2
