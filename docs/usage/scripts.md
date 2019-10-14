@@ -18,10 +18,9 @@ $ scripts/test-package.sh foo.tar.gz
 ## packaging.py
 
 `nlp.to_disk`を使って保存したモデルから，パッケージを作るスクリプトです．  
-requrements等を設定したのち，`spacy.cli.package`に渡しています．
+requrements等を設定したのち，`spacy.cli.package`に渡してpackage化し，`python setup.py sdist`を使ってtarballを作っています．
 
 example: 
 ```bash
 $ python packaging.py model=foo/ version=v0.1.0
 ```
-
