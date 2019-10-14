@@ -155,6 +155,8 @@ def pickle_japanese(instance):
 
 copy_reg.pickle(Japanese, pickle_japanese)
 
+Tokenizer.install_extensions()
+
 
 # for lazy loading. see https://spacy.io/usage/adding-languages
 __all__ = ["Japanese"]
