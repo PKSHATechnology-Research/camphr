@@ -74,6 +74,7 @@ def test_update(nlp: Language, text, gold):
     assert doc._.loss
 
 
+@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_update_batch(nlp: Language):
     texts, golds = zip(*TESTCASE)
     optim = nlp.resume_training()
