@@ -14,6 +14,10 @@ from bedoner.ner_labels.utils import make_biluo_labels
 
 from ..utils import in_ci
 
+pytestmark = pytest.mark.skipif(
+    in_ci(), reason="Fail in circleci due to memory allocation error"
+)
+
 
 @pytest.fixture(scope="module")
 def labels():
@@ -74,7 +78,6 @@ def test_update(nlp: Language, text, gold):
     assert doc._.loss
 
 
-@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_update_batch(nlp: Language):
     texts, golds = zip(*TESTCASE)
     optim = nlp.resume_training()
@@ -85,7 +88,6 @@ def test_evaluate(nlp: Language):
     nlp.evaluate(TESTCASE)
 
 
-@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_save_and_load(nlp: Language):
     with tempfile.TemporaryDirectory() as d:
         nlp.to_disk(d)
@@ -102,12 +104,10 @@ TESTCASE2 = ["資生堂の香水-禅とオードパルファンＺＥＮの違�
 
 
 @pytest.mark.parametrize("text", TESTCASE2)
-@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_irex_call(nlp_irex: Language, text):
     nlp_irex(text)
 
 
-@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_pipe_irex(nlp_irex: Language):
     list(nlp_irex.pipe(["今日はいい天気なので外で遊びたい", "明日は晴れ"]))
 
@@ -174,14 +174,12 @@ def example_long(request, DATADIR):
     return d
 
 
-@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_example_batch_irex(nlp_irex: Language, example_irex):
     texts, golds = zip(*example_irex)
     optim = nlp_irex.resume_training()
     nlp_irex.update(texts, golds, optim)
 
 
-@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_example_batch_ene(nlp: Language, example_ene):
     texts, golds = zip(*example_ene)
     optim = nlp.resume_training()
@@ -195,13 +193,11 @@ def test_long_input(nlp: Language, example_long):
         nlp.update(texts, golds, optim)
 
 
-@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_example_batch_ene2(nlp: Language, example_ene2):
     texts, golds = zip(*example_ene2)
     optim = nlp.resume_training()
     nlp.update(texts, golds, optim)
 
 
-@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_example_batch_ene2_eval(nlp: Language, example_ene2):
     nlp.evaluate(example_ene2)
