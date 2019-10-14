@@ -16,6 +16,7 @@ Example:
 
 ```python
 import spacy
+
 nlp = spacy.load("mecab_bert_model")
 doc = nlp("今日はいい天気だった")
 doc.vector
@@ -95,6 +96,7 @@ $ pip install mecab-bert-ene.VERSION.tar.gz
 
 ```python
 import spacy
+
 nlp = spacy.load("mecab_bert_ene")
 doc = nlp("10日発表されたノーベル文学賞の受賞者をめぐり、選考機関のスウェーデン・アカデミーが批判されている。")
 for e in doc.ents:
@@ -112,13 +114,14 @@ for e in doc.ents:
 texts: Iterable[str] = ...
 docs = nlp(texts)
 for doc in docs:
-  ...
+    ...
 ```
 
 GPUを使うことでさらに高速に処理できます．(内部ではpytorchを使用しています)
 
 ```python
 import torch
+
 nlp.to(torch.device("gpu"))
 docs = nlp(texts)
 ```
@@ -146,14 +149,16 @@ from bedoner.ner_labels.utils import make_biluo_labels
 from spacy.util import minibatch
 
 nlp = bert_ner(labels=make_biluo_labels(ALL_LABELS))
-train_data = [["１９９９年３月創部の同部で初の外国人選手。", {"entities": [[0, 7, "DATE"], [15, 20, "ARTIFACT"]]}]]
+train_data = [
+    ["１９９９年３月創部の同部で初の外国人選手。", {"entities": [[0, 7, "DATE"], [15, 20, "ARTIFACT"]]}]
+]
 
 niter = 10
 optim = nlp.resume_training(t_total=niter)
 for i in range(niter):
     for batch in minibatch(train_data):
         texts, golds = zip(*batch)
-        nlp.update(texts, golds,optim)
+        nlp.update(texts, golds, optim)
 nlp(train_data[0][0]).ents
 ```
 ```
@@ -203,7 +208,7 @@ nlp = spacy.load("mecab_bert_ene")
 pipe = RegexRuler(pattern="\d{2,3}-\d{4}-\d{3}", label="PHONE")
 nlp.add_pipe(pipe)
 
-text="防災管理課の電話番号は03-0000-1234です"
+text = "防災管理課の電話番号は03-0000-1234です"
 nlp(text).ents
 ```
 ```
@@ -248,10 +253,13 @@ https://spacy.io/api/entityruler
 mecabのタグ情報を元に，人名抽出をします．
 
 ```python
->>> from bedoner.models import person_ruler
->>> nlp = person_ruler()
->>> text = "2019年11月8日に高松隆と東京タワーに行った"
->>> nlp(text).ents
+from bedoner.models import person_ruler
+
+nlp = person_ruler()
+text = "2019年11月8日に高松隆と東京タワーに行った"
+nlp(text).ents
+```
+```
 (高松隆,)
 ```
 
@@ -260,10 +268,13 @@ mecabのタグ情報を元に，人名抽出をします．
 ルールベースで日付を抽出するNERパイプラインです．
 
 ```python
->>> from bedoner.models import date_ruler
->>> nlp = date_ruler()
->>> text = "2019年11月8日に高松隆と東京タワーに行った"
->>> nlp(text).ents
+from bedoner.models import date_ruler
+
+nlp = date_ruler()
+text = "2019年11月8日に高松隆と東京タワーに行った"
+nlp(text).ents
+```
+```
 (2019年11月8日,)
 ```
 
@@ -272,9 +283,12 @@ mecabのタグ情報を元に，人名抽出をします．
 [KNP](http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP)を使ったNERです．
 
 ```python
->>> from bedoner.models import knp_ner
->>> nlp = knp_ner()
->>> text = "2019年11月8日に高松隆と東京タワーに行った"
->>> nlp(text).ents
+from bedoner.models import knp_ner
+
+nlp = knp_ner()
+text = "2019年11月8日に高松隆と東京タワーに行った"
+nlp(text).ents
+```
+```
 (2019年11月8日, 高松隆, 東京タワー)
 ```
