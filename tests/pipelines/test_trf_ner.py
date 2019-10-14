@@ -101,10 +101,12 @@ TESTCASE2 = ["資生堂の香水-禅とオードパルファンＺＥＮの違�
 
 
 @pytest.mark.parametrize("text", TESTCASE2)
+@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_irex_call(nlp_irex: Language, text):
     nlp_irex(text)
 
 
+@pytest.mark.skipif(in_ci(), reason="Fail in circleci due to memory allocation error")
 def test_pipe_irex(nlp_irex: Language):
     list(nlp_irex.pipe(["今日はいい天気なので外で遊びたい", "明日は晴れ"]))
 
