@@ -1,0 +1,6 @@
+juman_bert_ene
+juman_bert_irex
+juman_bert_model
+mecab_bert_ene
+mecab_bert_irex
+mecab_bert_model
