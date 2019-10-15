@@ -32,7 +32,7 @@ def juman_nlp() -> juman.Japanese:
     )
 
 
-def bert_wordpiecer(lang="juman", name=bert_dir) -> Language:
+def bert_wordpiecer(lang="juman", pretrained=bert_dir) -> Language:
     if lang == "juman":
         cls = inject_mixin(TransformersLanguageMixin, juman.Japanese)
         nlp = cls(Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}})
@@ -41,21 +41,23 @@ def bert_wordpiecer(lang="juman", name=bert_dir) -> Language:
         nlp = cls(Vocab())
     else:
         raise ValueError(f"Unsupported lang: {lang}")
-    w = WordPiecer.from_pretrained(nlp.vocab, name)
+    w = WordPiecer.from_pretrained(nlp.vocab, pretrained)
     nlp.add_pipe(w)
     return nlp
 
 
-def bert_model(lang="juman", name=bert_dir):
-    nlp = bert_wordpiecer(lang, name=name)
-    bert = BertModel.from_pretrained(nlp.vocab, name)
+def bert_model(lang="juman", pretrained=bert_dir):
+    nlp = bert_wordpiecer(lang, pretrained=pretrained)
+    bert = BertModel.from_pretrained(nlp.vocab, pretrained)
     nlp.add_pipe(bert)
     return nlp
 
 
-def bert_ner(lang="juman", name=bert_dir, **cfg):
-    nlp = bert_model(lang, name=name)
-    ner = BertForNamedEntityRecognition.from_pretrained(nlp.vocab, name=name, **cfg)
+def bert_ner(lang="juman", pretrained=bert_dir, **cfg):
+    nlp = bert_model(lang, pretrained=pretrained)
+    ner = BertForNamedEntityRecognition.from_pretrained(
+        nlp.vocab, pretrained=pretrained, **cfg
+    )
     nlp.add_pipe(ner)
     return nlp
 
