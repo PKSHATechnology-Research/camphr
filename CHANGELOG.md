@@ -8,14 +8,18 @@ milestone: https://github.com/PKSHATechnology/bedore-ner/milestone/1?closed=1
   - mecab ner (ene, irex)
   - juman ner (ene, irex)
   - mecab, juman pretrained model
+- BERT modelについて, 埋め込みベクトル`vector`およびコサイン類似度`similarity`機能を追加
+  - 使い方: [docs/usage/pipelines.md#BERT](./docs/usage/pipelines.md#BERT)
 - mecab, jumanの依存を外しました (#44)
   - これらに依存する機能を使いたい場合，個別にインストールする必要があります．
 - gold dataの分割スクリプトを追加 (参考: https://github.com/PKSHATechnology/bedore-ner/blob/version%2Fv0.3/docs/usage/cli.md)
-- model packagingのversionup scriptを追加 (#60)
+- model packagingのversionup scriptを追加 [scripts/versionup-package](scripts/versionup-package)(#60)
+- model package用のテストスクリプトを追加([scripts/test-package.sh](./scripts/test-package.sh)) (#9)
+- NERのラベルづけがoverlapする際に有用なutil `pipelines.utils.merge_entities`を追加 (#63)
  
 ## Bug fixes
 
-- trf nerに全角スペースが入力されてもエラーにならないようにしました (#15)
+- trf nerに全角スペースが入力エラーにならないようにしました (#15)
 - mecabについて，全角スペースを半角スペースと同様に扱うようにしました (#39)
 
 ## Documentation and examples
