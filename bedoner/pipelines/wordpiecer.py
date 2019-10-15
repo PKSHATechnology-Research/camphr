@@ -1,5 +1,5 @@
 """Module wordpiecer defines wordpiecer for pytorch transformers."""
-from typing import Iterable, List
+from typing import Iterable, List, Type
 
 import transformers as trf
 from spacy.tokens import Doc
@@ -28,7 +28,7 @@ class WordPiecer(TransformersWordPiecer):
         Examples:
             >>> nlp = WordPiecer.from_pretrained("bert-ja-juman")
         """
-        trf_tokenizer_cls: trf.PreTrainedTokenizer = get_tokenizer(trf_name)
+        trf_tokenizer_cls: Type[trf.PreTrainedTokenizer] = get_tokenizer(trf_name)
 
         # tell `trf_tokenizer_cls` where to find the model
         trf_tokenizer_cls.pretrained_vocab_files_map["vocab_file"].update(
