@@ -9,7 +9,7 @@ from spacy.language import Language
 
 from bedoner.models import bert_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
-from bedoner.ner_labels.labels_irex import ALL_LABELS as irexs
+from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
 from bedoner.ner_labels.utils import make_biluo_labels
 
 from ..utils import in_ci
@@ -97,7 +97,7 @@ def test_save_and_load(nlp: Language):
 
 @pytest.fixture
 def nlp_irex():
-    return bert_ner(labels=["-"] + make_biluo_labels(irexs))
+    return bert_ner(labels=["-"] + make_biluo_labels(irexes))
 
 
 TESTCASE2 = ["資生堂の香水-禅とオードパルファンＺＥＮの違いを教えて下さい。また今でも製造されてますか？"]
