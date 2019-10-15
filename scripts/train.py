@@ -46,7 +46,7 @@ class Config(omegaconf.Config):
     test_size: float
     lang: str
     name: str
-    from_pretraind: str
+    from_pretrained: str
 
 
 @hydra.main(config_path="conf/train.yml")
@@ -62,12 +62,11 @@ def main(cfg: Config):
     train_data, val_data = train_test_split(data, test_size=cfg.test_size)
 
     labels = get_labels(cfg.label)
-    if cfg.from_pretraind:
-        nlp = bert_ner(
-            lang=cfg.lang, name=cfg.from_pretraind, labels=make_biluo_labels(labels)
-        )
-    else:
-        nlp = bert_ner(lang=cfg.lang, labels=make_biluo_labels(labels))
+    nlp = bert_ner(
+        lang=cfg.lang,
+        pretrained_name=cfg.from_pretrained,
+        labels=make_biluo_labels(labels),
+    )
     nlp.meta["name"] = cfg.name + "_" + cfg.label
     if torch.cuda.is_available():
         log.info("CUDA enabled")
