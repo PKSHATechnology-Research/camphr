@@ -47,7 +47,7 @@ def bert_wordpiecer(lang="juman", name=bert_dir) -> Language:
 
 
 def bert_model(lang="juman", name=bert_dir):
-    nlp = bert_wordpiecer(lang)
+    nlp = bert_wordpiecer(lang, name=name)
     bert = BertModel.from_pretrained(nlp.vocab, name)
     nlp.add_pipe(bert)
     return nlp

@@ -64,6 +64,32 @@ print(hu, sukasukamochi, hu.similarity(sukasukamochi))
 麩 スカスカした餅 0.4847041666507721
 ```
 
+### Multilingual BERT
+
+Multilingual BERTを利用する場合，まずは本パッケージとmecab(またはjuman)をインストールしてください．  
+
+```bash
+$ pip install git+https://github.com/PKSHATechnology/bedore-ner
+$ pip install mecab-python3
+```
+
+あとは，`bedoner.models.bert_model`を呼べばOKです．パラメータ等は[huggingface/transformers](https://github.com/huggingface/transformers)からダウンロードされます．
+
+```python
+from bedoner.models import bert_model
+nlp = bert_model(lang="mecab", name="bert-base-multilingual-cased")
+doc = nlp("私は犬と猫が好きだ")
+I, dog, cat = doc[0], doc[2], doc[4]
+print(I, dog, I.similarity(dog))
+print(I, cat, I.similarity(cat))
+print(cat, dog, cat.similarity(dog))
+```
+```
+私 犬 0.7240002751350403
+私 猫 0.7289904356002808
+猫 犬 0.9425056576728821
+```
+
 ### Note
 
 BERTの出力は，[extension](https://spacy.io/usage/processing-pipelines/#custom-components-attributes)に格納されています．  
