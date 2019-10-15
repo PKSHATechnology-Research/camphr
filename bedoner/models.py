@@ -54,8 +54,8 @@ def bert_model(lang="juman", name=bert_dir):
 
 
 def bert_ner(lang="juman", name=bert_dir, **cfg):
-    nlp = bert_model(lang)
-    ner = BertForNamedEntityRecognition.from_pretrained(nlp.vocab, name, **cfg)
+    nlp = bert_model(lang, name=name)
+    ner = BertForNamedEntityRecognition.from_pretrained(nlp.vocab, name=name, **cfg)
     nlp.add_pipe(ner)
     return nlp
 
