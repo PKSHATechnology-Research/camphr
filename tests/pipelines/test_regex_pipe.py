@@ -1,8 +1,15 @@
 from bedoner.lang import mecab
 import pytest
 from spacy.language import Language
+from spacy.tokens import Doc, Span
 
-from bedoner.pipelines.regex_ruler import carcode_ruler, RegexRuler, postcode_ruler
+from bedoner.pipelines.regex_ruler import (
+    carcode_ruler,
+    RegexRuler,
+    postcode_ruler,
+    DateRuler,
+    LABEL_DATE,
+)
 
 from ..utils import check_mecab
 
@@ -84,3 +91,21 @@ def test_conflict_label(nlp: Language):
     nlp.add_pipe(RegexRuler(r"\d*", label="NUMBER"))
     doc = nlp(text)
     assert len(doc.ents) == 4
+
+
+@pytest.fixture
+def nlp_with_date(nlp):
+    nlp.add_pipe(DateRuler())
+    return nlp
+
+
+TESTS = [("今日は2019年11月30日だ", "2019年11月30日"), ("僕は平成元年4月10日生まれだ", "平成元年4月10日")]
+
+
+@pytest.mark.parametrize("text,ent", TESTS)
+def test_date_entity_ruler(nlp_with_date: Language, text: str, ent: str):
+    doc: Doc = nlp_with_date(text)
+    assert len(doc.ents) == 1
+    span: Span = doc.ents[0]
+    assert span.text == ent
+    assert span.label_ == LABEL_DATE

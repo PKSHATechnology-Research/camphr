@@ -10,7 +10,6 @@ import bedoner.lang.juman as juman
 import bedoner.lang.knp as knp
 import bedoner.lang.mecab as mecab
 from bedoner.lang.trf_mixin import TransformersLanguageMixin
-from bedoner.pipelines.date_ner import DateRuler
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.person_ner import create_person_ruler
 from bedoner.pipelines.trf_model import BertModel
@@ -58,14 +57,6 @@ def bert_ner(lang="juman", bert_dir=bert_dir, **cfg):
     nlp = bert_model(lang)
     ner = BertForNamedEntityRecognition.from_pretrained(Vocab(), bert_dir, **cfg)
     nlp.add_pipe(ner)
-    return nlp
-
-
-def date_ruler(name="date_ruler") -> mecab.Japanese:
-    nlp = mecab.Japanese(
-        meta={"name": name, "requirements": ["mecab-python3", "regex"]}
-    )
-    nlp.add_pipe(DateRuler())
     return nlp
 
 

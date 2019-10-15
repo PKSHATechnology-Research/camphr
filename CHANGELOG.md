@@ -1,3 +1,29 @@
+# v0.3
+
+milestone: https://github.com/PKSHATechnology/bedore-ner/milestone/1?closed=1
+
+##  New features and improvements
+
+- BERTベースのモデルを[新たに6種類リリース](https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.3.0.dev2)
+  - mecab ner (ene, irex)
+  - juman ner (ene, irex)
+  - mecab, juman pretrained model
+- mecab, jumanの依存を外しました (#44)
+  - これらに依存する機能を使いたい場合，個別にインストールする必要があります．
+- gold dataの分割スクリプトを追加 (参考: https://github.com/PKSHATechnology/bedore-ner/blob/version%2Fv0.3/docs/usage/cli.md)
+- model packagingのversionup scriptを追加 (#60)
+ 
+## Bug fixes
+
+- trf nerに全角スペースが入力されてもエラーにならないようにしました (#15)
+- mecabについて，全角スペースを半角スペースと同様に扱うようにしました (#39)
+
+## Documentation and examples
+
+## Refactor
+
+- scripts directoryを整理
+
 # v0.2
 
 - change dependency
