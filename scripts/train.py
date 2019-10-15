@@ -63,9 +63,7 @@ def main(cfg: Config):
 
     labels = get_labels(cfg.label)
     nlp = bert_ner(
-        lang=cfg.lang,
-        pretrained_name=cfg.from_pretrained,
-        labels=make_biluo_labels(labels),
+        lang=cfg.lang, pretrained=cfg.from_pretrained, labels=make_biluo_labels(labels)
     )
     nlp.meta["name"] = cfg.name + "_" + cfg.label
     if torch.cuda.is_available():

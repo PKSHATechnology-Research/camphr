@@ -10,8 +10,8 @@ from bedoner.models import bert_model
 
 
 @pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
-def nlp(request):
-    return bert_model(lang=request.param)
+def nlp(request, bert_dir):
+    return bert_model(lang=request.param, pretrained=bert_dir)
 
 
 TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]
