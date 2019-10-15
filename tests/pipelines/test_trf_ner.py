@@ -1,26 +1,35 @@
+import json
 import tempfile
-import os
 
-import torch
 import pytest
 import spacy
-from bedoner.models import bert_ner
-from bedoner.ner_labels.labels_ene import ALL_LABELS
-from bedoner.ner_labels.labels_irex import ALL_LABELS as irexs
-from bedoner.ner_labels.utils import make_biluo_labels
-from spacy.gold import GoldParse, spans_from_biluo_tags
+import torch
+from spacy.gold import GoldParse
 from spacy.language import Language
-from spacy.tokens import Doc
+
+from bedoner.models import bert_ner
+from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
+from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
+from bedoner.ner_labels.utils import make_biluo_labels
+
+from ..utils import in_ci
+
+pytestmark = pytest.mark.skipif(
+    in_ci(), reason="Fail in circleci due to memory allocation error"
+)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def labels():
-    return make_biluo_labels(ALL_LABELS)
+    return make_biluo_labels(enes)
 
 
-@pytest.fixture
-def nlp(labels):
-    return bert_ner(labels=["-"] + labels)
+@pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
+def nlp(labels, request):
+    lang = request.param
+    _nlp = bert_ner(lang=lang, labels=["-"] + labels)
+    assert _nlp.meta["lang"] == lang
+    return _nlp
 
 
 TESTCASE = [
@@ -40,6 +49,9 @@ TESTCASE = [
         "夏休み真っただ中の8月26日の夕方。",
         {"entities": [(0, 3, "DATE"), (9, 14, "DATE"), (15, 17, "TIME")]},
     ),
+    ("。", {"entities": []}),
+    (" おはよう", {"entities": []}),
+    ("　おはよう", {"entities": []}),
 ]
 
 
@@ -52,24 +64,11 @@ def test_pipe(nlp: Language):
     list(nlp.pipe(["今日はいい天気なので外で遊びたい", "明日は晴れ"]))
 
 
-def is_same_ner(doc: Doc, gold: GoldParse) -> bool:
-    if len(doc) != len(gold.ner):
-        return False
-    gold_spans = spans_from_biluo_tags(doc, gold.ner)
-    if len(gold_spans) != len(doc.ents):
-        return False
-    res = True
-    for e, e2 in zip(doc.ents, gold_spans):
-        res &= e == e2
-    return res
-
-
 @pytest.mark.parametrize("text,gold", TESTCASE)
 def test_update(nlp: Language, text, gold):
     assert nlp.device.type == "cpu"
     doc = nlp(text)
     gold = GoldParse(doc, **gold)
-    assert not is_same_ner(doc, gold)
 
     optim = nlp.resume_training()
     assert nlp.device.type == "cpu"
@@ -85,9 +84,10 @@ def test_update_batch(nlp: Language):
     nlp.update(texts, golds, optim)
 
 
-@pytest.mark.skip(
-    os.getenv("CI"), reason="Fail in circleci due to memory allocation error"
-)
+def test_evaluate(nlp: Language):
+    nlp.evaluate(TESTCASE)
+
+
 def test_save_and_load(nlp: Language):
     with tempfile.TemporaryDirectory() as d:
         nlp.to_disk(d)
@@ -97,7 +97,7 @@ def test_save_and_load(nlp: Language):
 
 @pytest.fixture
 def nlp_irex():
-    return bert_ner(labels=["-"] + make_biluo_labels(irexs))
+    return bert_ner(labels=["-"] + make_biluo_labels(irexes))
 
 
 TESTCASE2 = ["資生堂の香水-禅とオードパルファンＺＥＮの違いを教えて下さい。また今でも製造されてますか？"]
@@ -130,7 +130,6 @@ def test_update_cuda(nlp: Language, text, gold, cuda):
     nlp.to(cuda)
     doc = nlp(text)
     gold = GoldParse(doc, **gold)
-    assert not is_same_ner(doc, gold)
 
     optim = nlp.resume_training()
     doc = nlp.make_doc(text)
@@ -145,3 +144,60 @@ def test_update_batch_cuda(nlp: Language, cuda):
     texts, golds = zip(*TESTCASE)
     optim = nlp.resume_training()
     nlp.update(texts, golds, optim)
+
+
+@pytest.fixture(scope="module", params=["ner/ner.json"])
+def example_irex(request, DATADIR):
+    with (DATADIR / request.param).open() as f:
+        d = json.load(f)
+    return d
+
+
+@pytest.fixture(scope="module", params=["ner/ner2.json"])
+def example_ene(request, DATADIR):
+    with (DATADIR / request.param).open() as f:
+        d = json.load(f)
+    return d
+
+
+@pytest.fixture(scope="module", params=["ner/ner_ene.json"])
+def example_ene2(request, DATADIR):
+    with (DATADIR / request.param).open() as f:
+        d = json.load(f)
+    return d
+
+
+@pytest.fixture(scope="module", params=["ner/long.json"])
+def example_long(request, DATADIR):
+    with (DATADIR / request.param).open() as f:
+        d = json.load(f)
+    return d
+
+
+def test_example_batch_irex(nlp_irex: Language, example_irex):
+    texts, golds = zip(*example_irex)
+    optim = nlp_irex.resume_training()
+    nlp_irex.update(texts, golds, optim)
+
+
+def test_example_batch_ene(nlp: Language, example_ene):
+    texts, golds = zip(*example_ene)
+    optim = nlp.resume_training()
+    nlp.update(texts, golds, optim)
+
+
+def test_long_input(nlp: Language, example_long):
+    texts, golds = zip(*example_long)
+    optim = nlp.resume_training()
+    with pytest.raises(ValueError):
+        nlp.update(texts, golds, optim)
+
+
+def test_example_batch_ene2(nlp: Language, example_ene2):
+    texts, golds = zip(*example_ene2)
+    optim = nlp.resume_training()
+    nlp.update(texts, golds, optim)
+
+
+def test_example_batch_ene2_eval(nlp: Language, example_ene2):
+    nlp.evaluate(example_ene2)

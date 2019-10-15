@@ -1,6 +1,7 @@
 """Copied from Spacy"""
-from ...utils import check_knp
 import pytest
+
+from ...utils import check_knp
 
 
 @pytest.mark.skipif(not check_knp(), reason="knp is not always necessary")

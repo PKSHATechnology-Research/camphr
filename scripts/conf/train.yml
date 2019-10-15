@@ -6,3 +6,4 @@ test_size: 0.1
 data: ~/datasets/ner-bccwj-ene.jsonl
 label: ene
 lang: juman
+name: bert

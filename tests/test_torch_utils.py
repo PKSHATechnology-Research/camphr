@@ -3,10 +3,11 @@ from typing import List
 import pytest
 import torch
 import torch.nn as nn
-from bedoner.lang.torch_mixin import TorchLanguageMixin
-from bedoner.torch_utils import TorchPipe
 from spacy.language import Language
 from spacy.tokens import Doc
+
+from bedoner.lang.torch_mixin import TorchLanguageMixin
+from bedoner.torch_utils import TorchPipe
 
 
 class TorchLang(TorchLanguageMixin, Language):

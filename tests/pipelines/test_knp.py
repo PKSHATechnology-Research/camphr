@@ -2,8 +2,8 @@ from typing import Tuple
 
 import pytest
 from spacy.tokens import Doc
-import bedoner.lang.knp as knp
 
+import bedoner.lang.knp as knp
 from bedoner.models import knp_ner
 
 from ..utils import check_knp

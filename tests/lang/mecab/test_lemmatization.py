@@ -1,5 +1,6 @@
 """Copied from Spacy"""
 import pytest
+
 from ...utils import check_mecab
 
 pytestmark = pytest.mark.skipif(

@@ -134,6 +134,4 @@ pkgs
 *.tar.gz
 
 foo/
-data/
 output/
-data

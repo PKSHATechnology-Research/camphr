@@ -1,10 +1,9 @@
 """The package knp defines Japanese spacy.Language with knp tokenizer."""
-from itertools import tee, zip_longest
 import re
 from collections import namedtuple
+from itertools import tee, zip_longest
 from typing import Any, Callable, Dict, List, Optional
 
-from pyknp import KNP, Morpheme
 from spacy.attrs import LANG
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -54,6 +53,8 @@ class Tokenizer(SerializationMixin):
             preprocessor: applied to text before tokenizing. `mojimoji.han_to_zen` is often used.
         """
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
+        from pyknp import KNP
+
         self.tokenizer = KNP(**knp_kwargs) if knp_kwargs else KNP()
         self.knp_kwargs = knp_kwargs
 
@@ -78,6 +79,8 @@ class Tokenizer(SerializationMixin):
 
     def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
         """Tokenize text with KNP and format the outputs for further processing"""
+        from pyknp import Morpheme
+
         words: List[Morpheme] = []
         ml: List[Morpheme] = self.tokenizer.parse(text).mrph_list()
         morphs, next_morphs = tee(ml)
@@ -105,7 +108,7 @@ class Tokenizer(SerializationMixin):
         return words
 
 
-def is_space_morph(m: Morpheme) -> bool:
+def is_space_morph(m) -> bool:
     return m.bunrui == "空白"
 
 

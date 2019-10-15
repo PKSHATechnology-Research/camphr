@@ -1,12 +1,12 @@
 """The utils module defines util functions used accross sub packages."""
+import bisect
+import re
 from collections import OrderedDict
 from pathlib import Path
-import bisect
-from typing import Iterable, List
-import re
-from spacy.tokens import Doc, Token
+from typing import Iterable, List, Type
 
 import srsly
+from spacy.tokens import Doc, Token
 
 
 class SerializationMixin:
@@ -70,3 +70,24 @@ def destruct_token(doc: Doc, *char_pos: int) -> Doc:
             token = token_from_char_pos(doc, i)
             heads = [token] * len(token)
             retokenizer.split(doc[token.i], list(token.text), heads=heads)
+
+
+def inject_mixin(mixin: Type, base_cls: Type) -> Type:
+    class _Mixined(mixin, base_cls):
+        pass
+
+    return _Mixined
+
+
+def split_keepsep(text: str, sep: str):
+    texts = text.split(sep)
+    if len(texts) == 1:
+        return [text]
+
+    res = [t + sep for t in texts[:-1]]
+    last = texts[-1]
+    if len(last):
+        if text.endswith(sep):
+            last += sep
+        res.append(last)
+    return res

@@ -5,15 +5,14 @@ from pathlib import Path
 from shutil import copytree
 from typing import List, Optional
 
-import MeCab  # TODO: lazy import?
 from spacy.attrs import LANG
 from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc, Token
 
-from bedoner.lang.stop_words import STOP_WORDS
-from bedoner.utils import SerializationMixin, RE_URL
 from bedoner.consts import KEY_FSTRING
+from bedoner.lang.stop_words import STOP_WORDS
+from bedoner.utils import RE_URL, SerializationMixin
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "space", "fstring"]
@@ -82,15 +81,19 @@ class Tokenizer(SerializationMixin):
             if nextnode.length != nextnode.rlength:
                 # next node contains space, so attach it to this node.
                 words.append(ShortUnitWord(surface, base, pos, True, node.feature))
+            elif nextnode.surface == "\u3000":
+                # next node is full space, so attatch it to this node and skip the nextnode.
+                words.append(ShortUnitWord(surface, base, pos, True, node.feature))
+                nextnode = nextnode.next
             else:
                 words.append(ShortUnitWord(surface, base, pos, False, node.feature))
             node = nextnode
         return words
 
-    def get_mecab(
-        self, dicdir: Optional[str] = None, userdic: Optional[str] = None
-    ) -> MeCab.Tagger:
+    def get_mecab(self, dicdir: Optional[str] = None, userdic: Optional[str] = None):
         """Create `MeCab.Tagger` instance"""
+        import MeCab
+
         opt = ""
         if userdic:
             opt += f"-u {userdic} "
@@ -150,6 +153,8 @@ def pickle_japanese(instance):
 
 
 copy_reg.pickle(Japanese, pickle_japanese)
+
+Tokenizer.install_extensions()
 
 
 # for lazy loading. see https://spacy.io/usage/adding-languages

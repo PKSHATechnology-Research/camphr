@@ -1,33 +1,22 @@
-import hydra
-import torch
-from typing import List, Dict
 import json
-from spacy.scorer import Scorer
+import logging
 import random
 from pathlib import Path
+from typing import Dict, List
 
-from spacy.util import minibatch
-import logging
-from sklearn.model_selection import train_test_split
+import hydra
 import omegaconf
+import torch
+from sklearn.model_selection import train_test_split
+from spacy.scorer import Scorer
+from spacy.util import minibatch
 
 from bedoner.models import *
-from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
 from bedoner.ner_labels.labels_ene import ALL_LABELS as ene_labels
-from bedoner.ner_labels.utils import make_biluo_labels, make_bio_labels
+from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
+from bedoner.ner_labels.utils import make_biluo_labels
 
 log = logging.getLogger(__name__)
-
-
-class Config(omegaconf.Config):
-    data: str
-    ndata: int
-    niter: int
-    nbatch: int
-    label: str
-    scheduler: bool
-    test_size: float
-    lang: str
 
 
 def get_labels(name: str) -> List[str]:
@@ -47,6 +36,18 @@ def load_data(name: str) -> List[Dict]:
     return data
 
 
+class Config(omegaconf.Config):
+    data: str
+    ndata: int
+    niter: int
+    nbatch: int
+    label: str
+    scheduler: bool
+    test_size: float
+    lang: str
+    name: str
+
+
 @hydra.main(config_path="conf/train.yml")
 def main(cfg: Config):
     log.info(cfg.pretty())
@@ -61,6 +62,7 @@ def main(cfg: Config):
 
     labels = get_labels(cfg.label)
     nlp = bert_ner(lang=cfg.lang, labels=make_biluo_labels(labels))
+    nlp.meta["name"] = cfg.name + "_" + cfg.label
     if torch.cuda.is_available():
         log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
@@ -79,19 +81,29 @@ def main(cfg: Config):
                 nlp.update(docs, golds, optim)
             except:
                 with open("fail.json", "w") as f:
-                    json.dump(batch,f)
+                    json.dump(batch, f, ensure_ascii=False)
                 raise
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
             log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
             if j % 10 == 9:
-                scorer: Scorer = nlp.evaluate(val_data)
+                try:
+                    scorer: Scorer = nlp.evaluate(val_data)
+                except:
+                    with open("fail.json", "w") as f:
+                        json.dump(val_data, f, ensure_ascii=False)
+                        raise
                 log.info(f"p: {scorer.ents_p}")
                 log.info(f"r: {scorer.ents_r}")
                 log.info(f"f: {scorer.ents_f}")
-        log.info(f"epoch {i} loss: ", epoch_loss)
-        scorer: Scorer = nlp.evaluate(val_data)
-        nlp.meta = {"score": scorer.scores, "config": cfg.to_container()}
+        log.info(f"epoch {i} loss: {epoch_loss}")
+        try:
+            scorer: Scorer = nlp.evaluate(val_data)
+        except:
+            with open("fail.json", "w") as f:
+                json.dump(val_data, f, ensure_ascii=False)
+            raise
+        nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
         nlp.to_disk(modelsdir / str(i))
 
 
