@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 
 __dir__ = Path(__file__).parent
 PACKAGES_DIR = __dir__ / "../pkgs"
-LANG_REQUIREMTNS = {"juman": {"pyknp"}, "mecab": {"mecab-python3"}, "knp": {"pyknp"}}
+LANG_REQUIREMENTS = {"juman": {"pyknp"}, "mecab": {"mecab-python3"}, "knp": {"pyknp"}}
 THIS_MODULE = "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@{ref}"
 Pathlike = Union[str, Path]
 
@@ -29,7 +29,7 @@ def get_commit() -> str:
 def requirements(meta: Dict[str, Any], ref_module: str) -> List[str]:
     lang = meta["lang"]
     req = set(meta.get("requirements", {}))
-    req |= LANG_REQUIREMTNS.get(lang, {})
+    req |= LANG_REQUIREMENTS.get(lang, {})
     req = {k for k in req if not k.startswith("bedoner")}
     req.add(THIS_MODULE.format(ref=ref_module))
     return list(req)
