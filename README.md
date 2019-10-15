@@ -7,16 +7,18 @@ $ pipenv install .
 $ pipenv install --dev # for developer
 ```
 
-## requrements
+## Requirements
 
 - mecab, juman(pp), knpが必要です．
 
-# Examples
+# Usage
 
+[docs/pipelines](./docs/pipelines/README.md) をみてください．
 
 # Development
 
 - 開発にあたり，spacyの仕組みについて公式ドキュメント([Architecture · spaCy API Documentation](https://spacy.io/api))を一読することをお勧めします．
+- 開発者向けドキュメントを [docs/development](./docs/development)に集めています．
 
 ## setup
 

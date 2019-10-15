@@ -20,9 +20,15 @@ milestone: https://github.com/PKSHATechnology/bedore-ner/milestone/1?closed=1
 
 ## Documentation and examples
 
+- [docs](./docs)ディレクトリにドキュメントをいくつか追加．
+  - 概要: [docs/README.md](./docs/README.md)
+
 ## Refactor
 
+- `pipelines.date_ner`をregex_rulerに統合(#61)
 - scripts directoryを整理
+- removed MatcherRuler (#62)
+  - spacyの`EntityRuler`を使いましょう．
 
 # v0.2
 
