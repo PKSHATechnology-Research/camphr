@@ -47,6 +47,7 @@ class Config(omegaconf.Config):
     lang: str
     name: str
     from_pretrained: str
+    neval: int
 
 
 @hydra.main(config_path="conf/train.yml")
@@ -89,7 +90,7 @@ def main(cfg: Config):
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
             log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
-            if j % 10 == 9:
+            if j % cfg.neval == cfg.neval-1:
                 try:
                     scorer: Scorer = nlp.evaluate(val_data)
                 except:
