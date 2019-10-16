@@ -2,7 +2,7 @@
 
 ##  New features and improvements
 
-- multilingual BERT (`bert-base-multilingual-cased`)を使用したNERモデル (mecab_bert_multilingual_ner) をリリースしました．
+- multilingual BERT (`bert-base-multilingual-cased`)を使用したNERモデル [mecab_bert_multilingual_ner をリリース](https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.3.1.dev0)しました．
 - `bedoner.models.bert_model`を改善し，transformersモデルを簡単に使用できるようにしました．
   - ex) `nlp = bert_model(lang=mecab, pretrained="bert-base-multilingual-cased")`
 
