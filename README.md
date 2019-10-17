@@ -13,7 +13,7 @@ $ pipenv install --dev # for developer
 
 # Usage
 
-[docs/pipelines](./docs/pipelines/README.md) をみてください．
+[docs/pipelines](./docs/usage/README.md) をみてください．
 
 # Development
 
