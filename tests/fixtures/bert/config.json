@@ -7,9 +7,9 @@
   "initializer_range": 0.02,
   "intermediate_size": 64,
   "layer_norm_eps": 1e-12,
-  "max_position_embeddings": 128,
+  "max_position_embeddings": 512,
   "num_attention_heads": 2,
-  "num_hidden_layers": 2,
+  "num_hidden_layers": 3,
   "num_labels": 2,
   "output_attentions": false,
   "output_hidden_states": false,
@@ -17,5 +17,5 @@
   "torchscript": false,
   "type_vocab_size": 2,
   "use_bfloat16": false,
-  "vocab_size": 121
+  "vocab_size": 32006
 }
