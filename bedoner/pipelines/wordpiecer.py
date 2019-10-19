@@ -6,14 +6,16 @@ from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from spacy_transformers.pipeline.wordpiecer import TransformersWordPiecer, get_tokenizer
 
-BERT_PRETRAINED_VOCAB_ARCHIVE_MAP = {
-    "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman-vocab.txt"  # bedore-ranndd aws account
+PRETRAINED_VOCAB_ARCHIVE_MAP = {
+    "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman-vocab.txt",  # bedore-ranndd aws account
+    "xlnet-ja": "s3://bedoner/trf_models/xlnet/spiece.model",
 }
 PRETRAINED_INIT_CONFIGURATION = {
     "bert-ja-juman": {
         "do_lower_case": False,
         "tokenize_chinese_chars": False,
-    }  # do_lower_case=False: 濁点落ちを防ぐ，tokenize_chinese_chars=False: スペース以外のspiltを防ぐ
+    },  # do_lower_case=False: 濁点落ちを防ぐ，tokenize_chinese_chars=False: スペース以外のspiltを防ぐ
+    "xlnet-ja": {"keep_accesnts": True},
 }
 PRETRAINED_POSITIONAL_EMBEDDINGS_SIZES = {"bert-ja-juman": 512}
 
@@ -32,7 +34,7 @@ class WordPiecer(TransformersWordPiecer):
 
         # tell `trf_tokenizer_cls` where to find the model
         trf_tokenizer_cls.pretrained_vocab_files_map["vocab_file"].update(
-            BERT_PRETRAINED_VOCAB_ARCHIVE_MAP
+            PRETRAINED_VOCAB_ARCHIVE_MAP
         )
         # tell `trf_tokenizer_cls` how to configure the model
         trf_tokenizer_cls.pretrained_init_configuration.update(
