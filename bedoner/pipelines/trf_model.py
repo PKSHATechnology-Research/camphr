@@ -2,14 +2,13 @@
 import dataclasses
 import pickle
 from pathlib import Path
-from typing import Iterable, List, Optional, Union, cast
+from typing import Iterable, List, Optional, Union, cast, Type
 
 import torch
 import transformers as trf
 from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
 from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
 from spacy.gold import GoldParse
-from spacy.language import Language
 from spacy.tokens import Doc, Span, Token
 from spacy.vocab import Vocab
 from spacy_transformers.util import ATTRS
@@ -34,7 +33,7 @@ PRETRAINED_CONFIG_ARCHIVE_MAP = {
 
 
 @dataclasses.dataclass
-class TransformersModelInputs:
+class TransformersModelInputsBase:
     input_ids: torch.Tensor
     token_type_ids: Optional[torch.Tensor] = None
     attention_mask: Optional[torch.Tensor] = None
@@ -43,17 +42,20 @@ class TransformersModelInputs:
 
 
 @dataclasses.dataclass
-class BertModelInputs(TransformersModelInputs):
+class BertModelInputs(TransformersModelInputsBase):
     position_ids: Optional[torch.Tensor] = None
     __doc__ = BERT_INPUTS_DOCSTRING
 
 
 @dataclasses.dataclass
-class XLNetModelInputs(TransformersModelInputs):
+class XLNetModelInputs(TransformersModelInputsBase):
     mems: Optional[List[torch.FloatTensor]] = None
     perm_mask: Optional[torch.FloatTensor] = None
     target_mapping: Optional[torch.FloatTensor] = None
     __doc__ = XLNET_INPUTS_DOCSTRING
+
+
+TransformersModelInputs = Union[BertModelInputs, XLNetModelInputs]
 
 
 @dataclasses.dataclass
@@ -80,25 +82,58 @@ class XLNetModelOutputs:
     # list of (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``
 
 
+TransformerModelOutputs = Union[BertModelOutputs, XLNetModelOutputs]
+
+
 class MODEL_NAMES:
     bert = "bert"
     xlnet = "xlnet"
 
 
-class BertModel(TorchPipe):
-    """Pytorch transformers BertModel component.
+class CLS_NAMES:
+    inputs = "inputs"
+    outputs = "outputs"
+    model = "model"
+    config = "config"
 
-    Attach BERT outputs to doc.
+
+trf_cls_maps = {
+    MODEL_NAMES.bert: {
+        CLS_NAMES.inputs: BertModelInputs,
+        CLS_NAMES.outputs: BertModelOutputs,
+        CLS_NAMES.model: trf.BertModel,
+        CLS_NAMES.config: trf.BertConfig,
+    },
+    MODEL_NAMES.xlnet: {
+        CLS_NAMES.inputs: XLNetModelInputs,
+        CLS_NAMES.outputs: XLNetModelOutputs,
+        CLS_NAMES.model: trf.XLNetModel,
+        CLS_NAMES.config: trf.XLNetConfig,
+    },
+}
+
+
+def get_trf_name(name: str) -> str:
+    for k in {MODEL_NAMES.bert, MODEL_NAMES.xlnet}:
+        if k in name:
+            return k
+    raise ValueError(f"Illegal model name: {name}")
+
+
+class TrfModel(TorchPipe):
+    """Pytorch transformers Model component.
+
+    Attach Model outputs to doc.
     """
-
-    name = "bert"
-    trf_model_cls = trf.BertModel
-    trf_config_cls = trf.BertConfig
 
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
         self.model = model
         self.cfg = cfg
+
+    @property
+    def trf_name(self):
+        return get_trf_name(self.cfg.get("trf_name", ""))
 
     @classmethod
     def from_nlp(cls, nlp, **cfg):
@@ -113,49 +148,54 @@ class BertModel(TorchPipe):
         return cls(vocab, model=model, **cfg)
 
     @classmethod
-    def Model(cls, **cfg) -> trf.BertModel:
-        """Create `trf.BertModel`"""
+    def Model(cls, **cfg) -> Union[trf.BertModel, trf.XLNetModel]:
+        """Create trf Model"""
+        trf_name = cfg.get("trf_name", "")
+        assert trf_name
+        trf_type = get_trf_name(trf_name)
+        trf_model_cls: trf.PreTrainedModel = trf_cls_maps[trf_type][CLS_NAMES.model]
         if cfg.get("from_pretrained"):
-            cls.trf_model_cls.pretrained_model_archive_map.update(
+            trf_model_cls.pretrained_model_archive_map.update(
                 PRETRAINED_MODEL_ARCHIVE_MAP
             )
-            cls.trf_model_cls.config_class.pretrained_config_archive_map.update(
+            trf_model_cls.config_class.pretrained_config_archive_map.update(
                 PRETRAINED_CONFIG_ARCHIVE_MAP
             )
-            model = cls.trf_model_cls.from_pretrained(cfg.get("trf_name"))
+            model = trf_model_cls.from_pretrained(trf_name)
         else:
             if "vocab_size" in cfg["trf_config"]:
                 vocab_size = cfg["trf_config"]["vocab_size"]
                 cfg["trf_config"]["vocab_size_or_config_json_file"] = vocab_size
-            model = cls.trf_model_cls(cls.trf_config_cls(**cfg["trf_config"]))
+            trf_config_cls: trf.PretrainedConfig = trf_cls_maps[trf_type][
+                CLS_NAMES.config
+            ]
+            model = trf_model_cls(trf_config_cls(**cfg["trf_config"]))
         return model
 
     @property
     def max_length(self) -> int:
         return self.model.config.max_position_embeddings
 
-    def assert_length(self, x: BertModelInputs):
+    def assert_length(self, x: TransformersModelInputs):
         if self.max_length > 0 and x.input_ids.shape[1] > self.max_length:
             raise ValueError(
                 f"Too long input_ids. Expected {self.max_length}, but got {x.input_ids.shape[1]}"
             )
 
-    def predict(self, docs: List[Doc]) -> Union[BertModelOutputs, XLNetModelOutputs]:
+    def predict(self, docs: List[Doc]) -> TransformerModelOutputs:
         self.require_model()
         self.model.eval()
         x = self.docs_to_trfinput(docs)
         self.assert_length(x)
         with torch.no_grad():
-            if self.name == MODEL_NAMES.bert:
-                y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
-            elif self.name == MODEL_NAMES.xlnet:
-                y = XLNetModelOutputs(*self.model(**dataclasses.asdict(x)))
-            else:
-                raise ValueError(f"Model name {self.name} is illegal.")
+            output_cls: Type[TransformerModelOutputs] = trf_cls_maps[self.trf_name][
+                CLS_NAMES.outputs
+            ]
+            y = output_cls(*self.model(**dataclasses.asdict(x)))
         return y
 
     def set_annotations(
-        self, docs: List[Doc], outputs: Union[BertModelOutputs, XLNetModelOutputs]
+        self, docs: List[Doc], outputs: TransformerModelOutputs, set_vector=True
     ) -> None:
         """Assign the extracted features to the Doc."""
         for i, doc in enumerate(docs):
@@ -169,21 +209,6 @@ class BertModel(TorchPipe):
                 doc._.trf_pooler_output = TensorWrapper(
                     outputs.pooler_output, i, length
                 )
-            lh: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
-
-            doc_tensor = lh.new_zeros((len(doc), lh.shape[-1]))
-            # TODO: Inefficient
-            # TODO: Store the functionality into user_hooks after https://github.com/explosion/spaCy/issues/4439 was released
-            for i, a in enumerate(doc._.get(ATTRS.alignment)):
-                doc_tensor[i] += lh[a].sum(0)
-            doc.tensor = doc_tensor
-            doc.user_hooks["vector"] = get_doc_vector_via_tensor
-            doc.user_span_hooks["vector"] = get_span_vector_via_tensor
-            doc.user_token_hooks["vector"] = get_token_vector_via_tensor
-            doc.user_hooks["similarity"] = get_similarity
-            doc.user_span_hooks["similarity"] = get_similarity
-            doc.user_token_hooks["similarity"] = get_similarity
-
             if outputs.hidden_states:
                 doc._.trf_all_hidden_states = [
                     TensorWrapper(hid_layer, i)
@@ -195,18 +220,36 @@ class BertModel(TorchPipe):
                     for attention_layer in cast(Iterable, outputs.attensions)
                 ]
 
+            if set_vector:
+                lh: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
+                doc_tensor = lh.new_zeros((len(doc), lh.shape[-1]))
+                # TODO: Inefficient
+                # TODO: Store the functionality into user_hooks after https://github.com/explosion/spaCy/issues/4439 was released
+                for i, a in enumerate(doc._.get(ATTRS.alignment)):
+                    doc_tensor[i] += lh[a].sum(0)
+                doc.tensor = doc_tensor
+                doc.user_hooks["vector"] = get_doc_vector_via_tensor
+                doc.user_span_hooks["vector"] = get_span_vector_via_tensor
+                doc.user_token_hooks["vector"] = get_token_vector_via_tensor
+                doc.user_hooks["similarity"] = get_similarity
+                doc.user_span_hooks["similarity"] = get_similarity
+                doc.user_token_hooks["similarity"] = get_similarity
+
     def update(self, docs: List[Doc], golds: List[GoldParse]):
         """Simply forward docs in training mode."""
         self.require_model()
         self.model.train()
         x = self.docs_to_trfinput(docs)
         self.assert_length(x)
-        y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
-        self.set_annotations(docs, y)
+        y = trf_cls_maps[self.trf_name][CLS_NAMES.outputs](
+            *self.model(**dataclasses.asdict(x))
+        )
+        self.set_annotations(docs, y, set_vector=False)
 
-    def docs_to_trfinput(self, docs: List[Doc]) -> BertModelInputs:
+    def docs_to_trfinput(self, docs: List[Doc]) -> TransformersModelInputs:
         """Generate input data for trf model from docs."""
-        inputs = BertModelInputs(
+        input_cls = trf_cls_maps[self.name][CLS_NAMES.inputs]
+        inputs = input_cls(
             input_ids=torch.tensor(
                 zero_pad([doc._.trf_word_pieces for doc in docs]), device=self.device
             )
@@ -241,7 +284,7 @@ class BertModel(TorchPipe):
         with (path / "vocab.pkl").open("wb") as f:
             pickle.dump(self.vocab, f)
 
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> "BertModel":
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> "TrfModel":
         with (path / "cfg.pkl").open("rb") as f:
             self.cfg = pickle.load(f)
         with (path / "vocab.pkl").open("rb") as f:
@@ -266,6 +309,3 @@ def get_similarity(o1: Union[Doc, Span, Token], o2: Union[Doc, Span, Token]) -> 
     v1: torch.Tensor = o1.vector
     v2: torch.Tensor = o2.vector
     return (v1.dot(v2) / (v1.norm() * v2.norm())).item()
-
-
-Language.factories[BertModel.name] = BertModel
