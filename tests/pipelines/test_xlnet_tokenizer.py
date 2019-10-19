@@ -16,7 +16,6 @@ def spiece_model():
 def wp_xlnet(spiece_model):
     TransformersLanguageMixin.install_extensions()
     wp = WordPiecer.from_pretrained(Vocab(), spiece_model)
-    wp.model.keep_accents = True
     return wp
 
 
