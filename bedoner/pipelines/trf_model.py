@@ -2,7 +2,7 @@
 import dataclasses
 import pickle
 from pathlib import Path
-from typing import Iterable, List, Optional, Union, cast, Type
+from typing import Iterable, List, Optional, Union, cast
 
 import torch
 import transformers as trf
@@ -97,22 +97,6 @@ class CLS_NAMES:
     config = "config"
 
 
-trf_cls_maps = {
-    MODEL_NAMES.bert: {
-        CLS_NAMES.inputs: BertModelInputs,
-        CLS_NAMES.outputs: BertModelOutputs,
-        CLS_NAMES.model: trf.BertModel,
-        CLS_NAMES.config: trf.BertConfig,
-    },
-    MODEL_NAMES.xlnet: {
-        CLS_NAMES.inputs: XLNetModelInputs,
-        CLS_NAMES.outputs: XLNetModelOutputs,
-        CLS_NAMES.model: trf.XLNetModel,
-        CLS_NAMES.config: trf.XLNetConfig,
-    },
-}
-
-
 def get_trf_name(name: str) -> str:
     for k in {MODEL_NAMES.bert, MODEL_NAMES.xlnet}:
         if k in name:
@@ -131,10 +115,6 @@ class TransformersModel(TorchPipe):
         self.model = model
         self.cfg = cfg
 
-    @property
-    def trf_name(self):
-        return get_trf_name(self.cfg.get("trf_name", ""))
-
     @classmethod
     def from_nlp(cls, nlp, **cfg):
         return cls(nlp.vocab, **cfg)
@@ -148,28 +128,22 @@ class TransformersModel(TorchPipe):
         return cls(vocab, model=model, **cfg)
 
     @classmethod
-    def Model(cls, **cfg) -> Union[trf.BertModel, trf.XLNetModel]:
+    def Model(cls, **cfg) -> trf.PreTrainedModel:
         """Create trf Model"""
-        trf_name = cfg.get("trf_name", "")
-        assert trf_name
-        trf_type = get_trf_name(trf_name)
-        trf_model_cls: trf.PreTrainedModel = trf_cls_maps[trf_type][CLS_NAMES.model]
         if cfg.get("from_pretrained"):
-            trf_model_cls.pretrained_model_archive_map.update(
+            trf_name = cfg.get("trf_name", "")
+            cls.trf_model_cls.pretrained_model_archive_map.update(
                 PRETRAINED_MODEL_ARCHIVE_MAP
             )
-            trf_model_cls.config_class.pretrained_config_archive_map.update(
+            cls.trf_model_cls.config_class.pretrained_config_archive_map.update(
                 PRETRAINED_CONFIG_ARCHIVE_MAP
             )
-            model = trf_model_cls.from_pretrained(trf_name)
+            model = cls.trf_model_cls.from_pretrained(trf_name)
         else:
             if "vocab_size" in cfg["trf_config"]:
                 vocab_size = cfg["trf_config"]["vocab_size"]
                 cfg["trf_config"]["vocab_size_or_config_json_file"] = vocab_size
-            trf_config_cls: trf.PretrainedConfig = trf_cls_maps[trf_type][
-                CLS_NAMES.config
-            ]
-            model = trf_model_cls(trf_config_cls(**cfg["trf_config"]))
+            model = cls.trf_model_cls(cls.trf_config_cls(**cfg["trf_config"]))
         return model
 
     @property
@@ -188,10 +162,7 @@ class TransformersModel(TorchPipe):
         x = self.docs_to_trfinput(docs)
         self.assert_length(x)
         with torch.no_grad():
-            output_cls: Type[TransformerModelOutputs] = trf_cls_maps[self.trf_name][
-                CLS_NAMES.outputs
-            ]
-            y = output_cls(*self.model(**dataclasses.asdict(x)))
+            y = self.output_cls(*self.model(**dataclasses.asdict(x)))
         return y
 
     def set_annotations(
@@ -205,10 +176,6 @@ class TransformersModel(TorchPipe):
             doc._.trf_last_hidden_state = TensorWrapper(
                 outputs.laste_hidden_state, i, length
             )
-            if isinstance(outputs, BertModelOutputs):
-                doc._.trf_pooler_output = TensorWrapper(
-                    outputs.pooler_output, i, length
-                )
             if outputs.hidden_states:
                 doc._.trf_all_hidden_states = [
                     TensorWrapper(hid_layer, i)
@@ -241,15 +208,12 @@ class TransformersModel(TorchPipe):
         self.model.train()
         x = self.docs_to_trfinput(docs)
         self.assert_length(x)
-        y = trf_cls_maps[self.trf_name][CLS_NAMES.outputs](
-            *self.model(**dataclasses.asdict(x))
-        )
+        y = self.output_cls(*self.model(**dataclasses.asdict(x)))
         self.set_annotations(docs, y, set_vector=False)
 
     def docs_to_trfinput(self, docs: List[Doc]) -> TransformersModelInputs:
         """Generate input data for trf model from docs."""
-        input_cls = trf_cls_maps[self.name][CLS_NAMES.inputs]
-        inputs = input_cls(
+        inputs = self.input_cls(
             input_ids=torch.tensor(
                 zero_pad([doc._.trf_word_pieces for doc in docs]), device=self.device
             )
@@ -291,6 +255,30 @@ class TransformersModel(TorchPipe):
             self.vocab = pickle.load(f)
         self.model = self.trf_model_cls.from_pretrained(path)
         return self
+
+
+class BertModel(TransformersModel):
+    name = "bert"
+    output_cls = BertModelOutputs
+    input_cls = BertModelInputs
+    trf_model_cls = trf.BertModel
+    trf_config_cls = trf.BertConfig
+
+    def set_annotations(
+        self, docs: List[Doc], outputs: BertModelOutputs, set_vector=True
+    ) -> None:
+        super().set_annotations(docs, outputs, set_vector=set_vector)
+        for i, doc in enumerate(docs):
+            length = len(doc._.trf_word_pieces)
+            doc._.trf_pooler_output = TensorWrapper(outputs.pooler_output, i, length)
+
+
+class XLNetModel(TransformersModel):
+    name = "xlnet"
+    trf_model_cls = trf.XLNetModel
+    trf_config_cls = trf.XLNetConfig
+    trf_input_cls = XLNetModelInputs
+    trf_output_cls = XLNetModelOutputs
 
 
 def get_doc_vector_via_tensor(doc) -> torch.Tensor:
