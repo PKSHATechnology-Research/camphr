@@ -6,6 +6,8 @@ from typing import Iterable, List, Optional, Union, cast
 
 import torch
 import transformers as trf
+from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
+from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.tokens import Doc, Span, Token
@@ -32,14 +34,26 @@ PRETRAINED_CONFIG_ARCHIVE_MAP = {
 
 
 @dataclasses.dataclass
-class BertModelInputs:
-    """Container for BERT model input. See `trf.BertModel`'s docstring for detail."""
-
+class TransformersModelInputs:
     input_ids: torch.Tensor
     token_type_ids: Optional[torch.Tensor] = None
     attention_mask: Optional[torch.Tensor] = None
-    position_ids: Optional[torch.Tensor] = None
     head_mask: Optional[torch.Tensor] = None
+    __doc__ = BERT_INPUTS_DOCSTRING
+
+
+@dataclasses.dataclass
+class BertModelInputs(TransformersModelInputs):
+    position_ids: Optional[torch.Tensor] = None
+    __doc__ = BERT_INPUTS_DOCSTRING
+
+
+@dataclasses.dataclass
+class XLNetModelInputs(TransformersModelInputs):
+    mems: Optional[List[torch.FloatTensor]] = None
+    perm_mask: Optional[torch.FloatTensor] = None
+    target_mapping: Optional[torch.FloatTensor] = None
+    __doc__ = XLNET_INPUTS_DOCSTRING
 
 
 @dataclasses.dataclass
