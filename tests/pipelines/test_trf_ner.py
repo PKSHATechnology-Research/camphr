@@ -12,24 +12,29 @@ from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
 from bedoner.ner_labels.utils import make_biluo_labels
 
-from ..utils import in_ci
-
-pytestmark = pytest.mark.skipif(
-    in_ci(), reason="Fail in circleci due to memory allocation error"
-)
-
 
 @pytest.fixture(scope="module")
-def labels():
+def labels_ene():
     return make_biluo_labels(enes)
 
 
+@pytest.fixture(scope="module")
+def labels_irex():
+    return make_biluo_labels(irexes)
+
+
 @pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
-def nlp(labels, request, bert_dir):
+def nlp(labels_ene, request, bert_dir):
     lang = request.param
-    _nlp = bert_ner(lang=lang, labels=["-"] + labels, pretrained=bert_dir)
+    _nlp = bert_ner(lang=lang, labels=["-"] + labels_ene, pretrained=bert_dir)
     assert _nlp.meta["lang"] == lang
     return _nlp
+
+
+@pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
+def nlp_irex(labels_irex, request, bert_dir):
+    lang = request.param
+    return bert_ner(lang=lang, labels=["-"] + labels_irex, pretrained=bert_dir)
 
 
 TESTCASE = [
@@ -93,11 +98,6 @@ def test_save_and_load(nlp: Language):
         nlp.to_disk(d)
         nlp = spacy.load(d)
         nlp(TESTCASE[0][0])
-
-
-@pytest.fixture
-def nlp_irex():
-    return bert_ner(labels=["-"] + make_biluo_labels(irexes))
 
 
 TESTCASE2 = ["資生堂の香水-禅とオードパルファンＺＥＮの違いを教えて下さい。また今でも製造されてますか？"]

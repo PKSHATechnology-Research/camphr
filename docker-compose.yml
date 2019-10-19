@@ -2,5 +2,3 @@ version: '3'
 services:
   ner:
     build: .
-    volumes: 
-      - ./data:/app/data

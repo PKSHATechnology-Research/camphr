@@ -46,14 +46,10 @@ def test_span_vector(nlp: Language, text: str):
 
 
 @pytest.mark.parametrize(
-    "text1,text2,is_similar,threshold",
-    [("今日はいい天気だった", "明日は晴れるかな", True, 0.5), ("今日はいい天気だった", "私は自然言語処理マスター", False, 0.5)],
+    "text1,text2", [("今日はいい天気だった", "明日は晴れるかな"), ("今日はいい天気だった", "私は自然言語処理マスター")]
 )
-def test_doc_similarlity(nlp, text1, text2, is_similar, threshold):
+def test_doc_similarlity(nlp, text1, text2):
     doc1 = nlp(text1)
     doc2 = nlp(text2)
-    if is_similar:
-        assert doc1.similarity(doc2) > threshold
-    else:
-        assert doc1.similarity(doc2) < threshold
+    assert doc1.similarity(doc2)
     assert np.isclose(doc1.similarity(doc2), doc2.similarity(doc1))
