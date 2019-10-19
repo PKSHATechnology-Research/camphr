@@ -104,7 +104,7 @@ class BertModel(TorchPipe):
         return self.model.config.max_position_embeddings
 
     def assert_length(self, x: BertModelInputs):
-        if x.input_ids.shape[1] > self.max_length:
+        if self.max_length > 0 and x.input_ids.shape[1] > self.max_length:
             raise ValueError(
                 f"Too long input_ids. Expected {self.max_length}, but got {x.input_ids.shape[1]}"
             )
