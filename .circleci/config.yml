@@ -12,13 +12,6 @@ jobs:
           name: login
           command: echo "$dockerhub_password" | docker login --username $dockerhub_username --password-stdin
       - run: mkdir data
-      - aws-s3/copy:
-          from: "s3://bedoner/trf_models/bert/bert-ja-juman.tar.gz"
-          to: data/
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          aws-region: AWS_REGION
-      - run: cd data && tar xzvf bert-ja-juman.tar.gz
       - run: docker-compose build
       - run:
           name: run pytest
