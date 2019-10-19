@@ -12,12 +12,6 @@ from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
 from bedoner.ner_labels.utils import make_biluo_labels
 
-from ..utils import in_ci
-
-pytestmark = pytest.mark.skipif(
-    in_ci(), reason="Fail in circleci due to memory allocation error"
-)
-
 
 @pytest.fixture(scope="module")
 def labels_ene():
