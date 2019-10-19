@@ -38,5 +38,10 @@ def DATADIR():
 
 
 @pytest.fixture(scope="session")
-def bert_dir():
-    return str(Path(__file__).parent / "../data/bert-ja-juman")
+def fixture_dir():
+    return Path(__file__).parent / "fixtures/"
+
+
+@pytest.fixture(scope="session")
+def bert_dir(fixture_dir):
+    return str(fixture_dir / "bert")
