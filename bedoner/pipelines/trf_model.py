@@ -21,11 +21,13 @@ from bedoner.torch_utils import (
 )
 from bedoner.utils import zero_pad
 
-BERT_PRETRAINED_MODEL_ARCHIVE_MAP = {
-    "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman.bin"
+PRETRAINED_MODEL_ARCHIVE_MAP = {
+    "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman.bin",
+    "xlnet-ja": "s3://bedoner/trf_models/xlnet/pytorch_model.bin",
 }
-BERT_PRETRAINED_CONFIG_ARCHIVE_MAP = {
-    "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman-config.json"
+PRETRAINED_CONFIG_ARCHIVE_MAP = {
+    "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman-config.json",
+    "xlnet-ja": "s3://bedoner/trf_models/xlnet/config.json",
 }
 
 
@@ -84,10 +86,10 @@ class BertModel(TorchPipe):
         """Create `trf.BertModel`"""
         if cfg.get("from_pretrained"):
             cls.trf_model_cls.pretrained_model_archive_map.update(
-                BERT_PRETRAINED_MODEL_ARCHIVE_MAP
+                PRETRAINED_MODEL_ARCHIVE_MAP
             )
             cls.trf_model_cls.config_class.pretrained_config_archive_map.update(
-                BERT_PRETRAINED_CONFIG_ARCHIVE_MAP
+                PRETRAINED_CONFIG_ARCHIVE_MAP
             )
             model = cls.trf_model_cls.from_pretrained(cfg.get("trf_name"))
         else:
