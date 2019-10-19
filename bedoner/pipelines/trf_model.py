@@ -120,7 +120,7 @@ def get_trf_name(name: str) -> str:
     raise ValueError(f"Illegal model name: {name}")
 
 
-class TrfModel(TorchPipe):
+class TransformersModel(TorchPipe):
     """Pytorch transformers Model component.
 
     Attach Model outputs to doc.
@@ -284,7 +284,7 @@ class TrfModel(TorchPipe):
         with (path / "vocab.pkl").open("wb") as f:
             pickle.dump(self.vocab, f)
 
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> "TrfModel":
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> "TransformersModel":
         with (path / "cfg.pkl").open("rb") as f:
             self.cfg = pickle.load(f)
         with (path / "vocab.pkl").open("rb") as f:
