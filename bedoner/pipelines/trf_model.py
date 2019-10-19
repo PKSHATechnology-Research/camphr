@@ -68,6 +68,23 @@ class BertModelOutputs:
     # list of (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``
 
 
+@dataclasses.dataclass
+class XLNetModelOutputs:
+    """A container for trf.XLNetModel outputs. See `trf.XLNetModel`'s docstring for detail."""
+
+    laste_hidden_state: torch.FloatTensor  # shape ``(batch_size, sequence_length, hidden_size)``
+    mems: List[torch.FloatTensor]
+    hidden_states: Optional[torch.FloatTensor] = None
+    # list of (one for the output of each layer + the output of the embeddings) of shape ``(batch_size, sequence_length, hidden_size)``
+    attensions: Optional[torch.FloatTensor] = None
+    # list of (one for each layer) of shape ``(batch_size, num_heads, sequence_length, sequence_length)``
+
+
+class MODEL_NAMES:
+    bert = "bert"
+    xlnet = "xlnet"
+
+
 class BertModel(TorchPipe):
     """Pytorch transformers BertModel component.
 
@@ -123,16 +140,23 @@ class BertModel(TorchPipe):
                 f"Too long input_ids. Expected {self.max_length}, but got {x.input_ids.shape[1]}"
             )
 
-    def predict(self, docs: List[Doc]) -> BertModelOutputs:
+    def predict(self, docs: List[Doc]) -> Union[BertModelOutputs, XLNetModelOutputs]:
         self.require_model()
         self.model.eval()
         x = self.docs_to_trfinput(docs)
         self.assert_length(x)
         with torch.no_grad():
-            y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
+            if self.name == MODEL_NAMES.bert:
+                y = BertModelOutputs(*self.model(**dataclasses.asdict(x)))
+            elif self.name == MODEL_NAMES.xlnet:
+                y = XLNetModelOutputs(*self.model(**dataclasses.asdict(x)))
+            else:
+                raise ValueError(f"Model name {self.name} is illegal.")
         return y
 
-    def set_annotations(self, docs: List[Doc], outputs: BertModelOutputs) -> None:
+    def set_annotations(
+        self, docs: List[Doc], outputs: Union[BertModelOutputs, XLNetModelOutputs]
+    ) -> None:
         """Assign the extracted features to the Doc."""
         for i, doc in enumerate(docs):
             length = len(doc._.trf_word_pieces)
@@ -141,7 +165,10 @@ class BertModel(TorchPipe):
             doc._.trf_last_hidden_state = TensorWrapper(
                 outputs.laste_hidden_state, i, length
             )
-            doc._.trf_pooler_output = TensorWrapper(outputs.pooler_output, i, length)
+            if isinstance(outputs, BertModelOutputs):
+                doc._.trf_pooler_output = TensorWrapper(
+                    outputs.pooler_output, i, length
+                )
             lh: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
 
             doc_tensor = lh.new_zeros((len(doc), lh.shape[-1]))
