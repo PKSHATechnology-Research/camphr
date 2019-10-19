@@ -46,6 +46,8 @@ class Config(omegaconf.Config):
     test_size: float
     lang: str
     name: str
+    from_pretrained: str
+    neval: int
 
 
 @hydra.main(config_path="conf/train.yml")
@@ -61,7 +63,9 @@ def main(cfg: Config):
     train_data, val_data = train_test_split(data, test_size=cfg.test_size)
 
     labels = get_labels(cfg.label)
-    nlp = bert_ner(lang=cfg.lang, labels=make_biluo_labels(labels))
+    nlp = bert_ner(
+        lang=cfg.lang, pretrained=cfg.from_pretrained, labels=make_biluo_labels(labels)
+    )
     nlp.meta["name"] = cfg.name + "_" + cfg.label
     if torch.cuda.is_available():
         log.info("CUDA enabled")
@@ -86,7 +90,7 @@ def main(cfg: Config):
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
             log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
-            if j % 10 == 9:
+            if j % cfg.neval == cfg.neval-1:
                 try:
                     scorer: Scorer = nlp.evaluate(val_data)
                 except:

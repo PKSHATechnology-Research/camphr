@@ -84,8 +84,8 @@ class BertForTokenClassification(TorchPipe):
         return cls(nlp.vocab, **cfg)
 
     @classmethod
-    def from_pretrained(cls, vocab: Vocab, name: str, **cfg):
-        cfg["trf_name"] = name
+    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
+        cfg["trf_name"] = name_or_path
         model = cls.Model(from_pretrained=True, **cfg)
         cfg["trf_config"] = dict(model.config.to_dict())
         return cls(vocab, model=model, **cfg)

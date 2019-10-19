@@ -1,6 +1,5 @@
 """The models module defines functions to create spacy models."""
 import os
-from pathlib import Path
 
 import mojimoji
 from spacy.language import Language
@@ -17,10 +16,6 @@ from bedoner.pipelines.trf_ner import BertForNamedEntityRecognition
 from bedoner.pipelines.wordpiecer import WordPiecer
 from bedoner.utils import inject_mixin
 
-__dir__ = Path(__file__).parent
-
-bert_dir = str(__dir__ / "../data/bert-ja-juman")
-
 
 def han_to_zen_normalizer(text):
     return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
@@ -32,7 +27,7 @@ def juman_nlp() -> juman.Japanese:
     )
 
 
-def bert_wordpiecer(lang="juman", name=bert_dir) -> Language:
+def bert_wordpiecer(lang: str, pretrained: str) -> Language:
     if lang == "juman":
         cls = inject_mixin(TransformersLanguageMixin, juman.Japanese)
         nlp = cls(Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}})
@@ -41,21 +36,21 @@ def bert_wordpiecer(lang="juman", name=bert_dir) -> Language:
         nlp = cls(Vocab())
     else:
         raise ValueError(f"Unsupported lang: {lang}")
-    w = WordPiecer.from_pretrained(nlp.vocab, name)
+    w = WordPiecer.from_pretrained(nlp.vocab, pretrained)
     nlp.add_pipe(w)
     return nlp
 
 
-def bert_model(lang="juman", name=bert_dir):
-    nlp = bert_wordpiecer(lang)
-    bert = BertModel.from_pretrained(nlp.vocab, name)
+def bert_model(lang: str, pretrained: str):
+    nlp = bert_wordpiecer(lang, pretrained=pretrained)
+    bert = BertModel.from_pretrained(nlp.vocab, pretrained)
     nlp.add_pipe(bert)
     return nlp
 
 
-def bert_ner(lang="juman", name=bert_dir, **cfg):
-    nlp = bert_model(lang)
-    ner = BertForNamedEntityRecognition.from_pretrained(nlp.vocab, name, **cfg)
+def bert_ner(lang: str, pretrained: str, **cfg):
+    nlp = bert_model(lang, pretrained)
+    ner = BertForNamedEntityRecognition.from_pretrained(nlp.vocab, pretrained, **cfg)
     nlp.add_pipe(ner)
     return nlp
 

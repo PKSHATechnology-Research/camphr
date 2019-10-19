@@ -25,9 +25,9 @@ def labels():
 
 
 @pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
-def nlp(labels, request):
+def nlp(labels, request, bert_dir):
     lang = request.param
-    _nlp = bert_ner(lang=lang, labels=["-"] + labels)
+    _nlp = bert_ner(lang=lang, labels=["-"] + labels, pretrained=bert_dir)
     assert _nlp.meta["lang"] == lang
     return _nlp
 
