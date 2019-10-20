@@ -1,10 +1,13 @@
 from pathlib import Path
 
 import pytest
+from spacy.vocab import Vocab
 
 from bedoner.lang.juman import Japanese as Juman
 from bedoner.lang.knp import Japanese as KNP
 from bedoner.lang.mecab import Japanese as Mecab
+from bedoner.pipelines.wordpiecer import WordPiecer
+from bedoner.pipelines.trf_model import XLNetModel
 
 from .utils import check_juman, check_knp, check_mecab
 
@@ -45,3 +48,13 @@ def fixture_dir():
 @pytest.fixture(scope="session")
 def bert_dir(fixture_dir):
     return str(fixture_dir / "bert")
+
+
+@pytest.fixture(scope="module")
+def xlnet_wp(fixture_dir):
+    return WordPiecer.from_pretrained(Vocab(), str(fixture_dir / "xlnet"))
+
+
+@pytest.fixture(scope="module")
+def xlnet_model(fixture_dir):
+    return XLNetModel.from_pretrained(Vocab(), str(fixture_dir / "xlnet"))

@@ -53,3 +53,7 @@ def test_doc_similarlity(nlp, text1, text2):
     doc2 = nlp(text2)
     assert doc1.similarity(doc2)
     assert np.isclose(doc1.similarity(doc2), doc2.similarity(doc1))
+
+
+def test_xlnet_model(xlnet_wp, xlnet_model, tokens):
+    pass
