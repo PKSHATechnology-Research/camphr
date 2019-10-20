@@ -4,7 +4,7 @@ Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s
 """
 import pickle
 from pathlib import Path
-from typing import Iterable, cast
+from typing import Iterable, Union, cast
 
 import torch
 import torch.nn as nn
@@ -14,9 +14,8 @@ from spacy.gold import GoldParse, spans_from_biluo_tags
 from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy.vocab import Vocab
-from transformers.modeling_bert import BertConfig
 
-from bedoner.pipelines.trf_model import PRETRAINED_CONFIG_ARCHIVE_MAP, BertModel
+from bedoner.pipelines.trf_model import PRETRAINED_CONFIG_ARCHIVE_MAP
 from bedoner.pipelines.utils import UNK, correct_biluo_tags
 from bedoner.torch_utils import (
     OptimizerParameters,
@@ -26,15 +25,19 @@ from bedoner.torch_utils import (
 )
 
 
-class BertTokenClassifier(nn.Module):
+class TrfTokenClassifier(nn.Module):
     """A thin layer to classifier"""
 
-    def __init__(self, config: BertConfig):
+    def __init__(self, config: Union[trf.BertConfig, trf.XLNetConfig]):
         super().__init__()
         self.config = config
         self.num_labels = config.num_labels
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
-        self.classifier = nn.Linear(config.hidden_size, self.num_labels)
+        if isinstance(config, trf.BertConfig):
+            self.dropout = nn.Dropout(config.hidden_dropout_prob)
+            self.classifier = nn.Linear(config.hidden_size, self.num_labels)
+        elif isinstance(config, trf.XLNetConfig):
+            self.dropout = nn.Dropout(config.dropout)
+            self.classifier = nn.Linear(config.d_model, self.num_labels)
 
         self.loss_fct = nn.CrossEntropyLoss()
 
@@ -48,19 +51,15 @@ class BertTokenClassifier(nn.Module):
         return logits
 
 
-class BertForTokenClassification(TorchPipe):
+class TrfForTokenClassificationBase(TorchPipe):
     """Base class for token classification task (e.g. NER).
 
-    Requires `BertModel` before this model in the pipeline to use this model.
+    Requires `TrfModel` before this model in the pipeline to use this model.
 
     Notes:
         `Token._.cls_logit` is set and stored the output of this model into. This is usefule to calculate the probability of the classification.
         `Doc._.cls_logit` is set and stored the output of this model into.
     """
-
-    name = "bert_tokenclassifier"
-    trf_model_cls = BertTokenClassifier
-    trf_config_cls = trf.BertConfig
 
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
@@ -91,7 +90,7 @@ class BertForTokenClassification(TorchPipe):
         return cls(vocab, model=model, **cfg)
 
     @classmethod
-    def Model(cls, **cfg) -> BertTokenClassifier:
+    def Model(cls, **cfg) -> TrfTokenClassifier:
         assert cfg.get("labels")
         cfg.setdefault("trf_config", {})
         cfg["trf_config"]["num_labels"] = len(cfg.get("labels", []))
@@ -102,12 +101,12 @@ class BertForTokenClassification(TorchPipe):
             config = cls.trf_config_cls.from_pretrained(
                 cfg["trf_name"], **cfg["trf_config"]
             )
-            model = BertTokenClassifier(config)
+            model = TrfTokenClassifier(config)
         else:
             if "vocab_size" in cfg["trf_config"]:
                 vocab_size = cfg["trf_config"]["vocab_size"]
                 cfg["trf_config"]["vocab_size_or_config_json_file"] = vocab_size
-            model = cls.BertClassifier(trf.BertConfig(**cfg["trf_config"]))
+            model = TrfTokenClassifier(cls.trf_config_cls(**cfg["trf_config"]))
         assert model.config.num_labels == len(cfg["labels"])
         return model
 
@@ -144,7 +143,7 @@ class BertForTokenClassification(TorchPipe):
 
     def to_disk(self, path: Path, exclude=tuple(), **kwargs):
         path.mkdir(exist_ok=True)
-        model: BertTokenClassifier = self.model
+        model: TrfTokenClassifier = self.model
         model.config.save_pretrained(path)
         torch.save(model.state_dict(), str(path / "model.pth"))
 
@@ -155,9 +154,9 @@ class BertForTokenClassification(TorchPipe):
         with (path / "vocab.pkl").open("wb") as f:
             pickle.dump(self.vocab, f)
 
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> BertModel:
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs):
         config = self.trf_config_cls.from_pretrained(path)
-        model = BertTokenClassifier(config)
+        model = TrfTokenClassifier(config)
         model.load_state_dict(
             torch.load(str(path / "model.pth"), map_location=self.device)
         )
@@ -171,12 +170,8 @@ class BertForTokenClassification(TorchPipe):
         return self
 
 
-class BertForNamedEntityRecognition(BertForTokenClassification):
+class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
     """Named entity recognition component with pytorch-transformers."""
-
-    name = "bert_ner"
-    trf_model_cls = BertTokenClassifier
-    trf_config_cls = trf.BertConfig
 
     @property
     def ignore_label_index(self) -> int:
@@ -233,6 +228,10 @@ class BertForNamedEntityRecognition(BertForTokenClassification):
         return docs
 
 
-BertForTokenClassification.install_extensions()
-Language.factories[BertForTokenClassification.name] = BertForTokenClassification
+class BertForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
+    name = "bert_ner"
+    trf_config_cls = trf.BertConfig
+
+
+TrfForTokenClassificationBase.install_extensions()
 Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition

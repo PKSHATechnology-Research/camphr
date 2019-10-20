@@ -11,4 +11,4 @@ import pytest
 def test_wordpiecer(xlnet_wp, tokens, pieces):
     doc = Doc(Vocab(), tokens, spaces=[False] * len(tokens))
     doc = xlnet_wp(doc)
-    assert doc._.get(ATTRS.word_pieces) == pieces
+    assert doc._.get(ATTRS.word_pieces_) == pieces
