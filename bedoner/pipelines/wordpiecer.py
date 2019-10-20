@@ -2,7 +2,6 @@
 from typing import Iterable, List, Type
 
 import transformers as trf
-from spacy.pipeline import Pipe
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from spacy_transformers.pipeline.wordpiecer import TransformersWordPiecer, get_tokenizer
@@ -55,7 +54,7 @@ class WordPiecer(TransformersWordPiecer):
         return [self(doc) for doc in docs]
 
 
-class TrfSentencePiecer(Pipe):
+class TrfSentencePiecer(TransformersWordPiecer):
     name = "trf_sentencepiecer"
 
     def __init__(self, vocab, model=True, **cfg):
@@ -86,19 +85,20 @@ class TrfSentencePiecer(Pipe):
         model = trf_tokenizer_cls.from_pretrained(trf_name)
         return cls(vocab, model=model, trf_name=trf_name, **cfg)
 
-    def predict(self, docs) -> None:
-        pass
+    def predict(self, docs: Iterable[Doc]) -> List[List[str]]:
+        # TODO: align, segment
+        pieces = []
+        for doc in docs:
+            pieces.append(self.model.add_special_tokens([doc._.get(EXTS.pieces_)]))
+        return pieces
 
     def set_annotations(
-        self, docs: Iterable[Doc], predictions: None = None
+        self, docs: Iterable[Doc], predictions: List[List[str]]
     ) -> Iterable[Doc]:
-        for doc in docs:
+        for doc, piece in zip(docs, predictions):
             doc._.set(ATTRS.alignment, doc._.get(EXTS.alignment))
-            doc._.set(
-                ATTRS.word_pieces,
-                self.model.add_special_tokens_single_sequence(doc._.get(EXTS.pieces)),
-            )
-            doc._.set(ATTRS.word_pieces_, doc._.get(EXTS.pieces_))
+            doc._.set(ATTRS.word_pieces, self.model.convert_tokens_to_ids(piece))
+            doc._.set(ATTRS.word_pieces_, piece)
         return docs
 
     def update(self, docs: Iterable[Doc], *args, **kwargs) -> Iterable[Doc]:

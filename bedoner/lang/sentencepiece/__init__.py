@@ -1,3 +1,4 @@
+import os
 import shutil
 from pathlib import Path
 from typing import Optional
@@ -40,10 +41,14 @@ class Tokenizer:
         ] + [False]
         tokens = []
         alignment = []
+        buf = []
         for i, token in enumerate(_tokens):
             if token != self.SPACE_CHAR:
                 tokens.append(token.lstrip(self.SPACE_CHAR))
-                alignment.append(i)
+                alignment.append(buf + [i])
+                buf = []
+            else:
+                buf = [i]
 
         doc = Doc(self.vocab, tokens, spaces)
         doc._.set(EXTS.alignment, alignment)
@@ -52,6 +57,8 @@ class Tokenizer:
         return doc
 
     def load_spm_tokenizer(self):
+        if os.path.isdir(self.model_path):
+            self.model_path = os.path.join(self.model_path, self.SPIECE_MODEL)
         self.tokenizer.load(self.model_path)
 
     @property

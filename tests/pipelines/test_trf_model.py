@@ -9,9 +9,16 @@ from spacy.tokens import Doc
 from bedoner.models import trf_model
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
+@pytest.fixture(
+    scope="module",
+    params=["mecab", "juman", "sentencepiece"],
+    ids=["mecab", "juman", "sentencepiece"],
+)
 def nlp(request, trf_dir):
-    return trf_model(request.param, trf_dir)
+    lang = request.param
+    if lang == "sentencepiece" and "xlnet" not in trf_dir:
+        pytest.skip()
+    return trf_model(lang, trf_dir)
 
 
 TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]

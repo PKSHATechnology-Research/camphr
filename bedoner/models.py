@@ -9,6 +9,7 @@ from spacy.vocab import Vocab
 import bedoner.lang.juman as juman
 import bedoner.lang.knp as knp
 import bedoner.lang.mecab as mecab
+import bedoner.lang.sentencepiece as sp
 from bedoner.lang.trf_mixin import TransformersLanguageMixin
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.person_ner import create_person_ruler
@@ -17,7 +18,7 @@ from bedoner.pipelines.trf_ner import (
     BertForNamedEntityRecognition,
     XLNetForNamedEntityRecognition,
 )
-from bedoner.pipelines.wordpiecer import WordPiecer
+from bedoner.pipelines.wordpiecer import WordPiecer, TrfSentencePiecer
 from bedoner.utils import inject_mixin
 
 
@@ -38,9 +39,16 @@ def wordpiecer(lang: str, pretrained: str) -> Language:
     elif lang == "mecab":
         cls = inject_mixin(TransformersLanguageMixin, mecab.Japanese)
         nlp = cls(Vocab())
+    elif lang == "sentencepiece":
+        cls = inject_mixin(TransformersLanguageMixin, sp.SentencePieceLang)
+        nlp = cls(Vocab(), meta={"tokenizer": {"model_path": pretrained}})
     else:
         raise ValueError(f"Unsupported lang: {lang}")
-    w = WordPiecer.from_pretrained(nlp.vocab, pretrained)
+
+    if lang == "sentencepiece":
+        w = TrfSentencePiecer.from_pretrained(nlp.vocab, pretrained)
+    else:
+        w = WordPiecer.from_pretrained(nlp.vocab, pretrained)
     nlp.add_pipe(w)
     return nlp
 
