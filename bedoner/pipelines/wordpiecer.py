@@ -103,4 +103,6 @@ class TrfSentencePiecer(TransformersWordPiecer):
 
     def update(self, docs: Iterable[Doc], *args, **kwargs) -> Iterable[Doc]:
         """Simply forward docs. This method is called when `spacy.Language.update`."""
+        outputs = self.predict(docs)
+        self.set_annotations(docs, outputs)
         return docs

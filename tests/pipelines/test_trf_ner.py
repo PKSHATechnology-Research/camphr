@@ -31,7 +31,7 @@ def labels(label_type):
         raise ValueError
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
+@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
 def nlp(labels, request, trf_dir):
     lang = request.param
     _nlp = trf_ner(lang=lang, labels=["-"] + labels, pretrained=trf_dir)
