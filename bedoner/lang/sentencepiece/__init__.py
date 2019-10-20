@@ -1,9 +1,10 @@
-from pathlib import Path
-from spacy.attrs import LANG
-import sentencepiece as spm
-from typing import Optional
-from spacy.language import Language
 import shutil
+from pathlib import Path
+from typing import Optional
+
+import sentencepiece as spm
+from spacy.attrs import LANG
+from spacy.language import Language
 from spacy.tokens import Doc
 
 

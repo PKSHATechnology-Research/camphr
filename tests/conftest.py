@@ -1,6 +1,7 @@
 from bedoner.lang.trf_mixin import TransformersLanguageMixin
 from bedoner.utils import inject_mixin
 from pathlib import Path
+import sentencepiece as spm
 
 import pytest
 from spacy.vocab import Vocab
@@ -83,3 +84,15 @@ def trf_dir(trf_name, bert_dir, xlnet_dir):
         return bert_dir
     if trf_name == "xlnet":
         return xlnet_dir
+
+
+@pytest.fixture(scope="session")
+def spiece_path(fixture_dir):
+    return str(fixture_dir / "spiece.model")
+
+
+@pytest.fixture(scope="session")
+def spiece(spiece_path):
+    s = spm.SentencePieceProcessor()
+    s.load(spiece_path)
+    return s

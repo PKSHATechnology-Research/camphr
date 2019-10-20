@@ -7,20 +7,8 @@ from spacy.vocab import Vocab
 
 
 @pytest.fixture
-def spiece_path(fixture_dir):
-    return str(fixture_dir / "spiece.model")
-
-
-@pytest.fixture
 def nlp(spiece_path):
     return SentencePieceLang(Vocab(), meta={"tokenizer": {"model_path": spiece_path}})
-
-
-@pytest.fixture
-def spiece(spiece_path):
-    s = spm.SentencePieceProcessor()
-    s.load(spiece_path)
-    return s
 
 
 TESTCASE = [
