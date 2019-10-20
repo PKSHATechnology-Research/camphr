@@ -29,7 +29,6 @@ def spm_nlp(spiece_path, xlnet_dir):
 def test_trf_sentencepiece(spm_nlp, text):
     nlp = spm_nlp
     doc = nlp(text)
-    assert doc._.get(ATTRS.word_pieces_) == doc._.get(EXTS.pieces_)
     assert doc._.get(ATTRS.word_pieces)
     assert doc._.get(ATTRS.word_pieces) != doc._.get(EXTS.pieces)
     assert doc._.get(ATTRS.alignment) == doc._.get(EXTS.alignment)
