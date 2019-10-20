@@ -31,9 +31,11 @@ def labels(label_type):
         raise ValueError
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
+@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
 def nlp(labels, request, trf_dir):
     lang = request.param
+    if lang == "sentencepiece" and "xlnet" not in trf_dir:
+        pytest.skip()
     _nlp = trf_ner(lang=lang, labels=["-"] + labels, pretrained=trf_dir)
     assert _nlp.meta["lang"] == lang
     return _nlp
