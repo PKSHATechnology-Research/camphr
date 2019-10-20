@@ -32,15 +32,11 @@ def labels(label_type):
 
 
 @pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
-def nlp(
-    labels, request, bert_dir, trf_name, xlnet_wp, xlnet_model, xlnet_dir, trf_mecab
-):
-    if trf_name == "bert":
-        lang = request.param
-        _nlp = trf_ner(lang=lang, labels=["-"] + labels, pretrained=bert_dir)
-        assert _nlp.meta["lang"] == lang
-        return _nlp
-    raise ValueError
+def nlp(labels, request, trf_dir):
+    lang = request.param
+    _nlp = trf_ner(lang=lang, labels=["-"] + labels, pretrained=trf_dir)
+    assert _nlp.meta["lang"] == lang
+    return _nlp
 
 
 TESTCASE_ENE = [
