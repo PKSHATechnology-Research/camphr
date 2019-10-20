@@ -277,8 +277,8 @@ class XLNetModel(TransformersModel):
     name = "xlnet"
     trf_model_cls = trf.XLNetModel
     trf_config_cls = trf.XLNetConfig
-    trf_input_cls = XLNetModelInputs
-    trf_output_cls = XLNetModelOutputs
+    input_cls = XLNetModelInputs
+    output_cls = XLNetModelOutputs
 
 
 def get_doc_vector_via_tensor(doc) -> torch.Tensor:
