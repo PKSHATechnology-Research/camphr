@@ -7,5 +7,4 @@ data: ~/datasets/ner-bccwj-ene.jsonl
 label: ene
 lang: juman
 from_pretrained: ../data/bert-ja-juman 
-name: bert
 neval: 100

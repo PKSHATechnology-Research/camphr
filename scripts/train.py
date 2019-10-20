@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 import random
@@ -11,7 +12,7 @@ from sklearn.model_selection import train_test_split
 from spacy.scorer import Scorer
 from spacy.util import minibatch
 
-from bedoner.models import *
+from bedoner.models import trf_ner, get_trf_name
 from bedoner.ner_labels.labels_ene import ALL_LABELS as ene_labels
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
 from bedoner.ner_labels.utils import make_biluo_labels
@@ -45,7 +46,6 @@ class Config(omegaconf.Config):
     scheduler: bool
     test_size: float
     lang: str
-    name: str
     from_pretrained: str
     neval: int
 
@@ -63,10 +63,11 @@ def main(cfg: Config):
     train_data, val_data = train_test_split(data, test_size=cfg.test_size)
 
     labels = get_labels(cfg.label)
-    nlp = bert_ner(
+    nlp = trf_ner(
         lang=cfg.lang, pretrained=cfg.from_pretrained, labels=make_biluo_labels(labels)
     )
-    nlp.meta["name"] = cfg.name + "_" + cfg.label
+    name = get_trf_name(cfg.from_pretrained)
+    nlp.meta["name"] = name.value + "_" + cfg.label
     if torch.cuda.is_available():
         log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
@@ -90,7 +91,7 @@ def main(cfg: Config):
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
             log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
-            if j % cfg.neval == cfg.neval-1:
+            if j % cfg.neval == cfg.neval - 1:
                 try:
                     scorer: Scorer = nlp.evaluate(val_data)
                 except:
