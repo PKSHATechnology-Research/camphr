@@ -70,3 +70,16 @@ def xlnet_model(xlnet_dir):
 @pytest.fixture(scope="session")
 def trf_mecab():
     return inject_mixin(TransformersLanguageMixin, Mecab)
+
+
+@pytest.fixture(scope="session", params=["bert", "xlnet"])
+def trf_name(request):
+    return request.param
+
+
+@pytest.fixture(scope="session")
+def trf_dir(trf_name, bert_dir, xlnet_dir):
+    if trf_name == "bert":
+        return bert_dir
+    if trf_name == "xlnet":
+        return xlnet_dir

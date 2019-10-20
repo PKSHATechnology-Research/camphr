@@ -7,21 +7,13 @@ import torch
 from spacy.gold import GoldParse
 from spacy.language import Language
 
-from bedoner.models import bert_ner
+from bedoner.models import trf_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
 from bedoner.ner_labels.utils import make_biluo_labels
-from ..utils import check_mecab
-from bedoner.pipelines.trf_ner import XLNetForNamedEntityRecognition
 
 
-names = ["bert", "xlnet"]
 label_types = ["ene", "irex"]
-
-
-@pytest.fixture(scope="module", params=names)
-def name(request):
-    return request.param
 
 
 @pytest.fixture(scope="module", params=label_types)
@@ -40,24 +32,14 @@ def labels(label_type):
 
 
 @pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
-def nlp(labels, request, bert_dir, name, xlnet_wp, xlnet_model, xlnet_dir, trf_mecab):
-    if name == "bert":
+def nlp(
+    labels, request, bert_dir, trf_name, xlnet_wp, xlnet_model, xlnet_dir, trf_mecab
+):
+    if trf_name == "bert":
         lang = request.param
-        _nlp = bert_ner(lang=lang, labels=["-"] + labels, pretrained=bert_dir)
+        _nlp = trf_ner(lang=lang, labels=["-"] + labels, pretrained=bert_dir)
         assert _nlp.meta["lang"] == lang
         return _nlp
-    elif name == "xlnet":
-        if request.param == "juman" or not check_mecab():
-            pytest.skip()
-        nlp = trf_mecab()
-        nlp.add_pipe(xlnet_wp)
-        nlp.add_pipe(xlnet_model)
-        nlp.add_pipe(
-            XLNetForNamedEntityRecognition.from_pretrained(
-                xlnet_wp.vocab, xlnet_dir, labels=["-"] + labels
-            )
-        )
-        return nlp
     raise ValueError
 
 
@@ -168,8 +150,8 @@ def test_update_cuda(nlp: Language, text, gold, cuda, label_type):
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
-def test_update_batch_cuda(nlp: Language, cuda):
-    if name == "irex":
+def test_update_batch_cuda(nlp: Language, cuda, label_type):
+    if label_type == "irex":
         pytest.skip()
     nlp.to(cuda)
     texts, golds = zip(*TESTCASE_ENE)
@@ -192,9 +174,9 @@ def example_gold(request, DATADIR, label_type):
 
 
 @pytest.fixture(scope="module", params=["ner/ner-irex-long.json"])
-def example_long(request, DATADIR, label_type, name):
+def example_long(request, DATADIR, label_type, trf_name):
     fname = request.param
-    if name == "bert" and label_type in fname:
+    if trf_name == "bert" and label_type in fname:
         with (DATADIR / fname).open() as f:
             d = json.load(f)
         return d

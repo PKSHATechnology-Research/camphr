@@ -6,12 +6,12 @@ from spacy.language import Language
 from spacy_transformers.util import ATTRS
 from spacy.tokens import Doc
 
-from bedoner.models import bert_model
+from bedoner.models import trf_model
 
 
 @pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
-def nlp(request, bert_dir):
-    return bert_model(lang=request.param, pretrained=bert_dir)
+def nlp(request, trf_dir):
+    return trf_model(request.param, trf_dir)
 
 
 TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]
@@ -53,13 +53,3 @@ def test_doc_similarlity(nlp, text1, text2):
     doc2 = nlp(text2)
     assert doc1.similarity(doc2)
     assert np.isclose(doc1.similarity(doc2), doc2.similarity(doc1))
-
-
-@pytest.mark.parametrize(
-    "tokens", [["今日は", "いい", "天気", "だ"], ["EXILE", "と", "海", "に", "行っ", "た"]]
-)
-def test_xlnet_model(xlnet_wp, xlnet_model, tokens):
-    doc = Doc(xlnet_wp.vocab, tokens, spaces=[False] * len(tokens))
-    doc = xlnet_wp(doc)
-    doc = xlnet_model(doc)
-    assert doc._.get(ATTRS.last_hidden_state).get() is not None

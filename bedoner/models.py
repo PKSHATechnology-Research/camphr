@@ -1,4 +1,5 @@
 """The models module defines functions to create spacy models."""
+from enum import Enum
 import os
 
 import mojimoji
@@ -11,8 +12,11 @@ import bedoner.lang.mecab as mecab
 from bedoner.lang.trf_mixin import TransformersLanguageMixin
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.person_ner import create_person_ruler
-from bedoner.pipelines.trf_model import BertModel
-from bedoner.pipelines.trf_ner import BertForNamedEntityRecognition
+from bedoner.pipelines.trf_model import BertModel, XLNetModel
+from bedoner.pipelines.trf_ner import (
+    BertForNamedEntityRecognition,
+    XLNetForNamedEntityRecognition,
+)
 from bedoner.pipelines.wordpiecer import WordPiecer
 from bedoner.utils import inject_mixin
 
@@ -27,7 +31,7 @@ def juman_nlp() -> juman.Japanese:
     )
 
 
-def bert_wordpiecer(lang: str, pretrained: str) -> Language:
+def wordpiecer(lang: str, pretrained: str) -> Language:
     if lang == "juman":
         cls = inject_mixin(TransformersLanguageMixin, juman.Japanese)
         nlp = cls(Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}})
@@ -41,16 +45,41 @@ def bert_wordpiecer(lang: str, pretrained: str) -> Language:
     return nlp
 
 
-def bert_model(lang: str, pretrained: str):
-    nlp = bert_wordpiecer(lang, pretrained=pretrained)
-    bert = BertModel.from_pretrained(nlp.vocab, pretrained)
-    nlp.add_pipe(bert)
-    return nlp
+class TRF(Enum):
+    bert = "bert"
+    xlnet = "xlnet"
 
 
-def bert_ner(lang: str, pretrained: str, **cfg):
-    nlp = bert_model(lang, pretrained)
-    ner = BertForNamedEntityRecognition.from_pretrained(nlp.vocab, pretrained, **cfg)
+TRF_MODEL_MAP = {TRF.bert: BertModel, TRF.xlnet: XLNetModel}
+
+
+def get_trf_name(pretrained: str) -> TRF:
+    target = pretrained.lower()
+    for name in TRF:
+        if name.value in target:
+            return name
+    raise ValueError(f"Illegal pretrained name {pretrained}")
+
+
+def trf_model(lang: str, pretrained: str):
+    nlp = wordpiecer(lang, pretrained=pretrained)
+    name = get_trf_name(pretrained)
+    if name:
+        model = TRF_MODEL_MAP[name].from_pretrained(nlp.vocab, pretrained)
+        nlp.add_pipe(model)
+        return nlp
+
+
+TRF_NER_MAP = {
+    TRF.bert: BertForNamedEntityRecognition,
+    TRF.xlnet: XLNetForNamedEntityRecognition,
+}
+
+
+def trf_ner(lang: str, pretrained: str, **cfg):
+    nlp = trf_model(lang, pretrained)
+    name = get_trf_name(pretrained)
+    ner = TRF_NER_MAP[name].from_pretrained(nlp.vocab, pretrained, **cfg)
     nlp.add_pipe(ner)
     return nlp
 
