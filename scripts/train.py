@@ -93,7 +93,7 @@ def main(cfg: Config):
             log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
             if j % cfg.neval == cfg.neval - 1:
                 try:
-                    scorer: Scorer = nlp.evaluate(val_data)
+                    scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch*2)
                 except:
                     with open("fail.json", "w") as f:
                         json.dump(val_data, f, ensure_ascii=False)
