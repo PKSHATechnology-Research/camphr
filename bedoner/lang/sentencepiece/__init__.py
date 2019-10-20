@@ -9,6 +9,8 @@ from spacy.tokens import Doc
 
 class EXTS:
     pieces_ = "spm_pieces_"
+    pieces = "spm_pieces"
+    alignment = "spm_alignment"
 
 
 class Tokenizer:
@@ -18,6 +20,8 @@ class Tokenizer:
     @staticmethod
     def install_extensions():
         Doc.set_extension(EXTS.pieces_, default=None, force=True)
+        Doc.set_extension(EXTS.pieces, default=None, force=True)
+        Doc.set_extension(EXTS.alignment, default=None, force=True)
 
     def __init__(
         self, cls: Language, nlp: Optional[Language] = None, model_path: str = ""
@@ -33,13 +37,17 @@ class Tokenizer:
             for token, next_token in zip(_tokens, _tokens[1:])
             if token != self.SPACE_CHAR
         ] + [False]
-        tokens = [
-            token.lstrip(self.SPACE_CHAR)
-            for token in _tokens
-            if token != self.SPACE_CHAR
-        ]
+        tokens = []
+        alignment = []
+        for i, token in enumerate(_tokens):
+            if token != self.SPACE_CHAR:
+                tokens.append(token.lstrip(self.SPACE_CHAR))
+                alignment.append(i)
+
         doc = Doc(self.vocab, tokens, spaces)
+        doc._.set(EXTS.alignment, alignment)
         doc._.set(EXTS.pieces_, _tokens)
+        doc._.set(EXTS.pieces, self.tokenizer.encode_as_ids(text))
         return doc
 
     def load_spm_tokenizer(self):
