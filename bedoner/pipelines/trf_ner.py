@@ -240,3 +240,4 @@ class XLNetForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
 
 TrfForTokenClassificationBase.install_extensions()
 Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition
+Language.factories[XLNetForNamedEntityRecognition.name] = XLNetForNamedEntityRecognition

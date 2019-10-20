@@ -9,6 +9,7 @@ import transformers as trf
 from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
 from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
 from spacy.gold import GoldParse
+from spacy.language import Language
 from spacy.tokens import Doc, Span, Token
 from spacy.vocab import Vocab
 from spacy_transformers.util import ATTRS
@@ -297,3 +298,7 @@ def get_similarity(o1: Union[Doc, Span, Token], o2: Union[Doc, Span, Token]) -> 
     v1: torch.Tensor = o1.vector
     v2: torch.Tensor = o2.vector
     return (v1.dot(v2) / (v1.norm() * v2.norm())).item()
+
+
+Language.factories[BertModel.name] = BertModel
+Language.factories[XLNetModel.name] = XLNetModel

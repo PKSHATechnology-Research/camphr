@@ -1,3 +1,5 @@
+from bedoner.lang.trf_mixin import TransformersLanguageMixin
+from bedoner.utils import inject_mixin
 from pathlib import Path
 
 import pytest
@@ -50,11 +52,21 @@ def bert_dir(fixture_dir):
     return str(fixture_dir / "bert")
 
 
-@pytest.fixture(scope="module")
-def xlnet_wp(fixture_dir):
-    return WordPiecer.from_pretrained(Vocab(), str(fixture_dir / "xlnet"))
+@pytest.fixture(scope="session")
+def xlnet_dir(fixture_dir):
+    return str(fixture_dir / "xlnet")
 
 
-@pytest.fixture(scope="module")
-def xlnet_model(fixture_dir):
-    return XLNetModel.from_pretrained(Vocab(), str(fixture_dir / "xlnet"))
+@pytest.fixture(scope="session")
+def xlnet_wp(xlnet_dir):
+    return WordPiecer.from_pretrained(Vocab(), xlnet_dir)
+
+
+@pytest.fixture(scope="session")
+def xlnet_model(xlnet_dir):
+    return XLNetModel.from_pretrained(Vocab(), xlnet_dir)
+
+
+@pytest.fixture(scope="session")
+def trf_mecab():
+    return inject_mixin(TransformersLanguageMixin, Mecab)
