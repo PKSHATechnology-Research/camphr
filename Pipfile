@@ -24,7 +24,7 @@ jaconv = "*"
 fire = "*"
 pandas = "*"
 mojimoji = "*"
-spacy-transformers = "*"
+spacy-transformers = {git = "https://github.com/tamuhey/spacy-pytorch-transformers",ref = "patch/xlnet-tokenizer"}
 typing-extensions = "*"
 bedoner = {editable = true,path = "."}
 
