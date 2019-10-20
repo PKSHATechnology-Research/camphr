@@ -42,7 +42,7 @@ def DATADIR():
 
 @pytest.fixture(scope="session")
 def fixture_dir():
-    return Path(__file__).parent / "fixtures/"
+    return (Path(__file__).parent / "fixtures/").absolute()
 
 
 @pytest.fixture(scope="session")

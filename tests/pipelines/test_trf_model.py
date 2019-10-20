@@ -55,5 +55,11 @@ def test_doc_similarlity(nlp, text1, text2):
     assert np.isclose(doc1.similarity(doc2), doc2.similarity(doc1))
 
 
+@pytest.mark.parametrize(
+    "tokens", [["今日は", "いい", "天気", "だ"], ["EXILE", "と", "海", "に", "行っ", "た"]]
+)
 def test_xlnet_model(xlnet_wp, xlnet_model, tokens):
-    pass
+    doc = Doc(xlnet_wp.vocab, tokens, spaces=[False] * len(tokens))
+    doc = xlnet_wp(doc)
+    doc = xlnet_model(doc)
+    assert doc._.get(ATTRS.last_hidden_state).get() is not None
