@@ -1,4 +1,5 @@
 import spacy
+from itertools import chain
 from pathlib import Path
 import sentencepiece as spm
 import pytest
@@ -26,11 +27,31 @@ def test_sentencepiece(
     assert doc.text == text.replace("　", " ").replace("\t", " ").strip()
     for token, expected in zip(doc, tokens):
         assert token.text == expected
-    assert doc._.get(EXTS.pieces) == spiece.encode_as_ids(text)
-    assert doc._.get(EXTS.pieces_) == spiece.encode_as_pieces(text)
+
+    # doc test
+    pieces = spiece.encode_as_ids(text)
+    pieces_ = spiece.encode_as_pieces(text)
+    assert doc._.get(EXTS.pieces) == pieces
+    assert doc._.get(EXTS.pieces_) == pieces_
     assert doc._.get(EXTS.alignment) == align
     assert len(doc) == len(align)
-    assert doc[1 : len(doc) - 1]._.get(EXTS.alignment) == align[1 : len(doc) - 1]
+
+    # token test
+    for i in range(len(doc)):
+        assert doc[i]._.get(EXTS.pieces_) == [pieces_[j] for j in align[i]]
+        assert doc[i]._.get(EXTS.pieces) == [pieces[j] for j in align[i]]
+        assert doc[i]._.get(EXTS.alignment) == align[i]
+
+    # span test
+    for l in range(len(doc)):
+        for r in range(l, len(doc)):
+            assert doc[l:r]._.get(EXTS.alignment) == align[l:r]
+            assert doc[l:r]._.get(EXTS.pieces) == [
+                pieces[i] for i in chain.from_iterable(align[l:r])
+            ]
+            assert doc[l:r]._.get(EXTS.pieces_) == [
+                pieces_[i] for i in chain.from_iterable(align[l:r])
+            ]
 
 
 def test_serialize(nlp: SentencePieceLang, tmpdir: Path):

@@ -1,7 +1,8 @@
 import os
+from itertools import chain
 import shutil
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, Callable, List, Union
 
 import sentencepiece as spm
 from spacy.attrs import LANG
@@ -21,11 +22,13 @@ class Tokenizer:
 
     @staticmethod
     def install_extensions():
-        Doc.set_extension(EXTS.pieces_, default=None, force=True)
-        Doc.set_extension(EXTS.pieces, default=None, force=True)
+        for text, attr in zip((True, False), (EXTS.pieces_, EXTS.pieces)):
+            Doc.set_extension(attr, default=None, force=True)
+            Span.set_extension(attr, getter=make_token_span_spiece_getter(text))
+            Token.set_extension(attr, getter=make_token_span_spiece_getter(text))
         Doc.set_extension(EXTS.alignment, default=None, force=True)
-        Token.set_extension(EXTS.alignment, getter=get_token_align)
         Span.set_extension(EXTS.alignment, getter=get_span_align)
+        Token.set_extension(EXTS.alignment, getter=get_token_align)
 
     def __init__(
         self, cls: Language, nlp: Optional[Language] = None, model_path: str = ""
@@ -87,6 +90,20 @@ def get_token_align(token: Token) -> List[int]:
 
 def get_span_align(span: Span) -> List[List[int]]:
     return [token._.get(EXTS.alignment) for token in span]
+
+
+def make_token_span_spiece_getter(text: bool) -> Callable:
+    def getter(token: Union[Token, Span]) -> Union[List[str], List[int]]:
+        align = token._.get(EXTS.alignment)
+        if isinstance(token, Span):
+            align = chain.from_iterable(align)
+        if text:
+            doc_spiece = token.doc._.get(EXTS.pieces_)
+        else:
+            doc_spiece = token.doc._.get(EXTS.pieces)
+        return [doc_spiece[i] for i in align]
+
+    return getter
 
 
 class Defaults(Language.Defaults):
