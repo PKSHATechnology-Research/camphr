@@ -11,6 +11,8 @@ from spacy.tokens import Doc, Token, Span
 
 
 class EXTS:
+    """Literal declaration for spacy.Underscore"""
+
     pieces_ = "spm_pieces_"
     pieces = "spm_pieces"
     alignment = "spm_alignment"
@@ -72,6 +74,7 @@ class Tokenizer:
 
     @model_path.setter
     def model_path(self, model_path: str):
+        """Set model_path automatically reload sentencepiece tokenizer"""
         self._model_path = model_path
         if model_path:
             self.load_spm_tokenizer()

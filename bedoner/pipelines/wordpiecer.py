@@ -41,7 +41,7 @@ class TrfSentencePiecer(TransformersWordPiecer):
         """
 
         Note:
-            Override super().predict because docs is already sentencepieced.
+            Override super().predict because docs are already sentencepieced.
         """
         output = []
         for doc in docs:
@@ -71,6 +71,11 @@ class TrfSentencePiecer(TransformersWordPiecer):
     def set_annotations(
         self, docs: Iterable[Doc], predictions: List[Tuple[List[str], List[int]]]
     ) -> Iterable[Doc]:
+        """
+
+        Note:
+            Override super().set_annotations because docs are already sentencepieced.
+        """
         for doc, (pieces, align) in zip(docs, predictions):
             doc._.set(ATTRS.alignment, align)
             doc._.set(ATTRS.word_pieces_, pieces)
