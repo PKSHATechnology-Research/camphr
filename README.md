@@ -9,7 +9,7 @@ $ pipenv install --dev # for developer
 
 ## Requirements
 
-- mecab, juman(pp), knpが必要です．
+- 使う機能によって， mecab, juman(pp), knpが必要です．
 
 # Usage
 
