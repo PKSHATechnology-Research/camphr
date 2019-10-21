@@ -11,9 +11,8 @@
 
 ## Backwards incompatibilities
 
-- 以前のBERTモデルの読み込みに失敗します
-  - `trf_ner.BertForTokenClassification`を`trf_ner.TrfForTOkenClassification`へ変更
-  - `trf_ner.BertTokenClassifier`を`trf_ner.TrfTokenClassifier`へ変更
+- `trf_ner.BertForTokenClassification`を`trf_ner.TrfForTOkenClassification`へ変更
+- `trf_ner.BertTokenClassifier`を`trf_ner.TrfTokenClassifier`へ変更
 
 # v0.3.1
 
