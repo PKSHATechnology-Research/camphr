@@ -66,7 +66,10 @@ class Tokenizer:
     def load_spm_tokenizer(self):
         if os.path.isdir(self.model_path):
             self.model_path = os.path.join(self.model_path, self.SPIECE_MODEL)
-        self.tokenizer.load(self.model_path)
+        try:
+            self.tokenizer.load(self.model_path)
+        except OSError:
+            pass
 
     @property
     def model_path(self):
