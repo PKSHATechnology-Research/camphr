@@ -29,6 +29,8 @@ def test_sentencepiece(
     assert doc._.get(EXTS.pieces) == spiece.encode_as_ids(text)
     assert doc._.get(EXTS.pieces_) == spiece.encode_as_pieces(text)
     assert doc._.get(EXTS.alignment) == align
+    assert len(doc) == len(align)
+    assert doc[1 : len(doc) - 1]._.get(EXTS.alignment) == align[1 : len(doc) - 1]
 
 
 def test_serialize(nlp: SentencePieceLang, tmpdir: Path):

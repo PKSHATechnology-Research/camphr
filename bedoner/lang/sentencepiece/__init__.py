@@ -1,12 +1,12 @@
 import os
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import sentencepiece as spm
 from spacy.attrs import LANG
 from spacy.language import Language
-from spacy.tokens import Doc
+from spacy.tokens import Doc, Token, Span
 
 
 class EXTS:
@@ -24,6 +24,8 @@ class Tokenizer:
         Doc.set_extension(EXTS.pieces_, default=None, force=True)
         Doc.set_extension(EXTS.pieces, default=None, force=True)
         Doc.set_extension(EXTS.alignment, default=None, force=True)
+        Token.set_extension(EXTS.alignment, getter=get_token_align)
+        Span.set_extension(EXTS.alignment, getter=get_span_align)
 
     def __init__(
         self, cls: Language, nlp: Optional[Language] = None, model_path: str = ""
@@ -77,6 +79,14 @@ class Tokenizer:
 
     def from_disk(self, path: Path, **kwargs):
         self.model_path = str((path / self.SPIECE_MODEL).absolute())
+
+
+def get_token_align(token: Token) -> List[int]:
+    return token.doc._.get(EXTS.alignment)[token.i]
+
+
+def get_span_align(span: Span) -> List[List[int]]:
+    return [token._.get(EXTS.alignment) for token in span]
 
 
 class Defaults(Language.Defaults):
