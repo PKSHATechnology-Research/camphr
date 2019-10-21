@@ -54,7 +54,9 @@ class TrfSentencePiecer(TransformersWordPiecer):
                 for segment in sent._.get(ATTRS.segments):
                     seg_words = list(segment._.get(EXTS.pieces_))
                     diff = offset - segment._.get(EXTS.alignment)[0][0]
-                    seg_align = [diff + i for i in segment._.get(EXTS.alignment)]
+                    seg_align = [
+                        [diff + i for i in l] for l in segment._.get(EXTS.alignment)
+                    ]
                     assert len(segment) == len(seg_align)
                     sent_words.append(seg_words)
                     sent_align.append(seg_align)
@@ -71,8 +73,8 @@ class TrfSentencePiecer(TransformersWordPiecer):
     ) -> Iterable[Doc]:
         for doc, (pieces, align) in zip(docs, predictions):
             doc._.set(ATTRS.alignment, align)
-            doc._.set(ATTRS.word_pieces, pieces)
-            doc._.set(ATTRS.word_pieces_, self.model.convert_tokens_to_ids(pieces))
+            doc._.set(ATTRS.word_pieces_, pieces)
+            doc._.set(ATTRS.word_pieces, self.model.convert_tokens_to_ids(pieces))
 
             # assersion test
             nr_word = len(doc._.get(ATTRS.word_pieces))
