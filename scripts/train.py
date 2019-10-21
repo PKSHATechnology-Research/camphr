@@ -103,7 +103,7 @@ def main(cfg: Config):
                 log.info(f"f: {scorer.ents_f}")
         log.info(f"epoch {i} loss: {epoch_loss}")
         try:
-            scorer: Scorer = nlp.evaluate(val_data)
+            scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch*2)
         except:
             with open("fail.json", "w") as f:
                 json.dump(val_data, f, ensure_ascii=False)
