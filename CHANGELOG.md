@@ -1,3 +1,10 @@
+# v0.4
+
+##  New features and improvements
+
+- XLNet追加
+- SentencePiece ベースの`Language`を追加: [./bedoner/lang/sentencepiece](./bedoner/lang/sentencepiece)
+
 # v0.3.1
 
 ##  New features and improvements

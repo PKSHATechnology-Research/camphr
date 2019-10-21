@@ -133,12 +133,6 @@ class TransformersModel(TorchPipe):
         """Create trf Model"""
         if cfg.get("from_pretrained"):
             trf_name = cfg.get("trf_name", "")
-            cls.trf_model_cls.pretrained_model_archive_map.update(
-                PRETRAINED_MODEL_ARCHIVE_MAP
-            )
-            cls.trf_model_cls.config_class.pretrained_config_archive_map.update(
-                PRETRAINED_CONFIG_ARCHIVE_MAP
-            )
             model = cls.trf_model_cls.from_pretrained(trf_name)
         else:
             if "vocab_size" in cfg["trf_config"]:

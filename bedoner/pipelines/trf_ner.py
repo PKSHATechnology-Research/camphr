@@ -15,7 +15,6 @@ from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy.vocab import Vocab
 
-from bedoner.pipelines.trf_model import PRETRAINED_CONFIG_ARCHIVE_MAP
 from bedoner.pipelines.utils import UNK, correct_biluo_tags
 from bedoner.torch_utils import (
     OptimizerParameters,
@@ -95,9 +94,6 @@ class TrfForTokenClassificationBase(TorchPipe):
         cfg.setdefault("trf_config", {})
         cfg["trf_config"]["num_labels"] = len(cfg.get("labels", []))
         if cfg.get("from_pretrained"):
-            cls.trf_config_cls.pretrained_config_archive_map.update(
-                PRETRAINED_CONFIG_ARCHIVE_MAP
-            )
             config = cls.trf_config_cls.from_pretrained(
                 cfg["trf_name"], **cfg["trf_config"]
             )
