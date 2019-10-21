@@ -108,7 +108,7 @@ def get_trf_name(name: str) -> str:
 class TransformersModel(TorchPipe):
     """Pytorch transformers Model component.
 
-    Attach Model outputs to doc.
+    Attach the model outputs to doc.
     """
 
     def __init__(self, vocab, model=True, **cfg):
@@ -161,9 +161,13 @@ class TransformersModel(TorchPipe):
         return y
 
     def set_annotations(
-        self, docs: List[Doc], outputs: TransformerModelOutputs, set_vector=True
+        self, docs: List[Doc], outputs: TransformerModelOutputs, set_vector: bool = True
     ) -> None:
-        """Assign the extracted features to the Doc."""
+        """Assign the extracted features to the Doc.
+
+        Args:
+            set_vector: If True, attach vector to doc. This may harms speed.
+        """
         for i, doc in enumerate(docs):
             length = len(doc._.trf_word_pieces)
             # Instead of assigning tensor directory, assign `TensorWrapper`
@@ -204,6 +208,8 @@ class TransformersModel(TorchPipe):
         x = self.docs_to_trfinput(docs)
         self.assert_length(x)
         y = self.output_cls(*self.model(**dataclasses.asdict(x)))
+        # set_vector=False because vector may be not need in updating.
+        # You can still use model outputs via doc._.trf_last_hidden_state etc.
         self.set_annotations(docs, y, set_vector=False)
 
     def docs_to_trfinput(self, docs: List[Doc]) -> TransformersModelInputs:

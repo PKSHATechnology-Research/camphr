@@ -25,7 +25,7 @@ from bedoner.torch_utils import (
 
 
 class TrfTokenClassifier(nn.Module):
-    """A thin layer to classifier"""
+    """A thin layer for classification task"""
 
     def __init__(self, config: Union[trf.BertConfig, trf.XLNetConfig]):
         super().__init__()

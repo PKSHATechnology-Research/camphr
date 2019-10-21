@@ -7,6 +7,7 @@
   - `trf_ner.XLNetForNamedEntityRecognition`を追加
 - SentencePiece ベースの`Language`を追加: [./bedoner/lang/sentencepiece](./bedoner/lang/sentencepiece)
 - SentencePiece Language用のWordpiecer: `pipelines.wordpiecer.TrfSentencePiecer`を追加
+  - BERTでも使えます
 - テストの高速化
 
 ## Backwards incompatibilities
