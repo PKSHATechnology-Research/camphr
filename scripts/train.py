@@ -90,7 +90,7 @@ def main(cfg: Config):
                 raise
             loss = sum(doc._.loss.detach().item() for doc in docs)
             epoch_loss += loss
-            log.info(f"{j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
+            log.info(f"epoch {i} {j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
             if j % cfg.neval == cfg.neval - 1:
                 try:
                     scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch*2)
