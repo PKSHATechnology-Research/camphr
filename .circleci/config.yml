@@ -11,7 +11,6 @@ jobs:
       - run:
           name: login
           command: echo "$dockerhub_password" | docker login --username $dockerhub_username --password-stdin
-      - run: mkdir data
       - run: docker-compose build
       - run:
           name: run pytest
