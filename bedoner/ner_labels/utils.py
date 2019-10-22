@@ -85,10 +85,6 @@ def get_full_sekine_label(key: str) -> str:
     return getattr(sekine, key)
 
 
-def get_top_label(label: str) -> str:
-    return label.split("/")[0]
-
-
 PREFIX = "labels_"
 if __name__ == "__main__":
     for y in __dir__.glob("*.yml"):

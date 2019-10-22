@@ -14,6 +14,10 @@ from spacy.language import Language
 log = logging.getLogger(__name__)
 
 
+def get_top_label(label: str) -> str:
+    return label.split("/")[0]
+
+
 def create_nlp(cfg: Config) -> Language:
     labels = make_biluo_labels(LABELS[cfg.label])
     toplabels = list({k.split("/")[0] for k in labels})
