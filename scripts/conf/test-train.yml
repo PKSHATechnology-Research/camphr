@@ -1,0 +1,10 @@
+ndata: -1
+niter: 10
+nbatch: 2
+scheduler: false
+test_size: 0.5
+data:
+label: ene
+lang: mecab
+pretrained:
+neval: 1

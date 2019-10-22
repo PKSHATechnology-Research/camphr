@@ -37,7 +37,7 @@ def load_data(name: str) -> List[Dict]:
     return data
 
 
-class Config(omegaconf.Config):
+class Config(omegaconf.OmegaConf):
     data: str
     ndata: int
     niter: int
@@ -46,12 +46,11 @@ class Config(omegaconf.Config):
     scheduler: bool
     test_size: float
     lang: str
-    from_pretrained: str
+    pretrained: str
     neval: int
 
 
-@hydra.main(config_path="conf/train.yml")
-def main(cfg: Config):
+def _main(cfg: Config):
     log.info(cfg.pretty())
     outputd = os.getcwd()
     log.info("output dir: {}".format(outputd))
@@ -64,9 +63,9 @@ def main(cfg: Config):
 
     labels = get_labels(cfg.label)
     nlp = trf_ner(
-        lang=cfg.lang, pretrained=cfg.from_pretrained, labels=make_biluo_labels(labels)
+        lang=cfg.lang, pretrained=cfg.pretrained, labels=make_biluo_labels(labels)
     )
-    name = get_trf_name(cfg.from_pretrained)
+    name = get_trf_name(cfg.pretrained)
     nlp.meta["name"] = name.value + "_" + cfg.label
     if torch.cuda.is_available():
         log.info("CUDA enabled")
@@ -78,22 +77,18 @@ def main(cfg: Config):
 
     for i in range(cfg.niter):
         random.shuffle(train_data)
-        epoch_loss = 0
         for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
             texts, golds = zip(*batch)
-            docs = [nlp.make_doc(text) for text in texts]
             try:
-                nlp.update(docs, golds, optim)
+                nlp.update(texts, golds, optim, debug=True)
             except:
                 with open("fail.json", "w") as f:
                     json.dump(batch, f, ensure_ascii=False)
                 raise
-            loss = sum(doc._.loss.detach().item() for doc in docs)
-            epoch_loss += loss
-            log.info(f"epoch {i} {j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
+            log.info(f"epoch {i} {j*cfg.nbatch}/{cfg.ndata}")
             if j % cfg.neval == cfg.neval - 1:
                 try:
-                    scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch*2)
+                    scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
                 except:
                     with open("fail.json", "w") as f:
                         json.dump(val_data, f, ensure_ascii=False)
@@ -101,9 +96,8 @@ def main(cfg: Config):
                 log.info(f"p: {scorer.ents_p}")
                 log.info(f"r: {scorer.ents_r}")
                 log.info(f"f: {scorer.ents_f}")
-        log.info(f"epoch {i} loss: {epoch_loss}")
         try:
-            scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch*2)
+            scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
         except:
             with open("fail.json", "w") as f:
                 json.dump(val_data, f, ensure_ascii=False)
@@ -111,6 +105,8 @@ def main(cfg: Config):
         nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
         nlp.to_disk(modelsdir / str(i))
 
+
+main = hydra.main(config_path="conf/train.yml")(_main)
 
 if __name__ == "__main__":
     main()
