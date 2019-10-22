@@ -82,7 +82,9 @@ def _main(cfg: Config):
             try:
                 nlp.update(texts, golds, optim, debug=True)
             except:
-                with open("fail.json", "w") as f:
+                fail_path = os.path.abspath("fail.json")
+                log.error(f"Fail. Saved in {fail_path}")
+                with open(fail_path, "w") as f:
                     json.dump(batch, f, ensure_ascii=False)
                 raise
             log.info(f"epoch {i} {j*cfg.nbatch}/{cfg.ndata}")
