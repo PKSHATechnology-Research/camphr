@@ -7,4 +7,4 @@ data: ~/datasets/ner-bccwj-ene.jsonl
 label: ene
 lang:
 pretrained:
-neval: 100
+neval: -1
