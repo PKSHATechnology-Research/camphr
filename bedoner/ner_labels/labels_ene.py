@@ -1,499 +1,499 @@
 NAME = "NAME"
-Color = "NAME/Color"
-Color_Other = "NAME/Color/Color_Other"
-Nature_Color = "NAME/Color/Nature_Color"
-Disease = "NAME/Disease"
-Animal_Disease = "NAME/Disease/Animal_Disease"
-Disease_Other = "NAME/Disease/Disease_Other"
-Event = "NAME/Event"
-Event_Other = "NAME/Event/Event_Other"
-Incident = "NAME/Event/Incident"
-Incident_Other = "NAME/Event/Incident/Incident_Other"
-War = "NAME/Event/Incident/War"
-Natural_Phenomenon = "NAME/Event/Natural_Phenomenon"
-Earthquake = "NAME/Event/Natural_Phenomenon/Earthquake"
-Natural_Disaster = "NAME/Event/Natural_Phenomenon/Natural_Disaster"
-Natural_Phenomenon_Other = "NAME/Event/Natural_Phenomenon/Natural_Phenomenon_Other"
-Occasion = "NAME/Event/Occasion"
-Conference = "NAME/Event/Occasion/Conference"
-Game = "NAME/Event/Occasion/Game"
-Occasion_Other = "NAME/Event/Occasion/Occasion_Other"
-Religious_Festival = "NAME/Event/Occasion/Religious_Festival"
-Facility = "NAME/Facility"
-Archaeological_Place = "NAME/Facility/Archaeological_Place"
-Archaeological_Place_Other = (
-    "NAME/Facility/Archaeological_Place/Archaeological_Place_Other"
+COLOR = "NAME/COLOR"
+COLOR_OTHER = "NAME/COLOR/COLOR_OTHER"
+NATURE_COLOR = "NAME/COLOR/NATURE_COLOR"
+DISEASE = "NAME/DISEASE"
+ANIMAL_DISEASE = "NAME/DISEASE/ANIMAL_DISEASE"
+DISEASE_OTHER = "NAME/DISEASE/DISEASE_OTHER"
+EVENT = "NAME/EVENT"
+EVENT_OTHER = "NAME/EVENT/EVENT_OTHER"
+INCIDENT = "NAME/EVENT/INCIDENT"
+INCIDENT_OTHER = "NAME/EVENT/INCIDENT/INCIDENT_OTHER"
+WAR = "NAME/EVENT/INCIDENT/WAR"
+NATURAL_PHENOMENON = "NAME/EVENT/NATURAL_PHENOMENON"
+EARTHQUAKE = "NAME/EVENT/NATURAL_PHENOMENON/EARTHQUAKE"
+NATURAL_DISASTER = "NAME/EVENT/NATURAL_PHENOMENON/NATURAL_DISASTER"
+NATURAL_PHENOMENON_OTHER = "NAME/EVENT/NATURAL_PHENOMENON/NATURAL_PHENOMENON_OTHER"
+OCCASION = "NAME/EVENT/OCCASION"
+CONFERENCE = "NAME/EVENT/OCCASION/CONFERENCE"
+GAME = "NAME/EVENT/OCCASION/GAME"
+OCCASION_OTHER = "NAME/EVENT/OCCASION/OCCASION_OTHER"
+RELIGIOUS_FESTIVAL = "NAME/EVENT/OCCASION/RELIGIOUS_FESTIVAL"
+FACILITY = "NAME/FACILITY"
+ARCHAEOLOGICAL_PLACE = "NAME/FACILITY/ARCHAEOLOGICAL_PLACE"
+ARCHAEOLOGICAL_PLACE_OTHER = (
+    "NAME/FACILITY/ARCHAEOLOGICAL_PLACE/ARCHAEOLOGICAL_PLACE_OTHER"
 )
-Tumulus = "NAME/Facility/Archaeological_Place/Tumulus"
-Facility_Other = "NAME/Facility/Facility_Other"
-Facility_Part = "NAME/Facility/Facility_Part"
-GOE = "NAME/Facility/GOE"
-Airport = "NAME/Facility/GOE/Airport"
-Amusement_Park = "NAME/Facility/GOE/Amusement_Park"
-Car_Stop = "NAME/Facility/GOE/Car_Stop"
-GOE_Other = "NAME/Facility/GOE/GOE_Other"
-Market = "NAME/Facility/GOE/Market"
-Museum = "NAME/Facility/GOE/Museum"
-Park = "NAME/Facility/GOE/Park"
-Port = "NAME/Facility/GOE/Port"
-Public_Institution = "NAME/Facility/GOE/Public_Institution"
-Research_Institute = "NAME/Facility/GOE/Research_Institute"
-School = "NAME/Facility/GOE/School"
-Sports_Facility = "NAME/Facility/GOE/Sports_Facility"
-Station = "NAME/Facility/GOE/Station"
-Theater = "NAME/Facility/GOE/Theater"
-Worship_Place = "NAME/Facility/GOE/Worship_Place"
-Zoo = "NAME/Facility/GOE/Zoo"
-Line = "NAME/Facility/Line"
-Bridge = "NAME/Facility/Line/Bridge"
-Canal = "NAME/Facility/Line/Canal"
-Line_Other = "NAME/Facility/Line/Line_Other"
-Railroad = "NAME/Facility/Line/Railroad"
-Road = "NAME/Facility/Line/Road"
-Tunnel = "NAME/Facility/Line/Tunnel"
-Water_Route = "NAME/Facility/Line/Water_Route"
-God = "NAME/God"
-Location = "NAME/Location"
-Address = "NAME/Location/Address"
-Address_Other = "NAME/Location/Address/Address_Other"
-Email = "NAME/Location/Address/Email"
-Phone_Number = "NAME/Location/Address/Phone_Number"
-Postal_Address = "NAME/Location/Address/Postal_Address"
-URL = "NAME/Location/Address/URL"
-Astral_Body = "NAME/Location/Astral_Body"
-Astral_Body_Other = "NAME/Location/Astral_Body/Astral_Body_Other"
-Constellation = "NAME/Location/Astral_Body/Constellation"
-Planet = "NAME/Location/Astral_Body/Planet"
-Star = "NAME/Location/Astral_Body/Star"
-GPE = "NAME/Location/GPE"
-City = "NAME/Location/GPE/City"
-Country = "NAME/Location/GPE/Country"
-County = "NAME/Location/GPE/County"
-GPE_Other = "NAME/Location/GPE/GPE_Other"
-Province = "NAME/Location/GPE/Province"
-Geological_Region = "NAME/Location/Geological_Region"
-Bay = "NAME/Location/Geological_Region/Bay"
-Geological_Region_Other = "NAME/Location/Geological_Region/Geological_Region_Other"
-Island = "NAME/Location/Geological_Region/Island"
-Lake = "NAME/Location/Geological_Region/Lake"
-Mountain = "NAME/Location/Geological_Region/Mountain"
-River = "NAME/Location/Geological_Region/River"
-Sea = "NAME/Location/Geological_Region/Sea"
-Location_Other = "NAME/Location/Location_Other"
-Region = "NAME/Location/Region"
-Continental_Region = "NAME/Location/Region/Continental_Region"
-Domestic_Region = "NAME/Location/Region/Domestic_Region"
-Region_Other = "NAME/Location/Region/Region_Other"
-Spa = "NAME/Location/Spa"
-Name_Other = "NAME/Name_Other"
-Natural_Object = "NAME/Natural_Object"
-Compound = "NAME/Natural_Object/Compound"
-Element = "NAME/Natural_Object/Element"
-Living_Thing = "NAME/Natural_Object/Living_Thing"
-Amphibia = "NAME/Natural_Object/Living_Thing/Amphibia"
-Bird = "NAME/Natural_Object/Living_Thing/Bird"
-Fish = "NAME/Natural_Object/Living_Thing/Fish"
-Flora = "NAME/Natural_Object/Living_Thing/Flora"
-Fungus = "NAME/Natural_Object/Living_Thing/Fungus"
-Insect = "NAME/Natural_Object/Living_Thing/Insect"
-Living_Thing_Other = "NAME/Natural_Object/Living_Thing/Living_Thing_Other"
-Mammal = "NAME/Natural_Object/Living_Thing/Mammal"
-Mollusc_Arthropod = "NAME/Natural_Object/Living_Thing/Mollusc_Arthropod"
-Reptile = "NAME/Natural_Object/Living_Thing/Reptile"
-Living_Thing_Part = "NAME/Natural_Object/Living_Thing_Part"
-Animal_Part = "NAME/Natural_Object/Living_Thing_Part/Animal_Part"
-Flora_Part = "NAME/Natural_Object/Living_Thing_Part/Flora_Part"
-Living_Thing_Part_Other = (
-    "NAME/Natural_Object/Living_Thing_Part/Living_Thing_Part_Other"
+TUMULUS = "NAME/FACILITY/ARCHAEOLOGICAL_PLACE/TUMULUS"
+FACILITY_OTHER = "NAME/FACILITY/FACILITY_OTHER"
+FACILITY_PART = "NAME/FACILITY/FACILITY_PART"
+GOE = "NAME/FACILITY/GOE"
+AIRPORT = "NAME/FACILITY/GOE/AIRPORT"
+AMUSEMENT_PARK = "NAME/FACILITY/GOE/AMUSEMENT_PARK"
+CAR_STOP = "NAME/FACILITY/GOE/CAR_STOP"
+GOE_OTHER = "NAME/FACILITY/GOE/GOE_OTHER"
+MARKET = "NAME/FACILITY/GOE/MARKET"
+MUSEUM = "NAME/FACILITY/GOE/MUSEUM"
+PARK = "NAME/FACILITY/GOE/PARK"
+PORT = "NAME/FACILITY/GOE/PORT"
+PUBLIC_INSTITUTION = "NAME/FACILITY/GOE/PUBLIC_INSTITUTION"
+RESEARCH_INSTITUTE = "NAME/FACILITY/GOE/RESEARCH_INSTITUTE"
+SCHOOL = "NAME/FACILITY/GOE/SCHOOL"
+SPORTS_FACILITY = "NAME/FACILITY/GOE/SPORTS_FACILITY"
+STATION = "NAME/FACILITY/GOE/STATION"
+THEATER = "NAME/FACILITY/GOE/THEATER"
+WORSHIP_PLACE = "NAME/FACILITY/GOE/WORSHIP_PLACE"
+ZOO = "NAME/FACILITY/GOE/ZOO"
+LINE = "NAME/FACILITY/LINE"
+BRIDGE = "NAME/FACILITY/LINE/BRIDGE"
+CANAL = "NAME/FACILITY/LINE/CANAL"
+LINE_OTHER = "NAME/FACILITY/LINE/LINE_OTHER"
+RAILROAD = "NAME/FACILITY/LINE/RAILROAD"
+ROAD = "NAME/FACILITY/LINE/ROAD"
+TUNNEL = "NAME/FACILITY/LINE/TUNNEL"
+WATER_ROUTE = "NAME/FACILITY/LINE/WATER_ROUTE"
+GOD = "NAME/GOD"
+LOCATION = "NAME/LOCATION"
+ADDRESS = "NAME/LOCATION/ADDRESS"
+ADDRESS_OTHER = "NAME/LOCATION/ADDRESS/ADDRESS_OTHER"
+EMAIL = "NAME/LOCATION/ADDRESS/EMAIL"
+PHONE_NUMBER = "NAME/LOCATION/ADDRESS/PHONE_NUMBER"
+POSTAL_ADDRESS = "NAME/LOCATION/ADDRESS/POSTAL_ADDRESS"
+URL = "NAME/LOCATION/ADDRESS/URL"
+ASTRAL_BODY = "NAME/LOCATION/ASTRAL_BODY"
+ASTRAL_BODY_OTHER = "NAME/LOCATION/ASTRAL_BODY/ASTRAL_BODY_OTHER"
+CONSTELLATION = "NAME/LOCATION/ASTRAL_BODY/CONSTELLATION"
+PLANET = "NAME/LOCATION/ASTRAL_BODY/PLANET"
+STAR = "NAME/LOCATION/ASTRAL_BODY/STAR"
+GEOLOGICAL_REGION = "NAME/LOCATION/GEOLOGICAL_REGION"
+BAY = "NAME/LOCATION/GEOLOGICAL_REGION/BAY"
+GEOLOGICAL_REGION_OTHER = "NAME/LOCATION/GEOLOGICAL_REGION/GEOLOGICAL_REGION_OTHER"
+ISLAND = "NAME/LOCATION/GEOLOGICAL_REGION/ISLAND"
+LAKE = "NAME/LOCATION/GEOLOGICAL_REGION/LAKE"
+MOUNTAIN = "NAME/LOCATION/GEOLOGICAL_REGION/MOUNTAIN"
+RIVER = "NAME/LOCATION/GEOLOGICAL_REGION/RIVER"
+SEA = "NAME/LOCATION/GEOLOGICAL_REGION/SEA"
+GPE = "NAME/LOCATION/GPE"
+CITY = "NAME/LOCATION/GPE/CITY"
+COUNTRY = "NAME/LOCATION/GPE/COUNTRY"
+COUNTY = "NAME/LOCATION/GPE/COUNTY"
+GPE_OTHER = "NAME/LOCATION/GPE/GPE_OTHER"
+PROVINCE = "NAME/LOCATION/GPE/PROVINCE"
+LOCATION_OTHER = "NAME/LOCATION/LOCATION_OTHER"
+REGION = "NAME/LOCATION/REGION"
+CONTINENTAL_REGION = "NAME/LOCATION/REGION/CONTINENTAL_REGION"
+DOMESTIC_REGION = "NAME/LOCATION/REGION/DOMESTIC_REGION"
+REGION_OTHER = "NAME/LOCATION/REGION/REGION_OTHER"
+SPA = "NAME/LOCATION/SPA"
+NAME_OTHER = "NAME/NAME_OTHER"
+NATURAL_OBJECT = "NAME/NATURAL_OBJECT"
+COMPOUND = "NAME/NATURAL_OBJECT/COMPOUND"
+ELEMENT = "NAME/NATURAL_OBJECT/ELEMENT"
+LIVING_THING = "NAME/NATURAL_OBJECT/LIVING_THING"
+AMPHIBIA = "NAME/NATURAL_OBJECT/LIVING_THING/AMPHIBIA"
+BIRD = "NAME/NATURAL_OBJECT/LIVING_THING/BIRD"
+FISH = "NAME/NATURAL_OBJECT/LIVING_THING/FISH"
+FLORA = "NAME/NATURAL_OBJECT/LIVING_THING/FLORA"
+FUNGUS = "NAME/NATURAL_OBJECT/LIVING_THING/FUNGUS"
+INSECT = "NAME/NATURAL_OBJECT/LIVING_THING/INSECT"
+LIVING_THING_OTHER = "NAME/NATURAL_OBJECT/LIVING_THING/LIVING_THING_OTHER"
+MAMMAL = "NAME/NATURAL_OBJECT/LIVING_THING/MAMMAL"
+MOLLUSC_ARTHROPOD = "NAME/NATURAL_OBJECT/LIVING_THING/MOLLUSC_ARTHROPOD"
+REPTILE = "NAME/NATURAL_OBJECT/LIVING_THING/REPTILE"
+LIVING_THING_PART = "NAME/NATURAL_OBJECT/LIVING_THING_PART"
+ANIMAL_PART = "NAME/NATURAL_OBJECT/LIVING_THING_PART/ANIMAL_PART"
+FLORA_PART = "NAME/NATURAL_OBJECT/LIVING_THING_PART/FLORA_PART"
+LIVING_THING_PART_OTHER = (
+    "NAME/NATURAL_OBJECT/LIVING_THING_PART/LIVING_THING_PART_OTHER"
 )
-Mineral = "NAME/Natural_Object/Mineral"
-Natural_Object_Other = "NAME/Natural_Object/Natural_Object_Other"
-Organization = "NAME/Organization"
-Corporation = "NAME/Organization/Corporation"
-Company = "NAME/Organization/Corporation/Company"
-Company_Group = "NAME/Organization/Corporation/Company_Group"
-Corporation_Other = "NAME/Organization/Corporation/Corporation_Other"
-Ethnic_Group = "NAME/Organization/Ethnic_Group"
-Ethnic_Group_Other = "NAME/Organization/Ethnic_Group/Ethnic_Group_Other"
-Nationality = "NAME/Organization/Ethnic_Group/Nationality"
-Family = "NAME/Organization/Family"
-International_Organization = "NAME/Organization/International_Organization"
-Organization_Other = "NAME/Organization/Organization_Other"
-Political_Organization = "NAME/Organization/Political_Organization"
-Cabinet = "NAME/Organization/Political_Organization/Cabinet"
-Government = "NAME/Organization/Political_Organization/Government"
-Military = "NAME/Organization/Political_Organization/Military"
-Political_Organization_Other = (
-    "NAME/Organization/Political_Organization/Political_Organization_Other"
+MINERAL = "NAME/NATURAL_OBJECT/MINERAL"
+NATURAL_OBJECT_OTHER = "NAME/NATURAL_OBJECT/NATURAL_OBJECT_OTHER"
+ORGANIZATION = "NAME/ORGANIZATION"
+CORPORATION = "NAME/ORGANIZATION/CORPORATION"
+COMPANY = "NAME/ORGANIZATION/CORPORATION/COMPANY"
+COMPANY_GROUP = "NAME/ORGANIZATION/CORPORATION/COMPANY_GROUP"
+CORPORATION_OTHER = "NAME/ORGANIZATION/CORPORATION/CORPORATION_OTHER"
+ETHNIC_GROUP = "NAME/ORGANIZATION/ETHNIC_GROUP"
+ETHNIC_GROUP_OTHER = "NAME/ORGANIZATION/ETHNIC_GROUP/ETHNIC_GROUP_OTHER"
+NATIONALITY = "NAME/ORGANIZATION/ETHNIC_GROUP/NATIONALITY"
+FAMILY = "NAME/ORGANIZATION/FAMILY"
+INTERNATIONAL_ORGANIZATION = "NAME/ORGANIZATION/INTERNATIONAL_ORGANIZATION"
+ORGANIZATION_OTHER = "NAME/ORGANIZATION/ORGANIZATION_OTHER"
+POLITICAL_ORGANIZATION = "NAME/ORGANIZATION/POLITICAL_ORGANIZATION"
+CABINET = "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/CABINET"
+GOVERNMENT = "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/GOVERNMENT"
+MILITARY = "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/MILITARY"
+POLITICAL_ORGANIZATION_OTHER = (
+    "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/POLITICAL_ORGANIZATION_OTHER"
 )
-Political_Party = "NAME/Organization/Political_Organization/Political_Party"
-Show_Organization = "NAME/Organization/Show_Organization"
-Sports_Organization = "NAME/Organization/Sports_Organization"
-Pro_Sports_Organization = (
-    "NAME/Organization/Sports_Organization/Pro_Sports_Organization"
+POLITICAL_PARTY = "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/POLITICAL_PARTY"
+SHOW_ORGANIZATION = "NAME/ORGANIZATION/SHOW_ORGANIZATION"
+SPORTS_ORGANIZATION = "NAME/ORGANIZATION/SPORTS_ORGANIZATION"
+PRO_SPORTS_ORGANIZATION = (
+    "NAME/ORGANIZATION/SPORTS_ORGANIZATION/PRO_SPORTS_ORGANIZATION"
 )
-Sports_League = "NAME/Organization/Sports_Organization/Sports_League"
-Sports_Organization_Other = (
-    "NAME/Organization/Sports_Organization/Sports_Organization_Other"
+SPORTS_LEAGUE = "NAME/ORGANIZATION/SPORTS_ORGANIZATION/SPORTS_LEAGUE"
+SPORTS_ORGANIZATION_OTHER = (
+    "NAME/ORGANIZATION/SPORTS_ORGANIZATION/SPORTS_ORGANIZATION_OTHER"
 )
-Person = "NAME/Person"
-Product = "NAME/Product"
-Art = "NAME/Product/Art"
-Art_Other = "NAME/Product/Art/Art_Other"
-Book = "NAME/Product/Art/Book"
-Broadcast_Program = "NAME/Product/Art/Broadcast_Program"
-Movie = "NAME/Product/Art/Movie"
-Music = "NAME/Product/Art/Music"
-Picture = "NAME/Product/Art/Picture"
-Show = "NAME/Product/Art/Show"
-Award = "NAME/Product/Award"
-Character = "NAME/Product/Character"
-Class = "NAME/Product/Class"
-Clothing = "NAME/Product/Clothing"
-Decoration = "NAME/Product/Decoration"
-Doctrine_Method = "NAME/Product/Doctrine_Method"
-Academic = "NAME/Product/Doctrine_Method/Academic"
-Culture = "NAME/Product/Doctrine_Method/Culture"
-Doctrine_Method_Other = "NAME/Product/Doctrine_Method/Doctrine_Method_Other"
-Movement = "NAME/Product/Doctrine_Method/Movement"
-Plan = "NAME/Product/Doctrine_Method/Plan"
-Religion = "NAME/Product/Doctrine_Method/Religion"
-Sport = "NAME/Product/Doctrine_Method/Sport"
-Style = "NAME/Product/Doctrine_Method/Style"
-Theory = "NAME/Product/Doctrine_Method/Theory"
-Drug = "NAME/Product/Drug"
-Food = "NAME/Product/Food"
-Dish = "NAME/Product/Food/Dish"
-Food_Other = "NAME/Product/Food/Food_Other"
-ID_Number = "NAME/Product/ID_Number"
-Language = "NAME/Product/Language"
-Language_Other = "NAME/Product/Language/Language_Other"
-National_Language = "NAME/Product/Language/National_Language"
-Material = "NAME/Product/Material"
-Money_Form = "NAME/Product/Money_Form"
-Offence = "NAME/Product/Offence"
-Printing = "NAME/Product/Printing"
-Magazine = "NAME/Product/Printing/Magazine"
-Newspaper = "NAME/Product/Printing/Newspaper"
-Printing_Other = "NAME/Product/Printing/Printing_Other"
-Product_Other = "NAME/Product/Product_Other"
-Rule = "NAME/Product/Rule"
-Law = "NAME/Product/Rule/Law"
-Rule_Other = "NAME/Product/Rule/Rule_Other"
-Treaty = "NAME/Product/Rule/Treaty"
-Service = "NAME/Product/Service"
-Stock = "NAME/Product/Stock"
-Title = "NAME/Product/Title"
-Position_Vocation = "NAME/Product/Title/Position_Vocation"
-Title_Other = "NAME/Product/Title/Title_Other"
-Unit = "NAME/Product/Unit"
-Currency = "NAME/Product/Unit/Currency"
-Unit_Other = "NAME/Product/Unit/Unit_Other"
-Vehicle = "NAME/Product/Vehicle"
-Aircraft = "NAME/Product/Vehicle/Aircraft"
-Car = "NAME/Product/Vehicle/Car"
-Ship = "NAME/Product/Vehicle/Ship"
-Spaceship = "NAME/Product/Vehicle/Spaceship"
-Train = "NAME/Product/Vehicle/Train"
-Vehicle_Other = "NAME/Product/Vehicle/Vehicle_Other"
-Weapon = "NAME/Product/Weapon"
-Numex = "Numex"
-Age = "Numex/Age"
-Countx = "Numex/Countx"
-Countx_Other = "Numex/Countx/Countx_Other"
-N_Event = "Numex/Countx/N_Event"
-N_Facility = "Numex/Countx/N_Facility"
-N_Location = "Numex/Countx/N_Location"
-N_Country = "Numex/Countx/N_Location/N_Country"
-N_Location_Other = "Numex/Countx/N_Location/N_Location_Other"
-N_Natural_Object = "Numex/Countx/N_Natural_Object"
-N_Animal = "Numex/Countx/N_Natural_Object/N_Animal"
-N_Flora = "Numex/Countx/N_Natural_Object/N_Flora"
-N_Natural_Object_Other = "Numex/Countx/N_Natural_Object/N_Natural_Object_Other"
-N_Organization = "Numex/Countx/N_Organization"
-N_Person = "Numex/Countx/N_Person"
-N_Product = "Numex/Countx/N_Product"
-Frequency = "Numex/Frequency"
-Latitude_Longtitude = "Numex/Latitude_Longtitude"
-Measurement = "Numex/Measurement"
-Calorie = "Numex/Measurement/Calorie"
-Intensity = "Numex/Measurement/Intensity"
-Measurement_Other = "Numex/Measurement/Measurement_Other"
-Physical_Extent = "Numex/Measurement/Physical_Extent"
-Seismic_Intensity = "Numex/Measurement/Seismic_Intensity"
-Seismic_Magnitude = "Numex/Measurement/Seismic_Magnitude"
-Space = "Numex/Measurement/Space"
-Speed = "Numex/Measurement/Speed"
-Temperature = "Numex/Measurement/Temperature"
-Volume = "Numex/Measurement/Volume"
-Weight = "Numex/Measurement/Weight"
-Money = "Numex/Money"
-Multiplication = "Numex/Multiplication"
-Numex_Other = "Numex/Numex_Other"
-Ordinal_Number = "Numex/Ordinal_Number"
-Percent = "Numex/Percent"
-Point = "Numex/Point"
-Rank = "Numex/Rank"
-School_Age = "Numex/School_Age"
-Stock_Index = "Numex/Stock_Index"
-Time_Top = "Time_Top"
-Periodx = "Time_Top/Periodx"
-Period_Day = "Time_Top/Periodx/Period_Day"
-Period_Month = "Time_Top/Periodx/Period_Month"
-Period_Time = "Time_Top/Periodx/Period_Time"
-Period_Week = "Time_Top/Periodx/Period_Week"
-Period_Year = "Time_Top/Periodx/Period_Year"
-Periodx_Other = "Time_Top/Periodx/Periodx_Other"
-Time_Top_Other = "Time_Top/Time_Top_Other"
-Timex = "Time_Top/Timex"
-Date = "Time_Top/Timex/Date"
-Day_Of_Week = "Time_Top/Timex/Day_Of_Week"
-Era = "Time_Top/Timex/Era"
-Time = "Time_Top/Timex/Time"
-Timex_Other = "Time_Top/Timex/Timex_Other"
+PERSON = "NAME/PERSON"
+PRODUCT = "NAME/PRODUCT"
+ART = "NAME/PRODUCT/ART"
+ART_OTHER = "NAME/PRODUCT/ART/ART_OTHER"
+BOOK = "NAME/PRODUCT/ART/BOOK"
+BROADCAST_PROGRAM = "NAME/PRODUCT/ART/BROADCAST_PROGRAM"
+MOVIE = "NAME/PRODUCT/ART/MOVIE"
+MUSIC = "NAME/PRODUCT/ART/MUSIC"
+PICTURE = "NAME/PRODUCT/ART/PICTURE"
+SHOW = "NAME/PRODUCT/ART/SHOW"
+AWARD = "NAME/PRODUCT/AWARD"
+CHARACTER = "NAME/PRODUCT/CHARACTER"
+CLASS = "NAME/PRODUCT/CLASS"
+CLOTHING = "NAME/PRODUCT/CLOTHING"
+DECORATION = "NAME/PRODUCT/DECORATION"
+DOCTRINE_METHOD = "NAME/PRODUCT/DOCTRINE_METHOD"
+ACADEMIC = "NAME/PRODUCT/DOCTRINE_METHOD/ACADEMIC"
+CULTURE = "NAME/PRODUCT/DOCTRINE_METHOD/CULTURE"
+DOCTRINE_METHOD_OTHER = "NAME/PRODUCT/DOCTRINE_METHOD/DOCTRINE_METHOD_OTHER"
+MOVEMENT = "NAME/PRODUCT/DOCTRINE_METHOD/MOVEMENT"
+PLAN = "NAME/PRODUCT/DOCTRINE_METHOD/PLAN"
+RELIGION = "NAME/PRODUCT/DOCTRINE_METHOD/RELIGION"
+SPORT = "NAME/PRODUCT/DOCTRINE_METHOD/SPORT"
+STYLE = "NAME/PRODUCT/DOCTRINE_METHOD/STYLE"
+THEORY = "NAME/PRODUCT/DOCTRINE_METHOD/THEORY"
+DRUG = "NAME/PRODUCT/DRUG"
+FOOD = "NAME/PRODUCT/FOOD"
+DISH = "NAME/PRODUCT/FOOD/DISH"
+FOOD_OTHER = "NAME/PRODUCT/FOOD/FOOD_OTHER"
+ID_NUMBER = "NAME/PRODUCT/ID_NUMBER"
+LANGUAGE = "NAME/PRODUCT/LANGUAGE"
+LANGUAGE_OTHER = "NAME/PRODUCT/LANGUAGE/LANGUAGE_OTHER"
+NATIONAL_LANGUAGE = "NAME/PRODUCT/LANGUAGE/NATIONAL_LANGUAGE"
+MATERIAL = "NAME/PRODUCT/MATERIAL"
+MONEY_FORM = "NAME/PRODUCT/MONEY_FORM"
+OFFENCE = "NAME/PRODUCT/OFFENCE"
+PRINTING = "NAME/PRODUCT/PRINTING"
+MAGAZINE = "NAME/PRODUCT/PRINTING/MAGAZINE"
+NEWSPAPER = "NAME/PRODUCT/PRINTING/NEWSPAPER"
+PRINTING_OTHER = "NAME/PRODUCT/PRINTING/PRINTING_OTHER"
+PRODUCT_OTHER = "NAME/PRODUCT/PRODUCT_OTHER"
+RULE = "NAME/PRODUCT/RULE"
+LAW = "NAME/PRODUCT/RULE/LAW"
+RULE_OTHER = "NAME/PRODUCT/RULE/RULE_OTHER"
+TREATY = "NAME/PRODUCT/RULE/TREATY"
+SERVICE = "NAME/PRODUCT/SERVICE"
+STOCK = "NAME/PRODUCT/STOCK"
+TITLE = "NAME/PRODUCT/TITLE"
+POSITION_VOCATION = "NAME/PRODUCT/TITLE/POSITION_VOCATION"
+TITLE_OTHER = "NAME/PRODUCT/TITLE/TITLE_OTHER"
+UNIT = "NAME/PRODUCT/UNIT"
+CURRENCY = "NAME/PRODUCT/UNIT/CURRENCY"
+UNIT_OTHER = "NAME/PRODUCT/UNIT/UNIT_OTHER"
+VEHICLE = "NAME/PRODUCT/VEHICLE"
+AIRCRAFT = "NAME/PRODUCT/VEHICLE/AIRCRAFT"
+CAR = "NAME/PRODUCT/VEHICLE/CAR"
+SHIP = "NAME/PRODUCT/VEHICLE/SHIP"
+SPACESHIP = "NAME/PRODUCT/VEHICLE/SPACESHIP"
+TRAIN = "NAME/PRODUCT/VEHICLE/TRAIN"
+VEHICLE_OTHER = "NAME/PRODUCT/VEHICLE/VEHICLE_OTHER"
+WEAPON = "NAME/PRODUCT/WEAPON"
+NUMEX = "NUMEX"
+AGE = "NUMEX/AGE"
+COUNTX = "NUMEX/COUNTX"
+COUNTX_OTHER = "NUMEX/COUNTX/COUNTX_OTHER"
+N_EVENT = "NUMEX/COUNTX/N_EVENT"
+N_FACILITY = "NUMEX/COUNTX/N_FACILITY"
+N_LOCATION = "NUMEX/COUNTX/N_LOCATION"
+N_COUNTRY = "NUMEX/COUNTX/N_LOCATION/N_COUNTRY"
+N_LOCATION_OTHER = "NUMEX/COUNTX/N_LOCATION/N_LOCATION_OTHER"
+N_NATURAL_OBJECT = "NUMEX/COUNTX/N_NATURAL_OBJECT"
+N_ANIMAL = "NUMEX/COUNTX/N_NATURAL_OBJECT/N_ANIMAL"
+N_FLORA = "NUMEX/COUNTX/N_NATURAL_OBJECT/N_FLORA"
+N_NATURAL_OBJECT_OTHER = "NUMEX/COUNTX/N_NATURAL_OBJECT/N_NATURAL_OBJECT_OTHER"
+N_ORGANIZATION = "NUMEX/COUNTX/N_ORGANIZATION"
+N_PERSON = "NUMEX/COUNTX/N_PERSON"
+N_PRODUCT = "NUMEX/COUNTX/N_PRODUCT"
+FREQUENCY = "NUMEX/FREQUENCY"
+LATITUDE_LONGTITUDE = "NUMEX/LATITUDE_LONGTITUDE"
+MEASUREMENT = "NUMEX/MEASUREMENT"
+CALORIE = "NUMEX/MEASUREMENT/CALORIE"
+INTENSITY = "NUMEX/MEASUREMENT/INTENSITY"
+MEASUREMENT_OTHER = "NUMEX/MEASUREMENT/MEASUREMENT_OTHER"
+PHYSICAL_EXTENT = "NUMEX/MEASUREMENT/PHYSICAL_EXTENT"
+SEISMIC_INTENSITY = "NUMEX/MEASUREMENT/SEISMIC_INTENSITY"
+SEISMIC_MAGNITUDE = "NUMEX/MEASUREMENT/SEISMIC_MAGNITUDE"
+SPACE = "NUMEX/MEASUREMENT/SPACE"
+SPEED = "NUMEX/MEASUREMENT/SPEED"
+TEMPERATURE = "NUMEX/MEASUREMENT/TEMPERATURE"
+VOLUME = "NUMEX/MEASUREMENT/VOLUME"
+WEIGHT = "NUMEX/MEASUREMENT/WEIGHT"
+MONEY = "NUMEX/MONEY"
+MULTIPLICATION = "NUMEX/MULTIPLICATION"
+NUMEX_OTHER = "NUMEX/NUMEX_OTHER"
+ORDINAL_NUMBER = "NUMEX/ORDINAL_NUMBER"
+PERCENT = "NUMEX/PERCENT"
+POINT = "NUMEX/POINT"
+RANK = "NUMEX/RANK"
+SCHOOL_AGE = "NUMEX/SCHOOL_AGE"
+STOCK_INDEX = "NUMEX/STOCK_INDEX"
+TIME_TOP = "TIME_TOP"
+PERIODX = "TIME_TOP/PERIODX"
+PERIODX_OTHER = "TIME_TOP/PERIODX/PERIODX_OTHER"
+PERIOD_DAY = "TIME_TOP/PERIODX/PERIOD_DAY"
+PERIOD_MONTH = "TIME_TOP/PERIODX/PERIOD_MONTH"
+PERIOD_TIME = "TIME_TOP/PERIODX/PERIOD_TIME"
+PERIOD_WEEK = "TIME_TOP/PERIODX/PERIOD_WEEK"
+PERIOD_YEAR = "TIME_TOP/PERIODX/PERIOD_YEAR"
+TIMEX = "TIME_TOP/TIMEX"
+DATE = "TIME_TOP/TIMEX/DATE"
+DAY_OF_WEEK = "TIME_TOP/TIMEX/DAY_OF_WEEK"
+ERA = "TIME_TOP/TIMEX/ERA"
+TIME = "TIME_TOP/TIMEX/TIME"
+TIMEX_OTHER = "TIME_TOP/TIMEX/TIMEX_OTHER"
+TIME_TOP_OTHER = "TIME_TOP/TIME_TOP_OTHER"
 
 ALL_LABELS = [
     NAME,
-    Color,
-    Color_Other,
-    Nature_Color,
-    Disease,
-    Animal_Disease,
-    Disease_Other,
-    Event,
-    Event_Other,
-    Incident,
-    Incident_Other,
-    War,
-    Natural_Phenomenon,
-    Earthquake,
-    Natural_Disaster,
-    Natural_Phenomenon_Other,
-    Occasion,
-    Conference,
-    Game,
-    Occasion_Other,
-    Religious_Festival,
-    Facility,
-    Archaeological_Place,
-    Archaeological_Place_Other,
-    Tumulus,
-    Facility_Other,
-    Facility_Part,
+    COLOR,
+    COLOR_OTHER,
+    NATURE_COLOR,
+    DISEASE,
+    ANIMAL_DISEASE,
+    DISEASE_OTHER,
+    EVENT,
+    EVENT_OTHER,
+    INCIDENT,
+    INCIDENT_OTHER,
+    WAR,
+    NATURAL_PHENOMENON,
+    EARTHQUAKE,
+    NATURAL_DISASTER,
+    NATURAL_PHENOMENON_OTHER,
+    OCCASION,
+    CONFERENCE,
+    GAME,
+    OCCASION_OTHER,
+    RELIGIOUS_FESTIVAL,
+    FACILITY,
+    ARCHAEOLOGICAL_PLACE,
+    ARCHAEOLOGICAL_PLACE_OTHER,
+    TUMULUS,
+    FACILITY_OTHER,
+    FACILITY_PART,
     GOE,
-    Airport,
-    Amusement_Park,
-    Car_Stop,
-    GOE_Other,
-    Market,
-    Museum,
-    Park,
-    Port,
-    Public_Institution,
-    Research_Institute,
-    School,
-    Sports_Facility,
-    Station,
-    Theater,
-    Worship_Place,
-    Zoo,
-    Line,
-    Bridge,
-    Canal,
-    Line_Other,
-    Railroad,
-    Road,
-    Tunnel,
-    Water_Route,
-    God,
-    Location,
-    Address,
-    Address_Other,
-    Email,
-    Phone_Number,
-    Postal_Address,
+    AIRPORT,
+    AMUSEMENT_PARK,
+    CAR_STOP,
+    GOE_OTHER,
+    MARKET,
+    MUSEUM,
+    PARK,
+    PORT,
+    PUBLIC_INSTITUTION,
+    RESEARCH_INSTITUTE,
+    SCHOOL,
+    SPORTS_FACILITY,
+    STATION,
+    THEATER,
+    WORSHIP_PLACE,
+    ZOO,
+    LINE,
+    BRIDGE,
+    CANAL,
+    LINE_OTHER,
+    RAILROAD,
+    ROAD,
+    TUNNEL,
+    WATER_ROUTE,
+    GOD,
+    LOCATION,
+    ADDRESS,
+    ADDRESS_OTHER,
+    EMAIL,
+    PHONE_NUMBER,
+    POSTAL_ADDRESS,
     URL,
-    Astral_Body,
-    Astral_Body_Other,
-    Constellation,
-    Planet,
-    Star,
+    ASTRAL_BODY,
+    ASTRAL_BODY_OTHER,
+    CONSTELLATION,
+    PLANET,
+    STAR,
+    GEOLOGICAL_REGION,
+    BAY,
+    GEOLOGICAL_REGION_OTHER,
+    ISLAND,
+    LAKE,
+    MOUNTAIN,
+    RIVER,
+    SEA,
     GPE,
-    City,
-    Country,
-    County,
-    GPE_Other,
-    Province,
-    Geological_Region,
-    Bay,
-    Geological_Region_Other,
-    Island,
-    Lake,
-    Mountain,
-    River,
-    Sea,
-    Location_Other,
-    Region,
-    Continental_Region,
-    Domestic_Region,
-    Region_Other,
-    Spa,
-    Name_Other,
-    Natural_Object,
-    Compound,
-    Element,
-    Living_Thing,
-    Amphibia,
-    Bird,
-    Fish,
-    Flora,
-    Fungus,
-    Insect,
-    Living_Thing_Other,
-    Mammal,
-    Mollusc_Arthropod,
-    Reptile,
-    Living_Thing_Part,
-    Animal_Part,
-    Flora_Part,
-    Living_Thing_Part_Other,
-    Mineral,
-    Natural_Object_Other,
-    Organization,
-    Corporation,
-    Company,
-    Company_Group,
-    Corporation_Other,
-    Ethnic_Group,
-    Ethnic_Group_Other,
-    Nationality,
-    Family,
-    International_Organization,
-    Organization_Other,
-    Political_Organization,
-    Cabinet,
-    Government,
-    Military,
-    Political_Organization_Other,
-    Political_Party,
-    Show_Organization,
-    Sports_Organization,
-    Pro_Sports_Organization,
-    Sports_League,
-    Sports_Organization_Other,
-    Person,
-    Product,
-    Art,
-    Art_Other,
-    Book,
-    Broadcast_Program,
-    Movie,
-    Music,
-    Picture,
-    Show,
-    Award,
-    Character,
-    Class,
-    Clothing,
-    Decoration,
-    Doctrine_Method,
-    Academic,
-    Culture,
-    Doctrine_Method_Other,
-    Movement,
-    Plan,
-    Religion,
-    Sport,
-    Style,
-    Theory,
-    Drug,
-    Food,
-    Dish,
-    Food_Other,
-    ID_Number,
-    Language,
-    Language_Other,
-    National_Language,
-    Material,
-    Money_Form,
-    Offence,
-    Printing,
-    Magazine,
-    Newspaper,
-    Printing_Other,
-    Product_Other,
-    Rule,
-    Law,
-    Rule_Other,
-    Treaty,
-    Service,
-    Stock,
-    Title,
-    Position_Vocation,
-    Title_Other,
-    Unit,
-    Currency,
-    Unit_Other,
-    Vehicle,
-    Aircraft,
-    Car,
-    Ship,
-    Spaceship,
-    Train,
-    Vehicle_Other,
-    Weapon,
-    Numex,
-    Age,
-    Countx,
-    Countx_Other,
-    N_Event,
-    N_Facility,
-    N_Location,
-    N_Country,
-    N_Location_Other,
-    N_Natural_Object,
-    N_Animal,
-    N_Flora,
-    N_Natural_Object_Other,
-    N_Organization,
-    N_Person,
-    N_Product,
-    Frequency,
-    Latitude_Longtitude,
-    Measurement,
-    Calorie,
-    Intensity,
-    Measurement_Other,
-    Physical_Extent,
-    Seismic_Intensity,
-    Seismic_Magnitude,
-    Space,
-    Speed,
-    Temperature,
-    Volume,
-    Weight,
-    Money,
-    Multiplication,
-    Numex_Other,
-    Ordinal_Number,
-    Percent,
-    Point,
-    Rank,
-    School_Age,
-    Stock_Index,
-    Time_Top,
-    Periodx,
-    Period_Day,
-    Period_Month,
-    Period_Time,
-    Period_Week,
-    Period_Year,
-    Periodx_Other,
-    Time_Top_Other,
-    Timex,
-    Date,
-    Day_Of_Week,
-    Era,
-    Time,
-    Timex_Other,
+    CITY,
+    COUNTRY,
+    COUNTY,
+    GPE_OTHER,
+    PROVINCE,
+    LOCATION_OTHER,
+    REGION,
+    CONTINENTAL_REGION,
+    DOMESTIC_REGION,
+    REGION_OTHER,
+    SPA,
+    NAME_OTHER,
+    NATURAL_OBJECT,
+    COMPOUND,
+    ELEMENT,
+    LIVING_THING,
+    AMPHIBIA,
+    BIRD,
+    FISH,
+    FLORA,
+    FUNGUS,
+    INSECT,
+    LIVING_THING_OTHER,
+    MAMMAL,
+    MOLLUSC_ARTHROPOD,
+    REPTILE,
+    LIVING_THING_PART,
+    ANIMAL_PART,
+    FLORA_PART,
+    LIVING_THING_PART_OTHER,
+    MINERAL,
+    NATURAL_OBJECT_OTHER,
+    ORGANIZATION,
+    CORPORATION,
+    COMPANY,
+    COMPANY_GROUP,
+    CORPORATION_OTHER,
+    ETHNIC_GROUP,
+    ETHNIC_GROUP_OTHER,
+    NATIONALITY,
+    FAMILY,
+    INTERNATIONAL_ORGANIZATION,
+    ORGANIZATION_OTHER,
+    POLITICAL_ORGANIZATION,
+    CABINET,
+    GOVERNMENT,
+    MILITARY,
+    POLITICAL_ORGANIZATION_OTHER,
+    POLITICAL_PARTY,
+    SHOW_ORGANIZATION,
+    SPORTS_ORGANIZATION,
+    PRO_SPORTS_ORGANIZATION,
+    SPORTS_LEAGUE,
+    SPORTS_ORGANIZATION_OTHER,
+    PERSON,
+    PRODUCT,
+    ART,
+    ART_OTHER,
+    BOOK,
+    BROADCAST_PROGRAM,
+    MOVIE,
+    MUSIC,
+    PICTURE,
+    SHOW,
+    AWARD,
+    CHARACTER,
+    CLASS,
+    CLOTHING,
+    DECORATION,
+    DOCTRINE_METHOD,
+    ACADEMIC,
+    CULTURE,
+    DOCTRINE_METHOD_OTHER,
+    MOVEMENT,
+    PLAN,
+    RELIGION,
+    SPORT,
+    STYLE,
+    THEORY,
+    DRUG,
+    FOOD,
+    DISH,
+    FOOD_OTHER,
+    ID_NUMBER,
+    LANGUAGE,
+    LANGUAGE_OTHER,
+    NATIONAL_LANGUAGE,
+    MATERIAL,
+    MONEY_FORM,
+    OFFENCE,
+    PRINTING,
+    MAGAZINE,
+    NEWSPAPER,
+    PRINTING_OTHER,
+    PRODUCT_OTHER,
+    RULE,
+    LAW,
+    RULE_OTHER,
+    TREATY,
+    SERVICE,
+    STOCK,
+    TITLE,
+    POSITION_VOCATION,
+    TITLE_OTHER,
+    UNIT,
+    CURRENCY,
+    UNIT_OTHER,
+    VEHICLE,
+    AIRCRAFT,
+    CAR,
+    SHIP,
+    SPACESHIP,
+    TRAIN,
+    VEHICLE_OTHER,
+    WEAPON,
+    NUMEX,
+    AGE,
+    COUNTX,
+    COUNTX_OTHER,
+    N_EVENT,
+    N_FACILITY,
+    N_LOCATION,
+    N_COUNTRY,
+    N_LOCATION_OTHER,
+    N_NATURAL_OBJECT,
+    N_ANIMAL,
+    N_FLORA,
+    N_NATURAL_OBJECT_OTHER,
+    N_ORGANIZATION,
+    N_PERSON,
+    N_PRODUCT,
+    FREQUENCY,
+    LATITUDE_LONGTITUDE,
+    MEASUREMENT,
+    CALORIE,
+    INTENSITY,
+    MEASUREMENT_OTHER,
+    PHYSICAL_EXTENT,
+    SEISMIC_INTENSITY,
+    SEISMIC_MAGNITUDE,
+    SPACE,
+    SPEED,
+    TEMPERATURE,
+    VOLUME,
+    WEIGHT,
+    MONEY,
+    MULTIPLICATION,
+    NUMEX_OTHER,
+    ORDINAL_NUMBER,
+    PERCENT,
+    POINT,
+    RANK,
+    SCHOOL_AGE,
+    STOCK_INDEX,
+    TIME_TOP,
+    PERIODX,
+    PERIODX_OTHER,
+    PERIOD_DAY,
+    PERIOD_MONTH,
+    PERIOD_TIME,
+    PERIOD_WEEK,
+    PERIOD_YEAR,
+    TIMEX,
+    DATE,
+    DAY_OF_WEEK,
+    ERA,
+    TIME,
+    TIMEX_OTHER,
+    TIME_TOP_OTHER,
 ]

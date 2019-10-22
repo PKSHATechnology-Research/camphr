@@ -59,7 +59,7 @@ def extract_keys(d: Dict[str, Optional[Dict]], prefix: str = "") -> List[str]:
     """Nested key are described with slash: e.g. Animal.Bird -> Animal/Bird"""
     res = []
     for k, v in d.items():
-        res.append(prefix + k)
+        res.append((prefix + k).upper())
         if isinstance(v, dict):
             res += extract_keys(v, prefix + k + "/")
     return res
