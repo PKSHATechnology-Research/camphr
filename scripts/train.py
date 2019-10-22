@@ -84,7 +84,10 @@ def train_epoch(cfg: Config, nlp, optim, train_data, val_data, epoch, eval_fn):
             raise
         log.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.ndata}")
         if j % cfg.neval == cfg.neval - 1:
-            eval_fn(cfg, nlp, val_data)
+            scorer = eval_fn(cfg, nlp, val_data)
+            log.info(f"ents_p: {scorer.ents_p}")
+            log.info(f"ents_r: {scorer.ents_r}")
+            log.info(f"ents_f: {scorer.ents_f}")
 
 
 def train(cfg: Config, nlp, train_data, val_data, savedir: Path, eval_fn=None):
