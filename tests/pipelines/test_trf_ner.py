@@ -108,7 +108,7 @@ def test_update(nlp: Language, text, gold, label_type):
     optim = nlp.resume_training()
     assert nlp.device.type == "cpu"
     doc = nlp.make_doc(text)
-    assert doc._.loss is None
+    assert not doc._.loss
     nlp.update([doc], [gold], optim)
     assert doc._.loss
 
