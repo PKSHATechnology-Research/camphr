@@ -28,19 +28,8 @@ def get_second_top_label(label: str) -> str:
     return pref + parts[1]
 
 
-def get_base_label(label: str) -> str:
-    if len(label) == 1:
-        return label
-    parts = label.split("/")
-    if len(parts) == 1:
-        return label
-    pref = parts[0][:2]
-    return pref + parts[-1]
-
-
 def create_nlp(cfg: Config) -> Language:
     labels = make_biluo_labels(LABELS[cfg.label])
-    baselabels = list(map(get_base_label, labels))
     secondtop_labels = list({get_second_top_label(k) for k in labels})
     toplabels = list({k.split("/")[0] for k in labels})
     log.info(f"label1: {len(toplabels)}")
@@ -63,7 +52,7 @@ def create_nlp(cfg: Config) -> Language:
     nlp.add_pipe(ner)
 
     ner3 = trf_ner_layer(
-        lang=cfg.lang, pretrained=cfg.pretrained, vocab=nlp.vocab, labels=baselabels
+        lang=cfg.lang, pretrained=cfg.pretrained, vocab=nlp.vocab, labels=labels
     )
     ner3.name = ner3.name + "3"
     nlp.add_pipe(ner3)

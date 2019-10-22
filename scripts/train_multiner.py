@@ -18,20 +18,9 @@ def get_top_label(label: str) -> str:
     return label.split("/")[0]
 
 
-def get_base_label(label: str) -> str:
-    if len(label) == 1:
-        return label
-    parts = label.split("/")
-    if len(parts) == 1:
-        return label
-    pref = parts[0][:2]
-    return pref + parts[-1]
-
-
 def create_nlp(cfg: Config) -> Language:
     labels = make_biluo_labels(LABELS[cfg.label])
     toplabels = list({k.split("/")[0] for k in labels})
-    baselabels = list(map(get_base_label, labels))
     log.info(f"label1: {len(toplabels)}")
     log.info(f"label2: {len(labels)}")
     nlp = trf_ner(
@@ -41,7 +30,7 @@ def create_nlp(cfg: Config) -> Language:
         user_hooks={"convert_label": get_top_label},
     )
     ner = trf_ner_layer(
-        lang=cfg.lang, pretrained=cfg.pretrained, vocab=nlp.vocab, labels=baselabels
+        lang=cfg.lang, pretrained=cfg.pretrained, vocab=nlp.vocab, labels=labels
     )
     ner.name = ner.name + "2"
     nlp.add_pipe(ner)
