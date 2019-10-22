@@ -21,6 +21,8 @@ def get_top_label(label: str) -> str:
 def create_nlp(cfg: Config) -> Language:
     labels = make_biluo_labels(LABELS[cfg.label])
     toplabels = list({k.split("/")[0] for k in labels})
+    log.info(f"label1: {len(toplabels)}")
+    log.info(f"label2: {len(labels)}")
     nlp = trf_ner(
         lang=cfg.lang,
         pretrained=cfg.pretrained,
