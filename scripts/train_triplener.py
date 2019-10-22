@@ -1,7 +1,6 @@
 import os
 import logging
 from pathlib import Path
-import json
 
 import hydra
 import torch
@@ -11,32 +10,12 @@ from bedoner.ner_labels import LABELS
 from bedoner.ner_labels.utils import make_biluo_labels
 from bedoner.models import get_trf_name, trf_ner, trf_ner_layer
 from spacy.language import Language
-from spacy.scorer import Scorer
 
 log = logging.getLogger(__name__)
 
 
 def get_top_label(label: str) -> str:
     return label.split("/")[0]
-
-
-def second_label(label: str) -> str:
-    if len(label) == 1:
-        return label
-    items = label.split("/")
-    if len(items) == 1:
-        return label
-
-
-def evaluate(cfg: Config, nlp: Language, val_data) -> Scorer:
-    try:
-        with nlp.disable_pipes("xlnet_ner2"):
-            scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
-    except:
-        with open("fail.json", "w") as f:
-            json.dump(val_data, f, ensure_ascii=False)
-            raise
-    return scorer
 
 
 def create_nlp(cfg: Config) -> Language:
@@ -51,7 +30,7 @@ def create_nlp(cfg: Config) -> Language:
     ner = trf_ner_layer(
         lang=cfg.lang, pretrained=cfg.pretrained, vocab=nlp.vocab, labels=labels
     )
-    ner.name = ner.name + "_sekine"
+    ner.name = ner.name + "2"
     nlp.add_pipe(ner)
     name = get_trf_name(cfg.pretrained)
     nlp.meta["name"] = name.value + "_" + cfg.label
@@ -68,7 +47,7 @@ def _main(cfg: Config):
         nlp.to(torch.device("cuda"))
     savedir = Path.cwd() / "models"
     savedir.mkdir()
-    train(cfg, nlp, train_data, val_data, savedir, eval_fn=evaluate)
+    train(cfg, nlp, train_data, val_data, savedir)
 
 
 main = hydra.main(config_path="conf/train.yml")(_main)

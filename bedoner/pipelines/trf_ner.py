@@ -152,11 +152,9 @@ class TrfForTokenClassificationBase(TorchPipe):
         torch.save(model.state_dict(), str(path / "model.pth"))
 
         with (path / "cfg.pkl").open("wb") as f:
-            pickle.dump(self.cfg, f)
-
-        # TODO: This may not be good way because vocab is saved separetely.
-        with (path / "vocab.pkl").open("wb") as f:
-            pickle.dump(self.vocab, f)
+            exclude = {"user_hooks"}
+            cfg = {k: v for k, v in self.cfg.items() if k not in exclude}
+            pickle.dump(cfg, f)
 
     def from_disk(self, path: Path, exclude=tuple(), **kwargs):
         config = self.trf_config_cls.from_pretrained(path)
@@ -169,8 +167,6 @@ class TrfForTokenClassificationBase(TorchPipe):
 
         with (path / "cfg.pkl").open("rb") as f:
             self.cfg = pickle.load(f)
-        with (path / "vocab.pkl").open("rb") as f:
-            self.vocab = pickle.load(f)
         return self
 
 
@@ -246,3 +242,12 @@ class XLNetForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
 TrfForTokenClassificationBase.install_extensions()
 Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition
 Language.factories[XLNetForNamedEntityRecognition.name] = XLNetForNamedEntityRecognition
+
+# TODO: Ugly
+for i in range(2, 10):
+    Language.factories[
+        BertForNamedEntityRecognition.name + str(i)
+    ] = BertForNamedEntityRecognition
+    Language.factories[
+        XLNetForNamedEntityRecognition.name + str(i)
+    ] = XLNetForNamedEntityRecognition
