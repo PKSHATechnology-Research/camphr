@@ -71,7 +71,7 @@ def evaluate(cfg: Config, nlp, val_data) -> Scorer:
     return scorer
 
 
-def train_epoch(cfg: Config, nlp, optim, train_data, val_data, epoch):
+def train_epoch(cfg: Config, nlp, optim, train_data, val_data, epoch, eval_fn):
     for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
         texts, golds = zip(*batch)
         try:
@@ -84,15 +84,17 @@ def train_epoch(cfg: Config, nlp, optim, train_data, val_data, epoch):
             raise
         log.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.ndata}")
         if j % cfg.neval == cfg.neval - 1:
-            evaluate(cfg, nlp, val_data)
+            eval_fn(cfg, nlp, val_data)
 
 
-def train(cfg: Config, nlp, train_data, val_data, savedir: Path):
+def train(cfg: Config, nlp, train_data, val_data, savedir: Path, eval_fn=None):
+    if eval_fn is None:
+        eval_fn = evaluate
     optim = nlp.resume_training(t_total=cfg.niter, enable_scheduler=cfg.scheduler)
     for i in range(cfg.niter):
         random.shuffle(train_data)
-        train_epoch(cfg, nlp, optim, train_data, val_data, i)
-        scorer = evaluate(cfg, nlp, val_data)
+        train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
+        scorer = eval_fn(cfg, nlp, val_data)
         nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
         nlp.to_disk(savedir / str(i))
 

@@ -6,5 +6,5 @@ test_size: 0.1
 data: ~/datasets/ner-bccwj-ene.jsonl
 label: ene
 lang:
-pretrained: ../data/bert-ja-juman 
+pretrained:
 neval: 100
