@@ -17,7 +17,7 @@ def main(lang="mecab", pretrained=""):
         "niter": 2,
         "neval": 1,
     }
-    cmd = ["python", "train.py"]
+    cmd = ["python", str(basedir / "train.py")]
     for k, v in cfg.items():
         cmd.append(f"{k}={v}")
     p = subprocess.run(cmd)
