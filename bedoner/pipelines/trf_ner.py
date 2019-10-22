@@ -15,7 +15,7 @@ from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy.vocab import Vocab
 
-from bedoner.pipelines.utils import UNK, correct_biluo_tags
+from bedoner.pipelines.utils import UNK, correct_biluo_tags, merge_entities
 from bedoner.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
@@ -208,7 +208,7 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
             loss = F.cross_entropy(logit[idx], target, ignore_index=ignore_index)
 
             doc._.cls_logit = logit
-            doc._.loss = loss
+            doc._.loss += loss
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor
@@ -229,7 +229,7 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
                 else:
                     biluo_tags.append(UNK.value)
             biluo_tags = correct_biluo_tags(biluo_tags)
-            doc.ents = spans_from_biluo_tags(doc, biluo_tags)
+            doc.ents = merge_entities(doc.ents, spans_from_biluo_tags(doc, biluo_tags))
         return docs
 
 

@@ -60,7 +60,7 @@ class TorchLanguageMixin:
             https://spacy.io/usage/processing-pipelines#custom-components-attributes
         """
         if Doc.get_extension("loss") is None:
-            Doc.set_extension("loss", default=None)
+            Doc.set_extension("loss", default=0)
 
     def resume_training(self, **kwargs) -> Optimizers:
         """Gather torch parameters in `TorchPipe`, and create optimizers.
