@@ -3,51 +3,18 @@ import json
 import logging
 import random
 from pathlib import Path
-from typing import Dict, List
 
 import hydra
-import omegaconf
 import torch
 from sklearn.model_selection import train_test_split
 from spacy.scorer import Scorer
 from spacy.util import minibatch
 
 from bedoner.models import trf_ner, get_trf_name
-from bedoner.ner_labels.labels_ene import ALL_LABELS as ene_labels
-from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
 from bedoner.ner_labels.utils import make_biluo_labels
+from .train import load_data, Config, get_labels
 
 log = logging.getLogger(__name__)
-
-
-def get_labels(name: str) -> List[str]:
-    if name == "irex":
-        return irex_labels
-    elif name == "ene":
-        return ene_labels
-    raise ValueError(f"Unknown label type: {name}")
-
-
-def load_data(name: str) -> List[Dict]:
-    name = os.path.expanduser(name)
-    data = []
-    with open(name) as f:
-        for line in f:
-            data.append(json.loads(line))
-    return data
-
-
-class Config(omegaconf.OmegaConf):
-    data: str
-    ndata: int
-    niter: int
-    nbatch: int
-    label: str
-    scheduler: bool
-    test_size: float
-    lang: str
-    pretrained: str
-    neval: int
 
 
 def _main(cfg: Config):
