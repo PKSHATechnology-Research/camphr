@@ -16,6 +16,7 @@ from spacy.util import minibatch
 from bedoner.models import trf_ner, get_trf_name
 from bedoner.ner_labels import LABELS
 from bedoner.ner_labels.utils import make_biluo_labels
+import srsly
 
 log = logging.getLogger(__name__)
 
@@ -48,7 +49,10 @@ def create_data(cfg: Config) -> Tuple[List, List]:
         data = random.sample(data, k=cfg.ndata)
     else:
         cfg.ndata = len(data)
-    return train_test_split(data, test_size=cfg.test_size)
+    train, val = train_test_split(data, test_size=cfg.test_size)
+    srsly.write_jsonl(Path.cwd() / f"train-data.jsonl", train)
+    srsly.write_jsonl(Path.cwd() / f"val-data.jsonl", val)
+    return train, val
 
 
 def create_nlp(cfg: Config) -> Language:
