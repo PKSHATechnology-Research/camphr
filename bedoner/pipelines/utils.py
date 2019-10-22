@@ -1,7 +1,9 @@
 import copy
+import warnings
 from enum import Enum
 from typing import List, Tuple, Iterable
 from spacy.tokens import Span
+from spacy.gold import iob_to_biluo
 
 
 class BILUO(Enum):
@@ -60,20 +62,8 @@ def construct_biluo_tag(biluo: BILUO, body: str = "") -> str:
 
 
 def bio_to_biluo(tags: List[str]) -> List[str]:
-    """convert bio tags to biluo tags. Input `tags` is expected to be syntactically correct."""
-    tags = copy.copy(tags) + ["O"]
-    for i in range(len(tags) - 1):
-        tl, bl = deconstruct_biluo_tag(tags[i])
-        tr, br = deconstruct_biluo_tag(tags[i + 1])
-
-        # unit B to U
-        if tl == B and not is_group(tl, bl, tr, br):
-            tags[i] = construct_biluo_tag(U, bl)
-        # I-{other tag} to L-
-        if tl == I and not is_group(tl, bl, tr, br):
-            tags[i] = construct_biluo_tag(L, bl)
-
-    return tags[:-1]
+    warnings.warn(f"Use spacy.gold.iob_to_biluo instead", DeprecationWarning)
+    return iob_to_biluo(tags)
 
 
 def biluo_to_bio(tags: List[str]) -> List[str]:

@@ -9,6 +9,7 @@ from spacy.tokens import Span
 from spacy.vocab import Vocab
 from spacy.tests.util import get_doc
 
+from bedoner import __version__
 from bedoner.pipelines.utils import (
     B,
     I,
@@ -28,7 +29,7 @@ def nlp():
 
 
 def create_tags_sample(length=10, tags=["LOC", "PERSON", "DATE"]) -> List[str]:
-    """Create completely random biluo tags. The output tags may not be syntactically incorrect."""
+    """Create completely random biluo tags. The output tags may be syntactically incorrect."""
     res = []
     for _ in range(length):
         pref = random.choice("BILUO")
@@ -78,13 +79,12 @@ def create_bio_tags_sample(length=10, tags=["LOC", "PERSON", "DATE"]) -> List[st
     return res
 
 
-def test_bio_to_biluo():
-    ntests = 100
-    for _ in range(ntests):
-        length = 10
-        tags = create_bio_tags_sample(length)
-        biluo_tags = bio_to_biluo(tags)
-        assert biluo_tags == correct_biluo_tags(biluo_tags), tags
+def test_bio_to_biluo(recwarn):
+    bio_to_biluo(["B-PERSON", "I-PERSON", "O", "B-DATE"])
+    if __version__ < "v0.8":
+        assert recwarn.pop()
+    else:
+        pytest.fail(f"Deprecate bio_to_biluo")
 
 
 TESTCAESES_BILUO_BIO = [
