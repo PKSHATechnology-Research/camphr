@@ -1,78 +1,44 @@
 import os
-import json
 import logging
-import random
 from pathlib import Path
 
 import hydra
 import torch
-from sklearn.model_selection import train_test_split
-from spacy.scorer import Scorer
-from spacy.util import minibatch
 
-from bedoner.models import trf_ner, get_trf_name
+from .train import Config, create_data, train
+from bedoner.ner_labels import LABELS
 from bedoner.ner_labels.utils import make_biluo_labels
-from .train import load_data, Config, get_labels
+from bedoner.models import get_trf_name, trf_ner, trf_ner_layer
+from spacy.language import Language
 
 log = logging.getLogger(__name__)
 
 
-def _main(cfg: Config):
-    log.info(cfg.pretty())
-    outputd = os.getcwd()
-    log.info("output dir: {}".format(outputd))
-    data = load_data(cfg.data)
-    if cfg.ndata != -1:
-        data = random.sample(data, k=cfg.ndata)
-    else:
-        cfg.ndata = len(data)
-    train_data, val_data = train_test_split(data, test_size=cfg.test_size)
-
-    labels = get_labels(cfg.label)
-    nlp = trf_ner(
-        lang=cfg.lang, pretrained=cfg.pretrained, labels=make_biluo_labels(labels)
+def create_nlp(cfg: Config) -> Language:
+    labels = make_biluo_labels(LABELS[cfg.label])
+    nlp = trf_ner(lang=cfg.lang, pretrained=cfg.pretrained, labels=labels)
+    toplabels = list({k.split("/")[0] for k in labels})
+    ner = trf_ner_layer(
+        lang=cfg.lang, pretrained=cfg.pretrained, vocab=nlp.vocab, labels=toplabels
     )
+    ner.name = ner.name + "2"
+    nlp.add_pipe(ner)
     name = get_trf_name(cfg.pretrained)
     nlp.meta["name"] = name.value + "_" + cfg.label
+    return nlp
+
+
+def _main(cfg: Config):
+    log.info(cfg.pretty())
+    log.info("output dir: {}".format(os.getcwd()))
+    train_data, val_data = create_data(cfg)
+    nlp = create_nlp(cfg)
     if torch.cuda.is_available():
         log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
-
-    optim = nlp.resume_training(t_total=cfg.niter, enable_scheduler=cfg.scheduler)
-    modelsdir = Path.cwd() / "models"
-    modelsdir.mkdir()
-
-    for i in range(cfg.niter):
-        random.shuffle(train_data)
-        for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
-            texts, golds = zip(*batch)
-            try:
-                nlp.update(texts, golds, optim, debug=True)
-            except:
-                fail_path = os.path.abspath("fail.json")
-                log.error(f"Fail. Saved in {fail_path}")
-                with open(fail_path, "w") as f:
-                    json.dump(batch, f, ensure_ascii=False)
-                raise
-            log.info(f"epoch {i} {j*cfg.nbatch}/{cfg.ndata}")
-            if j % cfg.neval == cfg.neval - 1:
-                try:
-                    scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
-                except:
-                    with open("fail.json", "w") as f:
-                        json.dump(val_data, f, ensure_ascii=False)
-                        raise
-                log.info(f"p: {scorer.ents_p}")
-                log.info(f"r: {scorer.ents_r}")
-                log.info(f"f: {scorer.ents_f}")
-        try:
-            scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
-        except:
-            with open("fail.json", "w") as f:
-                json.dump(val_data, f, ensure_ascii=False)
-            raise
-        nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
-        nlp.to_disk(modelsdir / str(i))
+    savedir = Path.cwd() / "models"
+    savedir.mkdir()
+    train(cfg, nlp, train_data, val_data, savedir)
 
 
 main = hydra.main(config_path="conf/train.yml")(_main)

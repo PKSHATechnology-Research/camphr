@@ -34,9 +34,7 @@ def labels(label_type):
 @pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
 def nlp(labels, request, trf_dir):
     lang = request.param
-    # if lang == "sentencepiece" and "xlnet" not in trf_dir:
-    #     pytest.skip()
-    _nlp = trf_ner(lang=lang, labels=["-"] + labels, pretrained=trf_dir)
+    _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir)
     assert _nlp.meta["lang"] == lang
     return _nlp
 
@@ -62,6 +60,30 @@ TESTCASE_ENE = [
     (" おはよう", {"entities": []}),
     ("　おはよう", {"entities": []}),
 ]
+
+
+@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
+def nlp_for_hooks_test(request, trf_dir):
+    lang = request.param
+    labels = make_biluo_labels([chr(i) for i in range(65, 91)])
+
+    def convert_label(label: str) -> str:
+        if len(label) == 1:
+            return label
+        return label[:3]
+
+    hook = {"convert_label": convert_label}
+
+    _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir, user_hooks=hook)
+    assert _nlp.meta["lang"] == lang
+    return _nlp
+
+
+@pytest.mark.parametrize("text,gold", TESTCASE_ENE)
+def test_user_hooks(nlp_for_hooks_test: Language, text, gold, trf_name):
+    nlp = nlp_for_hooks_test
+    optim = nlp.resume_training()
+    nlp.update([text], [gold], optim)
 
 
 @pytest.mark.parametrize("text,gold", TESTCASE_ENE)

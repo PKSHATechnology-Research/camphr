@@ -4,7 +4,7 @@ Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s
 """
 import pickle
 from pathlib import Path
-from typing import Iterable, Union, cast
+from typing import Iterable, Callable, Union, cast
 
 import torch
 import torch.nn as nn
@@ -114,6 +114,14 @@ class TrfForTokenClassificationBase(TorchPipe):
     def label2id(self):
         return {v: i for i, v in enumerate(self.labels)}
 
+    @property
+    def user_hooks(self):
+        return self.cfg.setdefault("user_hooks", {})
+
+    def add_user_hook(self, k: str, fn: Callable):
+        hooks = self.user_hooks
+        hooks[k] = fn
+
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
         self.model.eval()
@@ -185,18 +193,19 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
             idx = []
-            ners = list(gold.ner)
+            convert_hook = self.user_hooks.get("convert_label", None)
+            if convert_hook:
+                ners = [convert_hook(ner) for ner in gold.ner]
+            else:
+                ners = list(gold.ner)
             for i, align in enumerate(doc._.trf_alignment):
                 if len(align):
                     idx.append(align[0])
                 else:
                     ners[i] = UNK.value  # avoid calculate loss
                     idx.append(-1)
-            loss = F.cross_entropy(
-                logit[idx],
-                torch.tensor([label2id[ner] for ner in ners], device=self.device),
-                ignore_index=ignore_index,
-            )
+            target = torch.tensor([label2id[ner] for ner in ners], device=self.device)
+            loss = F.cross_entropy(logit[idx], target, ignore_index=ignore_index)
 
             doc._.cls_logit = logit
             doc._.loss = loss

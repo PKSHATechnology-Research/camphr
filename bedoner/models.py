@@ -16,6 +16,7 @@ from bedoner.pipelines.person_ner import create_person_ruler
 from bedoner.pipelines.trf_model import BertModel, XLNetModel
 from bedoner.pipelines.trf_ner import (
     BertForNamedEntityRecognition,
+    TrfForNamedEntityRecognitionBase,
     XLNetForNamedEntityRecognition,
 )
 from bedoner.pipelines.wordpiecer import WordPiecer, TrfSentencePiecer
@@ -84,12 +85,20 @@ TRF_NER_MAP = {
 }
 
 
-def trf_ner(lang: str, pretrained: str, **cfg):
+def trf_ner(lang: str, pretrained: str, **cfg) -> Language:
     nlp = trf_model(lang, pretrained)
     name = get_trf_name(pretrained)
     ner = TRF_NER_MAP[name].from_pretrained(nlp.vocab, pretrained, **cfg)
     nlp.add_pipe(ner)
     return nlp
+
+
+def trf_ner_layer(
+    lang: str, pretrained: str, vocab: Vocab, **cfg
+) -> TrfForNamedEntityRecognitionBase:
+    name = get_trf_name(pretrained)
+    ner = TRF_NER_MAP[name].from_pretrained(vocab, pretrained, **cfg)
+    return ner
 
 
 def person_ruler(name="person_ruler") -> mecab.Japanese:

@@ -20,10 +20,6 @@ from bedoner.ner_labels.utils import make_biluo_labels
 log = logging.getLogger(__name__)
 
 
-def get_labels(name: str) -> List[str]:
-    return LABELS[name]
-
-
 def load_data(name: str) -> List[Dict]:
     name = os.path.expanduser(name)
     data = []
@@ -56,7 +52,7 @@ def create_data(cfg: Config) -> Tuple[List, List]:
 
 
 def create_nlp(cfg: Config) -> Language:
-    labels = get_labels(cfg.label)
+    labels = LABELS[cfg.label]
     nlp = trf_ner(
         lang=cfg.lang, pretrained=cfg.pretrained, labels=make_biluo_labels(labels)
     )
