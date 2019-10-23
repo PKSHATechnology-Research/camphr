@@ -12,7 +12,7 @@
 - Multitask NER modelを追加
   - https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0.dev3
   - ENEラベルについて，3つの異なるラベルづけモデルを用いてNER.
-    - 例: Name/Organization/Familyの場合, "Name"と"Organization"と"Family"を予測する3種のモデルを作る．学習はマルチタスク．抽出結果が衝突した場合，下位階層予測のモデルが優先される
+    - 例: Name/Organization/Familyの場合,"Name"と"Organization"と"Family"を予測する3種のモデルを作る．学習はマルチタスク．抽出結果が衝突した場合，下位階層予測のモデルが優先される
 - `TrfForNamedEntityRecognitionBase`にuser_hooksを追加
   - goldラベルを適当に変形したい場合，`ner.user_hooks["convert_label"] = fn`のようにする
 

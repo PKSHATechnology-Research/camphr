@@ -168,16 +168,17 @@ class TrfForTokenClassificationBase(TorchPipe):
             pickle.dump(cfg, f)
 
     def from_disk(self, path: Path, exclude=tuple(), **kwargs):
+        with (path / "cfg.pkl").open("rb") as f:
+            self.cfg = pickle.load(f)
         config = self.trf_config_cls.from_pretrained(path)
-        model = TrfTokenClassifier(config)
+        num_layer = self.cfg.get("num_layer", 1)
+        model = TrfTokenClassifier(config, num_layer=num_layer)
         model.load_state_dict(
             torch.load(str(path / "model.pth"), map_location=self.device)
         )
         model.eval()
         self.model = model
 
-        with (path / "cfg.pkl").open("rb") as f:
-            self.cfg = pickle.load(f)
         return self
 
 
