@@ -4,6 +4,7 @@ from scripts.train_triplener import get_top_label, get_second_top_label
 import fire
 import srsly
 import spacy
+import torch
 from spacy.language import Language
 from spacy.scorer import Scorer
 from spacy.util import minibatch
@@ -56,8 +57,10 @@ def eval(nlp: Language, data, batchsize, fn):
     print(srsly.json_dumps(scorer))
 
 
-def main(modeld, val_data, nval=1000, batchsize=16):
+def main(modeld, val_data, nval=-1, batchsize=16, gpu=False):
     nlp: Language = create_nlp(modeld)
+    if gpu and torch.cuda.is_available():
+        nlp.to(torch.device("cuda"))
     data = list(srsly.read_jsonl(val_data))
     if nval > 0:
         data = data[:nval]
