@@ -6,6 +6,7 @@ import spacy
 import torch
 from spacy.gold import GoldParse
 from spacy.language import Language
+from spacy.tests.util import assert_docs_equal
 
 from bedoner.models import trf_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
@@ -97,6 +98,15 @@ def test_call(nlp: Language, text, gold, label_type):
     if label_type == "irex":
         pytest.skip()
     nlp(text)
+
+
+def test_serialization(nlp: Language, tmpdir, label_type):
+    text = TESTCASE_ENE[0]
+    if label_type == "irex":
+        pytest.skip()
+    nlp.to_disk(str(tmpdir))
+    nlp2 = spacy.load(str(tmpdir))
+    assert_docs_equal(nlp(text), nlp2(text))
 
 
 def test_pipe(nlp: Language):
