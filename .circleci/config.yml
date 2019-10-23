@@ -18,4 +18,4 @@ jobs:
       # - run:
       #     name: run train script test
       #     command: docker-compose run -e CI ner pipenv run python scripts/test_train.py matrix
-      - run: docker-compose run -e CI ner sh -c "pwd && ls scripts"
+      - run: docker-compose run -e CI ner sh -c "pwd && ls ."
