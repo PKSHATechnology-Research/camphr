@@ -3,7 +3,7 @@ niter: 10
 nbatch: 16
 scheduler: false
 test_size: 0.1
-data: ~/datasets/ner-bccwj-ene.jsonl
+data: ~/datasets/ner-bccwj-fullene.jsonl
 label: ene
 lang:
 pretrained:
