@@ -165,7 +165,7 @@ def test_update_cuda(nlp: Language, text, gold, cuda, label_type):
 
     optim = nlp.resume_training()
     doc = nlp.make_doc(text)
-    assert doc._.loss is None
+    assert not doc._.loss
     nlp.update([doc], [gold], optim)
     assert doc._.loss
 
