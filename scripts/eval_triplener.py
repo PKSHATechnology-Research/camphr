@@ -51,7 +51,7 @@ def eval(nlp: Language, data, batchsize, fn):
     scorer = Scorer(pipeline=nlp.pipeline)
     with tqdm(total=nval) as pbar:
         for batch in minibatch(data, size=batchsize):
-            scorer = nlp.evaluate(modify_gold(batch, fn))
+            scorer = nlp.evaluate(modify_gold(batch, fn), scorer=scorer)
             pbar.update(batchsize)
     print(srsly.json_dumps(scorer))
 
