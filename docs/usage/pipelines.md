@@ -1,13 +1,19 @@
 # pipelines
 
-## BERT
+## Transformers Model
+
+- BERT(mecab, juman, multilingual), 
+- XLNet (sentencepiece, mecab, juman)
 
 文章から固定長ベクトルを計算するパイプです．[BERT as a service](https://github.com/hanxiao/bert-as-service)と同じです．
 [リリースページ](https://github.com/PKSHATechnology/bedore-ner/releases)から pre-trained モデルをダウンロードして，以下のようにpipでインストールしてください.  
 パラメータ等全て入っています．
 
 ```bash
+# BERT
 $ pip install mecab-bert-model.VERSION.tar.gz
+# XLNet
+$ pip install sentencepiece-xlnet-model.VERSION.tar.gz
 ```
 
 Example:
@@ -92,7 +98,7 @@ print(cat, dog, cat.similarity(dog))
 
 ### Note
 
-BERTの出力は，[extension](https://spacy.io/usage/processing-pipelines/#custom-components-attributes)に格納されています．  
+BERT or XLNetの出力は，[extension](https://spacy.io/usage/processing-pipelines/#custom-components-attributes)に格納されています．  
 
 ```python
 doc._.trf_last_hidden_state.get()
@@ -110,14 +116,17 @@ tensor([[ 0.7485,  0.4472, -0.8713,  ...,  1.4357, -0.8676, -0.9460],
 propertyはspacy-transformersと統一してあります．詳しくは: https://github.com/explosion/spacy-transformers#extension-attributes
 
 
-## BERT NER
+## Transformers Named Entity Recognition
 
-[BERT](https://github.com/google-research/bert)を用いたNERです．  
+BERT or XLNet を用いたNERです．  
 [リリースページ](https://github.com/PKSHATechnology/bedore-ner/releases)からトレーニング済みモデルをダウンロードして，以下のようにpipでインストールしてください.  
 パラメータ等全て入っています．
 
 ```bash
+# BERT
 $ pip install mecab-bert-ene.VERSION.tar.gz
+# XLNet
+$ pip install sentencepiece-xlnet-ene.VERSION.tar.gz
 ```
 
 ```python
@@ -152,7 +161,7 @@ nlp.to(torch.device("gpu"))
 docs = nlp(texts)
 ```
 
-上で説明した[BERT](#BERT)と同じ機能が使えます．例えば`doc.similarity`を使うと，2つの文章の類似度を計算することができます:
+隠れ層のベクトルを利用することができます．例えば`doc.similarity`を使うと，2つの文章の類似度を計算することができます:
 
 ```python
 doc1 = nlp("今日はいい天気だった")
@@ -163,18 +172,17 @@ doc1.similarity(doc2)
 0.5925057530403137
 ```
 
-### Training
+### Training (Fine Tuning)
 
-Pretrained モデルをさらにトレーニングすることもできます．  
 以下のように，`nlp.update`にデータを与えるだけでOKです．
 
 ```python
-from bedoner.models import bert_ner
+from bedoner.models import trf_ner
 from bedoner.ner_labels.labels_irex import ALL_LABELS
 from bedoner.ner_labels.utils import make_biluo_labels
 from spacy.util import minibatch
 
-nlp = bert_ner(labels=make_biluo_labels(ALL_LABELS))
+nlp = trf_ner(lang="mecab", labels=make_biluo_labels(ALL_LABELS), pretrained="path_to_bert")
 train_data = [
     ["１９９９年３月創部の同部で初の外国人選手。", {"entities": [[0, 7, "DATE"], [15, 20, "ARTIFACT"]]}]
 ]

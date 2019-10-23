@@ -6,12 +6,13 @@ from spacy.language import Language
 from spacy_transformers.util import ATTRS
 from spacy.tokens import Doc
 
-from bedoner.models import bert_model
+from bedoner.models import trf_model
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman"], ids=["mecab", "juman"])
-def nlp(request, bert_dir):
-    return bert_model(lang=request.param, pretrained=bert_dir)
+@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
+def nlp(request, trf_dir):
+    lang = request.param
+    return trf_model(lang, trf_dir)
 
 
 TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]

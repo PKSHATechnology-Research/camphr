@@ -28,8 +28,8 @@ def get_commit() -> str:
 
 def requirements(meta: Dict[str, Any], ref_module: str) -> List[str]:
     lang = meta["lang"]
-    req = set(meta.get("requirements", {}))
-    req |= LANG_REQUIREMENTS.get(lang, {})
+    req = set(meta.get("requirements", set()))
+    req |= LANG_REQUIREMENTS.get(lang, set())
     req = {k for k in req if not k.startswith("bedoner")}
     req.add(THIS_MODULE.format(ref=ref_module))
     return list(req)

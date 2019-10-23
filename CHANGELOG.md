@@ -1,3 +1,19 @@
+# v0.4
+
+##  New features and improvements
+
+- XLNet追加
+  - `trf_model.XLNetModel`を追加
+  - `trf_ner.XLNetForNamedEntityRecognition`を追加
+- SentencePiece ベースの`Language`を追加: [./bedoner/lang/sentencepiece](./bedoner/lang/sentencepiece)
+- SentencePiece Language用のWordpiecer: `pipelines.wordpiecer.TrfSentencePiecer`を追加
+- テストの高速化
+
+## Backwards incompatibilities
+
+- `trf_ner.BertForTokenClassification`を`trf_ner.TrfForTOkenClassification`へ変更
+- `trf_ner.BertTokenClassifier`を`trf_ner.TrfTokenClassifier`へ変更
+
 # v0.3.1
 
 ##  New features and improvements

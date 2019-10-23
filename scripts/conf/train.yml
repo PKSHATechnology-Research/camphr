@@ -5,7 +5,6 @@ scheduler: false
 test_size: 0.1
 data: ~/datasets/ner-bccwj-ene.jsonl
 label: ene
-lang: juman
+lang:
 from_pretrained: ../data/bert-ja-juman 
-name: bert
 neval: 100

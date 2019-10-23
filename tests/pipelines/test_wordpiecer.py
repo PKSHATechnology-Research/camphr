@@ -1,4 +1,8 @@
-import spacy
+from spacy.tokens import Doc
+from spacy.vocab import Vocab
+from spacy_transformers.util import ATTRS
+from bedoner.lang.sentencepiece import SentencePieceLang, EXTS
+from bedoner.pipelines.wordpiecer import TrfSentencePiecer
 import pytest
 from bedoner.models import bert_wordpiecer
 
@@ -9,42 +13,28 @@ def nlp(bert_dir):
 
 
 @pytest.mark.parametrize(
-    "text,pieces",
-    [
-        (
-            "EXILEのATSUSHIと中島美嘉が14日ニューヨーク入り",
-            [
-                "[CLS]",
-                "ＥＸＩＬＥ",
-                "の",
-                "ＡＴＳ",
-                "##ＵＳ",
-                "##ＨＩ",
-                "と",
-                "中島",
-                "美",
-                "##嘉",
-                "が",
-                "１４",
-                "日",
-                "ニューヨーク",
-                "入り",
-                "[SEP]",
-            ],
-        )
-    ],
+    "tokens,pieces",
+    [(["今日は", "いい", "天気", "だ"], ["▁", "今日は", "いい", "天気", "だ", "</s>", "<cls>"])],
 )
-def test_bert_wordpiecer(nlp, text, pieces):
+def test_wordpiecer(xlnet_wp, tokens, pieces):
+    doc = Doc(Vocab(), tokens, spaces=[False] * len(tokens))
+    doc = xlnet_wp(doc)
+    assert doc._.get(ATTRS.word_pieces_) == pieces
+
+
+@pytest.fixture
+def spm_nlp(spiece_path, xlnet_dir):
+    v = Vocab()
+    nlp = SentencePieceLang(v, meta={"tokenizer": {"model_path": spiece_path}})
+    pipe = TrfSentencePiecer.from_pretrained(v, xlnet_dir)
+    nlp.add_pipe(pipe)
+    return nlp
+
+
+@pytest.mark.parametrize("text", ["    New York  ", "今日はいい天気だった", " 今日は\tいい天気　だった"])
+def test_trf_sentencepiece(spm_nlp, text):
+    nlp = spm_nlp
     doc = nlp(text)
-    assert doc._.trf_word_pieces_ == pieces
-
-
-@pytest.mark.parametrize("lang", ["juman", "mecab"])
-def test_bert_wordpiecer_lang(lang, tmpdir, bert_dir):
-    nlp = bert_wordpiecer(lang, pretrained=bert_dir)
-    assert nlp.meta["lang"] == lang
-    d = str(tmpdir.mkdir(lang))
-    nlp.to_disk(d)
-
-    nlp2 = spacy.load(d)
-    assert nlp2.meta["lang"] == lang
+    assert doc._.get(ATTRS.word_pieces)
+    assert doc._.get(ATTRS.word_pieces) != doc._.get(EXTS.pieces)
+    assert doc._.get(ATTRS.alignment) == doc._.get(EXTS.alignment)
