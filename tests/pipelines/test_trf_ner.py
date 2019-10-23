@@ -24,7 +24,8 @@ def label_type(request):
 @pytest.fixture(scope="module")
 def labels(label_type):
     if label_type == "ene":
-        return make_biluo_labels(enes)
+        shortenes = [label.split("/")[-1] for label in enes]
+        return make_biluo_labels(shortenes)
     elif label_type == "irex":
         return make_biluo_labels(irexes)
     else:
