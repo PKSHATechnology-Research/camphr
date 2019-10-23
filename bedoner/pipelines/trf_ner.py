@@ -40,7 +40,10 @@ class TrfTokenClassifier(nn.Module):
         else:
             raise ValueError(f"{type(config)} is not supported")
         self.dropout = nn.Dropout(dropout)
-        layers = [nn.Linear(hidden_size, hidden_size) for _ in range(num_layer - 1)]
+        layers = []
+        for _ in range(num_layer - 1):
+            layers.append(nn.Linear(hidden_size, hidden_size))
+            layers.append(nn.ReLU())
         layers.append(nn.Linear(hidden_size, self.num_labels))
         self.classifier = nn.Sequential(*layers)
         self.loss_fct = nn.CrossEntropyLoss()
