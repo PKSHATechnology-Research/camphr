@@ -18,13 +18,15 @@ def get_top_label(label: str) -> str:
     return label.split("/")[0]
 
 
-def get_second_top_label(label: str) -> str:
+def get_second_top_label(label: str, add_pref=True) -> str:
     if len(label) == 1:
         return label
     parts = label.split("/")
     if len(parts) == 1:
         return label
-    pref = parts[0][:2]
+    pref = ""
+    if add_pref:
+        pref = parts[0][:2]
     return pref + parts[1]
 
 
