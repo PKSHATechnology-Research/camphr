@@ -101,7 +101,7 @@ def test_call(nlp: Language, text, gold, label_type):
 
 
 def test_serialization(nlp: Language, tmpdir, label_type):
-    text = TESTCASE_ENE[0]
+    text = TESTCASE_ENE[0][0]
     if label_type == "irex":
         pytest.skip()
     nlp.to_disk(str(tmpdir))
