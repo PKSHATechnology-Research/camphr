@@ -4,12 +4,6 @@ from spacy_transformers.util import ATTRS
 from bedoner.lang.sentencepiece import SentencePieceLang, EXTS
 from bedoner.pipelines.wordpiecer import TrfSentencePiecer
 import pytest
-from bedoner.models import bert_wordpiecer
-
-
-@pytest.fixture(scope="module")
-def nlp(bert_dir):
-    return bert_wordpiecer(lang="juman", pretrained=bert_dir)
 
 
 @pytest.mark.parametrize(
