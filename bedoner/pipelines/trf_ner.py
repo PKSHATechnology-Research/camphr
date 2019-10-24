@@ -27,7 +27,7 @@ from bedoner.torch_utils import (
 class TrfTokenClassifier(nn.Module):
     """A thin layer for classification task"""
 
-    def __init__(self, config: Union[trf.BertConfig, trf.XLNetConfig], num_layer=1):
+    def __init__(self, config: Union[trf.BertConfig, trf.XLNetConfig]):
         super().__init__()
         self.config = config
         self.num_labels = config.num_labels
@@ -40,12 +40,7 @@ class TrfTokenClassifier(nn.Module):
         else:
             raise ValueError(f"{type(config)} is not supported")
         self.dropout = nn.Dropout(dropout)
-        layers = []
-        for _ in range(num_layer - 1):
-            layers.append(nn.Linear(hidden_size, hidden_size))
-            layers.append(nn.ReLU())
-        layers.append(nn.Linear(hidden_size, self.num_labels))
-        self.classifier = nn.Sequential(*layers)
+        self.classifier = nn.Linear(hidden_size, self.num_labels)
         self.loss_fct = nn.CrossEntropyLoss()
 
     def forward(
