@@ -96,19 +96,16 @@ class TrfForTokenClassificationBase(TorchPipe):
         assert cfg.get("labels")
         cfg.setdefault("trf_config", {})
         cfg["trf_config"]["num_labels"] = len(cfg.get("labels", []))
-        num_layer = cfg.get("num_layer", 1)
         if cfg.get("from_pretrained"):
             config = cls.trf_config_cls.from_pretrained(
                 cfg["trf_name"], **cfg["trf_config"]
             )
-            model = TrfTokenClassifier(config, num_layer=num_layer)
+            model = TrfTokenClassifier(config)
         else:
             if "vocab_size" in cfg["trf_config"]:
                 vocab_size = cfg["trf_config"]["vocab_size"]
                 cfg["trf_config"]["vocab_size_or_config_json_file"] = vocab_size
-            model = TrfTokenClassifier(
-                cls.trf_config_cls(**cfg["trf_config"]), num_layer=num_layer
-            )
+            model = TrfTokenClassifier(cls.trf_config_cls(**cfg["trf_config"]))
         assert model.config.num_labels == len(cfg["labels"])
         return model
 
@@ -166,8 +163,7 @@ class TrfForTokenClassificationBase(TorchPipe):
         with (path / "cfg.pkl").open("rb") as f:
             self.cfg = pickle.load(f)
         config = self.trf_config_cls.from_pretrained(path)
-        num_layer = self.cfg.get("num_layer", 1)
-        model = TrfTokenClassifier(config, num_layer=num_layer)
+        model = TrfTokenClassifier(config)
         model.load_state_dict(
             torch.load(str(path / "model.pth"), map_location=self.device)
         )
