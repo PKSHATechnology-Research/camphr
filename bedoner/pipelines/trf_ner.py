@@ -246,7 +246,7 @@ TrfForTokenClassificationBase.install_extensions()
 Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition
 Language.factories[XLNetForNamedEntityRecognition.name] = XLNetForNamedEntityRecognition
 
-# TODO: Ugly
+# TODO: Ugly (https://github.com/explosion/spaCy/issues/4514)
 for i in range(2, 10):
     Language.factories[
         BertForNamedEntityRecognition.name + str(i)
