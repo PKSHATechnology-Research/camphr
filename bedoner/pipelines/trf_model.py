@@ -207,7 +207,10 @@ class TransformersModel(TorchPipe):
         self.model.train()
         x = self.docs_to_trfinput(docs)
         self.assert_length(x)
+        if self.cfg.get("freeze"):
+            torch.set_grad_enabled(False)
         y = self.output_cls(*self.model(**dataclasses.asdict(x)))
+        torch.set_grad_enabled(True)
         # set_vector=False because vector may be not need in updating.
         # You can still use model outputs via doc._.trf_last_hidden_state etc.
         self.set_annotations(docs, y, set_vector=False)
