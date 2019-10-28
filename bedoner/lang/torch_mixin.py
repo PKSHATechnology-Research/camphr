@@ -1,4 +1,5 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
+import logging
 import itertools
 from dataclasses import dataclass
 from typing import List, Optional, Type, cast
@@ -10,6 +11,8 @@ from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.tokens import Doc
 
 from bedoner.torch_utils import OptimizerParameters, TorchPipe
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -57,7 +60,7 @@ class TorchLanguageMixin:
             https://spacy.io/usage/processing-pipelines#custom-components-attributes
         """
         if Doc.get_extension("loss") is None:
-            Doc.set_extension("loss", default=None)
+            Doc.set_extension("loss", default=0)
 
     def resume_training(self, **kwargs) -> Optimizers:
         """Gather torch parameters in `TorchPipe`, and create optimizers.
@@ -99,7 +102,7 @@ class TorchLanguageMixin:
         self,
         params: OptimizerParameters,
         optim_cls: Optional[Type[optim.Optimizer]] = None,
-        **cfg
+        **cfg,
     ) -> Optimizers:
         """Make optimizer and scheduler (if necessary), wrap them in `Optimizers` and returns it.
 
@@ -148,7 +151,7 @@ class TorchLanguageMixin:
         loss.backward()
         optimizers.step()
         if debug:
-            print(loss)
+            logger.info(f"Loss: {loss.detach().item()}")
 
 
 TorchLanguageMixin.install_extensions()

@@ -4,7 +4,7 @@ Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s
 """
 import pickle
 from pathlib import Path
-from typing import Iterable, Union, cast
+from typing import Iterable, Callable, Union, cast
 
 import torch
 import torch.nn as nn
@@ -15,7 +15,7 @@ from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy.vocab import Vocab
 
-from bedoner.pipelines.utils import UNK, correct_biluo_tags
+from bedoner.pipelines.utils import UNK, correct_biluo_tags, merge_entities
 from bedoner.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
@@ -32,12 +32,15 @@ class TrfTokenClassifier(nn.Module):
         self.config = config
         self.num_labels = config.num_labels
         if isinstance(config, trf.BertConfig):
-            self.dropout = nn.Dropout(config.hidden_dropout_prob)
-            self.classifier = nn.Linear(config.hidden_size, self.num_labels)
+            dropout = config.hidden_dropout_prob
+            hidden_size = config.hidden_size
         elif isinstance(config, trf.XLNetConfig):
-            self.dropout = nn.Dropout(config.dropout)
-            self.classifier = nn.Linear(config.d_model, self.num_labels)
-
+            dropout = config.dropout
+            hidden_size = config.d_model
+        else:
+            raise ValueError(f"{type(config)} is not supported")
+        self.dropout = nn.Dropout(dropout)
+        self.classifier = nn.Linear(hidden_size, self.num_labels)
         self.loss_fct = nn.CrossEntropyLoss()
 
     def forward(
@@ -114,6 +117,14 @@ class TrfForTokenClassificationBase(TorchPipe):
     def label2id(self):
         return {v: i for i, v in enumerate(self.labels)}
 
+    @property
+    def user_hooks(self):
+        return self.cfg.setdefault("user_hooks", {})
+
+    def add_user_hook(self, k: str, fn: Callable):
+        hooks = self.user_hooks
+        hooks[k] = fn
+
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
         self.model.eval()
@@ -144,13 +155,13 @@ class TrfForTokenClassificationBase(TorchPipe):
         torch.save(model.state_dict(), str(path / "model.pth"))
 
         with (path / "cfg.pkl").open("wb") as f:
-            pickle.dump(self.cfg, f)
-
-        # TODO: This may not be good way because vocab is saved separetely.
-        with (path / "vocab.pkl").open("wb") as f:
-            pickle.dump(self.vocab, f)
+            exclude = {"user_hooks"}
+            cfg = {k: v for k, v in self.cfg.items() if k not in exclude}
+            pickle.dump(cfg, f)
 
     def from_disk(self, path: Path, exclude=tuple(), **kwargs):
+        with (path / "cfg.pkl").open("rb") as f:
+            self.cfg = pickle.load(f)
         config = self.trf_config_cls.from_pretrained(path)
         model = TrfTokenClassifier(config)
         model.load_state_dict(
@@ -159,10 +170,6 @@ class TrfForTokenClassificationBase(TorchPipe):
         model.eval()
         self.model = model
 
-        with (path / "cfg.pkl").open("rb") as f:
-            self.cfg = pickle.load(f)
-        with (path / "vocab.pkl").open("rb") as f:
-            self.vocab = pickle.load(f)
         return self
 
 
@@ -185,21 +192,22 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
             idx = []
-            ners = list(gold.ner)
+            convert_hook = self.user_hooks.get("convert_label", None)
+            if convert_hook:
+                ners = [convert_hook(ner) for ner in gold.ner]
+            else:
+                ners = list(gold.ner)
             for i, align in enumerate(doc._.trf_alignment):
                 if len(align):
                     idx.append(align[0])
                 else:
                     ners[i] = UNK.value  # avoid calculate loss
                     idx.append(-1)
-            loss = F.cross_entropy(
-                logit[idx],
-                torch.tensor([label2id[ner] for ner in ners], device=self.device),
-                ignore_index=ignore_index,
-            )
+            target = torch.tensor([label2id[ner] for ner in ners], device=self.device)
+            loss = F.cross_entropy(logit[idx], target, ignore_index=ignore_index)
 
             doc._.cls_logit = logit
-            doc._.loss = loss
+            doc._.loss += loss
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor
@@ -220,7 +228,7 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
                 else:
                     biluo_tags.append(UNK.value)
             biluo_tags = correct_biluo_tags(biluo_tags)
-            doc.ents = spans_from_biluo_tags(doc, biluo_tags)
+            doc.ents = merge_entities(doc.ents, spans_from_biluo_tags(doc, biluo_tags))
         return docs
 
 
@@ -237,3 +245,12 @@ class XLNetForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
 TrfForTokenClassificationBase.install_extensions()
 Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition
 Language.factories[XLNetForNamedEntityRecognition.name] = XLNetForNamedEntityRecognition
+
+# TODO: Ugly (https://github.com/explosion/spaCy/issues/4514)
+for i in range(2, 10):
+    Language.factories[
+        BertForNamedEntityRecognition.name + str(i)
+    ] = BertForNamedEntityRecognition
+    Language.factories[
+        XLNetForNamedEntityRecognition.name + str(i)
+    ] = XLNetForNamedEntityRecognition

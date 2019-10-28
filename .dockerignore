@@ -7,4 +7,3 @@ pkgs/
 foo/
 pkgs
 eggs/**/*
-scripts

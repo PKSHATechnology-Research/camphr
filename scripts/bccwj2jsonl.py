@@ -14,6 +14,7 @@ from collections import namedtuple
 from pathlib import Path
 from typing import *
 from typing import IO
+import bedoner.ner_labels.labels_ene as ene
 
 import fire
 import regex as re
@@ -23,10 +24,19 @@ __dir__ = Path(__file__).parent
 with open(__dir__ / "ene2irexmap.json") as f:
     IREXMAP = json.load(f)
 
+FULLENEMAP = {k: getattr(ene, k) for k in dir(ene)}
+
 r = re.compile("<(?P<tag>[a-zA-Z-_]+)>(?P<body>.*?)</[a-zA-Z-_]+>")
 rtag = re.compile("</?[a-zA-Z-_]+>")
 
 Entry = namedtuple("Entry", ["text", "label"])
+
+TYPO = {"FREGUENCY": "FREQUENCY", "OFFENSE": "OFFENCE"}
+
+
+def norm_tag(tag: str) -> str:
+    tag = tag.upper()
+    return TYPO.get(tag, tag)
 
 
 def convert(xml_string: str, mapping: Optional[Dict[str, str]] = None) -> Entry:
@@ -38,8 +48,9 @@ def convert(xml_string: str, mapping: Optional[Dict[str, str]] = None) -> Entry:
         start = i - offset
         end = start + len(body)
         offset += 2 * len(tag) + 5
+        tag = norm_tag(tag)
         if mapping:
-            tag = IREXMAP.get(tag, "")
+            tag = mapping.get(tag, "")
         if tag:
             spans.append((start, end, tag))
     notag = rtag.sub("", xml_string)
@@ -62,7 +73,9 @@ def check_conversion(item: Entry, xml_text, is_tag_removed=False) -> bool:
     return expected == text
 
 
-def proc(xml: IO[str], output: IO[str], tag_mapping="") -> Tuple[int, List[Any]]:
+def proc(
+    xml: IO[str], output: IO[str], tag_mapping="", cut_zeroents=False
+) -> Tuple[int, List[Any]]:
     """Convert xml to jsonl."""
     count = 0
     flag = False
@@ -79,12 +92,16 @@ def proc(xml: IO[str], output: IO[str], tag_mapping="") -> Tuple[int, List[Any]]
             break
         for sent in line.split("。"):
             sent += "。"
+            mapping = None
             if tag_mapping == "irex":
-                ent = convert(sent, mapping=IREXMAP)
-            else:
-                ent = convert(sent)
+                mapping = IREXMAP
+            elif tag_mapping == "fullene":
+                mapping = FULLENEMAP
+            ent = convert(sent, mapping=mapping)
             if not check_conversion(ent, sent, is_tag_removed=tag_mapping != ""):
                 failed.append(i)
+                continue
+            if cut_zeroents and not ent.label["entities"]:
                 continue
             output.write(json.dumps(ent, ensure_ascii=False) + "\n")
             count += 1
@@ -96,6 +113,7 @@ def main(
     jsonl_dir: Union[str, Path],
     tag_mapping="",
     failed_log="log.txt",
+    cut_zeroents=False,
 ):
     """Convert all xml files in xml_dir to jsonl, and save them in jsonl_dir."""
     xml_dir = Path(xml_dir).absolute()
@@ -110,7 +128,9 @@ def main(
             failed = []
 
             with open(xml) as f, outputpath.open("w") as fj:
-                c, failed = proc(f, fj, tag_mapping=tag_mapping)
+                c, failed = proc(
+                    f, fj, tag_mapping=tag_mapping, cut_zeroents=cut_zeroents
+                )
             fw.write("\n".join(map(lambda x: str(xml) + f": {x}", failed)))
             itemcount += c
             fcount += 1

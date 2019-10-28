@@ -132,7 +132,7 @@ def correct_bio_tags(tags: List[str]) -> List[str]:
 
 
 def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:
-    """Merge two ents. If ents0 and ents1 conflict, give priority to ents1."""
+    """Merge two ents. If ents1 is prior to ents0"""
     lents0 = sorted(ents0, key=lambda span: span.start)
     lents1 = sorted(ents1, key=lambda span: span.start)
     if len(lents0) == 0:

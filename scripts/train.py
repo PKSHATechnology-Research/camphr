@@ -3,9 +3,10 @@ import json
 import logging
 import random
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import hydra
+from spacy.language import Language
 import omegaconf
 import torch
 from sklearn.model_selection import train_test_split
@@ -13,19 +14,11 @@ from spacy.scorer import Scorer
 from spacy.util import minibatch
 
 from bedoner.models import trf_ner, get_trf_name
-from bedoner.ner_labels.labels_ene import ALL_LABELS as ene_labels
-from bedoner.ner_labels.labels_irex import ALL_LABELS as irex_labels
+from bedoner.ner_labels import LABELS
 from bedoner.ner_labels.utils import make_biluo_labels
+import srsly
 
 log = logging.getLogger(__name__)
-
-
-def get_labels(name: str) -> List[str]:
-    if name == "irex":
-        return irex_labels
-    elif name == "ene":
-        return ene_labels
-    raise ValueError(f"Unknown label type: {name}")
 
 
 def load_data(name: str) -> List[Dict]:
@@ -37,7 +30,7 @@ def load_data(name: str) -> List[Dict]:
     return data
 
 
-class Config(omegaconf.Config):
+class Config(omegaconf.OmegaConf):
     data: str
     ndata: int
     niter: int
@@ -46,71 +39,87 @@ class Config(omegaconf.Config):
     scheduler: bool
     test_size: float
     lang: str
-    from_pretrained: str
+    pretrained: str
     neval: int
 
 
-@hydra.main(config_path="conf/train.yml")
-def main(cfg: Config):
-    log.info(cfg.pretty())
-    outputd = os.getcwd()
-    log.info("output dir: {}".format(outputd))
+def create_data(cfg: Config) -> Tuple[List, List]:
     data = load_data(cfg.data)
     if cfg.ndata != -1:
         data = random.sample(data, k=cfg.ndata)
     else:
         cfg.ndata = len(data)
-    train_data, val_data = train_test_split(data, test_size=cfg.test_size)
+    train, val = train_test_split(data, test_size=cfg.test_size)
+    srsly.write_jsonl(Path.cwd() / f"train-data.jsonl", train)
+    srsly.write_jsonl(Path.cwd() / f"val-data.jsonl", val)
+    return train, val
 
-    labels = get_labels(cfg.label)
+
+def create_nlp(cfg: Config) -> Language:
+    labels = LABELS[cfg.label]
     nlp = trf_ner(
-        lang=cfg.lang, pretrained=cfg.from_pretrained, labels=make_biluo_labels(labels)
+        lang=cfg.lang, pretrained=cfg.pretrained, labels=make_biluo_labels(labels)
     )
-    name = get_trf_name(cfg.from_pretrained)
+    name = get_trf_name(cfg.pretrained)
     nlp.meta["name"] = name.value + "_" + cfg.label
+    return nlp
+
+
+def evaluate(cfg: Config, nlp, val_data) -> Scorer:
+    try:
+        scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
+    except:
+        with open("fail.json", "w") as f:
+            json.dump(val_data, f, ensure_ascii=False)
+            raise
+    return scorer
+
+
+def train_epoch(cfg: Config, nlp, optim, train_data, val_data, epoch, eval_fn):
+    for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
+        texts, golds = zip(*batch)
+        try:
+            nlp.update(texts, golds, optim, debug=True)
+        except:
+            fail_path = os.path.abspath("fail.json")
+            log.error(f"Fail. Saved in {fail_path}")
+            with open(fail_path, "w") as f:
+                json.dump(batch, f, ensure_ascii=False)
+            raise
+        log.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.ndata}")
+        if j % cfg.neval == cfg.neval - 1:
+            scorer = eval_fn(cfg, nlp, val_data)
+            log.info(f"ents_p: {scorer.ents_p}")
+            log.info(f"ents_r: {scorer.ents_r}")
+            log.info(f"ents_f: {scorer.ents_f}")
+
+
+def train(cfg: Config, nlp, train_data, val_data, savedir: Path, eval_fn=None):
+    if eval_fn is None:
+        eval_fn = evaluate
+    optim = nlp.resume_training(t_total=cfg.niter, enable_scheduler=cfg.scheduler)
+    for i in range(cfg.niter):
+        random.shuffle(train_data)
+        train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
+        scorer = eval_fn(cfg, nlp, val_data)
+        nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
+        nlp.to_disk(savedir / str(i))
+
+
+def _main(cfg: Config):
+    log.info(cfg.pretty())
+    log.info("output dir: {}".format(os.getcwd()))
+    train_data, val_data = create_data(cfg)
+    nlp = create_nlp(cfg)
     if torch.cuda.is_available():
         log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
+    savedir = Path.cwd() / "models"
+    savedir.mkdir()
+    train(cfg, nlp, train_data, val_data, savedir)
 
-    optim = nlp.resume_training(t_total=cfg.niter, enable_scheduler=cfg.scheduler)
-    modelsdir = Path.cwd() / "models"
-    modelsdir.mkdir()
 
-    for i in range(cfg.niter):
-        random.shuffle(train_data)
-        epoch_loss = 0
-        for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
-            texts, golds = zip(*batch)
-            docs = [nlp.make_doc(text) for text in texts]
-            try:
-                nlp.update(docs, golds, optim)
-            except:
-                with open("fail.json", "w") as f:
-                    json.dump(batch, f, ensure_ascii=False)
-                raise
-            loss = sum(doc._.loss.detach().item() for doc in docs)
-            epoch_loss += loss
-            log.info(f"epoch {i} {j*cfg.nbatch}/{cfg.ndata} loss: {loss}")
-            if j % cfg.neval == cfg.neval - 1:
-                try:
-                    scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch*2)
-                except:
-                    with open("fail.json", "w") as f:
-                        json.dump(val_data, f, ensure_ascii=False)
-                        raise
-                log.info(f"p: {scorer.ents_p}")
-                log.info(f"r: {scorer.ents_r}")
-                log.info(f"f: {scorer.ents_f}")
-        log.info(f"epoch {i} loss: {epoch_loss}")
-        try:
-            scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch*2)
-        except:
-            with open("fail.json", "w") as f:
-                json.dump(val_data, f, ensure_ascii=False)
-            raise
-        nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
-        nlp.to_disk(modelsdir / str(i))
-
+main = hydra.main(config_path="conf/train.yml")(_main)
 
 if __name__ == "__main__":
     main()

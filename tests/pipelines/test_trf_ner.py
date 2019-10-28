@@ -6,6 +6,7 @@ import spacy
 import torch
 from spacy.gold import GoldParse
 from spacy.language import Language
+from spacy.tests.util import assert_docs_equal
 
 from bedoner.models import trf_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
@@ -24,7 +25,8 @@ def label_type(request):
 @pytest.fixture(scope="module")
 def labels(label_type):
     if label_type == "ene":
-        return make_biluo_labels(enes)
+        shortenes = [label.split("/")[-1] for label in enes]
+        return make_biluo_labels(shortenes)
     elif label_type == "irex":
         return make_biluo_labels(irexes)
     else:
@@ -34,9 +36,7 @@ def labels(label_type):
 @pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
 def nlp(labels, request, trf_dir):
     lang = request.param
-    # if lang == "sentencepiece" and "xlnet" not in trf_dir:
-    #     pytest.skip()
-    _nlp = trf_ner(lang=lang, labels=["-"] + labels, pretrained=trf_dir)
+    _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir)
     assert _nlp.meta["lang"] == lang
     return _nlp
 
@@ -64,11 +64,44 @@ TESTCASE_ENE = [
 ]
 
 
+@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
+def nlp_for_hooks_test(request, trf_dir):
+    lang = request.param
+    labels = make_biluo_labels([chr(i) for i in range(65, 91)])
+
+    def convert_label(label: str) -> str:
+        if len(label) == 1:
+            return label
+        return label[:3]
+
+    hook = {"convert_label": convert_label}
+
+    _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir, user_hooks=hook)
+    assert _nlp.meta["lang"] == lang
+    return _nlp
+
+
+@pytest.mark.parametrize("text,gold", TESTCASE_ENE)
+def test_user_hooks(nlp_for_hooks_test: Language, text, gold, trf_name):
+    nlp = nlp_for_hooks_test
+    optim = nlp.resume_training()
+    nlp.update([text], [gold], optim)
+
+
 @pytest.mark.parametrize("text,gold", TESTCASE_ENE)
 def test_call(nlp: Language, text, gold, label_type):
     if label_type == "irex":
         pytest.skip()
     nlp(text)
+
+
+def test_serialization(nlp: Language, tmpdir, label_type):
+    text = TESTCASE_ENE[0][0]
+    if label_type == "irex":
+        pytest.skip()
+    nlp.to_disk(str(tmpdir))
+    nlp2 = spacy.load(str(tmpdir))
+    assert_docs_equal(nlp(text), nlp2(text))
 
 
 def test_pipe(nlp: Language):
@@ -86,7 +119,7 @@ def test_update(nlp: Language, text, gold, label_type):
     optim = nlp.resume_training()
     assert nlp.device.type == "cpu"
     doc = nlp.make_doc(text)
-    assert doc._.loss is None
+    assert not doc._.loss
     nlp.update([doc], [gold], optim)
     assert doc._.loss
 
@@ -142,7 +175,7 @@ def test_update_cuda(nlp: Language, text, gold, cuda, label_type):
 
     optim = nlp.resume_training()
     doc = nlp.make_doc(text)
-    assert doc._.loss is None
+    assert not doc._.loss
     nlp.update([doc], [gold], optim)
     assert doc._.loss
 
