@@ -7,9 +7,14 @@ $ pipenv install .
 $ pipenv install --dev # for developer
 ```
 
+## Model installation
+
+1. [リリースページ](https://github.com/PKSHATechnology/bedore-ner/releases)からtar.gzをダウンロードします
+2. `pip installl -U ...tar.gz` でOK!
+
 ## Requirements
 
-- 使う機能によって， mecab, juman(pp), knpが必要です．
+- 使う機能によっては， mecab, juman(pp), knpが必要です．
 
 # Usage
 
