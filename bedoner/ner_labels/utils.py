@@ -27,7 +27,7 @@ def make_biluo_labels(entity_types: Iterable[str]) -> List[str]:
     for l in entity_types:
         for pref in prefix:
             labels.append(pref + "-" + l)
-    return list(set(labels))
+    return list(dict.fromkeys(labels))
 
 
 def make_bio_labels(entity_types: Iterable[str]) -> List[str]:
