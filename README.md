@@ -15,6 +15,12 @@ $ pipenv install --dev # for developer
 Username, Passwordが聞かれるかもしれません．GitHubのユーザ名と，トークンを入れてください．
 これは裏でbedore-nerレポジトリをcloneしているためです．
 
+### ブラウザ以外でダウンロードしたい場合
+
+GitHub APIを使う必要があります．
+
+`pip install git+https://github.com/tamuhey/github_asset`としたのち，`github-asset get file_to_download`でダウンロードできます．
+
 ## Requirements
 
 - 使う機能によっては， mecab, juman(pp), knpが必要です．
