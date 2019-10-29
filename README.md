@@ -17,9 +17,15 @@ Username, Passwordが聞かれるかもしれません．GitHubのユーザ名�
 
 ### ブラウザ以外でダウンロードしたい場合
 
-private repoなのでGitHub APIを使う必要があります．
+GitHub APIを使う必要があります．
 
-`pip install git+https://github.com/tamuhey/github_asset`としたのち，`github-asset get file_to_download`でダウンロードできます．
+`$ pip install git+https://github.com/tamuhey/github_asset`
+
+としたのち，
+
+`github-asset get file_to_download`
+
+でダウンロードできます．
 
 ## Requirements
 
