@@ -12,6 +12,9 @@ $ pipenv install --dev # for developer
 1. [リリースページ](https://github.com/PKSHATechnology/bedore-ner/releases)からtar.gzをダウンロードします
 2. `pip installl -U ...tar.gz` でOK!
 
+Username, Passwordが聞かれるかもしれません．GitHubのユーザ名と，トークンを入れてください．
+これは裏でbedore-nerレポジトリをcloneしているためです．
+
 ## Requirements
 
 - 使う機能によっては， mecab, juman(pp), knpが必要です．
