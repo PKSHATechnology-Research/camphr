@@ -29,7 +29,7 @@ $ pip install git+https://github.com/tamuhey/github_asset
 github-asset get file_to_download
 ```
 
-でダウンロードできます．
+でダウンロードできます．(GitHubトークンを聞かれるので，入力してください)
 
 ## Requirements
 
