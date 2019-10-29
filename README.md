@@ -19,11 +19,15 @@ Username, Passwordが聞かれるかもしれません．GitHubのユーザ名�
 
 GitHub APIを使う必要があります．
 
-`$ pip install git+https://github.com/tamuhey/github_asset`
+```
+$ pip install git+https://github.com/tamuhey/github_asset
+```
 
 としたのち，
 
-`github-asset get file_to_download`
+```
+github-asset get file_to_download
+```
 
 でダウンロードできます．
 
