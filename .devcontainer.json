@@ -1,0 +1,16 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+	"dockerFile": ".vscode/Dockerfile",
+	"extensions": [
+		"ms-python.python",
+		"github.vscode-pull-request-github"
+	],
+	"name": "vscode-nlp-modules",
+	"runArgs": [
+		"-v",
+		"${env:HOME}${env:USERPROFILE}/.ssh:/root/.ssh:ro"
+	],
+	// for remote-container development
+	"workspaceFolder": "/workspace",
+	"workspaceMount": "src=/home/ubuntu/bedore-ner,dst=/workspace,type=bind"
+}

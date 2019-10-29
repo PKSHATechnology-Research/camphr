@@ -127,8 +127,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-.vscode/
-
 Untitled*.ipynb
 pkgs
 *.tar.gz
