@@ -10,7 +10,6 @@ import bedoner.lang.juman as juman
 import bedoner.lang.knp as knp
 import bedoner.lang.mecab as mecab
 import bedoner.lang.sentencepiece as sp
-from bedoner.lang.trf_mixin import TransformersLanguageMixin
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.person_ner import create_person_ruler
 from bedoner.pipelines.trf_model import BertModel, XLNetModel
@@ -20,7 +19,6 @@ from bedoner.pipelines.trf_ner import (
     XLNetForNamedEntityRecognition,
 )
 from bedoner.pipelines.wordpiecer import WordPiecer, TrfSentencePiecer
-from bedoner.utils import inject_mixin
 
 
 def han_to_zen_normalizer(text):
@@ -35,13 +33,13 @@ def juman_nlp() -> juman.Japanese:
 
 def wordpiecer(lang: str, pretrained: str) -> Language:
     if lang == "juman":
-        cls = inject_mixin(TransformersLanguageMixin, juman.Japanese)
+        cls = juman.TorchJapanese
         nlp = cls(Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}})
     elif lang == "mecab":
-        cls = inject_mixin(TransformersLanguageMixin, mecab.Japanese)
+        cls = mecab.TorchJapanese
         nlp = cls(Vocab())
     elif lang == "sentencepiece":
-        cls = inject_mixin(TransformersLanguageMixin, sp.SentencePieceLang)
+        cls = sp.TorchSentencePieceLang
         nlp = cls(Vocab(), meta={"tokenizer": {"model_path": pretrained}})
     else:
         raise ValueError(f"Unsupported lang: {lang}")
