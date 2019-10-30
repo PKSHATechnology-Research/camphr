@@ -42,9 +42,9 @@ def test_bert_wordpiecer(nlp, text, pieces):
 @pytest.mark.parametrize("lang", ["juman", "mecab"])
 def test_bert_wordpiecer_lang(lang, tmpdir, bert_dir):
     nlp = wordpiecer(lang, pretrained=bert_dir)
-    assert nlp.meta["lang"] == lang
+    assert nlp.meta["lang"] == "torch_" + lang
     d = str(tmpdir.mkdir(lang))
     nlp.to_disk(d)
 
     nlp2 = spacy.load(d)
-    assert nlp2.meta["lang"] == lang
+    assert lang in nlp2.meta["lang"]

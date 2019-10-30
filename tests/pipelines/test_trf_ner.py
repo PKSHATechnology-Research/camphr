@@ -37,7 +37,7 @@ def labels(label_type):
 def nlp(labels, request, trf_dir):
     lang = request.param
     _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir)
-    assert _nlp.meta["lang"] == lang
+    assert _nlp.meta["lang"] == "torch_" + lang
     return _nlp
 
 
@@ -77,7 +77,7 @@ def nlp_for_hooks_test(request, trf_dir):
     hook = {"convert_label": convert_label}
 
     _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir, user_hooks=hook)
-    assert _nlp.meta["lang"] == lang
+    assert lang in _nlp.meta["lang"]
     return _nlp
 
 

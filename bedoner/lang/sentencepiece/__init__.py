@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Optional, Callable, List, Union
 
 import sentencepiece as spm
-from spacy.attrs import LANG
 from spacy.language import Language
 from spacy.tokens import Doc, Token, Span
 
@@ -86,7 +85,8 @@ class Tokenizer:
 
     def to_disk(self, path: Path, **kwargs):
         path.mkdir(exist_ok=True)
-        shutil.copy(self.model_path, path / self.SPIECE_MODEL)
+        if self.model_path:
+            shutil.copy(self.model_path, path / self.SPIECE_MODEL)
 
     def from_disk(self, path: Path, **kwargs):
         self.model_path = str((path / self.SPIECE_MODEL).absolute())
@@ -116,7 +116,6 @@ def make_token_span_spiece_getter(text: bool) -> Callable:
 
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    lex_attr_getters[LANG] = lambda _text: "sentencepiece"
 
     @classmethod
     def create_tokenizer(cls, nlp=None, model_path: str = ""):
