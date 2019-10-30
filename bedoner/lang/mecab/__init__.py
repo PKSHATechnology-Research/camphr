@@ -5,7 +5,6 @@ from pathlib import Path
 from shutil import copytree
 from typing import List, Optional
 
-from spacy.attrs import LANG
 from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc, Token
@@ -13,6 +12,7 @@ from spacy.tokens import Doc, Token
 from bedoner.consts import KEY_FSTRING
 from bedoner.lang.stop_words import STOP_WORDS
 from bedoner.utils import RE_URL, SerializationMixin
+from bedoner.lang.torch_mixin import TorchLanguageMixin
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "space", "fstring"]
@@ -128,7 +128,6 @@ class Tokenizer(SerializationMixin):
 # for pickling. see https://spacy.io/usage/adding-languages
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    lex_attr_getters[LANG] = lambda _text: "mecab"
     stop_words = STOP_WORDS
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
@@ -147,12 +146,18 @@ class Japanese(Language):
         return self.tokenizer(text)
 
 
+class TorchJapanese(TorchLanguageMixin, Japanese):
+    lang = "torch_mecab"
+
+
 # avoid pickling problem (see https://github.com/explosion/spaCy/issues/3191)
 def pickle_japanese(instance):
     return Japanese, tuple()
 
 
 copy_reg.pickle(Japanese, pickle_japanese)
+Language.factories[Japanese.lang] = Japanese
+Language.factories[TorchJapanese.lang] = TorchJapanese
 
 Tokenizer.install_extensions()
 

@@ -12,6 +12,7 @@ from spacy.tokens import Doc, Token
 from bedoner.consts import KEY_FSTRING, KEY_KNP_ENT, KEY_KNP_ENT_IOB
 from bedoner.lang.stop_words import STOP_WORDS
 from bedoner.utils import SerializationMixin
+from bedoner.lang.torch_mixin import TorchLanguageMixin
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "ent", "ent_iob", "space"]
@@ -132,15 +133,21 @@ class Japanese(Language):
         return self.tokenizer(text)
 
 
+class TorchJapanese(TorchLanguageMixin, Japanese):
+    lang = "torch_knp"
+
+
 # avoid pickling problem (see https://github.com/explosion/spaCy/issues/3191)
 def pickle_japanese(instance):
     return Japanese, tuple()
 
 
 copy_reg.pickle(Japanese, pickle_japanese)
+Language.factories[Japanese.lang] = Japanese
+Language.factories[TorchJapanese.lang] = TorchJapanese
 
 
 # for lazy loading. see https://spacy.io/usage/adding-languages
-__all__ = ["Japanese"]
+__all__ = ["Japanese", "TorchJapanese"]
 
 Tokenizer.install_extensions()

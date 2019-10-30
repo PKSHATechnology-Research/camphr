@@ -9,6 +9,8 @@ from spacy.attrs import LANG
 from spacy.language import Language
 from spacy.tokens import Doc, Token, Span
 
+from bedoner.lang.torch_mixin import TorchLanguageMixin
+
 
 class EXTS:
     """Literal declaration for spacy.Underscore"""
@@ -129,7 +131,12 @@ class SentencePieceLang(Language):
         return self.tokenizer(text)
 
 
+class TorchSentencePieceLang(TorchLanguageMixin, SentencePieceLang):
+    lang = "torch_sentencepiece"
+
+
 Tokenizer.install_extensions()
 Language.factories[SentencePieceLang.lang] = SentencePieceLang
+Language.factories[TorchSentencePieceLang.lang] = TorchSentencePieceLang
 
-__all__ = ["SentencePieceLang"]
+__all__ = ["SentencePieceLang", "TorchSentencePieceLang"]
