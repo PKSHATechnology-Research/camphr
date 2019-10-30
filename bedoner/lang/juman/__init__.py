@@ -3,7 +3,6 @@ from collections import namedtuple
 from itertools import tee, zip_longest
 from typing import Any, Callable, Dict, List, Optional
 
-from spacy.attrs import LANG
 from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc, Token
@@ -106,7 +105,6 @@ def is_space_morph(m) -> bool:
 # for pickling. see https://spacy.io/usage/adding-languages
 class Defaults(Language.Defaults):
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    lex_attr_getters[LANG] = lambda _text: "juman"
     stop_words = STOP_WORDS
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
