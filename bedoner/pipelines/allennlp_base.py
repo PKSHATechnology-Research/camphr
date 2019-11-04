@@ -5,6 +5,7 @@ from allennlp.models.archival import load_archive
 from allennlp.data import DatasetReader
 from typing import Dict, Iterable, Union
 from spacy.tokens import Doc
+from spacy.pipeline import Pipe
 
 Pathlike = Union[str, Path]
 VALIDATION = "validation"
@@ -12,7 +13,7 @@ VALIDATION_DATASET_READER = "validation_dataset_reader"
 DATASET_READER = "dataset_reader"
 
 
-class AllennlpPipe:
+class AllennlpPipe(Pipe):
     def __init__(
         self, model: Model = None, dataset_reader: DatasetReader = None, **cfg
     ):

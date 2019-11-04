@@ -8,7 +8,7 @@ import_submodules("bedoner.vendor.udify")
 
 
 class Udify(AllennlpPipe):
-    def set_annotation(self, docs: Iterable[Doc], outputs: Dict):
+    def set_annotations(self, docs: Iterable[Doc], outputs: Dict):
         for doc, output in zip(docs, outputs):
             deps = output[UdifyOUTPUTS.predicted_dependencies]
             heads = output[UdifyOUTPUTS.predicted_heads]
@@ -17,7 +17,7 @@ class Udify(AllennlpPipe):
             words = output[UdifyOUTPUTS.words]
             assert words == [token.text for token in doc]
             assert len(deps) == len(heads) == len(uposes) == len(words) == len(lemmas)
-            for token, dep, head, lemma, upos in zip(doc, deps, heads, uposes, lemmas):
+            for token, dep, head, upos, lemma in zip(doc, deps, heads, uposes, lemmas):
                 token: Token = token
                 token.dep_ = dep
                 token.lemma_ = lemma

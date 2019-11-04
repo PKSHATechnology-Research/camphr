@@ -9,7 +9,7 @@ import bedoner.lang.mecab as mecab
 @pytest.fixture
 def nlp():
     _nlp = mecab.Japanese()
-    pipe = Udify.from_archive(Path(__file__).parent / "../../data/udify-model")
+    pipe = Udify.from_archive(Path(__file__).parent / "../../data/udify")
     _nlp.add_pipe(pipe)
     return _nlp
 

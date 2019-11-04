@@ -18,16 +18,15 @@ hydra-core = "*"
 
 [packages]
 mecab-python3 = "*"
-pyknp = "*"
 regex = "*"
 jaconv = "*"
 fire = "*"
 pandas = "*"
 mojimoji = "*"
 spacy-transformers = {git = "https://github.com/tamuhey/spacy-pytorch-transformers",ref = "patch/xlnet-tokenizer"}
+allennlp = {git = "https://github.com/tamuhey/allennlp",ref = "patch/spacy-2.2"}
 typing-extensions = "*"
-spacy = "*"
-allennlp = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.7"

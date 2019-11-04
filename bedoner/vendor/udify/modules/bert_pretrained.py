@@ -15,8 +15,8 @@ from allennlp.data.vocabulary import Vocabulary
 from allennlp.modules.token_embedders import TokenEmbedder
 from allennlp.nn import util
 from overrides import overrides
-from pytorch_pretrained_bert.modeling import BertConfig, BertModel
-from pytorch_pretrained_bert.tokenization import BertTokenizer
+
+from transformers import BertConfig, BertModel, BertTokenizer
 
 from .scalar_mix import ScalarMixWithDropout
 
@@ -526,12 +526,12 @@ class BertEmbedder(TokenEmbedder):
 
         # input_ids may have extra dimensions, so we reshape down to 2-d
         # before calling the BERT model and then reshape back at the end.
-        all_encoder_layers, _ = self.bert_model(
+        _, _, all_encoder_layers = self.bert_model(
             input_ids=util.combine_initial_dims(input_ids),
             token_type_ids=util.combine_initial_dims(token_type_ids),
             attention_mask=util.combine_initial_dims(input_mask),
         )
-        all_encoder_layers = torch.stack(all_encoder_layers)
+        all_encoder_layers = torch.stack(all_encoder_layers[1:])
 
         if needs_split:
             # First, unpack the output embeddings into one long sequence again
@@ -646,13 +646,15 @@ class UdifyPredictionBertEmbedder(BertEmbedder):
 
     def __init__(
         self,
-        bert_config: str,
+        pretrained_model: str,
         requires_grad: bool = False,
         dropout: float = 0.1,
         layer_dropout: float = 0.1,
         combine_layers: str = "mix",
     ) -> None:
-        model = BertModel(BertConfig.from_json_file(bert_config))
+        bert_config = BertConfig.from_pretrained(pretrained_model)
+        bert_config.output_hidden_states = True
+        model = BertModel(bert_config)
 
         for param in model.parameters():
             param.requires_grad = requires_grad

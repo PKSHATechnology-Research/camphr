@@ -13,7 +13,7 @@ from allennlp.modules import Seq2SeqEncoder, TextFieldEmbedder
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask
 from overrides import overrides
-from pytorch_pretrained_bert.tokenization import BertTokenizer
+from transformers import BertTokenizer
 
 from ..modules.scalar_mix import ScalarMixWithDropout
 
@@ -49,6 +49,7 @@ class UdifyModel(Model):
         text_field_embedder: TextFieldEmbedder,
         encoder: Seq2SeqEncoder,
         decoders: Dict[str, Model],
+        pretrained_model: str,
         post_encoder_embedder: TextFieldEmbedder = None,
         dropout: float = 0.0,
         word_dropout: float = 0.0,
@@ -61,9 +62,7 @@ class UdifyModel(Model):
 
         self.tasks = sorted(tasks)
         self.vocab = vocab
-        self.bert_vocab = BertTokenizer.from_pretrained(
-            "config/archive/bert-base-multilingual-cased/vocab.txt"
-        ).vocab
+        self.bert_vocab = BertTokenizer.from_pretrained(pretrained_model).vocab
         self.text_field_embedder = text_field_embedder
         self.post_encoder_embedder = post_encoder_embedder
         self.shared_encoder = encoder
@@ -223,7 +222,7 @@ class UdifyModel(Model):
         oov_token: int,
         padding_tokens: List[int],
         p: float = 0.2,
-        training: float = True,
+        training: bool = True,
     ) -> torch.LongTensor:
         """
         During training, randomly replaces some of the non-padding tokens to a mask token with probability ``p``
@@ -240,7 +239,7 @@ class UdifyModel(Model):
             device = tokens.device
 
             # This creates a mask that only considers unpadded tokens for mapping to oov
-            padding_mask = torch.ones(tokens.size(), dtype=torch.uint8).to(device)
+            padding_mask = torch.ones(tokens.size(), dtype=torch.bool).to(device)
             for pad in padding_tokens:
                 padding_mask &= tokens != pad
 
