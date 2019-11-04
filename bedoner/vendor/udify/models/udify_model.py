@@ -15,7 +15,7 @@ from allennlp.nn.util import get_text_field_mask
 from overrides import overrides
 from pytorch_pretrained_bert.tokenization import BertTokenizer
 
-from .scalar_mix import ScalarMixWithDropout
+from ..modules.scalar_mix import ScalarMixWithDropout
 
 logger = logging.getLogger(__name__)
 

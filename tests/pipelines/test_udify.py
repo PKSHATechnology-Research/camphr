@@ -3,7 +3,7 @@ import pytest
 from bedoner.pipelines.udify import Udify
 import bedoner.lang.mecab as mecab
 
-pytestmark = pytest.mark.skip("heavy test")
+# pytestmark = pytest.mark.skipif("heavy test")
 
 
 @pytest.fixture

@@ -18,7 +18,7 @@ from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import sequence_cross_entropy_with_logits
 from allennlp.training.metrics import CategoricalAccuracy
 
-from .lemma_edit import apply_lemma_rule
+from ..dataset_readers.lemma_edit import apply_lemma_rule
 
 
 def sequence_cross_entropy(
