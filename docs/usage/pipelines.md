@@ -249,6 +249,44 @@ nlp(text).ents
 (防災管理課, 03-0000-1234)
 ```
 
+## Udify (Parsing Universal Dependencies Universally)
+
+[Udify](https://arxiv.org/abs/1904.02099)のパイプラインです．  
+論文タイトルの通り，BERT多言語モデルでUDをします．  
+
+```python
+import spacy
+nlp = spacy.load("mecab_udify")
+doc = nlp("今日はいい天気だった")
+for token in doc:
+    print(token.text, token.pos_, token.dep_, token.head, token.lemma_)
+```
+```
+今日 NOUN nsubj だっ 今日
+は ADP case は は
+いい ADJ acl だっ いい
+天気 NOUN root 天気 天気
+だっ AUX cop だっ だ
+た AUX aux だっ た
+```
+
+多言語モデルなので，トークナイザを付け替えればそのまま別言語で使うことができます．
+
+```python
+nlp2 = spacy.blank("en")
+nlp2.add_pipe(nlp.get_pipe("udify"))
+doc = nlp2("It ’s nice weather today")
+for token in doc:
+    print(token.text, token.pos_, token.dep_, token.head, token.lemma_)
+```
+```
+It PRON nsubj nice it
+’s VERB root ’s be
+nice ADJ amod today nice
+weather NOUN xcomp nice weather
+today NOUN obl:tmod nice today
+```
+
 
 ### Built-In regex pipes
 
