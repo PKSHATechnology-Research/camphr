@@ -4,7 +4,7 @@ from bedoner.pipelines.udify import Udify
 import bedoner.lang.mecab as mecab
 from ..utils import in_ci
 
-pytestmark = pytest.mark.skipif(in_ci(), "heavy test")
+pytestmark = pytest.mark.skipif(in_ci(), reason="heavy test")
 
 
 @pytest.fixture

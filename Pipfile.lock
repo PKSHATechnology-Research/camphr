@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "365175fc156457bee123fec5c74233063d7c6d6aee98adcba96d3640e27462d9"
+            "sha256": "de742eeb234fb0e92c56ad819a838fc13d59ea8d4edca98f1aa6c2a7288697b3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -18,7 +18,7 @@
     "default": {
         "allennlp": {
             "git": "https://github.com/tamuhey/allennlp",
-            "ref": "36875a9a6396a82ec223e59c3536f2aee4039cce"
+            "ref": "4279a88093d2fca5c984e7e50e4fcdc58b026677"
         },
         "fire": {
             "hashes": [
@@ -115,6 +115,14 @@
             ],
             "index": "pypi",
             "version": "==0.25.3"
+        },
+        "pyknp": {
+            "hashes": [
+                "sha256:5d165a0387f493bf72e917f56ca55047d162d5f5771a06d713012c428efdd480",
+                "sha256:98922d13395512fa4def77c15cf9fe4c81c65c072ba432db68a4fde1309f1193"
+            ],
+            "index": "pypi",
+            "version": "==0.4.1"
         },
         "python-dateutil": {
             "hashes": [
