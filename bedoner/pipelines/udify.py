@@ -23,3 +23,4 @@ class Udify(AllennlpPipe):
                 token.lemma_ = lemma
                 token.pos_ = upos
                 token.head = doc[head]
+            doc.is_parsed = True
