@@ -27,6 +27,7 @@ mojimoji = "*"
 spacy-transformers = {git = "https://github.com/tamuhey/spacy-pytorch-transformers",ref = "patch/xlnet-tokenizer"}
 typing-extensions = "*"
 allennlp = "*"
+spacy = "~=2.2.2"
 
 [requires]
 python_version = "3.7"

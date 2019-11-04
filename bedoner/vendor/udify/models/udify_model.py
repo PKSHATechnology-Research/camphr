@@ -20,6 +20,21 @@ from .scalar_mix import ScalarMixWithDropout
 logger = logging.getLogger(__name__)
 
 
+class OUTPUTS:
+    arc_loss = "arc_loss"
+    tag_loss = "tag_loss"
+    loss = "loss"
+    words = "words"
+    ids = "ids"
+    multiword_ids = "multiword_ids"
+    multiword_forms = "multiword_forms"
+    predicted_dependencies = "predicted_dependencies"
+    predicted_heads = "predicted_heads"
+    feats = "feats"
+    lemmas = "lemmas"
+    upos = "upos"
+
+
 @Model.register("udify_model")
 class UdifyModel(Model):
     """
@@ -114,7 +129,10 @@ class UdifyModel(Model):
 
         logits = {}
         class_probabilities = {}
-        output_dict = {"logits": logits, "class_probabilities": class_probabilities}
+        output_dict: Dict[str, Any] = {
+            "logits": logits,
+            "class_probabilities": class_probabilities,
+        }
         loss = 0
 
         # Run through each of the tasks on the shared encoder and save predictions
@@ -152,16 +170,20 @@ class UdifyModel(Model):
                 loss += pred_output["loss"]
 
         if gold_tags:
-            output_dict["loss"] = loss
+            output_dict[OUTPUTS.loss] = loss
 
         if metadata is not None:
-            output_dict["words"] = [x["words"] for x in metadata]
-            output_dict["ids"] = [x["ids"] for x in metadata if "ids" in x]
-            output_dict["multiword_ids"] = [
-                x["multiword_ids"] for x in metadata if "multiword_ids" in x
+            output_dict[OUTPUTS.words] = [x[OUTPUTS.words] for x in metadata]
+            output_dict[OUTPUTS.ids] = [
+                x[OUTPUTS.ids] for x in metadata if OUTPUTS.ids in x
             ]
-            output_dict["multiword_forms"] = [
-                x["multiword_forms"] for x in metadata if "multiword_forms" in x
+            output_dict[OUTPUTS.multiword_ids] = [
+                x[OUTPUTS.multiword_ids] for x in metadata if OUTPUTS.multiword_ids in x
+            ]
+            output_dict[OUTPUTS.multiword_forms] = [
+                x[OUTPUTS.multiword_forms]
+                for x in metadata
+                if OUTPUTS.multiword_forms in x
             ]
 
         return output_dict
