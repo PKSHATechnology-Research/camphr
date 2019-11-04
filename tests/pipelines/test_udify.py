@@ -2,8 +2,9 @@ from pathlib import Path
 import pytest
 from bedoner.pipelines.udify import Udify
 import bedoner.lang.mecab as mecab
+from ..utils import in_ci
 
-# pytestmark = pytest.mark.skipif("heavy test")
+pytestmark = pytest.mark.skipif(in_ci(), "heavy test")
 
 
 @pytest.fixture
@@ -15,4 +16,5 @@ def nlp():
 
 
 def test_udify(nlp):
-    nlp("今日はいい天気だった")
+    doc = nlp("今日はいい天気だった")
+    assert doc.is_parsed
