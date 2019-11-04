@@ -18,6 +18,7 @@ hydra-core = "*"
 
 [packages]
 mecab-python3 = "*"
+pyknp = "*"
 regex = "*"
 jaconv = "*"
 fire = "*"
