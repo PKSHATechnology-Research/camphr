@@ -1,10 +1,16 @@
+"""
+
+Usage:
+
+$ python versionup_package.py --model model_path --version new_version
+"""
 from spacy.language import Language
 import sys
 import os
 import subprocess
 import spacy
 import fire
-from packaging import PACKAGES_DIR, create_package_from_nlp, requirements
+from packaging_nlp import PACKAGES_DIR, create_package_from_nlp, requirements
 
 
 def create_nlp(model: str, version: str) -> Language:

@@ -2,7 +2,7 @@ import copy
 import warnings
 from enum import Enum
 from typing import List, Tuple, Iterable
-from spacy.tokens import Span
+from spacy.tokens import Span, Doc
 from spacy.gold import iob_to_biluo
 
 
@@ -162,3 +162,18 @@ def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:
                 break
 
     return lents1 + new_ents0
+
+
+def set_heads(doc: Doc, heads: List[int]) -> Doc:
+    """Set heads to doc in UD annotation style.
+
+    If fail to set, return doc without doing anything.
+    """
+    if max(heads) > len(doc) or min(heads) < 0:
+        return doc
+    for head, token in zip(heads, doc):
+        if head == 0:
+            token.head = token
+        else:
+            token.head = doc[head - 1]
+    return doc

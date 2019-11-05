@@ -249,6 +249,43 @@ nlp(text).ents
 (防災管理課, 03-0000-1234)
 ```
 
+## Udify (Parsing Universal Dependencies Universally)
+
+[Udify](https://arxiv.org/abs/1904.02099)のパイプラインです．  
+論文タイトルの通り，BERT多言語モデルでUDをします．  
+
+### installation
+
+https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0.dev6)からtar.gzをダウンロードし，
+
+```bash
+$ pip install -U mecab_udify-0.4.0.dev6.tar.gz
+```
+
+でOKです！
+
+### Example
+
+```python
+import spacy
+nlp = spacy.load("mecab_udify")
+doc = nlp("今日はいい天気だった")
+spacy.displacy.render(doc)
+```
+
+![](./img/udify.png)
+
+多言語モデルなので，トークナイザを付け替えればそのまま別言語で使うことができます．  
+スペースで分かち書きできる言語なら，Mecabのままでいけます．  
+
+```python
+text = "Heute ist schönes Wetter"
+doc = nlp(text)
+spacy.displacy.render(doc)
+```
+
+![](./img/udify_de.png)
+
 
 ### Built-In regex pipes
 

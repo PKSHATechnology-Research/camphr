@@ -133,3 +133,4 @@ pkgs
 
 foo/
 output/
+.DS_Store

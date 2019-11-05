@@ -15,11 +15,17 @@
     - 例: Name/Organization/Familyの場合,"Name"と"Organization"と"Family"を予測する3種のモデルを作る．学習はマルチタスク．抽出結果が衝突した場合，下位階層予測のモデルが優先される
 - `TrfForNamedEntityRecognitionBase`にuser_hooksを追加
   - goldラベルを適当に変形したい場合，`ner.user_hooks["convert_label"] = fn`のようにする
+
+- `bedoner.pipelines.udify`の追加
+  - ref: [Parsing Universal Dependencies Universally](https://arxiv.org/abs/1904.02099)
+- `bedoner.pipelines.allennlp_base`の追加
+  - allennlpのモデルを利用する際の機能．
 - `bedoner.pipelines.regex_pipe.MultipleRegexRuler`を追加
   - 複数パターンを登録できる正規表現パイプです
 
 - `bedoner.pipelines.EmbedRank`を追加
   - [Embed Rank](https://arxiv.org/pdf/1801.04470.pdf)を用いたキーフレーズ抽出機能
+
 
 
 ## Backwards incompatibilities
