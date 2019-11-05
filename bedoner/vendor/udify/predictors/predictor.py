@@ -77,21 +77,20 @@ class UdifyPredictor(Predictor):
     @overrides
     def dump_line(self, outputs: JsonDict) -> str:
         word_count = len([word for word in outputs["words"]])
-        lines = zip(
-            *[
-                outputs[k] if k in outputs else ["_"] * word_count
-                for k in [
-                    "ids",
-                    "words",
-                    "lemmas",
-                    "upos",
-                    "xpos",
-                    "feats",
-                    "predicted_heads",
-                    "predicted_dependencies",
-                ]
+        tags = [
+            outputs[k] if k in outputs else ["_"] * word_count
+            for k in [
+                "ids",
+                "words",
+                "lemmas",
+                "upos",
+                "xpos",
+                "feats",
+                "predicted_heads",
+                "predicted_dependencies",
             ]
-        )
+        ]
+        lines = zip(*tags)
 
         multiword_map = None
         if outputs["multiword_ids"]:
