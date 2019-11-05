@@ -18,6 +18,9 @@
 - `bedoner.pipelines.regex_pipe.MultipleRegexRuler`を追加
   - 複数パターンを登録できる正規表現パイプです
 
+- `bedoner.pipelines.EmbedRank`を追加
+  - [Embed Rank](https://arxiv.org/pdf/1801.04470.pdf)を用いたキーフレーズ抽出機能
+
 
 ## Backwards incompatibilities
 

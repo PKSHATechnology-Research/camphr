@@ -277,6 +277,25 @@ nlp("郵便番号は〒100-0001で，車の番号は品川500 さ 2345です").e
 
 recallを100%にしたい場合は，`pipe.destructive = True`にします．分かち書きで作成したtokenを分解し，確実にマッチするようになりますが，他のパイプの性能を落とす可能性があります．
 
+## EmbedRank
+
+[Embed Rank](https://arxiv.org/pdf/1801.04470.pdf)を用いたキーフレーズ抽出機能です．  
+BERT等によって計算された埋め込みベクトルを元に,キーフレーズを抽出します.  
+
+```python
+import spacy
+from bedoner.pipelines.embedrank import EmbedRank
+
+nlp = spacy.load("mecab_bert_model")
+nlp.add_pipe(EmbedRank(vocab=nlp.vocab))
+text = "今日はいい天気だ"
+doc = nlp(text)
+doc._.embedrank_keyphrases
+```
+```
+[いい天気, 今日, 天気]
+```
+
 ## EntityRuler
 
 spaCyに実装されているルールベースNERです．

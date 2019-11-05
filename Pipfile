@@ -26,6 +26,8 @@ pandas = "*"
 mojimoji = "*"
 spacy-transformers = {git = "https://github.com/tamuhey/spacy-pytorch-transformers",ref = "patch/xlnet-tokenizer"}
 typing-extensions = "*"
+scikit-learn = "*"
+jsonschema = "*"
 
 [requires]
 python_version = "3.7"

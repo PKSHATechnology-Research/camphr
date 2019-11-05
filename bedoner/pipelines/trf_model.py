@@ -4,16 +4,17 @@ import pickle
 from pathlib import Path
 from typing import Iterable, List, Optional, Union, cast
 
+import numpy as np
 import torch
 import transformers as trf
-from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
-from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
+from numpy.linalg import norm
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.tokens import Doc, Span, Token
 from spacy.vocab import Vocab
 from spacy_transformers.util import ATTRS
-
+from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
+from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
 
 from bedoner.torch_utils import (
     OptimizerParameters,
@@ -285,22 +286,22 @@ class XLNetModel(TransformersModel):
     output_cls = XLNetModelOutputs
 
 
-def get_doc_vector_via_tensor(doc) -> torch.Tensor:
-    return doc.tensor.sum(0)
+def get_doc_vector_via_tensor(doc) -> np.ndarray:
+    return doc.tensor.sum(0).numpy()
 
 
-def get_span_vector_via_tensor(span) -> torch.Tensor:
-    return span.doc.tensor[span.start : span.end].sum(0)
+def get_span_vector_via_tensor(span) -> np.ndarray:
+    return span.doc.tensor[span.start : span.end].sum(0).numpy()
 
 
-def get_token_vector_via_tensor(token) -> torch.Tensor:
-    return token.doc.tensor[token.i]
+def get_token_vector_via_tensor(token) -> np.ndarray:
+    return token.doc.tensor[token.i].numpy()
 
 
 def get_similarity(o1: Union[Doc, Span, Token], o2: Union[Doc, Span, Token]) -> int:
-    v1: torch.Tensor = o1.vector
-    v2: torch.Tensor = o2.vector
-    return (v1.dot(v2) / (v1.norm() * v2.norm())).item()
+    v1: np.ndarray = o1.vector
+    v2: np.ndarray = o2.vector
+    return (v1.dot(v2) / (norm(v1) * norm(v2))).item()
 
 
 Language.factories[BertModel.name] = BertModel

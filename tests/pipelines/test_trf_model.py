@@ -37,13 +37,13 @@ def test_token_vector(nlp: Language, text: str):
     doc: Doc = nlp(text)
     tensor: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
     for token, a in zip(doc, doc._.get(ATTRS.alignment)):
-        assert torch.allclose(token.vector, tensor[a].sum(0))
+        assert np.allclose(token.vector, tensor[a].sum(0))
 
 
 @pytest.mark.parametrize("text", TESTCASES)
 def test_span_vector(nlp: Language, text: str):
     doc: Doc = nlp(text)
-    assert torch.allclose(doc.vector, doc[:].vector)
+    assert np.allclose(doc.vector, doc[:].vector)
 
 
 @pytest.mark.parametrize(
