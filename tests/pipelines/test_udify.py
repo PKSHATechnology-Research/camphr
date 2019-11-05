@@ -28,8 +28,10 @@ def test_udify(nlp, text):
 
 def test_serialization(nlp, tmpdir):
     docs = [nlp(text) for text in TEXTS]
-    nlp.to_disk(str(tmpdir))
-    nlp2 = spacy.load(str(tmpdir))
-    docs2 = [nlp2(text) for text in TEXTS]
-    for doc1, doc2 in zip(docs, docs2):
-        assert_docs_equal(doc1, doc2)
+    for i in range(2):
+        d = str(tmpdir + f"/{i}")
+        nlp.to_disk(d)
+        nlp = spacy.load(d)
+        docs2 = [nlp(text) for text in TEXTS]
+        for doc1, doc2 in zip(docs, docs2):
+            assert_docs_equal(doc1, doc2)

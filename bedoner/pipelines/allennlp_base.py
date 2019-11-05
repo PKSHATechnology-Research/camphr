@@ -60,13 +60,14 @@ class AllennlpPipe(Pipe):
 
     def from_disk(self, path: Pathlike, exclude=tuple(), **kwargs) -> "AllennlpPipe":
         path = Path(path)
-        new_self = self.from_archive(path / ARCHIVE)
+        archive_path = path / ARCHIVE
+        new_self = self.from_archive(archive_path)
         with (path / "cfg.pkl").open("rb") as f:
             cfg = pickle.load(f)
         self.model = new_self.model
         self.dataset_reader = new_self.dataset_reader
         self.cfg.update(cfg)
-        self.archive_path = path
+        self.archive_path = archive_path
         return self
 
     def predict(self, docs: Iterable[Doc]) -> Dict:
