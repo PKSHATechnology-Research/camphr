@@ -3,7 +3,7 @@
 # Installation
 
 ```bash
-$ pipenv install .
+$ pipenv install
 $ pipenv install --dev # for developer
 ```
 
