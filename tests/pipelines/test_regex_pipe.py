@@ -1,3 +1,4 @@
+from itertools import zip_longest
 from bedoner.lang import mecab
 import pytest
 from spacy.language import Language
@@ -9,6 +10,7 @@ from bedoner.pipelines.regex_ruler import (
     postcode_ruler,
     DateRuler,
     LABEL_DATE,
+    MultipleRegexRuler,
 )
 
 from ..utils import check_mecab
@@ -16,6 +18,26 @@ from ..utils import check_mecab
 pytestmark = pytest.mark.skipif(
     not check_mecab(), reason="mecab is not always necessary"
 )
+
+
+@pytest.mark.parametrize(
+    "text,patterns,expected",
+    [
+        (
+            "16日はいい天気だった",
+            {"date": r"\d+日", "whether": "いい天気|晴れ"},
+            [("16日", "date"), ("いい天気", "whether")],
+        )
+    ],
+)
+def test_multiple_regex_ruler(mecab_tokenizer, text, patterns, expected):
+    doc: Doc = mecab_tokenizer(text)
+    ruler = MultipleRegexRuler(patterns)
+    doc = ruler(doc)
+    for ent, (content, label) in zip_longest(doc.ents, expected):
+        assert ent.text == content
+        assert ent.label_ == label
+
 
 TESTCASES_POSTCODE = [
     ("〒100-0001", ["〒100-0001"]),

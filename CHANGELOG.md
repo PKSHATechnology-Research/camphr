@@ -15,6 +15,8 @@
     - 例: Name/Organization/Familyの場合,"Name"と"Organization"と"Family"を予測する3種のモデルを作る．学習はマルチタスク．抽出結果が衝突した場合，下位階層予測のモデルが優先される
 - `TrfForNamedEntityRecognitionBase`にuser_hooksを追加
   - goldラベルを適当に変形したい場合，`ner.user_hooks["convert_label"] = fn`のようにする
+- `bedoner.pipelines.regex_pipe.MultipleRegexRuler`を追加
+  - 複数パターンを登録できる正規表現パイプです
 
 
 ## Backwards incompatibilities
