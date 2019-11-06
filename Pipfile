@@ -30,7 +30,7 @@ typing-extensions = "*"
 pyyaml = "*"
 scikit-learn = "*"
 jsonschema = "*"
-
+gensim = "*"
 
 [requires]
 python_version = "3.7"

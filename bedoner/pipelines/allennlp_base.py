@@ -2,16 +2,17 @@
 import pickle
 import shutil
 from pathlib import Path
-from typing import Dict, Iterable, Union
+from typing import Dict, Iterable
 
 import torch
-from allennlp.data import DatasetReader
-from allennlp.models import Model
-from allennlp.models.archival import load_archive
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
 
-Pathlike = Union[str, Path]
+from allennlp.data import DatasetReader
+from allennlp.models import Model
+from allennlp.models.archival import load_archive
+from bedoner.types import Pathlike
+
 VALIDATION = "validation"
 VALIDATION_DATASET_READER = "validation_dataset_reader"
 DATASET_READER = "dataset_reader"
