@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/Users/yohei_tamura/.local/share/virtualenvs/bedoner-udify-TayCotVA/bin/python",
+    "python.pythonPath": ".venv/bin/python",
     "python.testing.pytestArgs": [
         "tests"
     ],
