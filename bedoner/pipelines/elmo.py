@@ -60,3 +60,4 @@ class Elmo(Pipe):
             doc.user_hooks["similarity"] = get_similarity
             doc.user_span_hooks["similarity"] = get_similarity
             doc.user_token_hooks["similarity"] = get_similarity
+            doc.user_data["elmo"] = vec
