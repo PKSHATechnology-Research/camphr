@@ -1,6 +1,8 @@
 from pathlib import Path
+import spacy
 
 import bedoner.lang.mecab as mecab
+import numpy as np
 import pytest
 from bedoner.pipelines.elmo import Elmo
 
@@ -21,10 +23,21 @@ def nlp():
     return _nlp
 
 
-@pytest.mark.parametrize("text", ["私は文脈ベクトルの元祖です"])
+TEXTS = ["私は文脈ベクトルの元祖です"]
+
+
+@pytest.mark.parametrize("text", TEXTS)
 def test_elmo(nlp, text):
     doc = nlp(text)
     assert doc.tensor.shape[0] == len(doc)
     assert doc.vector is not None
     assert doc[0].vector is not None
     assert doc[1:].vector is not None
+
+
+def test_serialization(nlp, tmpdir):
+    text = TEXTS[0]
+    doc = nlp(text)
+    nlp.to_disk(str(tmpdir))
+    nlp = spacy.load(str(tmpdir))
+    assert np.allclose(doc.tensor, nlp(text).tensor)

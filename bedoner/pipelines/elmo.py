@@ -17,7 +17,7 @@ from spacy.pipeline import Pipe
 from spacy.tokens import Doc
 
 
-@spacy.component("elmo")
+@spacy.component("elmo", assigns=["doc.tensor", "doc.vector", "token.vector"])
 class Elmo(Pipe):
     WEIGHTS_FILE_NAME = "weights.hdf5"
     OPTIONS_FILE_NAME = "options.json"
@@ -30,10 +30,13 @@ class Elmo(Pipe):
     def Model(
         cls, options_file: Pathlike, weight_file: Pathlike, **cfg
     ) -> ElmoEmbedder:
-        return ElmoEmbedder(str(options_file), str(weight_file))
+        return ElmoEmbedder(
+            str(Path(options_file).absolute()), str(Path(weight_file).absolute())
+        )
 
     def to_disk(self, path: Pathlike, **cfg):
         path = Path(path)
+        path.mkdir(exist_ok=True)
         shutil.copy(
             self.model.elmo_bilm._token_embedder._weight_file,
             str(path / self.WEIGHTS_FILE_NAME),
