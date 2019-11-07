@@ -39,6 +39,15 @@ def test_multiple_regex_ruler(mecab_tokenizer, text, patterns, expected):
         assert ent.label_ == label
 
 
+def test_destructive(mecab_tokenizer):
+    text = "今日はいい天気だ"
+    doc: Doc = mecab_tokenizer(text)
+    assert doc[0].text == "今日"
+    ruler = RegexRuler("今", "今", True)
+    doc = ruler(doc)
+    assert len(doc.ents)
+
+
 TESTCASES_POSTCODE = [
     ("〒100-0001", ["〒100-0001"]),
     ("100-0001", ["100-0001"]),
