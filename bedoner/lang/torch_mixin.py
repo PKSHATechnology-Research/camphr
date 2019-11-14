@@ -1,8 +1,7 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
 import logging
 import itertools
-from dataclasses import dataclass
-from typing import List, Optional, Type, cast
+from typing import List, Optional, Type
 
 import torch
 import torch.optim as optim
@@ -13,23 +12,6 @@ from spacy.tokens import Doc
 from bedoner.torch_utils import OptimizerParameters, TorchPipe
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class Optimizers:
-    """Container for optimizer and scheduler."""
-
-    optimizer: optim.Optimizer
-    lr_scheduler: Optional[optim.lr_scheduler._LRScheduler] = None
-
-    def zero_grad(self):
-        self.optimizer.zero_grad()
-
-    def step(self):
-        self.optimizer.step()
-        if self.lr_scheduler:
-            # TODO: remove cast once bug in pytorch stub file is fixed (https://github.com/pytorch/pytorch/pull/26531).
-            self.lr_scheduler.step(cast(int, None))
 
 
 class TorchLanguageMixin:
@@ -62,7 +44,7 @@ class TorchLanguageMixin:
         if Doc.get_extension("loss") is None:
             Doc.set_extension("loss", default=0)
 
-    def resume_training(self, **kwargs) -> Optimizers:
+    def resume_training(self, **kwargs) -> optim.Optimizer:
         """Gather torch parameters in `TorchPipe`, and create optimizers.
 
         Args:
@@ -103,16 +85,16 @@ class TorchLanguageMixin:
         params: OptimizerParameters,
         optim_cls: Optional[Type[optim.Optimizer]] = None,
         **cfg,
-    ) -> Optimizers:
+    ) -> optim.Optimizer:
         """Make optimizer and scheduler (if necessary), wrap them in `Optimizers` and returns it.
 
         If you want to create your custom optimzers, you should create subclass and override this method,
         or create optimizer directly with the pipline components.
         """
         if optim_cls:
-            return Optimizers(optim_cls(params, **cfg))
+            return optim_cls(params, **cfg)
 
-        return Optimizers(optim.SGD(params, lr=0.01))
+        return optim.SGD(params, lr=0.01)
 
     def _format_docs_and_golds(self, docs, golds):
         # TODO: remove this method after PR merged (https://github.com/explosion/spaCy/pull/4316)
@@ -137,7 +119,7 @@ class TorchLanguageMixin:
         self,
         docs: List[Doc],
         golds: List[GoldParse],
-        optimizers: Optimizers,
+        optimizer: optim.Optimizer,
         debug: bool = False,
     ):
         """Update `TorchPipe` models in pipline."""
@@ -147,9 +129,9 @@ class TorchLanguageMixin:
             pipe.update(docs, golds)
 
         loss = torch.mean(torch.stack([doc._.loss for doc in docs]))
-        optimizers.zero_grad()
+        optimizer.zero_grad()
         loss.backward()
-        optimizers.step()
+        optimizer.step()
         if debug:
             logger.info(f"Loss: {loss.detach().item()}")
 
