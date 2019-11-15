@@ -29,7 +29,7 @@ typing-extensions = "*"
 pyyaml = "*"
 scikit-learn = "*"
 jsonschema = "*"
-flashtext = "*"
+gensim = "*"
 pyahocorasick = "*"
 
 [requires]

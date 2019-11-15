@@ -314,6 +314,35 @@ nlp("郵便番号は〒100-0001で，車の番号は品川500 さ 2345です").e
 
 recallを100%にしたい場合は，`pipe.destructive = True`にします．分かち書きで作成したtokenを分解し，確実にマッチするようになりますが，他のパイプの性能を落とす可能性があります．
 
+## Word2Vec, Glove, Fasttext word embedding
+
+Word2Vec, Glove, FasttextのWord Emebeddingを使うことができます．
+[リリースページ](https://github.com/PKSHATechnology/bedore-ner/releases/edit/v0.4.0.dev9)から，該当のモデルをダウンロードし，
+
+```
+$ pip install -U *tar.gz
+```
+
+でインストールしてください．モデル等全て入ります．
+
+### Usage
+
+```python
+import spacy
+
+nlp = spacy.load("mecab_fasttext_wikipedia")
+doc = nlp("私は犬と猫を飼っている")
+I, doc, cat = doc[0], doc[2], doc[4]
+print(I.similarity(doc))
+print(I.similarity(cat))
+print(doc.similarity(cat))
+```
+```
+0.2569612
+0.28104305
+0.7270736
+```
+
 ## Elmo
 
 Elmoの埋め込みベクトルを`doc.tensor`, `doc.vector`, `token.vector`, `span.vector`に格納するパイプです．  
@@ -330,8 +359,7 @@ $ pip install **.tar.gz
 
 ### Usage
 
-```python
-import spacy
+```
 nlp = spacy.load("mecab_elmo")
 doc = nlp("エルモのベクトルを計算します")
 doc.vector

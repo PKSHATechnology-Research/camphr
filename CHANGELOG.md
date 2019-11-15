@@ -16,6 +16,8 @@
   - goldラベルを適当に変形したい場合，`ner.user_hooks["convert_label"] = fn`のようにする
 - `bedoner.pipelines.udify`の追加
   - ref: [Parsing Universal Dependencies Universally](https://arxiv.org/abs/1904.02099)
+  - リリースも追加: https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0.dev9
+
 - `bedoner.pipelines.allennlp_base`の追加
   - allennlpのモデルを利用する際の機能．
 - `bedoner.pipelines.regex_pipe.MultipleRegexRuler`を追加
@@ -28,6 +30,10 @@
   - spacy本家に`PatternMatcher`があるが，これはtokenベースなので日本語には不向き(分かち書き次第で取れなかったりする)
   - `RegexPipe`ではダメなのか？ ->  キーワード量が多くなると，壊滅的に遅くなる
   - `flashtext`は? -> 単語境界があることが前提なので，日本語には使えない．(実装したやつ：https://github.com/PKSHATechnology/bedore-ner/tree/feature/flashtext)
+
+- `bedoner.pipelines.gensim`を追加
+  - gensimが対応しているモデルの埋め込みベクトルを利用可能に
+  - リリースも追加
 
 ## New models
 
