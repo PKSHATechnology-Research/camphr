@@ -18,6 +18,7 @@ log = logging.getLogger(__name__)
 __dir__ = Path(__file__).parent
 PACKAGES_DIR = __dir__ / "../pkgs"
 LANG_REQUIREMENTS = {"juman": {"pyknp"}, "mecab": {"mecab-python3"}, "knp": {"pyknp"}}
+LANGS = ["juman", "mecab", "knp"]
 THIS_MODULE = "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@{ref}"
 Pathlike = Union[str, Path]
 
@@ -26,8 +27,16 @@ def get_commit() -> str:
     return subprocess.check_output(["git", "rev-parse", "HEAD"]).decode().strip()
 
 
-def requirements(meta: Dict[str, Any], ref_module: str) -> List[str]:
+def get_lang(meta: dict) -> str:
     lang = meta["lang"]
+    for l in LANGS:
+        if l in lang:
+            return l
+    return ""
+
+
+def requirements(meta: Dict[str, Any], ref_module: str) -> List[str]:
+    lang = get_lang(meta)
     req = set(meta.get("requirements", set()))
     req |= LANG_REQUIREMENTS.get(lang, set())
     req = {k for k in req if not k.startswith("bedoner")}
