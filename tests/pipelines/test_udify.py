@@ -1,9 +1,11 @@
 from pathlib import Path
+
+import bedoner.lang.mecab as mecab
 import pytest
 import spacy
-from spacy.tests.util import assert_docs_equal
 from bedoner.pipelines.udify import Udify
-import bedoner.lang.mecab as mecab
+from spacy.tests.util import assert_docs_equal
+
 from ..utils import in_ci
 
 pytestmark = pytest.mark.skipif(in_ci(), reason="heavy test")

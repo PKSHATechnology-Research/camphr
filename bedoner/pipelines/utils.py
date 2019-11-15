@@ -1,9 +1,11 @@
 import copy
 import warnings
 from enum import Enum
-from typing import List, Tuple, Iterable
-from spacy.tokens import Span, Doc
+from typing import Iterable, List, Tuple, Union
+
+import numpy as np
 from spacy.gold import iob_to_biluo
+from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 
 
@@ -178,3 +180,21 @@ def set_heads(doc: Doc, heads: List[int]) -> Doc:
         else:
             token.head = doc[head - 1]
     return doc
+
+
+def get_doc_vector_via_tensor(doc: Doc) -> np.ndarray:
+    return doc.tensor.sum(0)
+
+
+def get_span_vector_via_tensor(span: Span) -> np.ndarray:
+    return span.doc.tensor[span.start : span.end].sum(0)
+
+
+def get_token_vector_via_tensor(token: Token) -> np.ndarray:
+    return token.doc.tensor[token.i]
+
+
+def get_similarity(o1: Union[Doc, Span, Token], o2: Union[Doc, Span, Token]) -> float:
+    v1: np.ndarray = o1.vector
+    v2: np.ndarray = o2.vector
+    return (v1.dot(v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))).item()

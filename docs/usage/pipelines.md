@@ -314,6 +314,49 @@ nlp("郵便番号は〒100-0001で，車の番号は品川500 さ 2345です").e
 
 recallを100%にしたい場合は，`pipe.destructive = True`にします．分かち書きで作成したtokenを分解し，確実にマッチするようになりますが，他のパイプの性能を落とす可能性があります．
 
+## Elmo
+
+Elmoの埋め込みベクトルを`doc.tensor`, `doc.vector`, `token.vector`, `span.vector`に格納するパイプです．  
+
+### Installation
+
+[リリースページ](https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0.dev13)から`tar.gz`をダウンロードし, 
+
+```bash
+$ pip install **.tar.gz
+```
+
+で終わりです．
+
+### Usage
+
+```python
+import spacy
+nlp = spacy.load("mecab_elmo")
+doc = nlp("エルモのベクトルを計算します")
+doc.vector
+```
+```
+array([ 5.1656528, -3.7939   ,  1.3086448, ..., -5.545461 , -0.8776282,
+        2.1133442], dtype=float32)
+```
+```python
+doc2 = nlp("類似度の計算ができます")
+doc.similarity(doc2)
+```
+```
+0.7309107184410095
+```
+```python
+doc = nlp("トークン同士の類似度も計算できます")
+doc[0].similarity(doc[1])
+```
+```
+0.6428633332252502
+```
+
+
+
 ## EmbedRank
 
 [Embed Rank](https://arxiv.org/pdf/1801.04470.pdf)を用いたキーフレーズ抽出機能です．  

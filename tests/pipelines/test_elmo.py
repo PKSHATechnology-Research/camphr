@@ -1,0 +1,43 @@
+from pathlib import Path
+import spacy
+
+import bedoner.lang.mecab as mecab
+import numpy as np
+import pytest
+from bedoner.pipelines.elmo import Elmo
+
+from ..utils import in_ci
+
+pytestmark = pytest.mark.skipif(in_ci(), reason="heavy test")
+
+
+@pytest.fixture(scope="module")
+def nlp():
+    _nlp = mecab.Japanese()
+    elmod = Path(__file__).parent / "../../data/elmo"
+    options = elmod / "options.json"
+    weights = elmod / "weights.hdf5"
+    m = Elmo.Model(options, weights)
+    p = Elmo(model=m)
+    _nlp.add_pipe(p)
+    return _nlp
+
+
+TEXTS = ["私は文脈ベクトルの元祖です"]
+
+
+@pytest.mark.parametrize("text", TEXTS)
+def test_elmo(nlp, text):
+    doc = nlp(text)
+    assert doc.tensor.shape[0] == len(doc)
+    assert doc.vector is not None
+    assert doc[0].vector is not None
+    assert doc[1:].vector is not None
+
+
+def test_serialization(nlp, tmpdir):
+    text = TEXTS[0]
+    doc = nlp(text)
+    nlp.to_disk(str(tmpdir))
+    nlp = spacy.load(str(tmpdir))
+    assert np.allclose(doc.tensor, nlp(text).tensor)

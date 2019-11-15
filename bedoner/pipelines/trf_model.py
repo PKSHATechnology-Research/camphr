@@ -7,10 +7,9 @@ from typing import Iterable, List, Optional, Union, cast
 import numpy as np
 import torch
 import transformers as trf
-from numpy.linalg import norm
 from spacy.gold import GoldParse
 from spacy.language import Language
-from spacy.tokens import Doc, Span, Token
+from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from spacy_transformers.util import ATTRS
 from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
@@ -23,6 +22,7 @@ from bedoner.torch_utils import (
     get_parameters_with_decay,
 )
 from bedoner.utils import zero_pad
+from bedoner.pipelines.utils import get_similarity
 
 PRETRAINED_MODEL_ARCHIVE_MAP = {
     "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman.bin",
@@ -296,12 +296,6 @@ def get_span_vector_via_tensor(span) -> np.ndarray:
 
 def get_token_vector_via_tensor(token) -> np.ndarray:
     return token.doc.tensor[token.i].numpy()
-
-
-def get_similarity(o1: Union[Doc, Span, Token], o2: Union[Doc, Span, Token]) -> int:
-    v1: np.ndarray = o1.vector
-    v2: np.ndarray = o2.vector
-    return (v1.dot(v2) / (norm(v1) * norm(v2))).item()
 
 
 Language.factories[BertModel.name] = BertModel
