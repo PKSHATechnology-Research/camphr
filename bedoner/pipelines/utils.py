@@ -4,6 +4,7 @@ from enum import Enum
 from typing import List, Tuple, Iterable
 from spacy.tokens import Span, Doc
 from spacy.gold import iob_to_biluo
+from spacy.util import filter_spans
 
 
 class BILUO(Enum):
@@ -161,7 +162,7 @@ def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:
             else:
                 break
 
-    return lents1 + new_ents0
+    return filter_spans(lents1 + new_ents0)
 
 
 def set_heads(doc: Doc, heads: List[int]) -> Doc:

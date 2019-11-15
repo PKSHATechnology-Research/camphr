@@ -3,10 +3,12 @@ import bisect
 import re
 from collections import OrderedDict
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Optional, Tuple
 
 import srsly
-from spacy.tokens import Doc, Token
+from spacy.errors import Errors
+from spacy.tokens import Doc, Span, Token
+from spacy.util import filter_spans
 
 
 class SerializationMixin:
@@ -47,6 +49,10 @@ class SerializationMixin:
         with (path / "data.pkl").open("wb") as file_:
             file_.write(data)
 
+    def require_model(self):
+        if getattr(self, "model", None) in (None, True, False):
+            raise ValueError(Errors.E109.format(name=self.name))
+
 
 def zero_pad(a: Iterable[List[int]]) -> List[List[int]]:
     """Padding the input so that the lengths of the inside lists are all equal."""
@@ -70,6 +76,44 @@ def destruct_token(doc: Doc, *char_pos: int) -> Doc:
             token = token_from_char_pos(doc, i)
             heads = [token] * len(token)
             retokenizer.split(doc[token.i], list(token.text), heads=heads)
+
+
+def get_doc_char_span(
+    doc: Doc, i: int, j: int, destructive: bool = True, **kwargs
+) -> Optional[Span]:
+    """Get Span from Doc with char position, similar to doc.char_span.
+
+    Args:
+        destructive: If True, tokens in [i,j) will be splitted and make sure to return span.
+        kwargs: passed to Doc.char_span
+    """
+    span = doc.char_span(i, j, **kwargs)
+    if not span and destructive:
+        try:
+            destruct_token(doc, i, j)
+            span = doc.char_span(i, j, **kwargs)
+        except AssertionError:
+            # TODO: https://github.com/explosion/spaCy/issues/4604
+            pass
+    return span
+
+
+def get_doc_char_spans_list(
+    doc: Doc, spans: Iterable[Tuple[int, int]], destructive: bool = True, **kwargs
+) -> List[Span]:
+    res = []
+    for i, j in spans:
+        span = get_doc_char_span(doc, i, j, destructive=destructive, **kwargs)
+        if span:
+            res.append(span)
+    return res
+
+
+def merge_spans(doc: Doc, spans: Iterable[Span]):
+    spans = filter_spans(spans)
+    with doc.retokenize() as retokenizer:
+        for span in spans:
+            retokenizer.merge(span)
 
 
 def split_keepsep(text: str, sep: str):

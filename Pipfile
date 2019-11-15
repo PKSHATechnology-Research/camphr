@@ -13,7 +13,6 @@ pyyaml = "*"
 rope = "*"
 hypothesis = "*"
 pre-commit = "*"
-bedoner = {editable = true,path = "."}
 hydra-core = "*"
 
 [packages]
@@ -30,7 +29,8 @@ typing-extensions = "*"
 pyyaml = "*"
 scikit-learn = "*"
 jsonschema = "*"
-
+flashtext = "*"
+pyahocorasick = "*"
 
 [requires]
 python_version = "3.7"

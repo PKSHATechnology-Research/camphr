@@ -89,3 +89,8 @@ def spiece(spiece_path):
     s = spm.SentencePieceProcessor()
     s.load(spiece_path)
     return s
+
+
+@pytest.fixture(scope="session")
+def vocab():
+    return Vocab()

@@ -8,7 +8,7 @@ from spacy.tokens import Doc
 
 import bedoner.ner_labels.labels_ontonotes as L
 from bedoner.pipelines.utils import merge_entities
-from bedoner.utils import SerializationMixin, destruct_token
+from bedoner.utils import SerializationMixin, get_doc_char_spans_list, merge_spans
 
 
 @spacy.component(
@@ -42,20 +42,14 @@ class MultipleRegexRuler(SerializationMixin):
         return doc
 
     def _proc(self, doc: Doc, pattern: re.Pattern, label: str) -> Doc:
-        spans = []
-        for m in pattern.finditer(doc.text):
-            i, j = m.span()
-            span = doc.char_span(i, j, label=label)
-            if not span and self.destructive:
-                destruct_token(doc, i, j)
-                span = doc.char_span(i, j, label=label)
-            if span:
-                spans.append(span)
+        spans_ij = [m.span() for m in pattern.finditer(doc.text)]
+        spans = get_doc_char_spans_list(
+            doc, spans_ij, destructive=self.destructive, label=label
+        )
+
         doc.ents = merge_entities(doc.ents, tuple(spans))
         if self.merge:
-            with doc.retokenize() as retokenizer:
-                for span in spans:
-                    retokenizer.merge(span)
+            merge_spans(doc, spans)
         return doc
 
 

@@ -22,6 +22,11 @@
   - 複数パターンを登録できる正規表現パイプです
 - `bedoner.pipelines.EmbedRank`を追加
   - [Embed Rank](https://arxiv.org/pdf/1801.04470.pdf)を用いたキーフレーズ抽出機能
+- `pipelines.PatternSearcher`を追加
+  - [pyahocorasick](https://github.com/WojciechMula/pyahocorasick)をつかったパターンサーチ
+  - spacy本家に`PatternMatcher`があるが，これはtokenベースなので日本語には不向き(分かち書き次第で取れなかったりする)
+  - `RegexPipe`ではダメなのか？ ->  キーワード量が多くなると，壊滅的に遅くなる
+  - `flashtext`は? -> 単語境界があることが前提なので，日本語には使えない．(実装したやつ：https://github.com/PKSHATechnology/bedore-ner/tree/feature/flashtext)
 
 ## New models
 
