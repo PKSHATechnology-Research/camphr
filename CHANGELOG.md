@@ -8,7 +8,6 @@
 - SentencePiece ベースの`Language`を追加: [./bedoner/lang/sentencepiece](./bedoner/lang/sentencepiece)
 - SentencePiece Language用のWordpiecer: `pipelines.wordpiecer.TrfSentencePiecer`を追加
 - テストの高速化
-
 - Multitask NER modelを追加
   - https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0.dev3
   - ENEラベルについて，3つの異なるラベルづけモデルを用いてNER.
@@ -24,6 +23,12 @@
 - `bedoner.pipelines.EmbedRank`を追加
   - [Embed Rank](https://arxiv.org/pdf/1801.04470.pdf)を用いたキーフレーズ抽出機能
 
+## New models
+
+- torch_mecab_bert-stockmark-v0.4.0.dev14
+  - stockmark BERT
+- torch_mecab_xlnet-stockmark-v0.4.0.dev14
+  - stockmark XLNet
 
 ## Backwards incompatibilities
 

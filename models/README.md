@@ -1,7 +1,9 @@
+- torch_mecab_bert-stockmark-v0.4.0.dev14
+  - stockmark BERT
+- torch_mecab_xlnet-stockmark-v0.4.0.dev14
+  - stockmark XLNet
 - sentencepiece_xlnet_ene_triple-0.4.0.dev3.tar.gz
   - 階層NER
-    - ENEラベルについて，3つの異なるラベルづけモデルを用いてNER.
-    - 例: Name/Organization/Familyの場合,"Name"と"Organization"と"Family"を予測する3種のモデルを作る．学習はマルチタスク．抽出結果が衝突した場合，下位階層予測のモデルが優先される
 - mecab_bert_ene_triple-0.4.0.dev3.tar.gz
   - 上のmecab版
 - sentencepiece_xlnet_ene_triple-0.4.0.dev3.tar.gz
