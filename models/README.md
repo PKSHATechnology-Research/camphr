@@ -2,6 +2,8 @@
   - stockmark BERT
 - torch_mecab_xlnet-stockmark-v0.4.0.dev14
   - stockmark XLNet
+- torch_mecab_xlnet_ene-0.4.0.dev13.tar.gz
+  - stockmark XLNetでbccwj NERをトレーニングしたもの
 - sentencepiece_xlnet_ene_triple-0.4.0.dev3.tar.gz
   - 階層NER
 - mecab_bert_ene_triple-0.4.0.dev3.tar.gz
