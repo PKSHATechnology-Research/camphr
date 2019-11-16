@@ -11,7 +11,9 @@ jobs:
       - run:
           name: login
           command: echo "$dockerhub_password" | docker login --username $dockerhub_username --password-stdin
-      - run: docker-compose build
+      - run: 
+          name: build docker container
+          command: docker build -t ner .
       - run:
           name: run pytest
-          command: docker-compose run -e CI ner pipenv run pytest -v
+          command: docker run -e CI ner pipenv run pytest -v
