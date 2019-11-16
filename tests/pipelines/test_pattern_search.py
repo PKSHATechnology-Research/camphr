@@ -1,10 +1,11 @@
 from pathlib import Path
-import spacy
-import pytest
-from spacy.tokens import Doc
-from bedoner.pipelines.pattern_search import PatternSearcher
-import bedoner.lang.mecab as mecab
 
+import pytest
+import spacy
+from spacy.tokens import Doc
+
+import bedoner.lang.mecab as mecab
+from bedoner.pipelines.pattern_search import PatternSearcher
 
 KEYWORDS = ["今日", "は", "明日"]
 

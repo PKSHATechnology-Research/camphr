@@ -13,7 +13,6 @@ from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
 from bedoner.ner_labels.utils import make_biluo_labels
 
-
 label_types = ["ene", "irex"]
 
 

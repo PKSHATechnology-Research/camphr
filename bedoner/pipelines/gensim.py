@@ -1,12 +1,13 @@
-from tqdm import tqdm
-from bedoner.types import Pathlike
+import pickle
+from typing import TypeVar, Union
+
 from gensim.models.keyedvectors import Word2VecKeyedVectors
 from gensim.models.word2vec import Word2Vec
 from spacy.language import Language
 from spacy.vocab import Vocab
-from typing import TypeVar, Union
-import pickle
+from tqdm import tqdm
 
+from bedoner.types import Pathlike
 
 HasVocab = TypeVar("HasVocab", Language, Vocab)
 

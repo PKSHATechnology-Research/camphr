@@ -1,10 +1,9 @@
+import numpy as np
 import pytest
 import torch
-import numpy as np
-
 from spacy.language import Language
-from spacy_transformers.util import ATTRS
 from spacy.tokens import Doc
+from spacy_transformers.util import ATTRS
 
 from bedoner.models import trf_model
 

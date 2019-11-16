@@ -1,13 +1,13 @@
 import random
-from typing import List, Tuple
 from itertools import zip_longest
+from typing import List, Tuple
 
 import pytest
 from spacy.gold import spans_from_biluo_tags
 from spacy.language import Language
+from spacy.tests.util import get_doc
 from spacy.tokens import Span
 from spacy.vocab import Vocab
-from spacy.tests.util import get_doc
 
 from bedoner import __version__
 from bedoner.pipelines.utils import (

@@ -1,9 +1,10 @@
 from pathlib import Path
+
+import numpy as np
+import pytest
 import spacy
 
 import bedoner.lang.mecab as mecab
-import numpy as np
-import pytest
 from bedoner.pipelines.elmo import Elmo
 
 from ..utils import in_ci

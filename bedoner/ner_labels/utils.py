@@ -5,12 +5,13 @@ This module can be called directly to generete "labels_**.py" from yml file.
 Examples:
     $ python utils.py
 """
+import subprocess
 from pathlib import Path
 from typing import IO, Dict, Iterable, List, Optional, Union
-import bedoner.ner_labels.labels_sekine as sekine
-import subprocess
 
 import yaml
+
+import bedoner.ner_labels.labels_sekine as sekine
 
 __dir__ = Path(__file__).parent
 

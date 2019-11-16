@@ -15,6 +15,7 @@ from spacy_transformers.util import ATTRS
 from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
 from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
 
+from bedoner.pipelines.utils import get_similarity
 from bedoner.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
@@ -22,7 +23,6 @@ from bedoner.torch_utils import (
     get_parameters_with_decay,
 )
 from bedoner.utils import zero_pad
-from bedoner.pipelines.utils import get_similarity
 
 PRETRAINED_MODEL_ARCHIVE_MAP = {
     "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman.bin",

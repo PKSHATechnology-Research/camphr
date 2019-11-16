@@ -1,5 +1,6 @@
-import spacy
 import pytest
+import spacy
+
 from bedoner.models import wordpiecer
 
 

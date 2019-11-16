@@ -4,7 +4,7 @@ Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s
 """
 import pickle
 from pathlib import Path
-from typing import Iterable, Callable, Union, cast
+from typing import Callable, Iterable, Union, cast
 
 import torch
 import torch.nn as nn

@@ -1,4 +1,5 @@
 import pytest
+
 from bedoner.ner_labels.utils import get_full_sekine_label
 
 

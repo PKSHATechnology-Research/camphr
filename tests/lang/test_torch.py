@@ -1,9 +1,10 @@
+import pytest
 import spacy
 import torch
-import pytest
-import bedoner.lang.mecab as mecab
+
 import bedoner.lang.juman as juman
 import bedoner.lang.knp as knp
+import bedoner.lang.mecab as mecab
 import bedoner.lang.sentencepiece as sp
 
 

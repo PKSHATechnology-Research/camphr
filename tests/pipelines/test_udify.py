@@ -1,10 +1,11 @@
 from pathlib import Path
 
-import bedoner.lang.mecab as mecab
 import pytest
 import spacy
-from bedoner.pipelines.udify import Udify
 from spacy.tests.util import assert_docs_equal
+
+import bedoner.lang.mecab as mecab
+from bedoner.pipelines.udify import Udify
 
 from ..utils import in_ci
 

@@ -5,12 +5,12 @@ from pathlib import Path
 from typing import Dict, Iterable
 
 import torch
-from spacy.pipeline import Pipe
-from spacy.tokens import Doc
-
 from allennlp.data import DatasetReader
 from allennlp.models import Model
 from allennlp.models.archival import load_archive
+from spacy.pipeline import Pipe
+from spacy.tokens import Doc
+
 from bedoner.types import Pathlike
 
 VALIDATION = "validation"

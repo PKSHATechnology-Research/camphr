@@ -1,6 +1,6 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
-import logging
 import itertools
+import logging
 from typing import List, Optional, Type
 
 import torch

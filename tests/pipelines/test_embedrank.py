@@ -1,7 +1,8 @@
 import pytest
 import spacy
-from bedoner.pipelines.embedrank import EmbedRank, EMBEDRANK_KEYPHRASES
+
 from bedoner.models import trf_model
+from bedoner.pipelines.embedrank import EMBEDRANK_KEYPHRASES, EmbedRank
 
 
 @pytest.fixture(scope="module", params=["mecab"])

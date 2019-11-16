@@ -6,6 +6,9 @@ from typing import Generator, Iterable, List, Optional
 import numpy as np
 import spacy
 from allennlp.commands.elmo import ElmoEmbedder
+from spacy.pipeline import Pipe
+from spacy.tokens import Doc
+
 from bedoner.pipelines.allennlp_base import Pathlike
 from bedoner.pipelines.utils import (
     get_doc_vector_via_tensor,
@@ -13,8 +16,6 @@ from bedoner.pipelines.utils import (
     get_span_vector_via_tensor,
     get_token_vector_via_tensor,
 )
-from spacy.pipeline import Pipe
-from spacy.tokens import Doc
 
 
 @spacy.component("elmo", assigns=["doc.tensor", "doc.vector", "token.vector"])

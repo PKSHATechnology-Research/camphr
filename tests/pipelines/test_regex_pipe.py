@@ -1,16 +1,17 @@
 from itertools import zip_longest
-from bedoner.lang import mecab
+
 import pytest
 from spacy.language import Language
 from spacy.tokens import Doc, Span
 
+from bedoner.lang import mecab
 from bedoner.pipelines.regex_ruler import (
-    carcode_ruler,
-    RegexRuler,
-    postcode_ruler,
-    DateRuler,
     LABEL_DATE,
+    DateRuler,
     MultipleRegexRuler,
+    RegexRuler,
+    carcode_ruler,
+    postcode_ruler,
 )
 
 from ..utils import check_mecab

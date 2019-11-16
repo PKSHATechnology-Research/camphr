@@ -1,8 +1,8 @@
-from typing import Tuple, List, Union, Dict, Any
+import re
+from typing import Any, Dict, List, Tuple, Union
 
 import regex
 import spacy
-import re
 from spacy.language import Language
 from spacy.tokens import Doc
 
