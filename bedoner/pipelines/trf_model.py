@@ -205,11 +205,13 @@ class TransformersModel(TorchPipe):
     def update(self, docs: List[Doc], golds: List[GoldParse]):
         """Simply forward docs in training mode."""
         self.require_model()
-        self.model.train()
         x = self.docs_to_trfinput(docs)
         self.assert_length(x)
         if self.cfg.get("freeze"):
             torch.set_grad_enabled(False)
+            self.model.eval()
+        else:
+            self.model.train()
         y = self.output_cls(*self.model(**dataclasses.asdict(x)))
         torch.set_grad_enabled(True)
         # set_vector=False because vector may be not need in updating.
