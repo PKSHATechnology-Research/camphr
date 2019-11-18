@@ -1,4 +1,4 @@
-download: download_bert download_xlnet download_udify # from bedore-rannd account
+download: download_bert download_xlnet download_udify download_elmo # from bedore-rannd account
 
 download_bert: 
 	mkdir -p data/bert-ja-juman
@@ -14,6 +14,10 @@ download_udify:
 	aws s3 cp s3://bedoner/models/udify.tar.gz data/ \
 	cd data && tar xzvf udify.tar.gz -C udify/ && \
 	mv udify/udify-model tmp && rm -r udify && mv tmp udify
+
+download_elmo:
+	mkdir -p data/elmo
+	aws s3 cp --recursive s3://bedoner/models/elmo data/elmo
 
 download_ner:
 	mkdir -p ~/datasets
