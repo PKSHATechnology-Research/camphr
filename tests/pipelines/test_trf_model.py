@@ -8,7 +8,7 @@ from spacy_transformers.util import ATTRS
 from bedoner.models import trf_model
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
+@pytest.fixture(params=["mecab", "juman", "sentencepiece"])
 def nlp(request, trf_dir):
     lang = request.param
     return trf_model(lang, trf_dir)
@@ -37,6 +37,16 @@ def test_token_vector(nlp: Language, text: str):
     tensor: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
     for token, a in zip(doc, doc._.get(ATTRS.alignment)):
         assert np.allclose(token.vector, tensor[a].sum(0))
+
+
+@pytest.mark.parametrize("text", TESTCASES)
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
+def test_token_vector_with_cuda(nlp: Language, text: str):
+    assert nlp.to(torch.device("cuda"))
+    doc: Doc = nlp(text)
+    tensor: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
+    for token, a in zip(doc, doc._.get(ATTRS.alignment)):
+        assert np.allclose(token.vector, tensor[a].sum(0).cpu())
 
 
 @pytest.mark.parametrize("text", TESTCASES)

@@ -289,15 +289,15 @@ class XLNetModel(TransformersModel):
 
 
 def get_doc_vector_via_tensor(doc) -> np.ndarray:
-    return doc.tensor.sum(0).numpy()
+    return doc.tensor.sum(0).cpu().numpy()
 
 
 def get_span_vector_via_tensor(span) -> np.ndarray:
-    return span.doc.tensor[span.start : span.end].sum(0).numpy()
+    return span.doc.tensor[span.start : span.end].sum(0).cpu().numpy()
 
 
 def get_token_vector_via_tensor(token) -> np.ndarray:
-    return token.doc.tensor[token.i].numpy()
+    return token.doc.tensor[token.i].cpu().numpy()
 
 
 Language.factories[BertModel.name] = BertModel

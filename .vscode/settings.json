@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": ".venv/bin/python",
+    "python.pythonPath": "/home/ubuntu/anaconda3/envs/torch2/bin/python",
     "python.testing.pytestArgs": [
         "tests"
     ],

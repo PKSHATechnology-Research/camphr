@@ -1,4 +1,5 @@
 import pytest
+import torch
 import spacy
 
 from bedoner.models import trf_model
@@ -14,8 +15,18 @@ def nlp(request, trf_dir):
     return _nlp
 
 
-@pytest.mark.parametrize("text", ["今日はいい天気だった"])
+TEXTS = ["今日はいい天気だった"]
+
+
+@pytest.mark.parametrize("text", TEXTS)
 def test_embedrank(nlp, text):
+    doc = nlp(text)
+    assert doc._.get(EMBEDRANK_KEYPHRASES) is not None
+
+
+@pytest.mark.parametrize("text", TEXTS)
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
+def test_embedrank_with_cuda(nlp, text):
     doc = nlp(text)
     assert doc._.get(EMBEDRANK_KEYPHRASES) is not None
 
