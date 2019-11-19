@@ -1,9 +1,0 @@
-{
-    "python.pythonPath": "/home/ubuntu/anaconda3/envs/torch2/bin/python",
-    "python.testing.pytestArgs": [
-        "tests"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestEnabled": true
-}
