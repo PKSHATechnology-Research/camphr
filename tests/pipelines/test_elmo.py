@@ -6,9 +6,7 @@ import spacy
 import bedoner.lang.mecab as mecab
 from bedoner.pipelines.elmo import Elmo
 
-from ..utils import in_ci
-
-pytestmark = pytest.mark.skipif(in_ci(), reason="heavy test")
+pytestmark = pytest.mark.slow
 
 
 @pytest.fixture(scope="module")

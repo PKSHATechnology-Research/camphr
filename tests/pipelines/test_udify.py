@@ -7,9 +7,7 @@ from spacy.tests.util import assert_docs_equal
 import bedoner.lang.mecab as mecab
 from bedoner.pipelines.udify import Udify
 
-from ..utils import in_ci
-
-pytestmark = pytest.mark.skipif(in_ci(), reason="heavy test")
+pytestmark = pytest.mark.slow
 
 
 @pytest.fixture(scope="module")
