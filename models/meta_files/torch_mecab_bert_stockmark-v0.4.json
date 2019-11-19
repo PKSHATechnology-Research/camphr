@@ -1,0 +1,32 @@
+{
+  "lang":"torch_mecab",
+  "name":"bert_stockmark",
+  "version":"v0.4",
+  "spacy_version":">=2.2.2",
+  "description":"",
+  "author":"",
+  "email":"",
+  "url":"",
+  "license":"",
+  "vectors":{
+    "width":0,
+    "vectors":0,
+    "keys":0,
+    "name":null
+  },
+  "pipeline":[
+    "trf_wordpiecer",
+    "bert"
+  ],
+  "factories":{
+    "trf_wordpiecer":"trf_wordpiecer",
+    "bert":"bert"
+  },
+  "labels":{
+
+  },
+  "requirements":[
+    "mecab-python3",
+    "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@v0.4"
+  ]
+}

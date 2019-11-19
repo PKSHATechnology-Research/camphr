@@ -1,0 +1,30 @@
+{
+  "lang":"mecab",
+  "name":"elmo",
+  "version":"v0.4",
+  "spacy_version":">=2.2.2",
+  "description":"",
+  "author":"",
+  "email":"",
+  "url":"",
+  "license":"",
+  "vectors":{
+    "width":0,
+    "vectors":0,
+    "keys":0,
+    "name":null
+  },
+  "pipeline":[
+    "elmo"
+  ],
+  "factories":{
+    "elmo":"elmo"
+  },
+  "labels":{
+
+  },
+  "requirements":[
+    "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@v0.4",
+    "mecab-python3"
+  ]
+}

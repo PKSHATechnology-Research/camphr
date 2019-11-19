@@ -1,0 +1,13 @@
+mecab_fasttext_wikipedia-v0.4.0.dev9
+mecab_glove_ja-v0.4
+mecab_udify-v0.4
+mecab_word2vec_wikipedia-v0.4
+torch_mecab_bert_model-v0.4
+torch_mecab_bert_ene-v0.4
+torch_mecab_bert_irex-v0.4
+torch_mecab_bert_stockmark-v0.4
+torch_mecab_xlnet_stockmark-v0.4
+torch_mecab_xlnet_stockmark_ene-v0.4
+torch_sentencepiece_xlnet_model-v0.4
+torch_sentencepiece_xlnet_ene-v0.4
+torch_sentencepiece_xlnet_ene_triple-v0.4.0.dev4

@@ -1,0 +1,30 @@
+{
+  "lang":"mecab",
+  "name":"glove_ja",
+  "version":"v0.4",
+  "spacy_version":">=2.2.2",
+  "description":"",
+  "author":"",
+  "email":"",
+  "url":"",
+  "license":"",
+  "vectors":{
+    "width":300,
+    "vectors":962148,
+    "keys":954667,
+    "name":null
+  },
+  "pipeline":[
+
+  ],
+  "factories":{
+
+  },
+  "labels":{
+
+  },
+  "requirements":[
+    "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@v0.4",
+    "mecab-python3"
+  ]
+}

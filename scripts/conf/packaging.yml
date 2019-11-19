@@ -1,8 +1,8 @@
 model:
-ref_module:
+ref_module: v0.4
 packages_dir: ../pkgs
-version:
-sdist: true
+version: v0.4
+sdist: false
 hydra:
   run:
       dir: ./outputs/packaging/${now:%Y-%m-%d}/${now:%H-%M-%S}
