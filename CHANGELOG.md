@@ -3,6 +3,11 @@
 ##  New features and improvements
 
 - transformers modelについて，`max_length`が設定されている場合，それを超える入力に対してエラーを吐いていたが，後部を切り捨てるように変更 (#129)
+- torchについて，`optim_creators`を導入
+
+## Backwards incompatibilities
+
+- `TransformersLanguageMixin`を削除
 
 # v0.4
 

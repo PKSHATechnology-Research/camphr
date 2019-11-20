@@ -31,6 +31,7 @@ scikit-learn = "*"
 jsonschema = "*"
 gensim = "*"
 pyahocorasick = "*"
+catalogue = "*"
 
 [requires]
 python_version = "3.7"

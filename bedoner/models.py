@@ -1,4 +1,6 @@
 """The models module defines functions to create spacy models."""
+from typing import Dict, Any
+from bedoner.lang.torch_mixin import OPTIM_CREATOR
 from enum import Enum
 import os
 
@@ -8,6 +10,7 @@ from spacy.vocab import Vocab
 
 import bedoner.lang.juman as juman
 import bedoner.lang.knp as knp
+import bedoner.trf_utils  # noqa: import to register optimizer
 import bedoner.lang.mecab as mecab
 import bedoner.lang.sentencepiece as sp
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
@@ -32,17 +35,19 @@ def juman_nlp() -> juman.Japanese:
 
 
 def wordpiecer(lang: str, pretrained: str) -> Language:
+    meta: Dict[str, Any] = {OPTIM_CREATOR: "adamw"}
     if lang == "juman":
         cls = juman.TorchJapanese
-        nlp = cls(Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}})
+        meta["tokenizer"] = {"preprocessor": han_to_zen_normalizer}
     elif lang == "mecab":
         cls = mecab.TorchJapanese
-        nlp = cls(Vocab())
     elif lang == "sentencepiece":
         cls = sp.TorchSentencePieceLang
-        nlp = cls(Vocab(), meta={"tokenizer": {"model_path": pretrained}})
+        meta["tokenizer"] = {"model_path": pretrained}
     else:
         raise ValueError(f"Unsupported lang: {lang}")
+
+    nlp = cls(Vocab(), meta=meta)
 
     if lang == "sentencepiece":
         w = TrfSentencePiecer.from_pretrained(nlp.vocab, pretrained)

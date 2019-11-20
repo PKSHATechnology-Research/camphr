@@ -1,17 +1,25 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
 import itertools
 import logging
-from typing import List, Optional, Type
+from typing import List
 
 import torch
 import torch.optim as optim
 from spacy.errors import Errors as SpacyErrors
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.tokens import Doc
+import catalogue
 
 from bedoner.torch_utils import OptimizerParameters, TorchPipe
 
 logger = logging.getLogger(__name__)
+optim_creators = catalogue.create("bedoner", "torch_optim_creators")
+OPTIM_CREATOR = "optim_creator"
+
+
+@optim_creators.register("base")
+def base(params: OptimizerParameters, **cfg) -> optim.Optimizer:
+    return optim.SGD(params, lr=cfg.get("lr", 0.01))
 
 
 class TorchLanguageMixin:
@@ -57,7 +65,7 @@ class TorchLanguageMixin:
             for _, pipe in self.pipeline
             if isinstance(pipe, TorchPipe)
         )
-        return self.make_optimizers(params, **kwargs)
+        return self.make_optimizer(params, **kwargs)
 
     @property
     def device(self) -> torch.device:
@@ -80,21 +88,17 @@ class TorchLanguageMixin:
         self._device = device
         return flag
 
-    def make_optimizers(
-        self,
-        params: OptimizerParameters,
-        optim_cls: Optional[Type[optim.Optimizer]] = None,
-        **cfg,
-    ) -> optim.Optimizer:
-        """Make optimizer and scheduler (if necessary), wrap them in `Optimizers` and returns it.
+    def make_optimizer(self, params: OptimizerParameters, **cfg) -> optim.Optimizer:
+        """Make optimizer.
 
-        If you want to create your custom optimzers, you should create subclass and override this method,
-        or create optimizer directly with the pipline components.
+        If you want to create your custom optimzers, you should create custom `make optimzer` function and register it in `optimizer_creator`.
         """
-        if optim_cls:
-            return optim_cls(params, **cfg)
-
-        return optim.SGD(params, lr=0.01)
+        name = self.meta.get(OPTIM_CREATOR, "")
+        if name:
+            fn = optim_creators.get(name)
+            if fn:
+                return fn(params, **cfg)
+        return optim_creators.get("base")(params, **cfg)
 
     def _format_docs_and_golds(self, docs, golds):
         # TODO: remove this method after PR merged (https://github.com/explosion/spaCy/pull/4316)
