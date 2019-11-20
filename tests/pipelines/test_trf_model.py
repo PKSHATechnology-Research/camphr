@@ -8,9 +8,8 @@ from spacy_transformers.util import ATTRS
 from bedoner.models import trf_model
 
 
-@pytest.fixture(params=["mecab", "juman", "sentencepiece"])
-def nlp(request, trf_dir):
-    lang = request.param
+@pytest.fixture
+def nlp(lang, trf_dir):
     return trf_model(lang, trf_dir)
 
 
@@ -19,6 +18,14 @@ TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]
 
 @pytest.mark.parametrize("text", TESTCASES)
 def test_forward(nlp, text):
+    doc = nlp(text)
+    assert doc._.trf_last_hidden_state is not None
+
+
+def test_forward_for_long_input(nlp, lang):
+    if lang != "mecab":
+        pytest.skip()
+    text = "foo " * 2000
     doc = nlp(text)
     assert doc._.trf_last_hidden_state is not None
 

@@ -32,9 +32,8 @@ def labels(label_type):
         raise ValueError
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
-def nlp(labels, request, trf_dir):
-    lang = request.param
+@pytest.fixture(scope="module")
+def nlp(labels, lang, trf_dir):
     _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir)
     assert _nlp.meta["lang"] == "torch_" + lang
     return _nlp
@@ -121,6 +120,15 @@ def test_update(nlp: Language, text, gold, label_type):
     assert not doc._.loss
     nlp.update([doc], [gold], optim)
     assert doc._.loss
+
+
+def test_update_for_long_input(nlp, lang, label_type):
+    if lang == "mecab" and label_type == "ene":
+        text = "foo " * 2000
+        optim = nlp.resume_training()
+        nlp.update([text], [{"entities": [(0, 3, "ACADEMIC")]}], optim)
+    else:
+        pytest.skip()
 
 
 def test_update_batch(nlp: Language, label_type):

@@ -114,3 +114,8 @@ def spiece(spiece_path):
 @pytest.fixture(scope="session")
 def vocab():
     return Vocab()
+
+
+@pytest.fixture(scope="session", params=["mecab", "juman", "sentencepiece"])
+def lang(request):
+    return request.param

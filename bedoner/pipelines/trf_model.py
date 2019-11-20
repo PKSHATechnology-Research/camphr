@@ -146,17 +146,10 @@ class TransformersModel(TorchPipe):
     def max_length(self) -> int:
         return self.model.config.max_position_embeddings
 
-    def assert_length(self, x: TransformersModelInputs):
-        if self.max_length > 0 and x.input_ids.shape[1] > self.max_length:
-            raise ValueError(
-                f"Too long input_ids. Expected {self.max_length}, but got {x.input_ids.shape[1]}"
-            )
-
     def predict(self, docs: List[Doc]) -> TransformerModelOutputs:
         self.require_model()
         self.model.eval()
         x = self.docs_to_trfinput(docs)
-        self.assert_length(x)
         with torch.no_grad():
             y = self.output_cls(*self.model(**dataclasses.asdict(x)))
         return y
@@ -171,6 +164,8 @@ class TransformersModel(TorchPipe):
         """
         for i, doc in enumerate(docs):
             length = len(doc._.trf_word_pieces)
+            if self.max_length > 0:
+                length = min(self.max_length, length)
             # Instead of assigning tensor directory, assign `TensorWrapper`
             # so that trailing pipe can handle batch tensor efficiently.
             doc._.trf_last_hidden_state = TensorWrapper(
@@ -193,6 +188,8 @@ class TransformersModel(TorchPipe):
                 # TODO: Inefficient
                 # TODO: Store the functionality into user_hooks after https://github.com/explosion/spaCy/issues/4439 was released
                 for i, a in enumerate(doc._.get(ATTRS.alignment)):
+                    if self.max_length > 0:
+                        a = [aa for aa in a if aa < len(lh)]
                     doc_tensor[i] += lh[a].sum(0)
                 doc.tensor = doc_tensor
                 doc.user_hooks["vector"] = get_doc_vector_via_tensor
@@ -206,7 +203,6 @@ class TransformersModel(TorchPipe):
         """Simply forward docs in training mode."""
         self.require_model()
         x = self.docs_to_trfinput(docs)
-        self.assert_length(x)
         if self.cfg.get("freeze"):
             torch.set_grad_enabled(False)
             self.model.eval()
@@ -220,21 +216,25 @@ class TransformersModel(TorchPipe):
 
     def docs_to_trfinput(self, docs: List[Doc]) -> TransformersModelInputs:
         """Generate input data for trf model from docs."""
+        if self.max_length > 0:
+            wordpieces = [doc._.trf_word_pieces[: self.max_length] for doc in docs]
+        else:
+            wordpieces = [doc._.trf_word_pieces for doc in docs]
         inputs = self.input_cls(
-            input_ids=torch.tensor(
-                zero_pad([doc._.trf_word_pieces for doc in docs]), device=self.device
-            )
+            input_ids=torch.tensor(zero_pad(wordpieces), device=self.device)
         )
         inputs.attention_mask = torch.tensor(
-            zero_pad([[1 for _ in range(len(doc._.trf_word_pieces))] for doc in docs]),
+            zero_pad([[1 for _ in range(len(wp))] for wp in wordpieces]),
             device=self.device,
         )
 
         segments = []
-        for doc in docs:
+        for doc, wp in zip(docs, wordpieces):
             seg = []
             for i, s in enumerate(doc._.trf_segments):
                 seg += [i] * len(s._.trf_word_pieces)
+            if self.max_length > 0:
+                seg = seg[: self.max_length]
             segments.append(seg)
         inputs.token_type_ids = torch.tensor(zero_pad(segments), device=self.device)
         return inputs

@@ -189,6 +189,7 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
         # TODO: Batch
         x: TensorWrapper = next(iter(docs))._.trf_last_hidden_state
         logits = self.model(x.batch_tensor)
+        length = logits.shape[1]
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
             idx = []
@@ -199,12 +200,19 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
                 ners = list(gold.ner)
             for i, align in enumerate(doc._.trf_alignment):
                 if len(align):
-                    idx.append(align[0])
+                    a = align[0]
+                    if a >= length:
+                        # This is not a bug. `length` can be shorter than the pieces because of `max_length` of trf model.
+                        break
+                    idx.append(a)
                 else:
                     ners[i] = UNK.value  # avoid calculate loss
                     idx.append(-1)
-            target = torch.tensor([label2id[ner] for ner in ners], device=self.device)
-            loss = F.cross_entropy(logit[idx], target, ignore_index=ignore_index)
+            pred = logit[idx]
+            target = torch.tensor(
+                [label2id[ner] for ner in ners[: len(pred)]], device=self.device
+            )
+            loss = F.cross_entropy(pred, target, ignore_index=ignore_index)
 
             doc._.cls_logit = logit
             doc._.loss += loss
