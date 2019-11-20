@@ -1,31 +1,32 @@
 {
-  "lang": "torch_mecab",
-  "name": "bert_ene",
-  "version": "v0.4",
-  "spacy_version": ">=2.2.2",
-  "description": "",
-  "author": "",
-  "email": "",
-  "url": "",
-  "license": "",
-  "vectors": {
-    "width": 0,
-    "vectors": 0,
-    "keys": 0,
-    "name": null
+  "optim_creator":"adamw",
+  "lang":"torch_mecab",
+  "name":"bert_ene",
+  "version":"v0.4",
+  "spacy_version":">=2.2.2",
+  "description":"",
+  "author":"",
+  "email":"",
+  "url":"",
+  "license":"",
+  "vectors":{
+    "width":0,
+    "vectors":0,
+    "keys":0,
+    "name":null
   },
-  "pipeline": [
+  "pipeline":[
     "trf_wordpiecer",
     "bert",
     "bert_ner"
   ],
-  "factories": {
-    "trf_wordpiecer": "trf_wordpiecer",
-    "bert": "bert",
-    "bert_ner": "bert_ner"
+  "factories":{
+    "trf_wordpiecer":"trf_wordpiecer",
+    "bert":"bert",
+    "bert_ner":"bert_ner"
   },
-  "labels": {
-    "bert_ner": [
+  "labels":{
+    "bert_ner":[
       "-",
       "O",
       "B-NAME",
@@ -1002,934 +1003,956 @@
       "U-TIME_TOP/TIME_TOP_OTHER"
     ]
   },
-  "score": {
-    "uas": 0,
-    "las": 0,
-    "ents_p": 79.983564217,
-    "ents_r": 73.2265692175,
-    "ents_f": 76.456065537,
-    "ents_per_type": {
-      "NUMEX/COUNTX/N_PRODUCT": {
-        "p": 67.5675675676,
-        "r": 76.3358778626,
-        "f": 71.6845878136
-      },
-      "NUMEX/COUNTX/N_ORGANIZATION": {
-        "p": 76.4705882353,
-        "r": 44.8275862069,
-        "f": 56.5217391304
-      },
-      "TIME_TOP/TIMEX/DATE": {
-        "p": 87.2458410351,
-        "r": 85.045045045,
-        "f": 86.1313868613
-      },
-      "NAME/PRODUCT/TITLE/POSITION_VOCATION": {
-        "p": 82.9931972789,
-        "r": 83.2764505119,
-        "f": 83.1345826235
-      },
-      "NAME/DISEASE/ANIMAL_DISEASE": {
-        "p": 76.25,
-        "r": 68.5393258427,
-        "f": 72.1893491124
-      },
-      "NUMEX/ORDINAL_NUMBER": {
-        "p": 86.1751152074,
-        "r": 87.3831775701,
-        "f": 86.7749419954
-      },
-      "NAME/PRODUCT/FOOD/DISH": {
-        "p": 51.4492753623,
-        "r": 61.7391304348,
-        "f": 56.1264822134
-      },
-      "NAME/LOCATION/GPE/CITY": {
-        "p": 73.6641221374,
-        "r": 85.3982300885,
-        "f": 79.0983606557
-      },
-      "NAME/ORGANIZATION/ETHNIC_GROUP/NATIONALITY": {
-        "p": 86.9565217391,
-        "r": 66.6666666667,
-        "f": 75.4716981132
-      },
-      "NUMEX/POINT": {
-        "p": 100,
-        "r": 58.3333333333,
-        "f": 73.6842105263
-      },
-      "NUMEX/NUMEX_OTHER": {
-        "p": 70,
-        "r": 53.8461538462,
-        "f": 60.8695652174
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING/MAMMAL": {
-        "p": 79.6875,
-        "r": 79.6875,
-        "f": 79.6875
-      },
-      "NUMEX/COUNTX/N_NATURAL_OBJECT/N_ANIMAL": {
-        "p": 83.3333333333,
-        "r": 71.4285714286,
-        "f": 76.9230769231
-      },
-      "TIME_TOP/PERIODX/PERIOD_WEEK": {
-        "p": 90.9090909091,
-        "r": 76.9230769231,
-        "f": 83.3333333333
-      },
-      "NAME/PERSON": {
-        "p": 91.5348837209,
-        "r": 87.8571428571,
-        "f": 89.6583143508
-      },
-      "NAME/ORGANIZATION/CORPORATION/COMPANY": {
-        "p": 70.5521472393,
-        "r": 64.9717514124,
-        "f": 67.6470588235
-      },
-      "NAME/LOCATION/GPE/COUNTRY": {
-        "p": 91.8367346939,
-        "r": 90.7780979827,
-        "f": 91.3043478261
-      },
-      "NAME/PRODUCT/MATERIAL": {
-        "p": 63.1578947368,
-        "r": 52.1739130435,
-        "f": 57.1428571429
-      },
-      "NAME/PRODUCT/PRODUCT_OTHER": {
-        "p": 61.1464968153,
-        "r": 65.306122449,
-        "f": 63.1578947368
-      },
-      "NUMEX/MONEY": {
-        "p": 87.8378378378,
-        "r": 74.7126436782,
-        "f": 80.7453416149
-      },
-      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/GOVERNMENT": {
-        "p": 88.5542168675,
-        "r": 80.7692307692,
-        "f": 84.4827586207
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/DOCTRINE_METHOD_OTHER": {
-        "p": 72.2044728435,
-        "r": 66.081871345,
-        "f": 69.0076335878
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/RELIGION": {
-        "p": 80,
-        "r": 40,
-        "f": 53.3333333333
-      },
-      "NAME/PRODUCT/CLOTHING": {
-        "p": 79.6875,
-        "r": 57.9545454545,
-        "f": 67.1052631579
-      },
-      "NAME/EVENT/OCCASION/CONFERENCE": {
-        "p": 71.4285714286,
-        "r": 40,
-        "f": 51.2820512821
-      },
-      "NAME/PRODUCT/PRINTING/PRINTING_OTHER": {
-        "p": 90.9090909091,
-        "r": 64.5161290323,
-        "f": 75.4716981132
-      },
-      "TIME_TOP/TIMEX/TIME": {
-        "p": 81.1881188119,
-        "r": 81.1881188119,
-        "f": 81.1881188119
-      },
-      "NUMEX/COUNTX/N_PERSON": {
-        "p": 89.1428571429,
-        "r": 83.8709677419,
-        "f": 86.4265927978
-      },
-      "TIME_TOP/PERIODX/PERIOD_DAY": {
-        "p": 80.9523809524,
-        "r": 62.962962963,
-        "f": 70.8333333333
-      },
-      "NAME/ORGANIZATION/CORPORATION/CORPORATION_OTHER": {
-        "p": 70.3125,
-        "r": 61.6438356164,
-        "f": 65.6934306569
-      },
-      "NAME/PRODUCT/TITLE/TITLE_OTHER": {
-        "p": 96.3235294118,
-        "r": 96.3235294118,
-        "f": 96.3235294118
-      },
-      "NUMEX/MEASUREMENT/MEASUREMENT_OTHER": {
-        "p": 61.5384615385,
-        "r": 32,
-        "f": 42.1052631579
-      },
-      "NAME/PRODUCT/OFFENCE": {
-        "p": 77.7777777778,
-        "r": 74.2424242424,
-        "f": 75.9689922481
-      },
-      "NAME/ORGANIZATION/ETHNIC_GROUP/ETHNIC_GROUP_OTHER": {
-        "p": 68.4210526316,
-        "r": 68.4210526316,
-        "f": 68.4210526316
-      },
-      "NAME/PRODUCT/WEAPON": {
-        "p": 76.4705882353,
-        "r": 76.4705882353,
-        "f": 76.4705882353
-      },
-      "NAME/FACILITY/LINE/ROAD": {
-        "p": 70,
-        "r": 70,
-        "f": 70
-      },
-      "NAME/LOCATION/REGION/DOMESTIC_REGION": {
-        "p": 75.7575757576,
-        "r": 62.5,
-        "f": 68.4931506849
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING_PART/ANIMAL_PART": {
-        "p": 82.7464788732,
-        "r": 81.881533101,
-        "f": 82.3117338004
-      },
-      "NAME/LOCATION/REGION/CONTINENTAL_REGION": {
-        "p": 83.6363636364,
-        "r": 90.1960784314,
-        "f": 86.7924528302
-      },
-      "NAME/PRODUCT/ART/BROADCAST_PROGRAM": {
-        "p": 40,
-        "r": 41.3793103448,
-        "f": 40.6779661017
-      },
-      "NAME/PRODUCT/ART/BOOK": {
-        "p": 52.380952381,
-        "r": 47.8260869565,
-        "f": 50
-      },
-      "NAME/FACILITY/GOE/GOE_OTHER": {
-        "p": 51.7857142857,
-        "r": 48.3333333333,
-        "f": 50
-      },
-      "NAME/FACILITY/GOE/WORSHIP_PLACE": {
-        "p": 46.6666666667,
-        "r": 50,
-        "f": 48.275862069
-      },
-      "NUMEX/SCHOOL_AGE": {
-        "p": 70,
-        "r": 75,
-        "f": 72.4137931034
-      },
-      "NAME/FACILITY/GOE/SCHOOL": {
-        "p": 69.2307692308,
-        "r": 64.2857142857,
-        "f": 66.6666666667
-      },
-      "NAME/ORGANIZATION/ORGANIZATION_OTHER": {
-        "p": 52.380952381,
-        "r": 28.9473684211,
-        "f": 37.2881355932
-      },
-      "NUMEX/COUNTX/N_EVENT": {
-        "p": 66.6666666667,
-        "r": 57.1428571429,
-        "f": 61.5384615385
-      },
-      "NUMEX/RANK": {
-        "p": 82.5,
-        "r": 66,
-        "f": 73.3333333333
-      },
-      "NAME/PRODUCT/STOCK": {
-        "p": 100,
-        "r": 33.3333333333,
-        "f": 50
-      },
-      "NAME/FACILITY/GOE/MARKET": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/SPORT": {
-        "p": 81.5789473684,
-        "r": 73.8095238095,
-        "f": 77.5
-      },
-      "NAME/EVENT/OCCASION/GAME": {
-        "p": 85.2941176471,
-        "r": 70.7317073171,
-        "f": 77.3333333333
-      },
-      "NAME/PRODUCT/FOOD/FOOD_OTHER": {
-        "p": 53.7037037037,
-        "r": 39.1891891892,
-        "f": 45.3125
-      },
-      "TIME_TOP/PERIODX/PERIOD_TIME": {
-        "p": 76.5957446809,
-        "r": 80,
-        "f": 78.2608695652
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING/FUNGUS": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/LOCATION/ADDRESS/PHONE_NUMBER": {
-        "p": 76.9230769231,
-        "r": 64.5161290323,
-        "f": 70.1754385965
-      },
-      "NAME/LOCATION/ADDRESS/EMAIL": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NUMEX/COUNTX/N_LOCATION/N_LOCATION_OTHER": {
-        "p": 88.8888888889,
-        "r": 44.4444444444,
-        "f": 59.2592592593
-      },
-      "NAME/FACILITY/ARCHAEOLOGICAL_PLACE/ARCHAEOLOGICAL_PLACE_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/LOCATION/ADDRESS/POSTAL_ADDRESS": {
-        "p": 71.4285714286,
-        "r": 47.619047619,
-        "f": 57.1428571429
-      },
-      "NUMEX/COUNTX/N_FACILITY": {
-        "p": 60.8695652174,
-        "r": 51.8518518519,
-        "f": 56
-      },
-      "NAME/PRODUCT/RULE/LAW": {
-        "p": 91.4285714286,
-        "r": 80,
-        "f": 85.3333333333
-      },
-      "NAME/FACILITY/FACILITY_PART": {
-        "p": 55.1724137931,
-        "r": 38.0952380952,
-        "f": 45.0704225352
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING/FLORA": {
-        "p": 50,
-        "r": 39.6226415094,
-        "f": 44.2105263158
-      },
-      "NAME/LOCATION/GPE/PROVINCE": {
-        "p": 91.4285714286,
-        "r": 88.0733944954,
-        "f": 89.7196261682
-      },
-      "NUMEX/PERCENT": {
-        "p": 91.9117647059,
-        "r": 86.8055555556,
-        "f": 89.2857142857
-      },
-      "NAME/LOCATION/GPE/GPE_OTHER": {
-        "p": 54.8387096774,
-        "r": 48.5714285714,
-        "f": 51.5151515152
-      },
-      "NUMEX/COUNTX/N_LOCATION/N_COUNTRY": {
-        "p": 71.4285714286,
-        "r": 45.4545454545,
-        "f": 55.5555555556
-      },
-      "NUMEX/AGE": {
-        "p": 91.5887850467,
-        "r": 77.7777777778,
-        "f": 84.1201716738
-      },
-      "NAME/FACILITY/GOE/THEATER": {
-        "p": 100,
-        "r": 30,
-        "f": 46.1538461538
-      },
-      "NAME/EVENT/EVENT_OTHER": {
-        "p": 60,
-        "r": 41.6666666667,
-        "f": 49.1803278689
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/MOVEMENT": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/GOE/AIRPORT": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/LOCATION/GEOLOGICAL_REGION/MOUNTAIN": {
-        "p": 50,
-        "r": 50,
-        "f": 50
-      },
-      "NAME/PRODUCT/VEHICLE/SHIP": {
-        "p": 75,
-        "r": 69.2307692308,
-        "f": 72
-      },
-      "NAME/PRODUCT/CHARACTER": {
-        "p": 55.5555555556,
-        "r": 29.4117647059,
-        "f": 38.4615384615
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING/LIVING_THING_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "TIME_TOP/TIMEX/ERA": {
-        "p": 78.7878787879,
-        "r": 78.7878787879,
-        "f": 78.7878787879
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/ACADEMIC": {
-        "p": 71.1538461538,
-        "r": 77.0833333333,
-        "f": 74
-      },
-      "NAME/COLOR/COLOR_OTHER": {
-        "p": 80,
-        "r": 30.7692307692,
-        "f": 44.4444444444
-      },
-      "NAME/LOCATION/GEOLOGICAL_REGION/ISLAND": {
-        "p": 64.2857142857,
-        "r": 60,
-        "f": 62.0689655172
-      },
-      "NAME/LOCATION/GEOLOGICAL_REGION/SEA": {
-        "p": 50,
-        "r": 14.2857142857,
-        "f": 22.2222222222
-      },
-      "TIME_TOP/PERIODX/PERIOD_YEAR": {
-        "p": 82.8125,
-        "r": 73.6111111111,
-        "f": 77.9411764706
-      },
-      "NUMEX/COUNTX/COUNTX_OTHER": {
-        "p": 26.4705882353,
-        "r": 30,
-        "f": 28.125
-      },
-      "NAME/PRODUCT/LANGUAGE/NATIONAL_LANGUAGE": {
-        "p": 85.7142857143,
-        "r": 92.3076923077,
-        "f": 88.8888888889
-      },
-      "NUMEX/FREQUENCY": {
-        "p": 95.2380952381,
-        "r": 68.9655172414,
-        "f": 80
-      },
-      "NAME/ORGANIZATION/INTERNATIONAL_ORGANIZATION": {
-        "p": 70.9677419355,
-        "r": 70.9677419355,
-        "f": 70.9677419355
-      },
-      "NAME/EVENT/OCCASION/OCCASION_OTHER": {
-        "p": 44.1176470588,
-        "r": 35.7142857143,
-        "f": 39.4736842105
-      },
-      "NAME/PRODUCT/ID_NUMBER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/GOE/STATION": {
-        "p": 88.2352941176,
-        "r": 68.1818181818,
-        "f": 76.9230769231
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING/BIRD": {
-        "p": 60,
-        "r": 50,
-        "f": 54.5454545455
-      },
-      "NAME/FACILITY/GOE/MUSEUM": {
-        "p": 100,
-        "r": 40,
-        "f": 57.1428571429
-      },
-      "NAME/COLOR/NATURE_COLOR": {
-        "p": 80,
-        "r": 91.2280701754,
-        "f": 85.2459016393
-      },
-      "NAME/PRODUCT/ART/MOVIE": {
-        "p": 66.6666666667,
-        "r": 42.1052631579,
-        "f": 51.6129032258
-      },
-      "NAME/EVENT/NATURAL_PHENOMENON/NATURAL_PHENOMENON_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/GOD": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/EVENT/OCCASION/RELIGIOUS_FESTIVAL": {
-        "p": 75,
-        "r": 30,
-        "f": 42.8571428571
-      },
-      "NUMEX/COUNTX/N_NATURAL_OBJECT/N_FLORA": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/FACILITY_OTHER": {
-        "p": 26.6666666667,
-        "r": 33.3333333333,
-        "f": 29.6296296296
-      },
-      "NUMEX/MEASUREMENT/WEIGHT": {
-        "p": 78.9473684211,
-        "r": 57.6923076923,
-        "f": 66.6666666667
-      },
-      "NUMEX/MEASUREMENT/CALORIE": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/LOCATION/GPE/COUNTY": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/ART/MUSIC": {
-        "p": 82.3529411765,
-        "r": 51.8518518519,
-        "f": 63.6363636364
-      },
-      "NAME/ORGANIZATION/SHOW_ORGANIZATION": {
-        "p": 47.3684210526,
-        "r": 32.1428571429,
-        "f": 38.2978723404
-      },
-      "NAME/PRODUCT/RULE/RULE_OTHER": {
-        "p": 50,
-        "r": 10,
-        "f": 16.6666666667
-      },
-      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/POLITICAL_PARTY": {
-        "p": 92.3076923077,
-        "r": 85.7142857143,
-        "f": 88.8888888889
-      },
-      "NAME/EVENT/INCIDENT/INCIDENT_OTHER": {
-        "p": 57.8947368421,
-        "r": 52.380952381,
-        "f": 55
-      },
-      "TIME_TOP/PERIODX/PERIOD_MONTH": {
-        "p": 57.8947368421,
-        "r": 47.8260869565,
-        "f": 52.380952381
-      },
-      "NUMEX/MEASUREMENT/PHYSICAL_EXTENT": {
-        "p": 78.5714285714,
-        "r": 62.8571428571,
-        "f": 69.8412698413
-      },
-      "NAME/LOCATION/SPA": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/LOCATION/GEOLOGICAL_REGION/GEOLOGICAL_REGION_OTHER": {
-        "p": 25,
-        "r": 50,
-        "f": 33.3333333333
-      },
-      "NAME/NAME_OTHER": {
-        "p": 80,
-        "r": 33.3333333333,
-        "f": 47.0588235294
-      },
-      "NUMEX/COUNTX/N_NATURAL_OBJECT/N_NATURAL_OBJECT_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/VEHICLE/CAR": {
-        "p": 75,
-        "r": 33.3333333333,
-        "f": 46.1538461538
-      },
-      "NAME/PRODUCT/RULE/TREATY": {
-        "p": 90.9090909091,
-        "r": 50,
-        "f": 64.5161290323
-      },
-      "NAME/ORGANIZATION/CORPORATION/COMPANY_GROUP": {
-        "p": 75,
-        "r": 37.5,
-        "f": 50
-      },
-      "NAME/ORGANIZATION/SPORTS_ORGANIZATION/PRO_SPORTS_ORGANIZATION": {
-        "p": 70.2702702703,
-        "r": 83.8709677419,
-        "f": 76.4705882353
-      },
-      "NAME/FACILITY/GOE/PUBLIC_INSTITUTION": {
-        "p": 62.5,
-        "r": 68.1818181818,
-        "f": 65.2173913043
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING/FISH": {
-        "p": 50,
-        "r": 58.3333333333,
-        "f": 53.8461538462
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/PLAN": {
-        "p": 70.8333333333,
-        "r": 73.9130434783,
-        "f": 72.3404255319
-      },
-      "NAME/LOCATION/ADDRESS/URL": {
-        "p": 91.6666666667,
-        "r": 84.6153846154,
-        "f": 88
-      },
-      "NAME/FACILITY/GOE/RESEARCH_INSTITUTE": {
-        "p": 100,
-        "r": 44.4444444444,
-        "f": 61.5384615385
-      },
-      "NAME/LOCATION/GEOLOGICAL_REGION/RIVER": {
-        "p": 100,
-        "r": 70,
-        "f": 82.3529411765
-      },
-      "NAME/EVENT/NATURAL_PHENOMENON/NATURAL_DISASTER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/NATURAL_OBJECT/COMPOUND": {
-        "p": 33.3333333333,
-        "r": 31.25,
-        "f": 32.2580645161
-      },
-      "NAME/PRODUCT/ART/ART_OTHER": {
-        "p": 100,
-        "r": 33.3333333333,
-        "f": 50
-      },
-      "NAME/LOCATION/LOCATION_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "TIME_TOP/TIMEX/DAY_OF_WEEK": {
-        "p": 82.3529411765,
-        "r": 73.6842105263,
-        "f": 77.7777777778
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING_PART/FLORA_PART": {
-        "p": 77.7777777778,
-        "r": 43.75,
-        "f": 56
-      },
-      "NAME/PRODUCT/PRINTING/MAGAZINE": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/LINE/LINE_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/CLASS": {
-        "p": 71.4285714286,
-        "r": 45.4545454545,
-        "f": 55.5555555556
-      },
-      "NAME/EVENT/INCIDENT/WAR": {
-        "p": 87.5,
-        "r": 77.7777777778,
-        "f": 82.3529411765
-      },
-      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/POLITICAL_ORGANIZATION_OTHER": {
-        "p": 65,
-        "r": 48.1481481481,
-        "f": 55.3191489362
-      },
-      "NAME/LOCATION/ASTRAL_BODY/CONSTELLATION": {
-        "p": 80,
-        "r": 66.6666666667,
-        "f": 72.7272727273
-      },
-      "NAME/ORGANIZATION/SPORTS_ORGANIZATION/SPORTS_LEAGUE": {
-        "p": 100,
-        "r": 50,
-        "f": 66.6666666667
-      },
-      "NAME/FACILITY/GOE/SPORTS_FACILITY": {
-        "p": 100,
-        "r": 15.3846153846,
-        "f": 26.6666666667
-      },
-      "NAME/FACILITY/ARCHAEOLOGICAL_PLACE/TUMULUS": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/MILITARY": {
-        "p": 86.6666666667,
-        "r": 89.6551724138,
-        "f": 88.1355932203
-      },
-      "TIME_TOP/PERIODX/PERIODX_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/GOE/PARK": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/GOE/AMUSEMENT_PARK": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/LOCATION/REGION/REGION_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/DRUG": {
-        "p": 33.3333333333,
-        "r": 10,
-        "f": 15.3846153846
-      },
-      "NUMEX/MEASUREMENT/SPACE": {
-        "p": 100,
-        "r": 50,
-        "f": 66.6666666667
-      },
-      "NAME/PRODUCT/ART/SHOW": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/LOCATION/ASTRAL_BODY/PLANET": {
-        "p": 76.9230769231,
-        "r": 76.9230769231,
-        "f": 76.9230769231
-      },
-      "NAME/PRODUCT/VEHICLE/VEHICLE_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/AWARD": {
-        "p": 85.7142857143,
-        "r": 60,
-        "f": 70.5882352941
-      },
-      "NAME/ORGANIZATION/FAMILY": {
-        "p": 100,
-        "r": 42.8571428571,
-        "f": 60
-      },
-      "TIME_TOP/TIMEX/TIMEX_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/THEORY": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/VEHICLE/AIRCRAFT": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/MONEY_FORM": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/GOE/PORT": {
-        "p": 100,
-        "r": 60,
-        "f": 75
-      },
-      "NAME/PRODUCT/VEHICLE/SPACESHIP": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NUMEX/MULTIPLICATION": {
-        "p": 50,
-        "r": 44.4444444444,
-        "f": 47.0588235294
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING/INSECT": {
-        "p": 50,
-        "r": 16.6666666667,
-        "f": 25
-      },
-      "NAME/NATURAL_OBJECT/MINERAL": {
-        "p": 100,
-        "r": 25,
-        "f": 40
-      },
-      "NAME/NATURAL_OBJECT/ELEMENT": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/CULTURE": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NUMEX/MEASUREMENT/VOLUME": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING/MOLLUSC_ARTHROPOD": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/DISEASE/DISEASE_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NUMEX/MEASUREMENT/SPEED": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/NATURAL_OBJECT/LIVING_THING_PART/LIVING_THING_PART_OTHER": {
-        "p": 100,
-        "r": 50,
-        "f": 66.6666666667
-      },
-      "NAME/PRODUCT/VEHICLE/TRAIN": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/PRINTING/NEWSPAPER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/LOCATION/GEOLOGICAL_REGION/BAY": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/NATURAL_OBJECT/NATURAL_OBJECT_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/ORGANIZATION/SPORTS_ORGANIZATION/SPORTS_ORGANIZATION_OTHER": {
-        "p": 50,
-        "r": 16.6666666667,
-        "f": 25
-      },
-      "NUMEX/MEASUREMENT/TEMPERATURE": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/LINE/RAILROAD": {
-        "p": 60,
-        "r": 21.4285714286,
-        "f": 31.5789473684
-      },
-      "NAME/EVENT/NATURAL_PHENOMENON/EARTHQUAKE": {
-        "p": 100,
-        "r": 50,
-        "f": 66.6666666667
-      },
-      "NAME/PRODUCT/UNIT/UNIT_OTHER": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/FACILITY/LINE/BRIDGE": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/DECORATION": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/DOCTRINE_METHOD/STYLE": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/PRODUCT/ART/PICTURE": {
-        "p": 0,
-        "r": 0,
-        "f": 0
-      },
-      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/CABINET": {
-        "p": 0,
-        "r": 0,
-        "f": 0
+  "score":{
+    "uas":0.0,
+    "las":0.0,
+    "ents_p":81.3829787234,
+    "ents_r":76.6958191126,
+    "ents_f":78.9699099495,
+    "ents_per_type":{
+      "NUMEX/ORDINAL_NUMBER":{
+        "p":90.9535452323,
+        "r":82.6666666667,
+        "f":86.6123399302
+      },
+      "NAME/LOCATION/LOCATION_OTHER":{
+        "p":33.3333333333,
+        "r":30.0,
+        "f":31.5789473684
+      },
+      "NAME/PRODUCT/DOCTRINE_METHOD/DOCTRINE_METHOD_OTHER":{
+        "p":75.7692307692,
+        "r":65.8862876254,
+        "f":70.4830053667
+      },
+      "NAME/PRODUCT/VEHICLE/CAR":{
+        "p":75.0,
+        "r":70.5882352941,
+        "f":72.7272727273
+      },
+      "NAME/PERSON":{
+        "p":88.5635864593,
+        "r":90.3828197946,
+        "f":89.4639556377
+      },
+      "NAME/PRODUCT/TITLE/POSITION_VOCATION":{
+        "p":80.5223068553,
+        "r":83.1460674157,
+        "f":81.81315644
+      },
+      "NUMEX/COUNTX/N_PRODUCT":{
+        "p":70.9677419355,
+        "r":77.8761061947,
+        "f":74.2616033755
+      },
+      "NAME/PRODUCT/CLOTHING":{
+        "p":80.487804878,
+        "r":78.5714285714,
+        "f":79.5180722892
+      },
+      "NAME/PRODUCT/DOCTRINE_METHOD/CULTURE":{
+        "p":33.3333333333,
+        "r":50.0,
+        "f":40.0
+      },
+      "NAME/LOCATION/GPE/COUNTRY":{
+        "p":92.9775280899,
+        "r":91.9444444444,
+        "f":92.4581005587
+      },
+      "NAME/PRODUCT/DOCTRINE_METHOD/SPORT":{
+        "p":76.6666666667,
+        "r":44.2307692308,
+        "f":56.0975609756
+      },
+      "NAME/PRODUCT/WEAPON":{
+        "p":78.9473684211,
+        "r":78.9473684211,
+        "f":78.9473684211
+      },
+      "NAME/LOCATION/ASTRAL_BODY/PLANET":{
+        "p":85.7142857143,
+        "r":100.0,
+        "f":92.3076923077
+      },
+      "NAME/EVENT/OCCASION/CONFERENCE":{
+        "p":55.5555555556,
+        "r":38.4615384615,
+        "f":45.4545454545
+      },
+      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/POLITICAL_PARTY":{
+        "p":89.7435897436,
+        "r":94.5945945946,
+        "f":92.1052631579
+      },
+      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/GOVERNMENT":{
+        "p":73.4567901235,
+        "r":81.5068493151,
+        "f":77.2727272727
+      },
+      "NAME/PRODUCT/RULE/RULE_OTHER":{
+        "p":100.0,
+        "r":58.3333333333,
+        "f":73.6842105263
+      },
+      "NAME/PRODUCT/TITLE/TITLE_OTHER":{
+        "p":96.3855421687,
+        "r":95.2380952381,
+        "f":95.8083832335
+      },
+      "TIME_TOP/TIMEX/DATE":{
+        "p":89.9647887324,
+        "r":84.6026490066,
+        "f":87.2013651877
+      },
+      "TIME_TOP/TIMEX/ERA":{
+        "p":90.6976744186,
+        "r":84.7826086957,
+        "f":87.6404494382
+      },
+      "NAME/PRODUCT/DOCTRINE_METHOD/PLAN":{
+        "p":86.0,
+        "r":67.1875,
+        "f":75.4385964912
+      },
+      "NAME/PRODUCT/PRINTING/MAGAZINE":{
+        "p":44.4444444444,
+        "r":66.6666666667,
+        "f":53.3333333333
+      },
+      "NAME/ORGANIZATION/SPORTS_ORGANIZATION/SPORTS_ORGANIZATION_OTHER":{
+        "p":66.6666666667,
+        "r":22.2222222222,
+        "f":33.3333333333
+      },
+      "NAME/FACILITY/GOE/SPORTS_FACILITY":{
+        "p":100.0,
+        "r":50.0,
+        "f":66.6666666667
+      },
+      "NAME/EVENT/OCCASION/GAME":{
+        "p":82.1428571429,
+        "r":58.9743589744,
+        "f":68.6567164179
+      },
+      "NAME/ORGANIZATION/CORPORATION/COMPANY":{
+        "p":77.1428571429,
+        "r":68.7898089172,
+        "f":72.7272727273
+      },
+      "NAME/LOCATION/GPE/CITY":{
+        "p":80.0,
+        "r":77.5330396476,
+        "f":78.7472035794
+      },
+      "NUMEX/COUNTX/N_EVENT":{
+        "p":60.5263157895,
+        "r":54.7619047619,
+        "f":57.5
+      },
+      "NAME/LOCATION/REGION/DOMESTIC_REGION":{
+        "p":77.1428571429,
+        "r":62.7906976744,
+        "f":69.2307692308
+      },
+      "NUMEX/RANK":{
+        "p":71.4285714286,
+        "r":66.6666666667,
+        "f":68.9655172414
+      },
+      "TIME_TOP/PERIODX/PERIOD_YEAR":{
+        "p":85.7142857143,
+        "r":78.5714285714,
+        "f":81.9875776398
+      },
+      "NAME/PRODUCT/CHARACTER":{
+        "p":72.9166666667,
+        "r":74.4680851064,
+        "f":73.6842105263
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/MAMMAL":{
+        "p":81.3186813187,
+        "r":87.0588235294,
+        "f":84.0909090909
+      },
+      "NUMEX/AGE":{
+        "p":87.2881355932,
+        "r":83.064516129,
+        "f":85.1239669421
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING_PART/ANIMAL_PART":{
+        "p":79.8761609907,
+        "r":90.2097902098,
+        "f":84.7290640394
+      },
+      "NAME/PRODUCT/ART/BROADCAST_PROGRAM":{
+        "p":69.5652173913,
+        "r":38.0952380952,
+        "f":49.2307692308
+      },
+      "NAME/ORGANIZATION/INTERNATIONAL_ORGANIZATION":{
+        "p":82.0512820513,
+        "r":76.1904761905,
+        "f":79.012345679
+      },
+      "TIME_TOP/TIMEX/DAY_OF_WEEK":{
+        "p":86.4864864865,
+        "r":82.0512820513,
+        "f":84.2105263158
+      },
+      "NAME/PRODUCT/RULE/LAW":{
+        "p":75.0,
+        "r":70.0,
+        "f":72.4137931034
+      },
+      "NUMEX/SCHOOL_AGE":{
+        "p":86.9565217391,
+        "r":64.5161290323,
+        "f":74.0740740741
+      },
+      "NAME/PRODUCT/PRODUCT_OTHER":{
+        "p":61.6438356164,
+        "r":62.2837370242,
+        "f":61.9621342513
+      },
+      "NUMEX/PERCENT":{
+        "p":87.8571428571,
+        "r":89.1304347826,
+        "f":88.4892086331
+      },
+      "NUMEX/MEASUREMENT/PHYSICAL_EXTENT":{
+        "p":73.5294117647,
+        "r":60.9756097561,
+        "f":66.6666666667
+      },
+      "NAME/PRODUCT/UNIT/UNIT_OTHER":{
+        "p":100.0,
+        "r":33.3333333333,
+        "f":50.0
+      },
+      "NAME/ORGANIZATION/ORGANIZATION_OTHER":{
+        "p":57.6923076923,
+        "r":39.4736842105,
+        "f":46.875
+      },
+      "NAME/DISEASE/ANIMAL_DISEASE":{
+        "p":83.5051546392,
+        "r":82.6530612245,
+        "f":83.0769230769
+      },
+      "TIME_TOP/PERIODX/PERIOD_TIME":{
+        "p":67.7419354839,
+        "r":70.0,
+        "f":68.8524590164
+      },
+      "NAME/LOCATION/GPE/PROVINCE":{
+        "p":92.1348314607,
+        "r":82.0,
+        "f":86.7724867725
+      },
+      "NUMEX/FREQUENCY":{
+        "p":73.6842105263,
+        "r":75.6756756757,
+        "f":74.6666666667
+      },
+      "NUMEX/NUMEX_OTHER":{
+        "p":80.0,
+        "r":62.0689655172,
+        "f":69.9029126214
+      },
+      "NAME/PRODUCT/CLASS":{
+        "p":66.6666666667,
+        "r":42.1052631579,
+        "f":51.6129032258
+      },
+      "NAME/COLOR/NATURE_COLOR":{
+        "p":89.2307692308,
+        "r":89.2307692308,
+        "f":89.2307692308
+      },
+      "NAME/PRODUCT/DOCTRINE_METHOD/ACADEMIC":{
+        "p":85.2941176471,
+        "r":76.3157894737,
+        "f":80.5555555556
+      },
+      "NAME/PRODUCT/ART/MUSIC":{
+        "p":60.0,
+        "r":69.2307692308,
+        "f":64.2857142857
+      },
+      "NAME/LOCATION/ASTRAL_BODY/CONSTELLATION":{
+        "p":100.0,
+        "r":50.0,
+        "f":66.6666666667
+      },
+      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/POLITICAL_ORGANIZATION_OTHER":{
+        "p":59.0909090909,
+        "r":48.1481481481,
+        "f":53.0612244898
+      },
+      "NUMEX/COUNTX/N_PERSON":{
+        "p":88.829787234,
+        "r":85.2040816327,
+        "f":86.9791666667
+      },
+      "NAME/PRODUCT/OFFENCE":{
+        "p":67.7419354839,
+        "r":71.186440678,
+        "f":69.4214876033
+      },
+      "NAME/FACILITY/FACILITY_PART":{
+        "p":42.3076923077,
+        "r":32.3529411765,
+        "f":36.6666666667
+      },
+      "NAME/FACILITY/GOE/GOE_OTHER":{
+        "p":76.8115942029,
+        "r":60.2272727273,
+        "f":67.5159235669
+      },
+      "NAME/FACILITY/LINE/ROAD":{
+        "p":66.6666666667,
+        "r":40.0,
+        "f":50.0
+      },
+      "NAME/LOCATION/ADDRESS/PHONE_NUMBER":{
+        "p":97.1428571429,
+        "r":87.1794871795,
+        "f":91.8918918919
+      },
+      "NAME/ORGANIZATION/CORPORATION/CORPORATION_OTHER":{
+        "p":85.2459016393,
+        "r":69.3333333333,
+        "f":76.4705882353
+      },
+      "NUMEX/POINT":{
+        "p":69.5652173913,
+        "r":61.5384615385,
+        "f":65.306122449
+      },
+      "NAME/LOCATION/GPE/GPE_OTHER":{
+        "p":78.3783783784,
+        "r":72.5,
+        "f":75.3246753247
+      },
+      "NAME/EVENT/EVENT_OTHER":{
+        "p":73.3333333333,
+        "r":56.4102564103,
+        "f":63.768115942
+      },
+      "NAME/PRODUCT/FOOD/FOOD_OTHER":{
+        "p":60.5263157895,
+        "r":56.7901234568,
+        "f":58.5987261146
+      },
+      "TIME_TOP/PERIODX/PERIOD_WEEK":{
+        "p":88.8888888889,
+        "r":88.8888888889,
+        "f":88.8888888889
+      },
+      "NUMEX/COUNTX/COUNTX_OTHER":{
+        "p":47.3684210526,
+        "r":35.2941176471,
+        "f":40.4494382022
+      },
+      "NAME/PRODUCT/LANGUAGE/NATIONAL_LANGUAGE":{
+        "p":86.6666666667,
+        "r":92.8571428571,
+        "f":89.6551724138
+      },
+      "TIME_TOP/TIMEX/TIME":{
+        "p":81.6666666667,
+        "r":77.7777777778,
+        "f":79.674796748
+      },
+      "NUMEX/COUNTX/N_ORGANIZATION":{
+        "p":77.4193548387,
+        "r":85.7142857143,
+        "f":81.3559322034
+      },
+      "NAME/ORGANIZATION/SPORTS_ORGANIZATION/PRO_SPORTS_ORGANIZATION":{
+        "p":93.6170212766,
+        "r":84.6153846154,
+        "f":88.8888888889
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/BIRD":{
+        "p":95.0,
+        "r":76.0,
+        "f":84.4444444444
+      },
+      "NAME/EVENT/OCCASION/OCCASION_OTHER":{
+        "p":59.0909090909,
+        "r":30.9523809524,
+        "f":40.625
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/FLORA":{
+        "p":76.1904761905,
+        "r":58.1818181818,
+        "f":65.9793814433
+      },
+      "NAME/LOCATION/GEOLOGICAL_REGION/ISLAND":{
+        "p":81.25,
+        "r":81.25,
+        "f":81.25
+      },
+      "NUMEX/COUNTX/N_NATURAL_OBJECT/N_ANIMAL":{
+        "p":92.8571428571,
+        "r":76.4705882353,
+        "f":83.8709677419
+      },
+      "NUMEX/COUNTX/N_NATURAL_OBJECT/N_NATURAL_OBJECT_OTHER":{
+        "p":60.0,
+        "r":46.1538461538,
+        "f":52.1739130435
+      },
+      "NAME/ORGANIZATION/FAMILY":{
+        "p":100.0,
+        "r":83.3333333333,
+        "f":90.9090909091
+      },
+      "NUMEX/COUNTX/N_LOCATION/N_LOCATION_OTHER":{
+        "p":78.9473684211,
+        "r":65.2173913043,
+        "f":71.4285714286
+      },
+      "NAME/PRODUCT/ART/BOOK":{
+        "p":72.7272727273,
+        "r":47.0588235294,
+        "f":57.1428571429
+      },
+      "NAME/ORGANIZATION/ETHNIC_GROUP/ETHNIC_GROUP_OTHER":{
+        "p":78.9473684211,
+        "r":57.6923076923,
+        "f":66.6666666667
+      },
+      "NAME/EVENT/INCIDENT/INCIDENT_OTHER":{
+        "p":66.6666666667,
+        "r":63.1578947368,
+        "f":64.8648648649
+      },
+      "NAME/NAME_OTHER":{
+        "p":85.7142857143,
+        "r":42.8571428571,
+        "f":57.1428571429
+      },
+      "NAME/FACILITY/GOE/PORT":{
+        "p":83.3333333333,
+        "r":83.3333333333,
+        "f":83.3333333333
+      },
+      "NAME/FACILITY/GOE/PUBLIC_INSTITUTION":{
+        "p":66.6666666667,
+        "r":72.7272727273,
+        "f":69.5652173913
+      },
+      "NUMEX/MONEY":{
+        "p":75.6944444444,
+        "r":75.1724137931,
+        "f":75.4325259516
+      },
+      "NUMEX/MEASUREMENT/MEASUREMENT_OTHER":{
+        "p":81.25,
+        "r":44.8275862069,
+        "f":57.7777777778
+      },
+      "NUMEX/MEASUREMENT/VOLUME":{
+        "p":87.5,
+        "r":70.0,
+        "f":77.7777777778
+      },
+      "NAME/LOCATION/ADDRESS/EMAIL":{
+        "p":100.0,
+        "r":100.0,
+        "f":100.0
+      },
+      "NUMEX/COUNTX/N_FACILITY":{
+        "p":72.7272727273,
+        "r":64.0,
+        "f":68.085106383
+      },
+      "NAME/PRODUCT/FOOD/DISH":{
+        "p":82.0224719101,
+        "r":64.0350877193,
+        "f":71.921182266
+      },
+      "NAME/ORGANIZATION/ETHNIC_GROUP/NATIONALITY":{
+        "p":91.6666666667,
+        "r":84.6153846154,
+        "f":88.0
+      },
+      "NAME/LOCATION/ADDRESS/POSTAL_ADDRESS":{
+        "p":82.3529411765,
+        "r":73.6842105263,
+        "f":77.7777777778
+      },
+      "NAME/LOCATION/REGION/CONTINENTAL_REGION":{
+        "p":93.1818181818,
+        "r":80.3921568627,
+        "f":86.3157894737
+      },
+      "NAME/LOCATION/GEOLOGICAL_REGION/GEOLOGICAL_REGION_OTHER":{
+        "p":71.4285714286,
+        "r":71.4285714286,
+        "f":71.4285714286
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/MOLLUSC_ARTHROPOD":{
+        "p":66.6666666667,
+        "r":40.0,
+        "f":50.0
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/INSECT":{
+        "p":66.6666666667,
+        "r":100.0,
+        "f":80.0
+      },
+      "NAME/PRODUCT/AWARD":{
+        "p":80.0,
+        "r":44.4444444444,
+        "f":57.1428571429
+      },
+      "NAME/PRODUCT/DOCTRINE_METHOD/RELIGION":{
+        "p":80.0,
+        "r":61.5384615385,
+        "f":69.5652173913
+      },
+      "NAME/PRODUCT/MATERIAL":{
+        "p":39.5348837209,
+        "r":65.3846153846,
+        "f":49.2753623188
+      },
+      "NAME/FACILITY/GOE/SCHOOL":{
+        "p":80.6451612903,
+        "r":71.4285714286,
+        "f":75.7575757576
+      },
+      "NAME/PRODUCT/DOCTRINE_METHOD/THEORY":{
+        "p":100.0,
+        "r":60.0,
+        "f":75.0
+      },
+      "NAME/PRODUCT/RULE/TREATY":{
+        "p":42.8571428571,
+        "r":50.0,
+        "f":46.1538461538
+      },
+      "NUMEX/COUNTX/N_LOCATION/N_COUNTRY":{
+        "p":85.7142857143,
+        "r":80.0,
+        "f":82.7586206897
+      },
+      "NAME/FACILITY/GOE/MUSEUM":{
+        "p":75.0,
+        "r":60.0,
+        "f":66.6666666667
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/LIVING_THING_OTHER":{
+        "p":100.0,
+        "r":25.0,
+        "f":40.0
+      },
+      "NAME/NATURAL_OBJECT/MINERAL":{
+        "p":50.0,
+        "r":33.3333333333,
+        "f":40.0
+      },
+      "TIME_TOP/PERIODX/PERIOD_MONTH":{
+        "p":62.5,
+        "r":71.4285714286,
+        "f":66.6666666667
+      },
+      "NAME/PRODUCT/PRINTING/PRINTING_OTHER":{
+        "p":83.3333333333,
+        "r":60.0,
+        "f":69.7674418605
+      },
+      "NAME/FACILITY/GOE/STATION":{
+        "p":72.7272727273,
+        "r":66.6666666667,
+        "f":69.5652173913
+      },
+      "NAME/PRODUCT/VEHICLE/TRAIN":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/PRODUCT/ID_NUMBER":{
+        "p":75.0,
+        "r":60.0,
+        "f":66.6666666667
+      },
+      "NAME/PRODUCT/ART/MOVIE":{
+        "p":78.5714285714,
+        "r":73.3333333333,
+        "f":75.8620689655
+      },
+      "NAME/PRODUCT/VEHICLE/SHIP":{
+        "p":66.6666666667,
+        "r":66.6666666667,
+        "f":66.6666666667
+      },
+      "NAME/FACILITY/ARCHAEOLOGICAL_PLACE/ARCHAEOLOGICAL_PLACE_OTHER":{
+        "p":100.0,
+        "r":66.6666666667,
+        "f":80.0
+      },
+      "NAME/LOCATION/GEOLOGICAL_REGION/RIVER":{
+        "p":100.0,
+        "r":100.0,
+        "f":100.0
+      },
+      "NUMEX/MEASUREMENT/SPACE":{
+        "p":85.7142857143,
+        "r":50.0,
+        "f":63.1578947368
+      },
+      "NUMEX/MEASUREMENT/WEIGHT":{
+        "p":77.7777777778,
+        "r":87.5,
+        "f":82.3529411765
+      },
+      "TIME_TOP/PERIODX/PERIOD_DAY":{
+        "p":78.5714285714,
+        "r":47.8260869565,
+        "f":59.4594594595
+      },
+      "NAME/FACILITY/GOE/WORSHIP_PLACE":{
+        "p":75.0,
+        "r":64.2857142857,
+        "f":69.2307692308
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/AMPHIBIA":{
+        "p":100.0,
+        "r":50.0,
+        "f":66.6666666667
+      },
+      "NAME/EVENT/NATURAL_PHENOMENON/NATURAL_DISASTER":{
+        "p":50.0,
+        "r":100.0,
+        "f":66.6666666667
+      },
+      "NAME/LOCATION/GEOLOGICAL_REGION/MOUNTAIN":{
+        "p":66.6666666667,
+        "r":26.6666666667,
+        "f":38.0952380952
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/FISH":{
+        "p":50.0,
+        "r":40.0,
+        "f":44.4444444444
+      },
+      "NAME/EVENT/OCCASION/RELIGIOUS_FESTIVAL":{
+        "p":33.3333333333,
+        "r":33.3333333333,
+        "f":33.3333333333
+      },
+      "NAME/ORGANIZATION/SHOW_ORGANIZATION":{
+        "p":65.0,
+        "r":52.0,
+        "f":57.7777777778
+      },
+      "NUMEX/COUNTX/N_NATURAL_OBJECT/N_FLORA":{
+        "p":50.0,
+        "r":100.0,
+        "f":66.6666666667
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING_PART/FLORA_PART":{
+        "p":80.0,
+        "r":90.9090909091,
+        "f":85.1063829787
+      },
+      "NAME/FACILITY/FACILITY_OTHER":{
+        "p":50.0,
+        "r":33.3333333333,
+        "f":40.0
+      },
+      "NAME/FACILITY/GOE/PARK":{
+        "p":100.0,
+        "r":66.6666666667,
+        "f":80.0
+      },
+      "NAME/PRODUCT/VEHICLE/SPACESHIP":{
+        "p":100.0,
+        "r":33.3333333333,
+        "f":50.0
+      },
+      "NAME/PRODUCT/ART/SHOW":{
+        "p":25.0,
+        "r":16.6666666667,
+        "f":20.0
+      },
+      "NAME/FACILITY/GOE/THEATER":{
+        "p":50.0,
+        "r":53.8461538462,
+        "f":51.8518518519
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/FUNGUS":{
+        "p":100.0,
+        "r":16.6666666667,
+        "f":28.5714285714
+      },
+      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/MILITARY":{
+        "p":87.5,
+        "r":87.5,
+        "f":87.5
+      },
+      "NAME/FACILITY/GOE/RESEARCH_INSTITUTE":{
+        "p":83.3333333333,
+        "r":100.0,
+        "f":90.9090909091
+      },
+      "NAME/LOCATION/ADDRESS/URL":{
+        "p":81.8181818182,
+        "r":75.0,
+        "f":78.2608695652
+      },
+      "NAME/ORGANIZATION/POLITICAL_ORGANIZATION/CABINET":{
+        "p":80.0,
+        "r":80.0,
+        "f":80.0
+      },
+      "NUMEX/MEASUREMENT/CALORIE":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/NATURAL_OBJECT/ELEMENT":{
+        "p":37.5,
+        "r":100.0,
+        "f":54.5454545455
+      },
+      "NAME/PRODUCT/DRUG":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/ORGANIZATION/CORPORATION/COMPANY_GROUP":{
+        "p":62.5,
+        "r":41.6666666667,
+        "f":50.0
+      },
+      "NAME/EVENT/INCIDENT/WAR":{
+        "p":100.0,
+        "r":75.0,
+        "f":85.7142857143
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING_PART/LIVING_THING_PART_OTHER":{
+        "p":60.0,
+        "r":66.6666666667,
+        "f":63.1578947368
+      },
+      "NUMEX/MEASUREMENT/SEISMIC_INTENSITY":{
+        "p":66.6666666667,
+        "r":100.0,
+        "f":80.0
+      },
+      "NAME/FACILITY/GOE/AIRPORT":{
+        "p":66.6666666667,
+        "r":100.0,
+        "f":80.0
+      },
+      "NAME/ORGANIZATION/SPORTS_ORGANIZATION/SPORTS_LEAGUE":{
+        "p":85.7142857143,
+        "r":66.6666666667,
+        "f":75.0
+      },
+      "NAME/EVENT/NATURAL_PHENOMENON/NATURAL_PHENOMENON_OTHER":{
+        "p":50.0,
+        "r":33.3333333333,
+        "f":40.0
+      },
+      "NAME/FACILITY/LINE/LINE_OTHER":{
+        "p":100.0,
+        "r":50.0,
+        "f":66.6666666667
+      },
+      "NAME/PRODUCT/UNIT/CURRENCY":{
+        "p":100.0,
+        "r":50.0,
+        "f":66.6666666667
+      },
+      "NUMEX/MULTIPLICATION":{
+        "p":88.8888888889,
+        "r":100.0,
+        "f":94.1176470588
+      },
+      "NAME/EVENT/NATURAL_PHENOMENON/EARTHQUAKE":{
+        "p":37.5,
+        "r":37.5,
+        "f":37.5
+      },
+      "NAME/NATURAL_OBJECT/COMPOUND":{
+        "p":88.2352941176,
+        "r":65.2173913043,
+        "f":75.0
+      },
+      "NAME/LOCATION/ASTRAL_BODY/STAR":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/PRODUCT/ART/ART_OTHER":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/FACILITY/GOE/ZOO":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "TIME_TOP/PERIODX/PERIODX_OTHER":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/NATURAL_OBJECT/NATURAL_OBJECT_OTHER":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/FACILITY/LINE/WATER_ROUTE":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/LOCATION/GEOLOGICAL_REGION/BAY":{
+        "p":100.0,
+        "r":100.0,
+        "f":100.0
+      },
+      "NAME/PRODUCT/MONEY_FORM":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NUMEX/MEASUREMENT/SPEED":{
+        "p":50.0,
+        "r":20.0,
+        "f":28.5714285714
+      },
+      "NAME/FACILITY/LINE/BRIDGE":{
+        "p":50.0,
+        "r":100.0,
+        "f":66.6666666667
+      },
+      "NAME/PRODUCT/PRINTING/NEWSPAPER":{
+        "p":83.3333333333,
+        "r":45.4545454545,
+        "f":58.8235294118
+      },
+      "NAME/PRODUCT/VEHICLE/VEHICLE_OTHER":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/COLOR/COLOR_OTHER":{
+        "p":25.0,
+        "r":25.0,
+        "f":25.0
+      },
+      "NAME/FACILITY/LINE/RAILROAD":{
+        "p":66.6666666667,
+        "r":46.1538461538,
+        "f":54.5454545455
+      },
+      "NAME/DISEASE/DISEASE_OTHER":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/LOCATION/GEOLOGICAL_REGION/SEA":{
+        "p":33.3333333333,
+        "r":50.0,
+        "f":40.0
+      },
+      "NAME/FACILITY/GOE/AMUSEMENT_PARK":{
+        "p":83.3333333333,
+        "r":100.0,
+        "f":90.9090909091
+      },
+      "NAME/LOCATION/GEOLOGICAL_REGION/LAKE":{
+        "p":100.0,
+        "r":60.0,
+        "f":75.0
+      },
+      "NAME/FACILITY/LINE/TUNNEL":{
+        "p":100.0,
+        "r":50.0,
+        "f":66.6666666667
+      },
+      "NAME/FACILITY/GOE/CAR_STOP":{
+        "p":50.0,
+        "r":100.0,
+        "f":66.6666666667
+      },
+      "NAME/FACILITY/GOE/MARKET":{
+        "p":100.0,
+        "r":100.0,
+        "f":100.0
+      },
+      "NAME/PRODUCT/VEHICLE/AIRCRAFT":{
+        "p":100.0,
+        "r":100.0,
+        "f":100.0
+      },
+      "NAME/GOD":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/PRODUCT/ART/PICTURE":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NAME/LOCATION/GPE/COUNTY":{
+        "p":100.0,
+        "r":100.0,
+        "f":100.0
+      },
+      "NAME/LOCATION/SPA":{
+        "p":100.0,
+        "r":100.0,
+        "f":100.0
+      },
+      "NAME/NATURAL_OBJECT/LIVING_THING/REPTILE":{
+        "p":0.0,
+        "r":0.0,
+        "f":0.0
+      },
+      "NUMEX/MEASUREMENT/TEMPERATURE":{
+        "p":66.6666666667,
+        "r":100.0,
+        "f":80.0
+      },
+      "NAME/PRODUCT/DOCTRINE_METHOD/MOVEMENT":{
+        "p":100.0,
+        "r":100.0,
+        "f":100.0
       }
     },
-    "tags_acc": 0,
-    "token_acc": 100,
-    "textcat_score": 0,
-    "textcats_per_cat": {}
+    "tags_acc":0.0,
+    "token_acc":100.0,
+    "textcat_score":0.0,
+    "textcats_per_cat":{
+
+    }
   },
-  "config": {
-    "ndata": 39360,
-    "niter": 10,
-    "nbatch": 16,
-    "scheduler": false,
-    "test_size": 0.1,
-    "data": "~/datasets/ner-bccwj-fullene.jsonl",
-    "label": "ene",
-    "lang": "mecab",
-    "pretrained": "/home/ubuntu/bedore-ner/data/bert-ja-juman",
-    "neval": -1,
-    "num_layer": 1
+  "config":{
+    "ndata":39360,
+    "niter":10,
+    "nbatch":16,
+    "scheduler":false,
+    "test_size":0.1,
+    "data":"~/datasets/ner-bccwj-fullene.jsonl",
+    "label":"ene",
+    "lang":"mecab",
+    "pretrained":"/home/ubuntu/bedore-ner/data/bert-ja-juman/",
+    "neval":-1,
+    "num_layer":1
   },
-  "requirements": [
-    "mecab-python3",
-    "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@v0.4"
+  "requirements":[
+    "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@v0.4",
+    "mecab-python3"
   ]
 }
