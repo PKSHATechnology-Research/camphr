@@ -92,7 +92,7 @@ def create_nlp(cfg: Config) -> Language:
             lang=cfg.lang,
             pretrained=cfg.pretrained,
             labels=labels,
-            weights=cfg.weights,
+            label_weights=cfg.weights,
             freeze=cfg.freeze,
         )
     name = get_trf_name(cfg.pretrained)
