@@ -1,3 +1,4 @@
+from bedoner.pipelines.trf_model import TransformersModel
 import numpy as np
 from transformers import AdamW
 import pytest
@@ -71,6 +72,13 @@ def test_doc_similarlity(nlp, text1, text2):
     doc2 = nlp(text2)
     assert doc1.similarity(doc2)
     assert np.isclose(doc1.similarity(doc2), doc2.similarity(doc1))
+
+
+def test_freeze(nlp: Language):
+    pipe: TransformersModel = nlp.pipeline[-1][1]
+    assert len(list(pipe.optim_parameters())) > 0
+    pipe.cfg["freeze"] = True
+    assert len(list(pipe.optim_parameters())) == 0
 
 
 def test_optim(nlp: Language):

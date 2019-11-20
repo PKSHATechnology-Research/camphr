@@ -157,11 +157,6 @@ def test_save_and_load(nlp: Language, label_type):
 TESTCASE2 = ["資生堂の香水-禅とオードパルファンＺＥＮの違いを教えて下さい。また今でも製造されてますか？"]
 
 
-@pytest.fixture
-def cuda():
-    return torch.device("cuda")
-
-
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
 @pytest.mark.parametrize("text,gold", TESTCASE_ENE)
 def test_call_cuda(nlp: Language, text, gold, cuda, label_type):

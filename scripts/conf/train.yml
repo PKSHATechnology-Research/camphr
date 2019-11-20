@@ -1,11 +1,15 @@
+task: textcat
 ndata: -1
 niter: 10
 nbatch: 16
 scheduler: false
 test_size: 0.1
-data: ~/datasets/ner-bccwj-fullene.jsonl
-label: ene
-lang:
+data: ~/datasets/ldcc.jsonl
+label:
+label_json: ~/datasets/ldcc_labels.json
+lang: mecab
 pretrained:
 neval: -1
-num_layer: 1
+freeze: false
+weights:
+name:

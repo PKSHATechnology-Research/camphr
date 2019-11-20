@@ -1,19 +1,24 @@
 import os
+from sklearn.metrics import classification_report
+import numpy as np
+import operator
 import json
 import logging
 import random
 from pathlib import Path
+from typing_extensions import Literal
 from typing import Dict, List, Tuple
 
 import hydra
 from spacy.language import Language
+from bedoner.torch_utils import goldcat_to_label
 import omegaconf
 import torch
 from sklearn.model_selection import train_test_split
 from spacy.scorer import Scorer
 from spacy.util import minibatch
 
-from bedoner.models import trf_ner, get_trf_name
+from bedoner.models import trf_ner, get_trf_name, trf_seq_classification
 from bedoner.ner_labels import LABELS
 from bedoner.ner_labels.utils import make_biluo_labels
 import srsly
@@ -35,12 +40,14 @@ class Config(omegaconf.OmegaConf):
     ndata: int
     niter: int
     nbatch: int
+    labels: List[str]
     label: str
     scheduler: bool
     test_size: float
     lang: str
     pretrained: str
     neval: int
+    task: Literal["textcat", "ner"]
 
 
 def create_data(cfg: Config) -> Tuple[List, List]:
@@ -55,24 +62,76 @@ def create_data(cfg: Config) -> Tuple[List, List]:
     return train, val
 
 
+def get_labels_from_file(cfg: Config) -> List[str]:
+    if cfg.label_json:
+        return srsly.read_json(os.path.expanduser(cfg.label_json))
+    return []
+
+
+def get_labels(cfg: Config) -> List[str]:
+    labels = get_labels_from_file(cfg)
+    if not labels:
+        if cfg.task == "textcat":
+            labels = cfg.labels
+        if cfg.task == "ner":
+            labels = make_biluo_labels(LABELS[cfg.label])
+    if labels:
+        return labels
+    raise ValueError()
+
+
 def create_nlp(cfg: Config) -> Language:
-    labels = LABELS[cfg.label]
-    nlp = trf_ner(
-        lang=cfg.lang, pretrained=cfg.pretrained, labels=make_biluo_labels(labels)
-    )
+    labels = get_labels(cfg)
+    nlp = None
+    if cfg.task == "ner":
+        nlp = trf_ner(
+            lang=cfg.lang, pretrained=cfg.pretrained, labels=labels, freeze=cfg.freeze
+        )
+    elif cfg.task == "textcat":
+        nlp = trf_seq_classification(
+            lang=cfg.lang,
+            pretrained=cfg.pretrained,
+            labels=labels,
+            weights=cfg.weights,
+            freeze=cfg.freeze,
+        )
     name = get_trf_name(cfg.pretrained)
-    nlp.meta["name"] = name.value + "_" + cfg.label
+    nlp.meta["name"] = name.value + "_" + (cfg.name or cfg.task)
     return nlp
 
 
-def evaluate(cfg: Config, nlp, val_data) -> Scorer:
+def evaluate(cfg: Config, nlp: Language, val_data) -> Dict:
     try:
         scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
     except:
         with open("fail.json", "w") as f:
             json.dump(val_data, f, ensure_ascii=False)
             raise
-    return scorer
+    return scorer.scores
+
+
+def get_max_key(x):
+    return max(x.items(), key=operator.itemgetter(1))[0]
+
+
+def evaluate_textcat(cfg: Config, nlp: Language, val_data) -> Dict:
+    # TODO: https://github.com/explosion/spaCy/pull/4664
+    texts, golds = zip(*val_data)
+    try:
+        y = np.array(list(map(lambda x: goldcat_to_label(x["cats"]), golds)))
+        docs = list(nlp.pipe(texts, batch_size=cfg.nbatch * 2))
+        preds = np.array([get_max_key(doc.cats) for doc in docs])
+    except:
+        with open("fail.json", "w") as f:
+            json.dump(val_data, f, ensure_ascii=False)
+            raise
+    return classification_report(y, preds, output_dict=True)
+
+
+def get_eval_fn(cfg: Config):
+    if cfg.task == "textcat":
+        return evaluate_textcat
+    return evaluate
 
 
 def train_epoch(cfg: Config, nlp, optim, train_data, val_data, epoch, eval_fn):
@@ -94,15 +153,14 @@ def train_epoch(cfg: Config, nlp, optim, train_data, val_data, epoch, eval_fn):
             log.info(f"ents_f: {scorer.ents_f}")
 
 
-def train(cfg: Config, nlp, train_data, val_data, savedir: Path, eval_fn=None):
-    if eval_fn is None:
-        eval_fn = evaluate
+def train(cfg: Config, nlp, train_data, val_data, savedir: Path):
+    eval_fn = get_eval_fn(cfg)
     optim = nlp.resume_training(t_total=cfg.niter, enable_scheduler=cfg.scheduler)
     for i in range(cfg.niter):
         random.shuffle(train_data)
         train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
-        scorer = eval_fn(cfg, nlp, val_data)
-        nlp.meta.update({"score": scorer.scores, "config": cfg.to_container()})
+        scores = eval_fn(cfg, nlp, val_data)
+        nlp.meta.update({"score": scores, "config": cfg.to_container()})
         nlp.to_disk(savedir / str(i))
 
 

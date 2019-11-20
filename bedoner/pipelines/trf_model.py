@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Iterable, List, Optional, Union, cast
 
 import numpy as np
+import spacy
+import spacy.language
 import torch
 import transformers as trf
 from spacy.gold import GoldParse
@@ -24,6 +26,7 @@ from bedoner.torch_utils import (
 )
 from bedoner.utils import zero_pad
 
+spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 PRETRAINED_MODEL_ARCHIVE_MAP = {
     "bert-ja-juman": "s3://bedoner/trf_models/bert/bert-ja-juman.bin",
     "xlnet-ja": "s3://bedoner/trf_models/xlnet/pytorch_model.bin",
@@ -168,19 +171,26 @@ class TransformersModel(TorchPipe):
                 length = min(self.max_length, length)
             # Instead of assigning tensor directory, assign `TensorWrapper`
             # so that trailing pipe can handle batch tensor efficiently.
-            doc._.trf_last_hidden_state = TensorWrapper(
-                outputs.laste_hidden_state, i, length
+            doc._.set(
+                ATTRS.last_hidden_state,
+                TensorWrapper(outputs.laste_hidden_state, i, length),
             )
             if outputs.hidden_states:
-                doc._.trf_all_hidden_states = [
-                    TensorWrapper(hid_layer, i)
-                    for hid_layer in cast(Iterable, outputs.hidden_states)
-                ]
+                doc._.set(
+                    ATTRS.all_hidden_states,
+                    [
+                        TensorWrapper(hid_layer, i)
+                        for hid_layer in cast(Iterable, outputs.hidden_states)
+                    ],
+                )
             if outputs.attensions:
-                doc._.trf_all_attentions = [
-                    TensorWrapper(attention_layer, i)
-                    for attention_layer in cast(Iterable, outputs.attensions)
-                ]
+                doc._.set(
+                    ATTRS.all_attentions,
+                    [
+                        TensorWrapper(attention_layer, i)
+                        for attention_layer in cast(Iterable, outputs.attensions)
+                    ],
+                )
 
             if set_vector:
                 lh: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
@@ -199,11 +209,17 @@ class TransformersModel(TorchPipe):
                 doc.user_span_hooks["similarity"] = get_similarity
                 doc.user_token_hooks["similarity"] = get_similarity
 
+    @property
+    def freeze(self) -> bool:
+        if self.cfg.get("freeze"):
+            return True
+        return False
+
     def update(self, docs: List[Doc], golds: List[GoldParse]):
         """Simply forward docs in training mode."""
         self.require_model()
         x = self.docs_to_trfinput(docs)
-        if self.cfg.get("freeze"):
+        if self.freeze:
             torch.set_grad_enabled(False)
             self.model.eval()
         else:
@@ -240,6 +256,8 @@ class TransformersModel(TorchPipe):
         return inputs
 
     def optim_parameters(self) -> OptimizerParameters:
+        if self.freeze:
+            return []
         no_decay = self.cfg.get("no_decay")
         weight_decay = self.cfg.get("weight_decay")
         return get_parameters_with_decay(self.model, no_decay, weight_decay)
@@ -264,8 +282,8 @@ class TransformersModel(TorchPipe):
         return self
 
 
+@spacy.component("bert", assigns=[f"doc._.{ATTRS.last_hidden_state}"])
 class BertModel(TransformersModel):
-    name = "bert"
     output_cls = BertModelOutputs
     input_cls = BertModelInputs
     trf_model_cls = trf.BertModel
@@ -280,8 +298,8 @@ class BertModel(TransformersModel):
             doc._.trf_pooler_output = TensorWrapper(outputs.pooler_output, i, length)
 
 
+@spacy.component("xlnet", assigns=[f"doc._.{ATTRS.last_hidden_state}"])
 class XLNetModel(TransformersModel):
-    name = "xlnet"
     trf_model_cls = trf.XLNetModel
     trf_config_cls = trf.XLNetConfig
     input_cls = XLNetModelInputs

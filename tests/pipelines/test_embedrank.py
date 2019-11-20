@@ -1,6 +1,6 @@
 import pytest
-import torch
 import spacy
+import torch
 
 from bedoner.models import trf_model
 from bedoner.pipelines.embedrank import EMBEDRANK_KEYPHRASES, EmbedRank

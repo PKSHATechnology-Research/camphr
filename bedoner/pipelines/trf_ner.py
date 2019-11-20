@@ -2,43 +2,45 @@
 
 Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
-import pickle
-from pathlib import Path
-from typing import Callable, Iterable, Union, cast
+import functools
+from typing import Callable, Iterable, cast
 
+import spacy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers as trf
+from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
 from spacy.language import Language
 from spacy.tokens import Doc, Token
-from spacy.vocab import Vocab
+from spacy_transformers.util import ATTRS
 
-from bedoner.pipelines.utils import UNK, correct_biluo_tags, merge_entities
-from bedoner.torch_utils import (
-    OptimizerParameters,
-    TensorWrapper,
-    TorchPipe,
-    get_parameters_with_decay,
+from bedoner.pipelines.trf_utils import (
+    TRF_CONFIG,
+    TrfConfig,
+    TrfModelForTaskBase,
+    TrfPipeForTaskBase,
+    get_dropout,
+    get_last_hidden_state_from_docs,
 )
+from bedoner.pipelines.utils import UNK, correct_biluo_tags, merge_entities
+
+CLS_LOGIT = "cls_logit"
+LABELS = "labels"
+NUM_LABELS = "num_labels"
+USER_HOOKS = "user_hooks"
+CONVERT_LABEL = "convert_label"
 
 
-class TrfTokenClassifier(nn.Module):
+class TrfTokenClassifier(TrfModelForTaskBase):
     """A thin layer for classification task"""
 
-    def __init__(self, config: Union[trf.BertConfig, trf.XLNetConfig]):
-        super().__init__()
-        self.config = config
+    def __init__(self, config: TrfConfig):
+        super().__init__(config)
         self.num_labels = config.num_labels
-        if isinstance(config, trf.BertConfig):
-            dropout = config.hidden_dropout_prob
-            hidden_size = config.hidden_size
-        elif isinstance(config, trf.XLNetConfig):
-            dropout = config.dropout
-            hidden_size = config.d_model
-        else:
-            raise ValueError(f"{type(config)} is not supported")
+        dropout = get_dropout(config)
+        hidden_size = config.hidden_size
         self.dropout = nn.Dropout(dropout)
         self.classifier = nn.Linear(hidden_size, self.num_labels)
         self.loss_fct = nn.CrossEntropyLoss()
@@ -53,8 +55,8 @@ class TrfTokenClassifier(nn.Module):
         return logits
 
 
-class TrfForTokenClassificationBase(TorchPipe):
-    """Base class for token classification task (e.g. NER).
+class TrfForTokenClassificationBase(TrfPipeForTaskBase):
+    """Base class for token classification task (e.g. Named entity recognition).
 
     Requires `TrfModel` before this model in the pipeline to use this model.
 
@@ -63,15 +65,12 @@ class TrfForTokenClassificationBase(TorchPipe):
         `Doc._.cls_logit` is set and stored the output of this model into.
     """
 
-    def __init__(self, vocab, model=True, **cfg):
-        self.vocab = vocab
-        self.model = model
-        self.cfg = cfg
+    model_cls = TrfTokenClassifier
 
     @staticmethod
     def install_extensions():
-        token_exts = ["cls_logit"]
-        doc_exts = ["cls_logit"]
+        token_exts = [CLS_LOGIT]
+        doc_exts = [CLS_LOGIT]
         for ext in token_exts:
             if Token.get_extension(ext) is None:
                 Token.set_extension(ext, default=None)
@@ -80,97 +79,39 @@ class TrfForTokenClassificationBase(TorchPipe):
                 Doc.set_extension(ext, default=None)
 
     @classmethod
-    def from_nlp(cls, nlp, **cfg):
-        """Factory to add to Language.factories via entry point."""
-        return cls(nlp.vocab, **cfg)
-
-    @classmethod
-    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
-        cfg["trf_name"] = name_or_path
-        model = cls.Model(from_pretrained=True, **cfg)
-        cfg["trf_config"] = dict(model.config.to_dict())
-        return cls(vocab, model=model, **cfg)
-
-    @classmethod
     def Model(cls, **cfg) -> TrfTokenClassifier:
-        assert cfg.get("labels")
-        cfg.setdefault("trf_config", {})
-        cfg["trf_config"]["num_labels"] = len(cfg.get("labels", []))
-        if cfg.get("from_pretrained"):
-            config = cls.trf_config_cls.from_pretrained(
-                cfg["trf_name"], **cfg["trf_config"]
-            )
-            model = TrfTokenClassifier(config)
-        else:
-            if "vocab_size" in cfg["trf_config"]:
-                vocab_size = cfg["trf_config"]["vocab_size"]
-                cfg["trf_config"]["vocab_size_or_config_json_file"] = vocab_size
-            model = TrfTokenClassifier(cls.trf_config_cls(**cfg["trf_config"]))
-        assert model.config.num_labels == len(cfg["labels"])
-        return model
+        assert cfg.get(LABELS)
+        cfg.setdefault(TRF_CONFIG, {})
+        cfg[TRF_CONFIG][NUM_LABELS] = len(cfg.get(LABELS, []))
+        model = super().Model(**cfg)
+        assert model.config.num_labels == len(cfg[LABELS])
+        return cast(TrfTokenClassifier, model)
 
     @property
     def labels(self):
-        return tuple(self.cfg.setdefault("labels", []))
+        return tuple(self.cfg.setdefault(LABELS, []))
 
     @property
+    @functools.lru_cache()
     def label2id(self):
         return {v: i for i, v in enumerate(self.labels)}
 
     @property
     def user_hooks(self):
-        return self.cfg.setdefault("user_hooks", {})
+        return self.cfg.setdefault(USER_HOOKS, {})
 
     def add_user_hook(self, k: str, fn: Callable):
         hooks = self.user_hooks
         hooks[k] = fn
 
+    @overrides
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
         self.model.eval()
         with torch.no_grad():
-            x: TensorWrapper = next(
-                iter(docs)
-            )._.trf_last_hidden_state  # assumed that the batch tensor of all docs is stored into the extension.
-            logits = self.model(x.batch_tensor)
+            x = get_last_hidden_state_from_docs(docs)
+            logits = self.model(x)
         return logits
-
-    def update(self, docs: Iterable[Doc], golds: Iterable[GoldParse]):
-        raise NotImplementedError
-
-    def set_annotations(
-        self, docs: Iterable[Doc], logits: torch.Tensor
-    ) -> Iterable[Doc]:
-        raise NotImplementedError
-
-    def optim_parameters(self) -> OptimizerParameters:
-        no_decay = self.cfg.get("no_decay")
-        weight_decay = self.cfg.get("weight_decay")
-        return get_parameters_with_decay(self.model, no_decay, weight_decay)
-
-    def to_disk(self, path: Path, exclude=tuple(), **kwargs):
-        path.mkdir(exist_ok=True)
-        model: TrfTokenClassifier = self.model
-        model.config.save_pretrained(path)
-        torch.save(model.state_dict(), str(path / "model.pth"))
-
-        with (path / "cfg.pkl").open("wb") as f:
-            exclude = {"user_hooks"}
-            cfg = {k: v for k, v in self.cfg.items() if k not in exclude}
-            pickle.dump(cfg, f)
-
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs):
-        with (path / "cfg.pkl").open("rb") as f:
-            self.cfg = pickle.load(f)
-        config = self.trf_config_cls.from_pretrained(path)
-        model = TrfTokenClassifier(config)
-        model.load_state_dict(
-            torch.load(str(path / "model.pth"), map_location=self.device)
-        )
-        model.eval()
-        self.model = model
-
-        return self
 
 
 class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
@@ -186,14 +127,13 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
         self.require_model()
         label2id = self.label2id
         ignore_index = self.ignore_label_index
-        # TODO: Batch
-        x: TensorWrapper = next(iter(docs))._.trf_last_hidden_state
-        logits = self.model(x.batch_tensor)
+        x = get_last_hidden_state_from_docs(docs)
+        logits = self.model(x)
         length = logits.shape[1]
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
             idx = []
-            convert_hook = self.user_hooks.get("convert_label", None)
+            convert_hook = self.user_hooks.get(CONVERT_LABEL, None)
             if convert_hook:
                 ners = [convert_hook(ner) for ner in gold.ner]
             else:
@@ -240,19 +180,21 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
         return docs
 
 
+@spacy.component(
+    "bert_ner", requires=[f"doc._.{ATTRS.last_hidden_state}"], assigns=["doc.ents"]
+)
 class BertForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
-    name = "bert_ner"
     trf_config_cls = trf.BertConfig
 
 
+@spacy.component(
+    "xlnet_ner", requires=[f"doc._.{ATTRS.last_hidden_state}"], assigns=["doc.ents"]
+)
 class XLNetForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
-    name = "xlnet_ner"
     trf_config_cls = trf.XLNetConfig
 
 
 TrfForTokenClassificationBase.install_extensions()
-Language.factories[BertForNamedEntityRecognition.name] = BertForNamedEntityRecognition
-Language.factories[XLNetForNamedEntityRecognition.name] = XLNetForNamedEntityRecognition
 
 # TODO: Ugly (https://github.com/explosion/spaCy/issues/4514)
 for i in range(2, 10):

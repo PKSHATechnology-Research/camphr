@@ -1,0 +1,14 @@
+torch_mecab_bert_stockmark-v0.4.0.dev14
+torch_mecab_xlnet_stockmark-v0.4.0.dev14
+mecab_elmo-v0.4.0.dev13
+mecab_fasttext_wikipedia-v0.4.0.dev9
+mecab_glove_ja-v0.4.0.dev9
+mecab_word2vec_wikipedia-v0.4.0.dev9
+mecab_udify-v0.4.0.dev8
+torch_sentencepiece_xlnet_ene-v0.4.0.dev4
+torch_sentencepiece_xlnet_ene_triple-v0.4.0.dev4
+mecab_bert_ene_triple-v0.4.0.dev3
+sentencepiece_xlnet_model-v0.4.0.dev2
+mecab_bert_multilingual_ene-v0.3.1.dev0
+mecab_bert_irex-v0.3.0.dev2
+/tmp/xlnet_stockmark_ene

@@ -132,7 +132,11 @@ class TorchLanguageMixin:
         for _, pipe in self.pipeline:
             pipe.update(docs, golds)
 
-        loss = torch.mean(torch.stack([doc._.loss for doc in docs]))
+        loss = torch.mean(
+            torch.stack(
+                [doc._.loss for doc in docs if isinstance(doc._.loss, torch.Tensor)]
+            )
+        )
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()

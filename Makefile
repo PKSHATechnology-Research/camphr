@@ -25,3 +25,4 @@ download_dataset:
 download_ldcc:
 	mkdir -p ~/datasets
 	aws s3 cp s3://bedoner/datasets/ldcc.jsonl ~/datasets/ldcc.jsonl
+	aws s3 cp s3://bedoner/datasets/ldcc_labels.json ~/datasets/ldcc_labels.json

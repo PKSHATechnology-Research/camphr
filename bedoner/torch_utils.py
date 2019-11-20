@@ -1,4 +1,5 @@
 """The module torch_utils defines utilities for pytorch."""
+import operator
 from typing import Any, Dict, Iterable, Optional, Union
 
 import torch
@@ -98,3 +99,18 @@ def get_parameters_with_decay(
             ]
     else:
         return model.parameters()
+
+
+GoldCats = Dict[str, Union[bool, float]]
+
+
+def goldcat_to_label(cats: GoldCats) -> str:
+    assert len(cats)
+    return max(cats.items(), key=operator.itemgetter(1))[0]
+
+
+def goldcats_to_tensor(
+    cats: Iterable[GoldCats], label2id: Dict[str, int]
+) -> torch.Tensor:
+    ids = [label2id[goldcat_to_label(cat)] for cat in cats]
+    return torch.tensor(ids)

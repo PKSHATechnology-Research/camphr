@@ -1,4 +1,8 @@
 """The models module defines functions to create spacy models."""
+from bedoner.pipelines.trf_seq_classification import (
+    BertForSequenceClassification,
+    XLNetForSequenceClassification,
+)
 from typing import Dict, Any
 from bedoner.lang.torch_mixin import OPTIM_CREATOR
 from enum import Enum
@@ -102,6 +106,20 @@ def trf_ner_layer(
     name = get_trf_name(pretrained)
     ner = TRF_NER_MAP[name].from_pretrained(vocab, pretrained, **cfg)
     return ner
+
+
+TRF_SEQ_CLS_MAP = {
+    TRF.bert: BertForSequenceClassification,
+    TRF.xlnet: XLNetForSequenceClassification,
+}
+
+
+def trf_seq_classification(lang: str, pretrained: str, **cfg) -> Language:
+    nlp = trf_model(lang, pretrained, **cfg)
+    name = get_trf_name(pretrained)
+    pipe = TRF_SEQ_CLS_MAP[name].from_pretrained(nlp.vocab, pretrained, **cfg)
+    nlp.add_pipe(pipe)
+    return nlp
 
 
 def person_ruler(name="person_ruler") -> mecab.Japanese:

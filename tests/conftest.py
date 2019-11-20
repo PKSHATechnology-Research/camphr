@@ -1,5 +1,6 @@
 from pathlib import Path
 import sentencepiece as spm
+import torch
 
 import pytest
 from spacy.vocab import Vocab
@@ -124,6 +125,11 @@ def spiece(spiece_path):
 @pytest.fixture(scope="session")
 def vocab():
     return Vocab()
+
+
+@pytest.fixture
+def cuda():
+    return torch.device("cuda")
 
 
 @pytest.fixture(scope="session", params=["mecab", "juman", "sentencepiece"])
