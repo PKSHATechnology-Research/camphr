@@ -73,11 +73,11 @@ def get_trf_name(pretrained: str) -> TRF:
     raise ValueError(f"Illegal pretrained name {pretrained}")
 
 
-def trf_model(lang: str, pretrained: str):
+def trf_model(lang: str, pretrained: str, **cfg):
     nlp = wordpiecer(lang, pretrained=pretrained)
     name = get_trf_name(pretrained)
     if name:
-        model = TRF_MODEL_MAP[name].from_pretrained(nlp.vocab, pretrained)
+        model = TRF_MODEL_MAP[name].from_pretrained(nlp.vocab, pretrained, **cfg)
         nlp.add_pipe(model)
         return nlp
 
@@ -89,7 +89,7 @@ TRF_NER_MAP = {
 
 
 def trf_ner(lang: str, pretrained: str, **cfg) -> Language:
-    nlp = trf_model(lang, pretrained)
+    nlp = trf_model(lang, pretrained, **cfg)
     name = get_trf_name(pretrained)
     ner = TRF_NER_MAP[name].from_pretrained(nlp.vocab, pretrained, **cfg)
     nlp.add_pipe(ner)

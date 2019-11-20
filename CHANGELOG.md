@@ -9,6 +9,10 @@
 
 - `TransformersLanguageMixin`を削除
 
+## Bug fixes
+
+- Fix `freeze` param in trf models (#130)
+
 # v0.4
 
 ##  New features and improvements

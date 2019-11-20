@@ -76,6 +76,16 @@ def xlnet_dir(fixture_dir):
     return str(fixture_dir / "xlnet")
 
 
+@pytest.fixture(scope="session", params=["bert", "xlnet"])
+def trf_type(request):
+    return request.param
+
+
+@pytest.fixture(scope="session")
+def pretrained(trf_type, fixture_dir):
+    return str(fixture_dir / trf_type)
+
+
 @pytest.fixture(scope="session")
 def xlnet_wp(xlnet_dir):
     return WordPiecer.from_pretrained(Vocab(), xlnet_dir)
