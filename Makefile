@@ -19,6 +19,9 @@ download_elmo:
 	mkdir -p data/elmo
 	aws s3 cp --recursive s3://bedoner/models/elmo data/elmo
 
-download_ner:
+download_dataset:
 	mkdir -p ~/datasets
 	aws s3 cp s3://bedoner/datasets/ ~/datasets --recursive
+download_ldcc:
+	mkdir -p ~/datasets
+	aws s3 cp s3://bedoner/datasets/ldcc.jsonl ~/datasets/ldcc.jsonl
