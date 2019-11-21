@@ -1,4 +1,5 @@
 """Module wordpiecer defines wordpiecer for pytorch transformers."""
+import spacy
 from typing import Iterable, List, Tuple
 
 from spacy.tokens import Doc
@@ -21,17 +22,20 @@ PRETRAINED_INIT_CONFIGURATION = {
 PRETRAINED_POSITIONAL_EMBEDDINGS_SIZES = {"bert-ja-juman": 512}
 
 
-class WordPiecer(TransformersWordPiecer):
-    name = "trf_wordpiecer"
+class PIPES:
+    transformers_wordpiecer = "transformers_wordpiecer"
+    transformers_sentencepiecer = "transformers_sentencepiecer"
 
+
+@spacy.component(PIPES.transformers_wordpiecer)
+class WordPiecer(TransformersWordPiecer):
     def update(self, docs: Iterable[Doc], *args, **kwargs) -> List[Doc]:
         """Simply forward docs. This method is called when `spacy.Language.update`."""
         return [self(doc) for doc in docs]
 
 
+@spacy.component(PIPES.transformers_sentencepiecer)
 class TrfSentencePiecer(TransformersWordPiecer):
-    name = "trf_sentencepiecer"
-
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
         self.model = model

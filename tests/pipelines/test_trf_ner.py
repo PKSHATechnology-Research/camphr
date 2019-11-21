@@ -1,5 +1,4 @@
 import json
-import tempfile
 
 import pytest
 import spacy
@@ -107,7 +106,7 @@ def test_pipe(nlp: Language):
 
 
 @pytest.mark.parametrize("text,gold", TESTCASE_ENE)
-def test_update(nlp: Language, text, gold, label_type):
+def test_update(nlp: Language, text, gold, label_type, tmpdir):
     if label_type == "irex":
         pytest.skip()
     assert nlp.device.type == "cpu"
@@ -120,6 +119,16 @@ def test_update(nlp: Language, text, gold, label_type):
     assert not doc._.loss
     nlp.update([doc], [gold], optim)
     assert doc._.loss
+
+
+def test_update_after_restore(nlp: Language, tmpdir, label_type):
+    if label_type != "ene":
+        pytest.skip()
+    text, gold = TESTCASE_ENE[0]
+    nlp.to_disk(str(tmpdir))
+    nlp = spacy.load(str(tmpdir))
+    optim = nlp.resume_training()
+    nlp.update([text], [gold], optim)
 
 
 def test_update_for_long_input(nlp, lang, label_type):
@@ -143,15 +152,6 @@ def test_evaluate(nlp: Language, label_type):
     if label_type == "irex":
         pytest.skip()
     nlp.evaluate(TESTCASE_ENE)
-
-
-def test_save_and_load(nlp: Language, label_type):
-    if label_type == "irex":
-        pytest.skip()
-    with tempfile.TemporaryDirectory() as d:
-        nlp.to_disk(d)
-        nlp = spacy.load(d)
-        nlp(TESTCASE_ENE[0][0])
 
 
 TESTCASE2 = ["資生堂の香水-禅とオードパルファンＺＥＮの違いを教えて下さい。また今でも製造されてますか？"]

@@ -1,4 +1,5 @@
 from bedoner.pipelines.trf_model import TransformersModel
+import spacy
 import numpy as np
 from transformers import AdamW
 import pytest
@@ -84,3 +85,14 @@ def test_freeze(nlp: Language):
 def test_optim(nlp: Language):
     optim = nlp.resume_training()
     assert isinstance(optim, AdamW)
+
+
+@pytest.mark.xfail(reason="after feature/trf-maskedlm merged")
+def test_update(nlp: Language, tmpdir):
+    optim = nlp.resume_training()
+    nlp.update(TESTCASES, [{}] * len(TESTCASES), optim)
+    nlp.to_disk(str(tmpdir))
+    nlp = spacy.load(str(tmpdir))
+
+    optim = nlp.resume_training()
+    nlp.update(TESTCASES, [{}] * len(TESTCASES), optim)

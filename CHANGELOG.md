@@ -13,6 +13,7 @@
 ## Bug fixes
 
 - Fix `freeze` param in trf models (#130)
+- Fix name confliction in `TrfWordpiecer` (#135)
 
 # v0.4
 
