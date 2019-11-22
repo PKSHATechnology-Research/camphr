@@ -2,20 +2,22 @@
 
 ##  New features and improvements
 
-- transformers modelについて，`max_length`が設定されている場合，それを超える入力に対してエラーを吐いていたが，後部を切り捨てるように変更 (#129)
-- torchについて，`optim_creators`を導入
-- add transformers base sequence classification (#127)
-- `trf_maskedlm`を追加 - BERT事前学習機能
-- `TrfForSequenceClassification`に`user_hooks`を追加 (#138)
+- Add `trf_seq_classification`: Text classification pipe for Transformers (#127)
+- Add `trf_maskedlm`: MaskedLM task for BERT (#134)
+- Wordpiece truncation for transfromers (#129): Now BERT pipe accepts long sequence
+- Add `optim_creators` to torch integration
+- Add transformers base sequence classification (#127)
+- Add `user_hooks` to `TrfForSequenceClassification` (#138)
 
 ## Backwards incompatibilities
 
-- `TransformersLanguageMixin`を削除
+- Removed `TransformersLanguageMixin`
 
 ## Bug fixes
 
 - Fix `freeze` param in trf models (#130)
 - Fix name confliction in `TrfWordpiecer` (#135)
+- Fix EmbedRank on cuda (#124)
 
 # v0.4
 
@@ -93,7 +95,7 @@ milestone: https://github.com/PKSHATechnology/bedore-ner/milestone/1?closed=1
 - model packagingのversionup scriptを追加 [scripts/versionup-package](scripts/versionup-package)(#60)
 - model package用のテストスクリプトを追加([scripts/test-package.sh](./scripts/test-package.sh)) (#9)
 - NERのラベルづけがoverlapする際に有用なutil `pipelines.utils.merge_entities`を追加 (#63)
- 
+
 ## Bug fixes
 
 - trf nerに全角スペースが入力エラーにならないようにしました (#15)
