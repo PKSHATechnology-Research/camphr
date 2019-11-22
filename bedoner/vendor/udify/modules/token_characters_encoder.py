@@ -3,13 +3,12 @@ A modification to AllenNLP's TokenCharactersEncoder
 """
 
 import torch
-
 from allennlp.common import Params
 from allennlp.data.vocabulary import Vocabulary
-from allennlp.modules.token_embedders.embedding import Embedding
 from allennlp.modules.seq2vec_encoders.seq2vec_encoder import Seq2VecEncoder
 from allennlp.modules.time_distributed import TimeDistributed
 from allennlp.modules.token_embedders import TokenEmbedder
+from allennlp.modules.token_embedders.embedding import Embedding
 
 
 @TokenEmbedder.register("udify_character_encoding")

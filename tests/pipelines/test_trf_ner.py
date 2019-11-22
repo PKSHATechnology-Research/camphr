@@ -1,17 +1,16 @@
-from bedoner.torch_utils import get_loss_from_docs
 import json
 
 import pytest
 import spacy
 import torch
-from spacy.gold import GoldParse
-from spacy.language import Language
-from spacy.tests.util import assert_docs_equal
-
 from bedoner.models import trf_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
 from bedoner.ner_labels.utils import make_biluo_labels
+from bedoner.torch_utils import get_loss_from_docs
+from spacy.gold import GoldParse
+from spacy.language import Language
+from spacy.tests.util import assert_docs_equal
 
 label_types = ["ene", "irex"]
 

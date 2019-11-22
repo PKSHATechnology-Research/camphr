@@ -5,9 +5,8 @@ The dot-product "Layer Attention" that is applied to the layers of BERT, along w
 from typing import List
 
 import torch
-from torch.nn import ParameterList, Parameter
-
 from allennlp.common.checks import ConfigurationError
+from torch.nn import Parameter, ParameterList
 
 
 class ScalarMixWithDropout(torch.nn.Module):

@@ -1,14 +1,13 @@
 import os
-from itertools import chain
 import shutil
+from itertools import chain
 from pathlib import Path
-from typing import Optional, Callable, List, Union
+from typing import Callable, List, Optional, Union
 
 import sentencepiece as spm
-from spacy.language import Language
-from spacy.tokens import Doc, Token, Span
-
 from bedoner.lang.torch_mixin import TorchLanguageMixin
+from spacy.language import Language
+from spacy.tokens import Doc, Span, Token
 
 
 class EXTS:

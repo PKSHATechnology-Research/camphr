@@ -15,7 +15,6 @@ from allennlp.data.vocabulary import Vocabulary
 from allennlp.modules.token_embedders import TokenEmbedder
 from allennlp.nn import util
 from overrides import overrides
-
 from transformers import BertConfig, BertModel, BertTokenizer
 
 from .scalar_mix import ScalarMixWithDropout

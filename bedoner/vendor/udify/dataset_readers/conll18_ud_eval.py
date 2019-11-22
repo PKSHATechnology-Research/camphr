@@ -89,8 +89,7 @@
 # (even partially) any multi-word span are then aligned as tokens.
 
 
-from __future__ import division
-from __future__ import print_function
+from __future__ import division, print_function
 
 import argparse
 import io

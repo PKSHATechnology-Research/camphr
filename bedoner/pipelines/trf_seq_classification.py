@@ -1,4 +1,3 @@
-from bedoner.pipelines.utils import UserHooksMixin
 import functools
 from typing import Dict, Iterable, List, cast
 
@@ -7,21 +6,21 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers as trf
-from overrides import overrides
-from spacy.gold import GoldParse
-from spacy.tokens import Doc
-from spacy_transformers.util import ATTRS
-from transformers.modeling_utils import SequenceSummary
-
 from bedoner.pipelines.trf_utils import (
-    TRF_CONFIG,
     CONVERT_LABEL,
+    TRF_CONFIG,
     TrfConfig,
     TrfModelForTaskBase,
     TrfPipeForTaskBase,
     get_last_hidden_state_from_docs,
 )
+from bedoner.pipelines.utils import UserHooksMixin
 from bedoner.torch_utils import add_loss_to_docs, goldcat_to_label
+from overrides import overrides
+from spacy.gold import GoldParse
+from spacy.tokens import Doc
+from spacy_transformers.util import ATTRS
+from transformers.modeling_utils import SequenceSummary
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 NUM_SEQUENCE_LABELS = "num_sequence_labels"

@@ -3,12 +3,12 @@ The main UDify predictor to output conllu files
 """
 
 from typing import List
-from overrides import overrides
 
 from allennlp.common.util import JsonDict, sanitize
 from allennlp.data import DatasetReader, Instance
 from allennlp.models import Model
 from allennlp.predictors.predictor import Predictor
+from overrides import overrides
 
 
 @Predictor.register("udify_predictor")

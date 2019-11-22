@@ -3,13 +3,12 @@ import itertools
 import logging
 from typing import List
 
+import catalogue
 import torch
 import torch.optim as optim
+from bedoner.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.tokens import Doc
-import catalogue
-
-from bedoner.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
 
 logger = logging.getLogger(__name__)
 optim_creators = catalogue.create("bedoner", "torch_optim_creators")

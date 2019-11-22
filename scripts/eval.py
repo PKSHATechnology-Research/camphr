@@ -1,6 +1,6 @@
 import fire
-import srsly
 import spacy
+import srsly
 from spacy.language import Language
 from spacy.scorer import Scorer
 from spacy.util import minibatch
@@ -30,4 +30,3 @@ def main(modeld, val_data, nval=1000, batchsize=16):
 
 if __name__ == "__main__":
     fire.Fire(main)
-

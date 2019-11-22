@@ -2,19 +2,18 @@
 A modification to AllenNLP's TextFieldEmbedder
 """
 
-from typing import Dict, List, Optional
 import warnings
+from typing import Dict, List, Optional
 
 import torch
-from overrides import overrides
-from torch.nn.modules.linear import Linear
-
 from allennlp.common import Params
 from allennlp.common.checks import ConfigurationError
 from allennlp.data import Vocabulary
 from allennlp.modules.text_field_embedders import TextFieldEmbedder
 from allennlp.modules.time_distributed import TimeDistributed
 from allennlp.modules.token_embedders.token_embedder import TokenEmbedder
+from overrides import overrides
+from torch.nn.modules.linear import Linear
 
 
 @TextFieldEmbedder.register("udify_embedder")

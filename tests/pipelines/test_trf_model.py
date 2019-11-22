@@ -1,14 +1,13 @@
-from bedoner.pipelines.trf_model import TransformersModel
-import spacy
 import numpy as np
-from transformers import AdamW
 import pytest
+import spacy
 import torch
+from bedoner.models import trf_model
+from bedoner.pipelines.trf_model import TransformersModel
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy_transformers.util import ATTRS
-
-from bedoner.models import trf_model
+from transformers import AdamW
 
 
 @pytest.fixture

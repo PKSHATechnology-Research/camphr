@@ -1,7 +1,4 @@
 import pytest
-from spacy.language import Language
-from tests.utils import check_serialization
-
 from bedoner.models import trf_model
 from bedoner.pipelines.trf_maskedlm import (
     PIPES,
@@ -9,6 +6,8 @@ from bedoner.pipelines.trf_maskedlm import (
     remove_maskedlm_pipe,
 )
 from bedoner.torch_utils import get_loss_from_docs
+from spacy.language import Language
+from tests.utils import check_serialization
 
 
 @pytest.fixture(scope="module")

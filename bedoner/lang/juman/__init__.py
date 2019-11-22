@@ -3,14 +3,13 @@ from collections import namedtuple
 from itertools import tee, zip_longest
 from typing import Any, Callable, Dict, List, Optional
 
+from bedoner.consts import KEY_FSTRING
+from bedoner.lang.stop_words import STOP_WORDS
+from bedoner.lang.torch_mixin import TorchLanguageMixin
+from bedoner.utils import SerializationMixin
 from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc, Token
-
-from bedoner.consts import KEY_FSTRING
-from bedoner.lang.stop_words import STOP_WORDS
-from bedoner.utils import SerializationMixin
-from bedoner.lang.torch_mixin import TorchLanguageMixin
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]

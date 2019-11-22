@@ -1,7 +1,8 @@
-from spacy.language import Language
-import spacy
 import re
 import sys
+
+import spacy
+from spacy.language import Language
 
 
 def main():

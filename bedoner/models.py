@@ -1,22 +1,15 @@
 """The models module defines functions to create spacy models."""
-from bedoner.pipelines.trf_seq_classification import (
-    BertForSequenceClassification,
-    XLNetForSequenceClassification,
-)
-from typing import Dict, Any
-from bedoner.lang.torch_mixin import OPTIM_CREATOR
-from enum import Enum
 import os
-
-import mojimoji
-from spacy.language import Language
-from spacy.vocab import Vocab
+from enum import Enum
+from typing import Any, Dict
 
 import bedoner.lang.juman as juman
 import bedoner.lang.knp as knp
-import bedoner.trf_utils  # noqa: import to register optimizer
 import bedoner.lang.mecab as mecab
 import bedoner.lang.sentencepiece as sp
+import bedoner.trf_utils  # noqa: import to register optimizer
+import mojimoji
+from bedoner.lang.torch_mixin import OPTIM_CREATOR
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.person_ner import create_person_ruler
 from bedoner.pipelines.trf_model import BertModel, XLNetModel
@@ -25,7 +18,13 @@ from bedoner.pipelines.trf_ner import (
     TrfForNamedEntityRecognitionBase,
     XLNetForNamedEntityRecognition,
 )
-from bedoner.pipelines.wordpiecer import WordPiecer, TrfSentencePiecer
+from bedoner.pipelines.trf_seq_classification import (
+    BertForSequenceClassification,
+    XLNetForSequenceClassification,
+)
+from bedoner.pipelines.wordpiecer import TrfSentencePiecer, WordPiecer
+from spacy.language import Language
+from spacy.vocab import Vocab
 
 
 def han_to_zen_normalizer(text):

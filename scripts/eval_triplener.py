@@ -1,17 +1,15 @@
 # adhoc script
 import re
-from scripts.train_triplener import get_top_label, get_second_top_label
+
 import fire
-import srsly
 import spacy
+import srsly
 import torch
+from scripts.train_triplener import get_second_top_label, get_top_label
 from spacy.language import Language
 from spacy.scorer import Scorer
 from spacy.util import minibatch
 from tqdm import tqdm
-from bedoner.pipelines.trf_ner import TrfForNamedEntityRecognitionBase
-from spacy.gold import GoldParse
-
 
 CONVERT_LABEL = "convert_label"
 
@@ -77,4 +75,3 @@ def main(modeld, val_data, nval=-1, batchsize=16, gpu=False):
 
 if __name__ == "__main__":
     fire.Fire(main)
-

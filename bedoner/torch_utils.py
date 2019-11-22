@@ -1,11 +1,11 @@
 """The module torch_utils defines utilities for pytorch."""
 import operator
-from spacy.tokens import Doc
 from typing import Any, Dict, Iterable, List, Optional, Union
 
 import torch
 import torch.nn as nn
 from spacy.pipeline import Pipe
+from spacy.tokens import Doc
 
 # the type torch.optim.Optimizer uses
 OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]

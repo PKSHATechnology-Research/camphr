@@ -1,6 +1,7 @@
-import spacy
-import fire
 import tempfile
+
+import fire
+import spacy
 from bedoner.lang.torch_mixin import TorchLanguageMixin
 
 

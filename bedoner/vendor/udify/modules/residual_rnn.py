@@ -3,11 +3,11 @@ Defines a "Residual RNN", which adds the input of the RNNs to the output, which 
 RNN layers.
 """
 
-from overrides import overrides
 import torch
 from allennlp.common.checks import ConfigurationError
-from allennlp.modules.seq2seq_encoders.seq2seq_encoder import Seq2SeqEncoder
 from allennlp.modules.seq2seq_encoders import PytorchSeq2SeqWrapper
+from allennlp.modules.seq2seq_encoders.seq2seq_encoder import Seq2SeqEncoder
+from overrides import overrides
 
 
 @Seq2SeqEncoder.register("udify_residual_rnn")

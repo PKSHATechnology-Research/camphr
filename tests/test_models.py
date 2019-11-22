@@ -1,4 +1,3 @@
-from tests.conftest import pretrained
 from bedoner.models import trf_model, trf_ner
 
 
@@ -12,4 +11,3 @@ def test_freeze_ner(pretrained):
     nlp = trf_ner("mecab", pretrained, freeze=True, labels=["foo"])
     pipe = nlp.pipeline[-2][1]
     assert pipe.cfg["freeze"]
-

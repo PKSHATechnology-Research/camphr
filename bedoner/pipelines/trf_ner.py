@@ -2,7 +2,6 @@
 
 Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
-from bedoner.torch_utils import add_loss_to_docs
 import functools
 from typing import Iterable, List, cast
 
@@ -11,15 +10,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers as trf
-from overrides import overrides
-from spacy.gold import GoldParse, spans_from_biluo_tags
-from spacy.language import Language
-from spacy.tokens import Doc, Token
-from spacy_transformers.util import ATTRS
-
 from bedoner.pipelines.trf_utils import (
-    TRF_CONFIG,
     CONVERT_LABEL,
+    TRF_CONFIG,
     TrfConfig,
     TrfModelForTaskBase,
     TrfPipeForTaskBase,
@@ -32,6 +25,12 @@ from bedoner.pipelines.utils import (
     correct_biluo_tags,
     merge_entities,
 )
+from bedoner.torch_utils import add_loss_to_docs
+from overrides import overrides
+from spacy.gold import GoldParse, spans_from_biluo_tags
+from spacy.language import Language
+from spacy.tokens import Doc, Token
+from spacy_transformers.util import ATTRS
 
 CLS_LOGIT = "cls_logit"
 LABELS = "labels"

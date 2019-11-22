@@ -2,32 +2,35 @@
 Decodes dependency trees given a list of contextualized word embeddings
 """
 
-from typing import Dict, Optional, Tuple, Any, List
-import logging
 import copy
+import logging
+from typing import Any, Dict, List, Optional, Tuple
 
-from overrides import overrides
+import numpy
 import torch
 import torch.nn.functional as F
-import numpy
-
 from allennlp.common.checks import check_dimensions_match
 from allennlp.data import Vocabulary
-from allennlp.modules import Embedding, InputVariationalDropout, Seq2SeqEncoder
+from allennlp.models.model import Model
+from allennlp.modules import (
+    Embedding,
+    FeedForward,
+    InputVariationalDropout,
+    Seq2SeqEncoder,
+)
 from allennlp.modules.matrix_attention.bilinear_matrix_attention import (
     BilinearMatrixAttention,
 )
-from allennlp.modules import FeedForward
-from allennlp.models.model import Model
-from allennlp.nn import InitializerApplicator, RegularizerApplicator, Activation
-from allennlp.nn.util import get_range_vector
+from allennlp.nn import Activation, InitializerApplicator, RegularizerApplicator
+from allennlp.nn.chu_liu_edmonds import decode_mst
 from allennlp.nn.util import (
     get_device_of,
-    masked_log_softmax,
     get_lengths_from_binary_sequence_mask,
+    get_range_vector,
+    masked_log_softmax,
 )
-from allennlp.nn.chu_liu_edmonds import decode_mst
 from allennlp.training.metrics import AttachmentScores
+from overrides import overrides
 
 logger = logging.getLogger(__name__)
 

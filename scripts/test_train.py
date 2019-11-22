@@ -1,8 +1,8 @@
 import subprocess
-from pathlib import Path
-import fire
 from itertools import product
+from pathlib import Path
 
+import fire
 
 basedir = Path(__file__).parent
 

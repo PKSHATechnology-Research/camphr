@@ -1,20 +1,17 @@
-from typing import Dict, Tuple, List, Any, Callable
-
-from overrides import overrides
-from .parser import parse_line, DEFAULT_FIELDS
-
+import logging
 import re
+from typing import Any, Callable, Dict, List, Tuple
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
-from allennlp.data.fields import Field, TextField, SequenceLabelField, MetadataField
+from allennlp.data.fields import Field, MetadataField, SequenceLabelField, TextField
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token
+from overrides import overrides
 
 from .lemma_edit import gen_lemma_rule
-
-import logging
+from .parser import DEFAULT_FIELDS, parse_line
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 

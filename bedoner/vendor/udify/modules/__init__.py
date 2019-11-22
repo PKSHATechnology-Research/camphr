@@ -1,8 +1,8 @@
 from .bert_pretrained import (
+    BertEmbedder,
+    PretrainedBertIndexer,
     UdifyPretrainedBertEmbedder,
     WordpieceIndexer,
-    PretrainedBertIndexer,
-    BertEmbedder,
 )
 
 __all__ = [

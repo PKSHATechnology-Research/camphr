@@ -1,9 +1,9 @@
-import fire
-import spacy
+import tempfile
 from pathlib import Path
 from typing import Optional, Union
-import tempfile
 
+import fire
+import spacy
 
 Pathlike = Union[str, Path]
 

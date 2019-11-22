@@ -9,11 +9,10 @@ Last update: 2018-12-21
 
 import argparse
 import logging
-
-import numpy as np
-
 from collections import namedtuple
 from pathlib import Path
+
+import numpy as np
 
 log = logging.getLogger(Path(__file__).stem)
 

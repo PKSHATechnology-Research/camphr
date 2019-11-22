@@ -2,21 +2,20 @@
 Decodes sequences of tags, e.g., POS tags, given a list of contextualized word embeddings
 """
 
-from typing import Optional, Any, Dict, List
-from overrides import overrides
+from typing import Any, Dict, List, Optional
 
 import numpy
 import torch
-from torch.nn.modules.linear import Linear
-from torch.nn.modules.adaptive import AdaptiveLogSoftmaxWithLoss
 import torch.nn.functional as F
-
 from allennlp.data import Vocabulary
-from allennlp.modules import TimeDistributed, Seq2SeqEncoder
 from allennlp.models.model import Model
+from allennlp.modules import Seq2SeqEncoder, TimeDistributed
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import sequence_cross_entropy_with_logits
 from allennlp.training.metrics import CategoricalAccuracy
+from overrides import overrides
+from torch.nn.modules.adaptive import AdaptiveLogSoftmaxWithLoss
+from torch.nn.modules.linear import Linear
 
 from ..dataset_readers.lemma_edit import apply_lemma_rule
 

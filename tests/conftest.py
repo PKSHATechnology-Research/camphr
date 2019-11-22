@@ -1,15 +1,14 @@
 from pathlib import Path
-import sentencepiece as spm
-import torch
 
 import pytest
-from spacy.vocab import Vocab
-
+import sentencepiece as spm
+import torch
 from bedoner.lang.juman import Japanese as Juman
 from bedoner.lang.knp import Japanese as KNP
 from bedoner.lang.mecab import Japanese as Mecab
-from bedoner.pipelines.wordpiecer import WordPiecer
 from bedoner.pipelines.trf_model import XLNetModel
+from bedoner.pipelines.wordpiecer import WordPiecer
+from spacy.vocab import Vocab
 
 from .utils import check_juman, check_knp, check_mecab
 

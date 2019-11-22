@@ -1,9 +1,10 @@
-import spacy
 from itertools import chain
 from pathlib import Path
-import sentencepiece as spm
+
 import pytest
-from bedoner.lang.sentencepiece import SentencePieceLang, EXTS
+import sentencepiece as spm
+import spacy
+from bedoner.lang.sentencepiece import EXTS, SentencePieceLang
 from spacy.vocab import Vocab
 
 

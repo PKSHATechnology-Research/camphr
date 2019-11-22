@@ -1,6 +1,5 @@
 import pytest
-
-from bedoner.utils import split_keepsep, zero_pad, get_doc_char_span
+from bedoner.utils import get_doc_char_span, split_keepsep, zero_pad
 from spacy.tokens import Doc
 
 

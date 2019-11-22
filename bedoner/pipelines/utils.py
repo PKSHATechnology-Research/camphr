@@ -1,7 +1,7 @@
 import copy
 import warnings
 from enum import Enum
-from typing import Iterable, Callable, List, Tuple, Union
+from typing import Callable, Iterable, List, Tuple, Union
 
 import numpy as np
 from spacy.gold import iob_to_biluo

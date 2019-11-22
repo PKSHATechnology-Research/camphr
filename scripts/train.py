@@ -1,27 +1,26 @@
-import os
-from sklearn.metrics import classification_report
-import numpy as np
-import operator
 import json
 import logging
+import operator
+import os
 import random
 from pathlib import Path
-from typing_extensions import Literal
 from typing import Dict, List, Tuple
 
 import hydra
-from spacy.language import Language
-from bedoner.torch_utils import goldcat_to_label
+import numpy as np
 import omegaconf
+import srsly
 import torch
-from sklearn.model_selection import train_test_split
-from spacy.scorer import Scorer
-from spacy.util import minibatch
-
-from bedoner.models import trf_ner, get_trf_name, trf_seq_classification
+from bedoner.models import get_trf_name, trf_ner, trf_seq_classification
 from bedoner.ner_labels import LABELS
 from bedoner.ner_labels.utils import make_biluo_labels
-import srsly
+from bedoner.torch_utils import goldcat_to_label
+from sklearn.metrics import classification_report
+from sklearn.model_selection import train_test_split
+from spacy.language import Language
+from spacy.scorer import Scorer
+from spacy.util import minibatch
+from typing_extensions import Literal
 
 log = logging.getLogger(__name__)
 
