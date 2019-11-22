@@ -14,6 +14,7 @@ from bedoner.pipelines.utils import (
     B,
     I,
     O,
+    UserHooksMixin,
     biluo_to_bio,
     bio_to_biluo,
     construct_biluo_tag,
@@ -154,3 +155,14 @@ def test_merge_ents(words, spans0, spans1, expected_spans):
         assert a.label_ == b.label_
         assert a.start == b.start
         assert a.end == b.end
+
+
+class DummyForUserHooks(UserHooksMixin):
+    def __init__(self):
+        self.cfg = {}
+
+
+def test_user_hooks_mixin():
+    obj = DummyForUserHooks()
+    obj.add_user_hook("foo", lambda x: 2 * x)
+    assert obj.user_hooks["foo"](1) == 2

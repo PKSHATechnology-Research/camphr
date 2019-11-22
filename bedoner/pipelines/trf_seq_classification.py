@@ -1,3 +1,4 @@
+from bedoner.pipelines.utils import UserHooksMixin
 import functools
 from typing import Dict, Iterable, List, cast
 
@@ -14,12 +15,13 @@ from transformers.modeling_utils import SequenceSummary
 
 from bedoner.pipelines.trf_utils import (
     TRF_CONFIG,
+    CONVERT_LABEL,
     TrfConfig,
     TrfModelForTaskBase,
     TrfPipeForTaskBase,
     get_last_hidden_state_from_docs,
 )
-from bedoner.torch_utils import goldcats_to_tensor, add_loss_to_docs
+from bedoner.torch_utils import add_loss_to_docs, goldcat_to_label
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 NUM_SEQUENCE_LABELS = "num_sequence_labels"
@@ -45,7 +47,7 @@ class TrfSequenceClassifier(TrfModelForTaskBase):
         return logits
 
 
-class TrfForSequenceClassificationBase(TrfPipeForTaskBase):
+class TrfForSequenceClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
     """Base class for sequence classification task (e.g. sentiment analysis).
 
     Requires `TrfModel` before this model in the pipeline.
@@ -74,18 +76,13 @@ class TrfForSequenceClassificationBase(TrfPipeForTaskBase):
     @functools.lru_cache()
     def label_weights(self) -> torch.Tensor:
         weights_map = self.cfg.get("label_weights")
-        label2id = self.label2id
-        weights = torch.ones(len(label2id))
+        weights = torch.ones(len(self.label2id))
         if weights_map:
-            assert len(weights_map) == len(label2id)
+            assert len(weights_map) == len(self.label2id)
             for k, v in weights_map.items():
-                weights[label2id[k]] = v
+                weights[self.label2id[k]] = v
             return weights
         return weights
-
-    def get_cats_from_prob(self, prob: torch.Tensor) -> Dict[str, float]:
-        assert len(prob.shape) == 1
-        return dict(zip(self.labels, prob.tolist()))
 
     @overrides
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
@@ -103,18 +100,32 @@ class TrfForSequenceClassificationBase(TrfPipeForTaskBase):
         for doc, prob in zip(docs, cast(Iterable, probs)):
             doc.cats = self.get_cats_from_prob(prob)
 
+    def get_cats_from_prob(self, prob: torch.Tensor) -> Dict[str, float]:
+        assert len(prob.shape) == 1
+        return dict(zip(self.labels, prob.tolist()))
+
+    def convert_label(self, label: str) -> str:
+        fn = self.user_hooks.get(CONVERT_LABEL)
+        if fn:
+            return fn(label)
+        return label
+
+    def golds_to_tensor(self, golds: Iterable[GoldParse]) -> torch.Tensor:
+        labels = (goldcat_to_label(gold.cats) for gold in golds)
+        labels = (self.convert_label(label) for label in labels)
+        targets = [self.label2id[label] for label in labels]
+        return torch.tensor(targets, device=self.device)
+
     def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
         assert isinstance(docs, list)
         self.require_model()
         self.model.train()
-        docs = list(docs)
-        label2id = self.label2id
+
         x = get_last_hidden_state_from_docs(docs)
         logits = self.model(x)
-        targets = goldcats_to_tensor((gold.cats for gold in golds), label2id).to(
-            self.device
-        )
+        targets = self.golds_to_tensor(golds)
         weight = self.label_weights.to(device=self.device)
+
         loss = F.cross_entropy(logits, targets, weight=weight)
         add_loss_to_docs(docs, loss)
 

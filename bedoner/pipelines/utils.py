@@ -1,7 +1,7 @@
 import copy
 import warnings
 from enum import Enum
-from typing import Iterable, List, Tuple, Union
+from typing import Iterable, Callable, List, Tuple, Union
 
 import numpy as np
 from spacy.gold import iob_to_biluo
@@ -198,3 +198,16 @@ def get_similarity(o1: Union[Doc, Span, Token], o2: Union[Doc, Span, Token]) -> 
     v1: np.ndarray = o1.vector
     v2: np.ndarray = o2.vector
     return (v1.dot(v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))).item()
+
+
+USER_HOOKS = "user_hooks"
+
+
+class UserHooksMixin:
+    @property
+    def user_hooks(self):
+        return self.cfg.setdefault(USER_HOOKS, {})
+
+    def add_user_hook(self, k: str, fn: Callable):
+        hooks = self.user_hooks
+        hooks[k] = fn

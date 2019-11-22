@@ -6,6 +6,7 @@
 - torchについて，`optim_creators`を導入
 - add transformers base sequence classification (#127)
 - `trf_maskedlm`を追加 - BERT事前学習機能
+- `TrfForSequenceClassification`に`user_hooks`を追加 (#138)
 
 ## Backwards incompatibilities
 

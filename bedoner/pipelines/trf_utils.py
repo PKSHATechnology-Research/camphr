@@ -22,6 +22,7 @@ TrfConfig = Union[trf.BertConfig, trf.XLNetConfig]
 TRF_CONFIG = "trf_config"
 VOCAB_SIZE = "vocab_size"
 TRF_NAME = "trf_name"
+CONVERT_LABEL = "convert_label"
 
 
 class Errors:

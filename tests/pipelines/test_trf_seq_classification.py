@@ -1,14 +1,14 @@
-from bedoner.torch_utils import get_loss_from_docs
 import random
 
 import pytest
 import spacy
-import torch
 from spacy.language import Language
 from spacy.tests.util import assert_docs_equal
 
 from bedoner.models import trf_seq_classification
 from bedoner.pipelines.trf_seq_classification import BertForSequenceClassification
+from bedoner.pipelines.trf_utils import CONVERT_LABEL
+from bedoner.torch_utils import get_loss_from_docs
 
 
 @pytest.fixture(scope="module")
@@ -17,13 +17,14 @@ def labels():
 
 
 @pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
-def nlp(trf_dir, labels, request):
+def nlp(trf_dir, labels, request, device):
     lang = request.param
-    return trf_seq_classification(lang, pretrained=trf_dir, labels=labels)
+    _nlp = trf_seq_classification(lang, pretrained=trf_dir, labels=labels)
+    _nlp.to(device)
+    return _nlp
 
 
 TEXTS = ["トランスフォーマーズを使ってテキスト分類をします", "うまくclassificationできるかな?"]
-GOLDS = []
 
 
 @pytest.fixture(scope="module")
@@ -40,23 +41,12 @@ def test_call(nlp, text, labels):
     assert set(labels) == set(doc.cats)
 
 
-@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
-@pytest.mark.parametrize("text", TEXTS)
-def test_call_cuda(nlp, text, labels, cuda):
-    nlp.to(cuda)
-    doc = nlp(text)
-    assert set(labels) == set(doc.cats)
-
-
 def test_update(nlp, labels, docs_golds):
-    pipe = nlp.pipeline[-1][1]
-    params = pipe.model.parameters()
-    before_sum = sum(p.sum().item() for p in params)
     optim = nlp.resume_training()
     texts, labels = zip(*docs_golds)
-    nlp.update(texts, labels, optim)
-    after_sum = sum(p.sum().item() for p in params)
-    assert after_sum != before_sum
+    docs = [nlp.make_doc(text) for text in texts]
+    nlp.update(docs, labels, optim)
+    assert get_loss_from_docs(docs)
 
 
 @pytest.mark.slow
@@ -94,3 +84,23 @@ def test_weights(vocab, labels):
         vocab, labels=labels, label_weights=weights_map
     )
     assert pipe.label_weights.sum() == sum(weights)
+
+
+@pytest.fixture(scope="module")
+def labels2():
+    return ["o", "t"]
+
+
+@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
+def nlp2(trf_dir, labels2, request, device):
+    lang = request.param
+    _nlp = trf_seq_classification(lang, pretrained=trf_dir, labels=labels2)
+    _nlp.to(device)
+    return _nlp
+
+
+def test_user_hooks(nlp2, docs_golds):
+    pipe = nlp2.pipeline[-1][1]
+    pipe.add_user_hook(CONVERT_LABEL, lambda x: x[0])
+    optim = nlp2.resume_training()
+    nlp2.update(*zip(*docs_golds), optim)

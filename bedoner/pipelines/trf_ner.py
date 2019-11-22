@@ -4,7 +4,7 @@ Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s
 """
 from bedoner.torch_utils import add_loss_to_docs
 import functools
-from typing import Callable, Iterable, List, cast
+from typing import Iterable, List, cast
 
 import spacy
 import torch
@@ -19,19 +19,23 @@ from spacy_transformers.util import ATTRS
 
 from bedoner.pipelines.trf_utils import (
     TRF_CONFIG,
+    CONVERT_LABEL,
     TrfConfig,
     TrfModelForTaskBase,
     TrfPipeForTaskBase,
     get_dropout,
     get_last_hidden_state_from_docs,
 )
-from bedoner.pipelines.utils import UNK, correct_biluo_tags, merge_entities
+from bedoner.pipelines.utils import (
+    UNK,
+    UserHooksMixin,
+    correct_biluo_tags,
+    merge_entities,
+)
 
 CLS_LOGIT = "cls_logit"
 LABELS = "labels"
 NUM_LABELS = "num_labels"
-USER_HOOKS = "user_hooks"
-CONVERT_LABEL = "convert_label"
 
 
 class TrfTokenClassifier(TrfModelForTaskBase):
@@ -56,7 +60,7 @@ class TrfTokenClassifier(TrfModelForTaskBase):
         return logits
 
 
-class TrfForTokenClassificationBase(TrfPipeForTaskBase):
+class TrfForTokenClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
     """Base class for token classification task (e.g. Named entity recognition).
 
     Requires `TrfModel` before this model in the pipeline to use this model.
@@ -96,14 +100,6 @@ class TrfForTokenClassificationBase(TrfPipeForTaskBase):
     @functools.lru_cache()
     def label2id(self):
         return {v: i for i, v in enumerate(self.labels)}
-
-    @property
-    def user_hooks(self):
-        return self.cfg.setdefault(USER_HOOKS, {})
-
-    def add_user_hook(self, k: str, fn: Callable):
-        hooks = self.user_hooks
-        hooks[k] = fn
 
     @overrides
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
@@ -198,7 +194,7 @@ class XLNetForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
 
 TrfForTokenClassificationBase.install_extensions()
 
-# TODO: Ugly (https://github.com/explosion/spaCy/issues/4514)
+# TODO: Ugly. (https://github.com/explosion/spaCy/issues/4514) or use nlp.meta["factories"]?
 for i in range(2, 10):
     Language.factories[
         BertForNamedEntityRecognition.name + str(i)
