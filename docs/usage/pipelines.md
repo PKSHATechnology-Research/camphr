@@ -96,6 +96,24 @@ print(cat, dog, cat.similarity(dog))
 猫 犬 0.9425056576728821
 ```
 
+### BERT Pretraining (Masked LM)
+
+BERTの事前学習を行うこともできます.
+
+```python
+import spacy
+from bedoner.pipelines.trf_maskedlm import add_maskedlm_pipe
+
+nlp = spacy.load("torch_mecab_bert_ene")
+add_maskedlm_pipe(nlp)
+
+texts = ["BERTのMasked LMを行います"]
+golds = [{}]  # ラベルデータは特にないので空
+optim = nlp.resume_training()
+nlp.update(texts, golds, optim) # マスクデータは自動で生成され，内部で穴埋めタスクのトレーニングが実行されます
+```
+
+
 ### Note
 
 BERT or XLNetの出力は，[extension](https://spacy.io/usage/processing-pipelines/#custom-components-attributes)に格納されています．  

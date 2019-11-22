@@ -54,10 +54,10 @@ class SerializationMixin:
             raise ValueError(Errors.E109.format(name=self.name))
 
 
-def zero_pad(a: Iterable[List[int]]) -> List[List[int]]:
+def zero_pad(a: Iterable[List[int]], pad_value: int = 0) -> List[List[int]]:
     """Padding the input so that the lengths of the inside lists are all equal."""
     max_length = max(len(el) for el in a)
-    return [el + [0] * (max_length - len(el)) for el in a]
+    return [el + [pad_value] * (max_length - len(el)) for el in a]
 
 
 RE_URL = re.compile(

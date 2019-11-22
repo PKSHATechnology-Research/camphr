@@ -1,8 +1,12 @@
-import os
 import json
+import os
 import shutil
+import tempfile
 from itertools import zip_longest
 from typing import Any, Tuple
+
+import spacy
+from spacy.tests.util import assert_docs_equal
 
 
 def check_juman():
@@ -29,3 +33,10 @@ def comp_jsonl(fname1: str, fname2: str) -> Tuple[bool, Any]:
 
 def in_ci():
     return os.getenv("CI", "") == "true"
+
+
+def check_serialization(nlp, text: str = "今日は，とてもいい天気だった!"):
+    with tempfile.TemporaryDirectory() as d:
+        nlp.to_disk(str(d))
+        nlp2 = spacy.load(str(d))
+        assert_docs_equal(nlp(text), nlp2(text))

@@ -2,8 +2,9 @@
 
 Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
+from bedoner.torch_utils import add_loss_to_docs
 import functools
-from typing import Callable, Iterable, cast
+from typing import Callable, Iterable, List, cast
 
 import spacy
 import torch
@@ -123,13 +124,15 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
             return self.labels.index(UNK)
         return -1
 
-    def update(self, docs: Iterable[Doc], golds: Iterable[GoldParse]):
+    def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
+        assert isinstance(docs, list)
         self.require_model()
         label2id = self.label2id
         ignore_index = self.ignore_label_index
         x = get_last_hidden_state_from_docs(docs)
         logits = self.model(x)
         length = logits.shape[1]
+        loss = x.new_tensor(0.0)
         for doc, gold, logit in zip(docs, golds, logits):
             # use first wordpiece for each tokens
             idx = []
@@ -152,10 +155,9 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
             target = torch.tensor(
                 [label2id[ner] for ner in ners[: len(pred)]], device=self.device
             )
-            loss = F.cross_entropy(pred, target, ignore_index=ignore_index)
-
+            loss += F.cross_entropy(pred, target, ignore_index=ignore_index)
             doc._.cls_logit = logit
-            doc._.loss += loss
+        add_loss_to_docs(docs, loss)
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor

@@ -1,3 +1,4 @@
+from bedoner.torch_utils import get_loss_from_docs
 import json
 
 import pytest
@@ -116,9 +117,8 @@ def test_update(nlp: Language, text, gold, label_type, tmpdir):
     optim = nlp.resume_training()
     assert nlp.device.type == "cpu"
     doc = nlp.make_doc(text)
-    assert not doc._.loss
     nlp.update([doc], [gold], optim)
-    assert doc._.loss
+    assert get_loss_from_docs([doc])
 
 
 def test_update_after_restore(nlp: Language, tmpdir, label_type):
@@ -177,9 +177,8 @@ def test_update_cuda(nlp: Language, text, gold, cuda, label_type):
 
     optim = nlp.resume_training()
     doc = nlp.make_doc(text)
-    assert not doc._.loss
     nlp.update([doc], [gold], optim)
-    assert doc._.loss
+    assert get_loss_from_docs([doc])
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")

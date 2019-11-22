@@ -5,12 +5,11 @@ from typing import List
 
 import torch
 import torch.optim as optim
-from spacy.errors import Errors as SpacyErrors
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.tokens import Doc
 import catalogue
 
-from bedoner.torch_utils import OptimizerParameters, TorchPipe
+from bedoner.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
 
 logger = logging.getLogger(__name__)
 optim_creators = catalogue.create("bedoner", "torch_optim_creators")
@@ -27,10 +26,6 @@ class TorchLanguageMixin:
 
     This mixin manages all `TorchPipe` components for the sake of training.
 
-    Notes:
-        `spacy.Doc._.loss` is set. All `TorchPipe` should add its loss into it when training.
-        This mixin backwards it, i.e. call `spacy.Doc._.loss.backward()` when `nlp.update` is called.
-
     Examples:
         >>> class FooLang(TorchLanguageMixin, juman.Japanese): # The order of inheritance is very important to properly override methods. Otherwise it will not work.
         >>>     pass
@@ -39,18 +34,6 @@ class TorchLanguageMixin:
         >>> optim = nlp.resume_training()
         >>> nlp.update(docs, golds, optim)
     """
-
-    @classmethod
-    def install_extensions(cls):
-        """Add some extensions.
-
-        - loss (torch.Tensor): holds loss, used when `nlp.udpate`
-
-        Refs:
-            https://spacy.io/usage/processing-pipelines#custom-components-attributes
-        """
-        if Doc.get_extension("loss") is None:
-            Doc.set_extension("loss", default=0)
 
     def resume_training(self, **kwargs) -> optim.Optimizer:
         """Gather torch parameters in `TorchPipe`, and create optimizers.
@@ -100,25 +83,6 @@ class TorchLanguageMixin:
                 return fn(params, **cfg)
         return optim_creators.get("base")(params, **cfg)
 
-    def _format_docs_and_golds(self, docs, golds):
-        # TODO: remove this method after PR merged (https://github.com/explosion/spaCy/pull/4316)
-        expected_keys = ("words", "tags", "heads", "deps", "entities", "cats", "links")
-        gold_objs = []
-        doc_objs = []
-        for doc, gold in zip(docs, golds):
-            if isinstance(doc, str):
-                doc = self.make_doc(doc)
-            if not isinstance(gold, GoldParse):
-                unexpected = [k for k in gold if k not in expected_keys]
-                if unexpected:
-                    err = SpacyErrors.E151.format(unexp=unexpected, exp=expected_keys)
-                    raise ValueError(err)
-                gold = GoldParse(doc, **gold)
-            doc_objs.append(doc)
-            gold_objs.append(gold)
-
-        return doc_objs, gold_objs
-
     def update(
         self,
         docs: List[Doc],
@@ -132,16 +96,9 @@ class TorchLanguageMixin:
         for _, pipe in self.pipeline:
             pipe.update(docs, golds)
 
-        loss = torch.mean(
-            torch.stack(
-                [doc._.loss for doc in docs if isinstance(doc._.loss, torch.Tensor)]
-            )
-        )
+        loss = get_loss_from_docs(docs)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         if debug:
             logger.info(f"Loss: {loss.detach().item()}")
-
-
-TorchLanguageMixin.install_extensions()

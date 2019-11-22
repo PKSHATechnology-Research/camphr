@@ -1,5 +1,5 @@
 import functools
-from typing import Dict, Iterable, cast
+from typing import Dict, Iterable, List, cast
 
 import spacy
 import torch
@@ -19,7 +19,7 @@ from bedoner.pipelines.trf_utils import (
     TrfPipeForTaskBase,
     get_last_hidden_state_from_docs,
 )
-from bedoner.torch_utils import goldcats_to_tensor
+from bedoner.torch_utils import goldcats_to_tensor, add_loss_to_docs
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 NUM_SEQUENCE_LABELS = "num_sequence_labels"
@@ -103,7 +103,8 @@ class TrfForSequenceClassificationBase(TrfPipeForTaskBase):
         for doc, prob in zip(docs, cast(Iterable, probs)):
             doc.cats = self.get_cats_from_prob(prob)
 
-    def update(self, docs: Iterable[Doc], golds: Iterable[GoldParse]):
+    def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
+        assert isinstance(docs, list)
         self.require_model()
         self.model.train()
         docs = list(docs)
@@ -115,8 +116,7 @@ class TrfForSequenceClassificationBase(TrfPipeForTaskBase):
         )
         weight = self.label_weights.to(device=self.device)
         loss = F.cross_entropy(logits, targets, weight=weight)
-        doc = next(iter(docs))
-        doc._.loss += loss
+        add_loss_to_docs(docs, loss)
 
 
 @spacy.component(

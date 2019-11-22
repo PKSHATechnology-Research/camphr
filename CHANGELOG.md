@@ -5,6 +5,7 @@
 - transformers modelについて，`max_length`が設定されている場合，それを超える入力に対してエラーを吐いていたが，後部を切り捨てるように変更 (#129)
 - torchについて，`optim_creators`を導入
 - add transformers base sequence classification (#127)
+- `trf_maskedlm`を追加 - BERT事前学習機能
 
 ## Backwards incompatibilities
 

@@ -1,3 +1,4 @@
+from bedoner.torch_utils import get_loss_from_docs
 import random
 
 import pytest
@@ -67,7 +68,7 @@ def test_update_convergence(nlp, labels, docs_golds):
     for i in range(10):
         docs = [nlp.make_doc(text) for text in texts]
         nlp.update(docs, labels, optim)
-        assert prev > docs[0]._.loss.item()
+        assert prev > get_loss_from_docs(docs).item()
 
 
 def test_serialization(nlp, tmp_path):

@@ -132,6 +132,15 @@ def cuda():
     return torch.device("cuda")
 
 
+@pytest.fixture(scope="session", params=["cuda", "cpu"])
+def device(request):
+    if request.param == "cpu":
+        return torch.device("cpu")
+    if not torch.cuda.is_available():
+        pytest.skip()
+    return torch.device("cuda")
+
+
 @pytest.fixture(scope="session", params=["mecab", "juman", "sentencepiece"])
 def lang(request):
     return request.param

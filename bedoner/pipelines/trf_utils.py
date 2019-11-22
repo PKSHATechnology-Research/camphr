@@ -1,6 +1,6 @@
 import pickle
 from pathlib import Path
-from typing import Any, Dict, Iterable, Union
+from typing import Any, Dict, Iterable, List, Union
 
 import torch
 import torch.nn as nn
@@ -118,10 +118,10 @@ class TrfPipeForTaskBase(TorchPipe):
     def predict(self, docs: Iterable[Doc]):
         raise NotImplementedError
 
-    def update(self, docs: Iterable[Doc], golds: Iterable[GoldParse]):
+    def set_annotations(self, docs: Iterable[Doc], preds: Any):
         raise NotImplementedError
 
-    def set_annotations(self, docs: Iterable[Doc], preds: Any):
+    def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
         raise NotImplementedError
 
     def optim_parameters(self) -> OptimizerParameters:

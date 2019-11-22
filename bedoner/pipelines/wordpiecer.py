@@ -1,7 +1,7 @@
 """Module wordpiecer defines wordpiecer for pytorch transformers."""
-import spacy
 from typing import Iterable, List, Tuple
 
+import spacy
 from spacy.tokens import Doc
 from spacy_transformers.pipeline.wordpiecer import TransformersWordPiecer
 from spacy_transformers.util import ATTRS, get_sents

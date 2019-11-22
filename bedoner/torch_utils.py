@@ -1,6 +1,7 @@
 """The module torch_utils defines utilities for pytorch."""
 import operator
-from typing import Any, Dict, Iterable, Optional, Union
+from spacy.tokens import Doc
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 import torch
 import torch.nn as nn
@@ -114,3 +115,23 @@ def goldcats_to_tensor(
 ) -> torch.Tensor:
     ids = [label2id[goldcat_to_label(cat)] for cat in cats]
     return torch.tensor(ids)
+
+
+TORCH_LOSS = "torch_loss"
+
+
+def get_loss_from_docs(docs: List[Doc]) -> torch.Tensor:
+    losses = (doc.user_data.get(TORCH_LOSS) for doc in docs)
+    losses = [loss for loss in losses if isinstance(loss, torch.Tensor)]
+    if not losses:
+        raise ValueError("loss is not set to docs.")
+    losses = torch.stack(losses)
+    return torch.sum(losses)
+
+
+def add_loss_to_docs(docs: List[Doc], loss: torch.Tensor):
+    doc = docs[0]
+    if TORCH_LOSS in doc.user_data:
+        doc.user_data[TORCH_LOSS] += loss
+    else:
+        doc.user_data[TORCH_LOSS] = loss
