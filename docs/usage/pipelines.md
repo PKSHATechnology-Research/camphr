@@ -150,7 +150,7 @@ $ pip install torch_sentencepiece-xlnet-ene.VERSION.tar.gz
 ```python
 import spacy
 
-nlp = spacy.load("mecab_bert_ene")
+nlp = spacy.load("torch_mecab_bert_ene")
 doc = nlp("10日発表されたノーベル文学賞の受賞者をめぐり、選考機関のスウェーデン・アカデミーが批判されている。")
 for e in doc.ents:
     print(e.text, e.label_)
