@@ -142,9 +142,9 @@ BERT or XLNet を用いたNERです．
 
 ```bash
 # BERT
-$ pip install mecab-bert-ene.VERSION.tar.gz
+$ pip install torch_mecab-bert-ene.VERSION.tar.gz
 # XLNet
-$ pip install sentencepiece-xlnet-ene.VERSION.tar.gz
+$ pip install torch_sentencepiece-xlnet-ene.VERSION.tar.gz
 ```
 
 ```python
