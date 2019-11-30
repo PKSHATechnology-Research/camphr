@@ -1,5 +1,5 @@
 import functools
-from typing import Dict, Iterable, List, cast
+from typing import Dict, Iterable, List, Optional, cast
 
 import spacy
 import torch
@@ -25,6 +25,8 @@ from transformers.modeling_utils import SequenceSummary
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 NUM_SEQUENCE_LABELS = "num_sequence_labels"
 LABELS = "labels"
+TOP_LABEL = "top_label"
+TOPK_LABELS = "topk_labels"
 
 
 class TrfSequenceClassifier(TrfModelForTaskBase):
@@ -145,3 +147,19 @@ class BertForSequenceClassification(TrfForSequenceClassificationBase):
 )
 class XLNetForSequenceClassification(TrfForSequenceClassificationBase):
     trf_config_cls = trf.XLNetConfig
+
+
+def _top_label(doc: Doc) -> Optional[str]:
+    if not doc.cats:
+        return None
+    return max(doc.cats.items(), key=lambda x: x[1])[0]
+
+
+def _topk_labels(doc: Doc, k: int) -> List[str]:
+    if not doc.cats:
+        return []
+    return sorted(doc.cats.items(), key=lambda x: x[1], reverse=True)[:k]
+
+
+Doc.set_extension(TOP_LABEL, getter=_top_label)
+Doc.set_extension(TOPK_LABELS, method=_topk_labels)

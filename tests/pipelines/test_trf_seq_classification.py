@@ -2,13 +2,16 @@ import random
 
 import pytest
 import spacy
-from spacy.language import Language
-from spacy.tests.util import assert_docs_equal
-
 from bedoner.models import trf_seq_classification
-from bedoner.pipelines.trf_seq_classification import BertForSequenceClassification
+from bedoner.pipelines.trf_seq_classification import (
+    TOP_LABEL,
+    TOPK_LABELS,
+    BertForSequenceClassification,
+)
 from bedoner.pipelines.trf_utils import CONVERT_LABEL
 from bedoner.torch_utils import get_loss_from_docs
+from spacy.language import Language
+from spacy.tests.util import assert_docs_equal
 
 
 @pytest.fixture(scope="module")
@@ -39,6 +42,14 @@ def docs_golds(labels):
 def test_call(nlp, text, labels):
     doc = nlp(text)
     assert set(labels) == set(doc.cats)
+
+
+@pytest.mark.parametrize("text", TEXTS)
+def test_ext(nlp, text, labels):
+    doc = nlp(text)
+    assert doc._.get(TOP_LABEL)
+    k = 2
+    assert len(doc._.get(TOPK_LABELS)(k)) == k
 
 
 def test_update(nlp, labels, docs_golds):

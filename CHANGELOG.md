@@ -8,6 +8,7 @@
 - Add `optim_creators` to torch integration
 - Add transformers base sequence classification (#127)
 - Add `user_hooks` to `TrfForSequenceClassification` (#138)
+- Add `doc._.top_label` and `doc._.topk_labels` extension (#145)
 
 ## Backwards incompatibilities
 
