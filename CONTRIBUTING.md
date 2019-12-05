@@ -9,7 +9,8 @@
 1. clone
 2. `$ pipenv install --dev`
 3. `$ pipenv run pip install -e .`
-4. `$ pipenv run pytest`
+4. `$ pre-commit install`
+5. `$ pipenv run pytest`
 
 ## 構成
 
