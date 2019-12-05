@@ -41,30 +41,4 @@ github-asset get file_to_download
 
 # Development
 
-- 開発にあたり，spacyの仕組みについて公式ドキュメント([Architecture · spaCy API Documentation](https://spacy.io/api))を一読することをお勧めします．
-- 開発者向けドキュメントを [docs/development](./docs/development)に集めています．
-
-## setup
-
-1. clone
-2. `$ pipenv install --dev`
-3. `$ make download`
-4. `$ pipenv run pytest`
-
-## 構成
-
-- `bedoner`: package source
-- `tests`: test files
-- `scripts`: 細々としたスクリプト. packagingに必要なものなど
-
-## packaging
-
-- [Saving and Loading · spaCy Usage Documentation](https://spacy.io/usage/saving-loading)
-
-
-## Refs.
-
-- attlassian 
-	- https://pkshatech.atlassian.net/wiki/spaces/CHAT/pages/35061918/NER+2019+8
-- NERのタグ
-	- https://gist.github.com/kzinmr/14c224efc43b7e21ff95fa9c54f829f1
+see [CONTRIBUTING.md](./CONTRIBUTING.md)
