@@ -8,7 +8,6 @@ import bedoner.lang.knp as knp
 import bedoner.lang.mecab as mecab
 import bedoner.lang.sentencepiece as sp
 import bedoner.trf_utils  # noqa: import to register optimizer
-import mojimoji
 from bedoner.lang.torch_mixin import OPTIM_CREATOR
 from bedoner.pipelines.knp_ner import KnpEntityExtractor
 from bedoner.pipelines.person_ner import create_person_ruler
@@ -28,6 +27,10 @@ from spacy.vocab import Vocab
 
 
 def han_to_zen_normalizer(text):
+    try:
+        import mojimoji
+    except ImportError:
+        raise ValueError("juman or knp Language requires mojimoji.")
     return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
 
 

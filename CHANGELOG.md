@@ -1,3 +1,7 @@
+# v0.4.2
+
+- `mojimoji` is now optional dependency (#151)
+
 # v0.4.1
 
 ##  New features and improvements
