@@ -1,6 +1,7 @@
 # v0.4.2
 
 - `mojimoji` is now optional dependency (#151)
+- `allennlp` is now optional dependency (#148)
 
 # v0.4.1
 
