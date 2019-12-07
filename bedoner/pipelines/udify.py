@@ -4,9 +4,8 @@ from typing import Dict, Iterable
 import spacy
 import spacy.language
 from allennlp.common.util import import_submodules
-from spacy.tokens import Doc, Token
-
 from bedoner.vendor.udify.models.udify_model import OUTPUTS as UdifyOUTPUTS
+from spacy.tokens import Doc, Token
 
 from .allennlp_base import AllennlpPipe
 from .utils import set_heads

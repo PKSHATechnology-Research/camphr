@@ -5,13 +5,9 @@ from pathlib import Path
 from typing import Dict, Iterable
 
 import torch
-from allennlp.data import DatasetReader
-from allennlp.models import Model
-from allennlp.models.archival import load_archive
+from bedoner.types import Pathlike
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
-
-from bedoner.types import Pathlike
 
 VALIDATION = "validation"
 VALIDATION_DATASET_READER = "validation_dataset_reader"
@@ -21,11 +17,7 @@ ARCHIVE = "archive"
 
 class AllennlpPipe(Pipe):
     def __init__(
-        self,
-        model: Model = None,
-        dataset_reader: DatasetReader = None,
-        archive_path: Path = None,
-        **cfg
+        self, model=None, dataset_reader=None, archive_path: Path = None, **cfg
     ):
         self.model = model
         self.dataset_reader = dataset_reader
@@ -36,6 +28,9 @@ class AllennlpPipe(Pipe):
     def from_archive(
         cls, archive_path: Pathlike, dataset_reader_to_load: str = VALIDATION
     ):
+        from allennlp.data import DatasetReader
+        from allennlp.models.archival import load_archive
+
         archive = load_archive(str(archive_path))
         config = archive.config
         if dataset_reader_to_load == VALIDATION and VALIDATION_DATASET_READER in config:

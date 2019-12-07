@@ -274,10 +274,10 @@ nlp(text).ents
 
 ### installation
 
-https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0.dev6)からtar.gzをダウンロードし，
+https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0)からtar.gzをダウンロードし，
 
 ```bash
-$ pip install -U mecab_udify-0.4.0.dev6.tar.gz
+$ pip install -U mecab_udify-0.4
 ```
 
 でOKです！
@@ -286,6 +286,7 @@ $ pip install -U mecab_udify-0.4.0.dev6.tar.gz
 
 ```python
 import spacy
+import bedoner.pipelines.udify
 nlp = spacy.load("mecab_udify")
 doc = nlp("今日はいい天気だった")
 spacy.displacy.render(doc)

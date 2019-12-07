@@ -1,14 +1,10 @@
 import json
 import shutil
 from pathlib import Path
-from typing import Generator, Iterable, List, Optional
+from typing import Generator, Iterable, List
 
 import numpy as np
 import spacy
-from allennlp.commands.elmo import ElmoEmbedder
-from spacy.pipeline import Pipe
-from spacy.tokens import Doc
-
 from bedoner.pipelines.allennlp_base import Pathlike
 from bedoner.pipelines.utils import (
     get_doc_vector_via_tensor,
@@ -16,6 +12,8 @@ from bedoner.pipelines.utils import (
     get_span_vector_via_tensor,
     get_token_vector_via_tensor,
 )
+from spacy.pipeline import Pipe
+from spacy.tokens import Doc
 
 
 @spacy.component("elmo", assigns=["doc.tensor", "doc.vector", "token.vector"])
@@ -23,14 +21,14 @@ class Elmo(Pipe):
     WEIGHTS_FILE_NAME = "weights.hdf5"
     OPTIONS_FILE_NAME = "options.json"
 
-    def __init__(self, model: Optional[ElmoEmbedder] = None, **cfg):
+    def __init__(self, model=None, **cfg):
         self.model = model
         self.cfg = cfg
 
     @classmethod
-    def Model(
-        cls, options_file: Pathlike, weight_file: Pathlike, **cfg
-    ) -> ElmoEmbedder:
+    def Model(cls, options_file: Pathlike, weight_file: Pathlike, **cfg):
+        from allennlp.commands.elmo import ElmoEmbedder
+
         return ElmoEmbedder(
             str(Path(options_file).absolute()), str(Path(weight_file).absolute())
         )
