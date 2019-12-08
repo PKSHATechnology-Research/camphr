@@ -11,8 +11,10 @@ from transformers import AdamW
 
 
 @pytest.fixture
-def nlp(lang, trf_dir):
-    return trf_model(lang, trf_dir)
+def nlp(lang, trf_dir, device):
+    _nlp = trf_model(lang, trf_dir)
+    _nlp.to(device)
+    return _nlp
 
 
 TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]
@@ -33,29 +35,11 @@ def test_forward_for_long_input(nlp, lang):
 
 
 @pytest.mark.parametrize("text", TESTCASES)
-@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
-def test_forward_cuda(nlp, text):
-    assert nlp.to(torch.device("cuda"))
-    doc = nlp(text)
-    assert doc._.trf_last_hidden_state is not None
-
-
-@pytest.mark.parametrize("text", TESTCASES)
 def test_token_vector(nlp: Language, text: str):
     doc: Doc = nlp(text)
     tensor: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
     for token, a in zip(doc, doc._.get(ATTRS.alignment)):
         assert np.allclose(token.vector, tensor[a].sum(0))
-
-
-@pytest.mark.parametrize("text", TESTCASES)
-@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
-def test_token_vector_with_cuda(nlp: Language, text: str):
-    assert nlp.to(torch.device("cuda"))
-    doc: Doc = nlp(text)
-    tensor: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
-    for token, a in zip(doc, doc._.get(ATTRS.alignment)):
-        assert np.allclose(token.vector, tensor[a].sum(0).cpu())
 
 
 @pytest.mark.parametrize("text", TESTCASES)
