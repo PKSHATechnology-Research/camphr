@@ -1,7 +1,14 @@
 # v0.4.2
 
+##  New features and improvements
+
 - `mojimoji` is now optional dependency (#151)
 - `allennlp` is now optional dependency (#148)
+- removed `regex` dependency (#153)
+
+## Backwards incompatibilities
+
+- Removed `DateRuler`, `postcode_ruler`, `carcode_ruler` (#153)
 
 # v0.4.1
 
