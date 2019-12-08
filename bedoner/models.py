@@ -135,7 +135,7 @@ def person_ruler(name="person_ruler") -> mecab.Japanese:
         meta={
             "tokenizer": {"userdic": user_dic, "assets": "./jinmei/"},
             "name": name,
-            "requirements": ["mecab-python3", "regex"],
+            "requirements": ["mecab-python3"],
         }
     )
     nlp.add_pipe(create_person_ruler(nlp))
