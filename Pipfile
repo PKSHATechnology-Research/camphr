@@ -13,18 +13,17 @@ pyyaml = "*"
 rope = "*"
 hypothesis = "*"
 pre-commit = "*"
+pandas = "*"
 hydra-core = "*"
 
 [packages]
 mecab-python3 = "*"
 pyknp = "*"
-regex = "*"
 jaconv = "*"
 fire = "*"
-pandas = "*"
 mojimoji = "*"
 spacy-transformers = {git = "https://github.com/tamuhey/spacy-pytorch-transformers",ref = "patch/xlnet-tokenizer"}
-allennlp = {git = "https://github.com/tamuhey/allennlp",ref = "patch/spacy-2.2"}
+allennlp = {git = "https://github.com/allenai/allennlp",ref = "master"}
 typing-extensions = "*"
 pyyaml = "*"
 scikit-learn = "*"
@@ -32,9 +31,6 @@ jsonschema = "*"
 gensim = "*"
 pyahocorasick = "*"
 catalogue = "*"
-
-[requires]
-python_version = "3.7"
 
 [pipenv]
 allow_prereleases = true

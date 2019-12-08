@@ -35,7 +35,7 @@ class MultipleRegexRuler(SerializationMixin):
             doc = self._proc(doc, pattern, label)
         return doc
 
-    def _proc(self, doc: Doc, pattern: re.Pattern, label: str) -> Doc:
+    def _proc(self, doc: Doc, pattern: Pattern, label: str) -> Doc:
         spans_ij = [m.span() for m in pattern.finditer(doc.text)]
         spans = get_doc_char_spans_list(
             doc, spans_ij, destructive=self.destructive, label=label
