@@ -1,12 +1,16 @@
 from functools import reduce
 from typing import Any, List
 
-from spacy.language import Language
+import spacy
+from bedoner.consts import KEY_KNP_ENT, KEY_KNP_ENT_IOB
 from spacy.tokens import Doc, Span, Token
 
-from bedoner.consts import KEY_KNP_ENT, KEY_KNP_ENT_IOB
 
-
+@spacy.component(
+    "knp_entity_extractor",
+    assigns=["doc.ents"],
+    requires=[f"token._.{KEY_KNP_ENT}", f"token._.{KEY_KNP_ENT_IOB}"],
+)
 class KnpEntityExtractor:
     """A spacy pipline component to extract named entity from knp output.
 
@@ -33,6 +37,3 @@ class KnpEntityExtractor:
             ents[-1][2] = token.i + 1
 
         return ents
-
-
-Language.factories["knp_entity_extractor"] = KnpEntityExtractor
