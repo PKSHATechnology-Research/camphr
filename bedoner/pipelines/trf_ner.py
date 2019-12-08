@@ -28,7 +28,6 @@ from bedoner.pipelines.utils import (
 from bedoner.torch_utils import add_loss_to_docs
 from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
-from spacy.language import Language
 from spacy.tokens import Doc, Token
 from spacy_transformers.util import ATTRS
 
@@ -192,12 +191,3 @@ class XLNetForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
 
 
 TrfForTokenClassificationBase.install_extensions()
-
-# TODO: Ugly. (https://github.com/explosion/spaCy/issues/4514) or use nlp.meta["factories"]?
-for i in range(2, 10):
-    Language.factories[
-        BertForNamedEntityRecognition.name + str(i)
-    ] = BertForNamedEntityRecognition
-    Language.factories[
-        XLNetForNamedEntityRecognition.name + str(i)
-    ] = XLNetForNamedEntityRecognition
