@@ -5,6 +5,7 @@
 - `mojimoji` is now optional dependency (#151)
 - `allennlp` is now optional dependency (#148)
 - removed `regex` dependency (#153)
+- `udify` properly handles multi sentence text (#155)
 
 ## Backwards incompatibilities
 

@@ -1,7 +1,8 @@
 import copy
 import warnings
 from enum import Enum
-from typing import Callable, Iterable, List, Tuple, Union
+from itertools import chain
+from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 from spacy.gold import iob_to_biluo
@@ -211,3 +212,20 @@ class UserHooksMixin:
     def add_user_hook(self, k: str, fn: Callable):
         hooks = self.user_hooks
         hooks[k] = fn
+
+
+def flatten_docs_to_sents(docs: Iterable[Doc]) -> List[Span]:
+    return list(chain.from_iterable(list(doc.sents) for doc in docs))
+
+
+T = TypeVar("T")
+
+
+def chunk(seq: Sequence[T], nums: Sequence[int]) -> List[List[T]]:
+    i = 0
+    output = []
+    for n in nums:
+        j = i + n
+        output.append(seq[i:j])
+        i = j
+    return output

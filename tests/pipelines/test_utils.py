@@ -3,12 +3,7 @@ from itertools import zip_longest
 from typing import List, Tuple
 
 import pytest
-from spacy.gold import spans_from_biluo_tags
-from spacy.language import Language
-from spacy.tests.util import get_doc
-from spacy.tokens import Span
-from spacy.vocab import Vocab
-
+import spacy
 from bedoner import __version__
 from bedoner.pipelines.utils import (
     B,
@@ -17,11 +12,21 @@ from bedoner.pipelines.utils import (
     UserHooksMixin,
     biluo_to_bio,
     bio_to_biluo,
+    chunk,
     construct_biluo_tag,
     correct_biluo_tags,
     correct_bio_tags,
+    flatten_docs_to_sents,
     merge_entities,
 )
+from hypothesis import given
+from hypothesis import strategies as st
+from spacy.gold import spans_from_biluo_tags
+from spacy.language import Language
+from spacy.pipeline import Sentencizer
+from spacy.tests.util import get_doc
+from spacy.tokens import Span
+from spacy.vocab import Vocab
 
 
 @pytest.fixture
@@ -166,3 +171,29 @@ def test_user_hooks_mixin():
     obj = DummyForUserHooks()
     obj.add_user_hook("foo", lambda x: 2 * x)
     assert obj.user_hooks["foo"](1) == 2
+
+
+def test_flatten_docs_to_sens(vocab):
+    sentencizer = Sentencizer(".")
+    nlp = spacy.blank("en")
+    nlp.add_pipe(sentencizer)
+    texts = ["Foo is bar. Bar is baz.", "It is a sentence."]
+    docs = nlp.pipe(texts)
+    all_sents = flatten_docs_to_sents(docs)
+    assert len(all_sents) == 3
+
+
+@given(st.integers(1, 100), st.integers(1, 100), st.integers(-1000, 1000))
+def test_chunk(l, max_num, seed):
+    random.seed(seed)
+    nums = [random.randint(1, max_num) for _ in range(l)]
+    s = sum(nums)
+    seq = [random.randint(-100, 100) for _ in range(s)]
+
+    chunked = chunk(seq, nums)
+    assert len(chunked) == len(nums)
+    i = 0
+    for n, a in zip(nums, chunked):
+        j = i + n
+        assert seq[i:j] == a
+        i = j

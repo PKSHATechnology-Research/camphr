@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Dict, Iterable
 
 import torch
+from bedoner.pipelines.utils import flatten_docs_to_sents
 from bedoner.types import Pathlike
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
@@ -68,8 +69,9 @@ class AllennlpPipe(Pipe):
 
     def predict(self, docs: Iterable[Doc]) -> Dict:
         self.model.eval()
+        all_sents = flatten_docs_to_sents(docs)
         with torch.no_grad():
-            tokens_list = [[t.text for t in doc] for doc in docs]
+            tokens_list = [[t.text for t in sent] for sent in all_sents]
             instances = [
                 self.dataset_reader.text_to_instance(tokens) for tokens in tokens_list
             ]
