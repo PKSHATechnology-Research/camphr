@@ -1,10 +1,9 @@
 """Pipe of '75 Languages, 1 Model: Parsing Universal Dependencies Universally' (https://arxiv.org/abs/1904.02099)"""
+import warnings
 from typing import Dict, Iterable
 
 import spacy
 import spacy.language
-from allennlp.common.util import import_submodules
-from bedoner.vendor.udify.models.udify_model import OUTPUTS as UdifyOUTPUTS
 from spacy.tokens import Doc, Token
 
 from .allennlp_base import AllennlpPipe
@@ -12,7 +11,13 @@ from .utils import flatten_docs_to_sents, set_heads
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 
-import_submodules("bedoner.vendor.udify")
+try:
+    from allennlp.common.util import import_submodules
+    from bedoner.vendor.udify.models.udify_model import OUTPUTS as UdifyOUTPUTS
+
+    import_submodules("bedoner.vendor.udify")
+except ImportError:
+    warnings.warn("Udify requires allennlp")
 
 
 @spacy.component(
