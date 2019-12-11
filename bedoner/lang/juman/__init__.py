@@ -1,9 +1,8 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
 from collections import namedtuple
-from itertools import tee, zip_longest
 from typing import Any, Callable, Dict, List, Optional
 
-from bedoner.consts import KEY_FSTRING
+from bedoner.consts import JUMAN_LINES, KEY_FSTRING
 from bedoner.lang.stop_words import STOP_WORDS
 from bedoner.lang.torch_mixin import TorchLanguageMixin
 from bedoner.utils import SerializationMixin
@@ -60,7 +59,22 @@ class Tokenizer(SerializationMixin):
         """Make doc from text. Juman's `fstring` is stored in `Token._.fstring`"""
         if self.preprocessor:
             text = self.preprocessor(text)
-        dtokens = self.detailed_tokens(text)
+        juman_lines = self._juman_string(text)
+        dtokens = self._detailed_tokens(juman_lines)
+        doc = self._dtokens_to_doc(dtokens)
+        doc.user_data[JUMAN_LINES] = juman_lines
+        return doc
+
+    def _juman_string(self, text: str) -> str:
+        try:
+            lines = self.tokenizer.juman_lines(text)
+        except BrokenPipeError:
+            # Juman is sometimes broken due to its subprocess management.
+            self.reset_tokenizer()
+            lines = self.tokenizer.juman_lines(text)
+        return lines
+
+    def _dtokens_to_doc(self, dtokens: List[ShortUnitWord]) -> Doc:
         words = [x.surface for x in dtokens]
         spaces = [x.space for x in dtokens]
         doc = Doc(self.vocab, words=words, spaces=spaces)
@@ -71,34 +85,18 @@ class Tokenizer(SerializationMixin):
         doc.is_tagged = True
         return doc
 
-    def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
+    def _detailed_tokens(self, juman_lines: str) -> List[ShortUnitWord]:
         """Tokenize text with Juman and format the outputs for further processing"""
-        from pyknp import Morpheme
+        from pyknp import MList
 
+        ml = MList(juman_lines).mrph_list()
         words: List[ShortUnitWord] = []
-        try:
-            ml: List[Morpheme] = self.tokenizer.analysis(text).mrph_list()
-        except BrokenPipeError:
-            # Juman is sometimes broken due to its subprocess management.
-            self.reset_tokenizer()
-            ml: List[Morpheme] = self.tokenizer.analysis(text).mrph_list()
-        morphs, next_morphs = tee(ml)
-        next(next_morphs)
-        for m, nextm in zip_longest(morphs, next_morphs):
-            if is_space_morph(m):
-                continue
+        for m in ml:
             surface = m.midasi
             pos = m.hinsi + "," + m.bunrui
             lemma = m.genkei or surface
-            if nextm and is_space_morph(nextm):
-                words.append(ShortUnitWord(surface, lemma, pos, m.fstring, True))
-            else:
-                words.append(ShortUnitWord(surface, lemma, pos, m.fstring, False))
+            words.append(ShortUnitWord(surface, lemma, pos, m.fstring, False))
         return words
-
-
-def is_space_morph(m) -> bool:
-    return m.bunrui == "空白"
 
 
 # for pickling. see https://spacy.io/usage/adding-languages

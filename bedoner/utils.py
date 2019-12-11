@@ -128,3 +128,9 @@ def split_keepsep(text: str, sep: str):
             last += sep
         res.append(last)
     return res
+
+
+def get_sents(doc: Doc) -> Iterable[Span]:
+    if doc.is_sentenced:
+        return doc.sents
+    return doc[:]

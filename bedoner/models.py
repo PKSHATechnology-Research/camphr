@@ -4,12 +4,11 @@ from enum import Enum
 from typing import Any, Dict
 
 import bedoner.lang.juman as juman
-import bedoner.lang.knp as knp
 import bedoner.lang.mecab as mecab
 import bedoner.lang.sentencepiece as sp
 import bedoner.trf_utils  # noqa: import to register optimizer
 from bedoner.lang.torch_mixin import OPTIM_CREATOR
-from bedoner.pipelines.knp_ner import KnpEntityExtractor
+from bedoner.pipelines.knp import KNP, juman_sentencizer
 from bedoner.pipelines.person_ner import create_person_ruler
 from bedoner.pipelines.trf_model import BertModel, XLNetModel
 from bedoner.pipelines.trf_ner import (
@@ -23,6 +22,7 @@ from bedoner.pipelines.trf_seq_classification import (
 )
 from bedoner.pipelines.wordpiecer import TrfSentencePiecer, WordPiecer
 from spacy.language import Language
+from spacy.pipeline import Sentencizer
 from spacy.vocab import Vocab
 
 
@@ -38,6 +38,18 @@ def juman_nlp() -> juman.Japanese:
     return juman.Japanese(
         Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}}
     )
+
+
+def ja_sentencizer():
+    return Sentencizer(Sentencizer.default_punct_chars + ["。"])
+
+
+def knp() -> juman.Japanese:
+    nlp = juman_nlp()
+    nlp.add_pipe(ja_sentencizer())
+    nlp.add_pipe(juman_sentencizer)
+    nlp.add_pipe(KNP.from_nlp(nlp))
+    return nlp
 
 
 def wordpiecer(lang: str, pretrained: str) -> Language:
@@ -139,10 +151,4 @@ def person_ruler(name="person_ruler") -> mecab.Japanese:
         }
     )
     nlp.add_pipe(create_person_ruler(nlp))
-    return nlp
-
-
-def knp_ner(name="knp_ner") -> knp.Japanese:
-    nlp = knp.Japanese(meta={"name": name, "requirements": ["pyknp"]})
-    nlp.add_pipe(KnpEntityExtractor(nlp))
     return nlp

@@ -4,13 +4,12 @@ import pytest
 import sentencepiece as spm
 import torch
 from bedoner.lang.juman import Japanese as Juman
-from bedoner.lang.knp import Japanese as KNP
 from bedoner.lang.mecab import Japanese as Mecab
 from bedoner.pipelines.trf_model import XLNetModel
 from bedoner.pipelines.wordpiecer import WordPiecer
 from spacy.vocab import Vocab
 
-from .utils import check_juman, check_knp, check_mecab
+from .utils import check_juman, check_mecab
 
 
 def pytest_addoption(parser):
@@ -39,21 +38,11 @@ def mecab_tokenizer():
         return Mecab.Defaults.create_tokenizer(dicdir="/usr/local/lib/mecab/dic/ipadic")
 
 
-@pytest.fixture(scope="session")
-def juman_tokenizer():
-    if check_juman():
-        return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": False})
-
-
-@pytest.fixture(scope="session")
-def jumanpp_tokenizer():
-    return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": True})
-
-
-@pytest.fixture(scope="session")
-def knp_tokenizer():
-    if check_knp():
-        return KNP.Defaults.create_tokenizer()
+@pytest.fixture(scope="session", params=[True, False])
+def juman_tokenizer(request):
+    if not check_juman():
+        pytest.skip()
+    return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": request.param})
 
 
 @pytest.fixture(scope="session")

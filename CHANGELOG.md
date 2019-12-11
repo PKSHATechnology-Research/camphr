@@ -6,10 +6,13 @@
 - `allennlp` is now optional dependency (#148)
 - removed `regex` dependency (#153)
 - `udify` properly handles multi sentence text (#155)
+- add `KNP` pipe and `models.knp` (#157)
 
 ## Backwards incompatibilities
 
 - Removed `DateRuler`, `postcode_ruler`, `carcode_ruler` (#153)
+- Removed `lang.knp` (#157)
+- Removed `lang.knp_entity_extractor`
 
 # v0.4.1
 
