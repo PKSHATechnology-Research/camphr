@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Iterable, List, Optional, Tuple
 
 import srsly
+from more_itertools import padded
 from spacy.errors import Errors
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
@@ -57,7 +58,7 @@ class SerializationMixin:
 def zero_pad(a: Iterable[List[int]], pad_value: int = 0) -> List[List[int]]:
     """Padding the input so that the lengths of the inside lists are all equal."""
     max_length = max(len(el) for el in a)
-    return [el + [pad_value] * (max_length - len(el)) for el in a]
+    return [list(padded(el, pad_value, max_length)) for el in a]
 
 
 RE_URL = re.compile(
