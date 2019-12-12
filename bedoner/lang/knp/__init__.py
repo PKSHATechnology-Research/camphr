@@ -1,17 +1,13 @@
-import warnings
+from ...errors import Warnings
 
-warnings.warn(
-    "knp.Japanese has been deprecated. Please use models.knp.", DeprecationWarning
-)
+Warnings.W0("lang.knp", "pipelines.knp or models.knp")
 
 
 class Japanese:
     def __init__(self):
-        warnings.warn(
-            "knp.Japanese has been deprecated. Please use models.knp.",
-            DeprecationWarning,
-        )
+        Warnings.W0("knp.Japanese", "models.knp")
 
 
 class TorchJapanese(Japanese):
-    lang = "torch_knp"
+    def __init__(self):
+        Warnings.W1("knp.TorchJapanese")

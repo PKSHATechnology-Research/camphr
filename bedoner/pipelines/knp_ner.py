@@ -1,14 +1,9 @@
-import warnings
+from ..errors import Warnings
 
 NEW_MODULE = "bedoner.pipelines.knp"
-warnings.warn(
-    f"knp_ner has been deprecated. Please use {NEW_MODULE}.", DeprecationWarning
-)
+Warnings.W0("knp_ner", NEW_MODULE)
 
 
 class KnpEntityExtractor:
     def __init__(self) -> None:
-        warnings.warn(
-            f"KnpEntityExtractor has been deprecated. Please use {NEW_MODULE}.KNP.",
-            DeprecationWarning,
-        )
+        Warnings.W0("KnpEntityExtractor", f"{NEW_MODULE}.KNP")
