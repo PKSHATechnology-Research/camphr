@@ -13,7 +13,7 @@
 
 - Removed `DateRuler`, `postcode_ruler`, `carcode_ruler` (#153)
 - Removed `lang.knp` (#157)
-- Removed `lang.knp_entity_extractor`
+- Removed `pipelines.knp_entity_extractor` (#157)
 
 # v0.4.1
 
