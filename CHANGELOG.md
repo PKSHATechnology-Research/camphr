@@ -7,6 +7,7 @@
 - removed `regex` dependency (#153)
 - `udify` properly handles multi sentence text (#155)
 - add `KNP` pipe and `models.knp` (#157)
+    - doc: /docs/usage/knp.ipynb
 
 ## Backwards incompatibilities
 
