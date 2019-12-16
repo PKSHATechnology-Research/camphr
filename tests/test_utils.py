@@ -9,11 +9,13 @@ from spacy.tokens import Doc
 
 def _zero_pad(a: Iterable[List[int]], pad_value: int = 0) -> List[List[int]]:
     """for test"""
+    if len(a) == 0:
+        return []
     max_length = max(len(el) for el in a)
     return [el + [pad_value] * (max_length - len(el)) for el in a]
 
 
-@given(st.lists(st.integers()))
+@given(st.lists(st.lists(st.integers())))
 def test_zero_pad(a):
     assert zero_pad(a) == _zero_pad(a)
 
