@@ -2,9 +2,9 @@ import re
 from typing import Any, Dict, List, Pattern, Union
 
 import spacy
-from bedoner.pipelines.utils import merge_entities
 from bedoner.utils import SerializationMixin, get_doc_char_spans_list, merge_spans
 from spacy.tokens import Doc
+from spacy.util import filter_spans
 
 
 @spacy.component(
@@ -41,7 +41,7 @@ class MultipleRegexRuler(SerializationMixin):
             doc, spans_ij, destructive=self.destructive, label=label
         )
 
-        doc.ents = merge_entities(doc.ents, tuple(spans))
+        doc.ents = filter_spans(doc.ents + tuple(spans))
         if self.merge:
             merge_spans(doc, spans)
         return doc

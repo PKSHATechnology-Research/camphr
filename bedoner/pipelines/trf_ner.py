@@ -19,16 +19,12 @@ from bedoner.pipelines.trf_utils import (
     get_dropout,
     get_last_hidden_state_from_docs,
 )
-from bedoner.pipelines.utils import (
-    UNK,
-    UserHooksMixin,
-    correct_biluo_tags,
-    merge_entities,
-)
+from bedoner.pipelines.utils import UNK, UserHooksMixin, correct_biluo_tags
 from bedoner.torch_utils import add_loss_to_docs
 from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
 from spacy.tokens import Doc, Token
+from spacy.util import filter_spans
 from spacy_transformers.util import ATTRS
 
 CLS_LOGIT = "cls_logit"
@@ -172,7 +168,9 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
                 else:
                     biluo_tags.append(UNK.value)
             biluo_tags = correct_biluo_tags(biluo_tags)
-            doc.ents = merge_entities(doc.ents, spans_from_biluo_tags(doc, biluo_tags))
+            doc.ents = filter_spans(
+                list(doc.ents) + spans_from_biluo_tags(doc, biluo_tags)
+            )
         return docs
 
 

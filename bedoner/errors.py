@@ -1,8 +1,9 @@
 import warnings
+from typing import Type
 
 
 class W:
-    def __init__(self, msg: str, warning_cls: Warning):
+    def __init__(self, msg: str, warning_cls: Type[Warning]):
         self.msg = msg
         self.warning_cls = warning_cls
 

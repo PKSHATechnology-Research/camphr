@@ -14,6 +14,7 @@
 - Removed `DateRuler`, `postcode_ruler`, `carcode_ruler` (#153)
 - Removed `lang.knp` (#157)
 - Removed `pipelines.knp_entity_extractor` (#157)
+- Removed `utils.merge_entities`. Use `spacy.util.filter_spans` instead. (#158)
 
 # v0.4.1
 

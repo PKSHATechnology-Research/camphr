@@ -1,5 +1,4 @@
 import random
-from itertools import zip_longest
 from typing import List, Tuple
 
 import pytest
@@ -17,16 +16,13 @@ from bedoner.pipelines.utils import (
     correct_biluo_tags,
     correct_bio_tags,
     flatten_docs_to_sents,
-    merge_entities,
 )
 from hypothesis import given
 from hypothesis import strategies as st
 from spacy.gold import spans_from_biluo_tags
 from spacy.language import Language
 from spacy.pipeline import Sentencizer
-from spacy.tests.util import get_doc
 from spacy.tokens import Span
-from spacy.vocab import Vocab
 
 
 @pytest.fixture
@@ -146,20 +142,6 @@ TESTCASES_MERGE_ENTS = [
 
 def make_ents(doc, spans: List[Tuple[int, int, str]]) -> List[Span]:
     return [Span(doc, span[0], span[1], label=span[2]) for span in spans]
-
-
-@pytest.mark.parametrize("words,spans0,spans1,expected_spans", TESTCASES_MERGE_ENTS)
-def test_merge_ents(words, spans0, spans1, expected_spans):
-    doc = get_doc(Vocab(), words=words)
-    ents0 = make_ents(doc, spans0)
-    ents1 = make_ents(doc, spans1)
-    expected = make_ents(doc, expected_spans)
-
-    merged = sorted(merge_entities(ents0, ents1), key=lambda span: span.start)
-    for a, b in zip_longest(expected, merged):
-        assert a.label_ == b.label_
-        assert a.start == b.start
-        assert a.end == b.end
 
 
 class DummyForUserHooks(UserHooksMixin):

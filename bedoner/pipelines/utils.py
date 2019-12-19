@@ -5,6 +5,7 @@ from itertools import chain
 from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
+from bedoner.errors import Warnings
 from spacy.gold import iob_to_biluo
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
@@ -136,36 +137,9 @@ def correct_bio_tags(tags: List[str]) -> List[str]:
 
 
 def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:
-    """Merge two ents. If ents1 is prior to ents0"""
-    lents0 = sorted(ents0, key=lambda span: span.start)
-    lents1 = sorted(ents1, key=lambda span: span.start)
-    if len(lents0) == 0:
-        return lents1
-    if len(lents1) == 0:
-        return lents0
-
-    new_ents0 = []
-    cur = 0
-    left = 0
-    right = lents1[cur].start
-
-    for ent0 in lents0:
-        start, end = ent0.start, ent0.end
-        while True:
-            if start >= left and end <= right:
-                new_ents0.append(ent0)
-                break
-            elif start > right:
-                left = lents1[cur].end
-                cur += 1
-                if len(lents1) <= cur:
-                    right = len(ent0.doc) + 100
-                else:
-                    right = lents1[cur].start
-            else:
-                break
-
-    return filter_spans(lents1 + new_ents0)
+    """Merge two ents. ents1 is prior to ents0"""
+    Warnings.W0("merge_entities", "spacy.util.filter_spans")
+    return filter_spans(list(ents1) + list(ents0))
 
 
 def set_heads(doc: Doc, heads: List[int]) -> Doc:
