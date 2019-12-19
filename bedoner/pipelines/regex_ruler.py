@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Pattern, Union
 
 import spacy
 from bedoner.utils import SerializationMixin, get_doc_char_spans_list, merge_spans
-from spacy.tokens import Doc
+from spacy.tokens import Doc, Span
 from spacy.util import filter_spans
 
 
@@ -36,15 +36,17 @@ class MultipleRegexRuler(SerializationMixin):
         return doc
 
     def _proc(self, doc: Doc, pattern: Pattern, label: str) -> Doc:
-        spans_ij = [m.span() for m in pattern.finditer(doc.text)]
-        spans = get_doc_char_spans_list(
-            doc, spans_ij, destructive=self.destructive, label=label
-        )
-
+        spans = self.get_spans(doc, pattern, label)
         doc.ents = filter_spans(doc.ents + tuple(spans))
         if self.merge:
             merge_spans(doc, spans)
         return doc
+
+    def get_spans(self, doc: Doc, pattern: Pattern, label: str) -> List[Span]:
+        spans_ij = [m.span() for m in pattern.finditer(doc.text)]
+        return get_doc_char_spans_list(
+            doc, spans_ij, destructive=self.destructive, label=label
+        )
 
 
 @spacy.component(
