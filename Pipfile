@@ -17,11 +17,12 @@ pandas = "*"
 hydra-core = "*"
 
 [packages]
+Cython = "*"
 mecab-python3 = "*"
 pyknp = {git = "https://github.com/ku-nlp/pyknp", ref = "master"}
 jaconv = "*"
 fire = "*"
-mojimoji = "*"
+mojimoji2 = "*"
 spacy-transformers = {git = "https://github.com/tamuhey/spacy-pytorch-transformers",ref = "patch/xlnet-tokenizer"}
 allennlp = {git = "https://github.com/allenai/allennlp",ref = "master"}
 typing-extensions = "*"
