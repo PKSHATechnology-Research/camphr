@@ -1,16 +1,11 @@
 import json
 
 import pytest
-import spacy
-import torch
 from bedoner.models import trf_ner
 from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
 from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
 from bedoner.ner_labels.utils import make_biluo_labels
-from bedoner.torch_utils import get_loss_from_docs
-from spacy.gold import GoldParse
 from spacy.language import Language
-from spacy.tests.util import assert_docs_equal
 
 label_types = ["ene", "irex"]
 
@@ -32,9 +27,10 @@ def labels(label_type):
 
 
 @pytest.fixture(scope="module")
-def nlp(labels, lang, trf_dir):
+def nlp(labels, lang, trf_dir, device):
     _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir)
     assert _nlp.meta["lang"] == "torch_" + lang
+    _nlp.to(device)
     return _nlp
 
 
@@ -90,104 +86,6 @@ def test_call(nlp: Language, text, gold, label_type):
     if label_type == "irex":
         pytest.skip()
     nlp(text)
-
-
-def test_serialization(nlp: Language, tmpdir, label_type):
-    text = TESTCASE_ENE[0][0]
-    if label_type == "irex":
-        pytest.skip()
-    nlp.to_disk(str(tmpdir))
-    nlp2 = spacy.load(str(tmpdir))
-    assert_docs_equal(nlp(text), nlp2(text))
-
-
-def test_pipe(nlp: Language):
-    list(nlp.pipe(["今日はいい天気なので外で遊びたい", "明日は晴れ"]))
-
-
-@pytest.mark.parametrize("text,gold", TESTCASE_ENE)
-def test_update(nlp: Language, text, gold, label_type, tmpdir):
-    if label_type == "irex":
-        pytest.skip()
-    assert nlp.device.type == "cpu"
-    doc = nlp(text)
-    gold = GoldParse(doc, **gold)
-
-    optim = nlp.resume_training()
-    assert nlp.device.type == "cpu"
-    doc = nlp.make_doc(text)
-    nlp.update([doc], [gold], optim)
-    assert get_loss_from_docs([doc])
-
-
-def test_update_after_restore(nlp: Language, tmpdir, label_type):
-    if label_type != "ene":
-        pytest.skip()
-    text, gold = TESTCASE_ENE[0]
-    nlp.to_disk(str(tmpdir))
-    nlp = spacy.load(str(tmpdir))
-    optim = nlp.resume_training()
-    nlp.update([text], [gold], optim)
-
-
-def test_update_for_long_input(nlp, lang, label_type):
-    if lang == "mecab" and label_type == "ene":
-        text = "foo " * 2000
-        optim = nlp.resume_training()
-        nlp.update([text], [{"entities": [(0, 3, "ACADEMIC")]}], optim)
-    else:
-        pytest.skip()
-
-
-def test_update_batch(nlp: Language, label_type):
-    if label_type == "irex":
-        pytest.skip()
-    texts, golds = zip(*TESTCASE_ENE)
-    optim = nlp.resume_training()
-    nlp.update(texts, golds, optim)
-
-
-def test_evaluate(nlp: Language, label_type):
-    if label_type == "irex":
-        pytest.skip()
-    nlp.evaluate(TESTCASE_ENE)
-
-
-TESTCASE2 = ["資生堂の香水-禅とオードパルファンＺＥＮの違いを教えて下さい。また今でも製造されてますか？"]
-
-
-@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
-@pytest.mark.parametrize("text,gold", TESTCASE_ENE)
-def test_call_cuda(nlp: Language, text, gold, cuda, label_type):
-    if label_type == "irex":
-        pytest.skip()
-    nlp.to(cuda)
-    nlp(text)
-
-
-@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
-@pytest.mark.parametrize("text,gold", TESTCASE_ENE)
-def test_update_cuda(nlp: Language, text, gold, cuda, label_type):
-    if label_type == "irex":
-        pytest.skip()
-    nlp.to(cuda)
-    doc = nlp(text)
-    gold = GoldParse(doc, **gold)
-
-    optim = nlp.resume_training()
-    doc = nlp.make_doc(text)
-    nlp.update([doc], [gold], optim)
-    assert get_loss_from_docs([doc])
-
-
-@pytest.mark.skipif(not torch.cuda.is_available(), reason="cuda test")
-def test_update_batch_cuda(nlp: Language, cuda, label_type):
-    if label_type == "irex":
-        pytest.skip()
-    nlp.to(cuda)
-    texts, golds = zip(*TESTCASE_ENE)
-    optim = nlp.resume_training()
-    nlp.update(texts, golds, optim)
 
 
 @pytest.fixture(

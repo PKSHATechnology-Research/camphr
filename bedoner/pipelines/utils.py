@@ -2,9 +2,20 @@ import copy
 import warnings
 from enum import Enum
 from itertools import chain
-from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union
+from typing import (
+    Callable,
+    Iterable,
+    List,
+    Sequence,
+    Sized,
+    Tuple,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import numpy as np
+import torch
 from bedoner.errors import Warnings
 from spacy.gold import iob_to_biluo
 from spacy.tokens import Doc, Span, Token
@@ -83,33 +94,34 @@ def biluo_to_bio(tags: List[str]) -> List[str]:
     return tags
 
 
-def correct_biluo_tags(tags: List[str]) -> List[str]:
+def correct_biluo_tags(tags: List[str]) -> Tuple[List[str], bool]:
     """Check and correct biluo tags list so that it can be assigned to `spacy.gold.spans_from_biluo_tags`.
 
     All invalid tags will be replaced with `-`
     """
+    is_correct = True
     tags = ["O"] + copy.copy(tags) + ["O"]
     for i in range(len(tags) - 1):
         tagl = tags[i]
         tagr = tags[i + 1]
 
-        tl, bl = deconstruct_biluo_tag(tagl)
-        tr, br = deconstruct_biluo_tag(tagr)
-        if tl == UNK:
+        type_l, body_l = deconstruct_biluo_tag(tagl)
+        type_r, body_r = deconstruct_biluo_tag(tagr)
+        if type_l == UNK:
             tags[i] == UNK.value
-        if tr == UNK:
+        if type_r == UNK:
             tags[i + 1] == UNK.value
 
         # left check
-        if tl in {B, I} and not ((tr == I or tr == L) and bl == br):
-            # invalid pattern
+        if type_l in {B, I} and not ((type_r == I or type_r == L) and body_l == body_r):
+            is_correct = False
             tags[i] = UNK.value
 
         # right check
-        if tr in {I, L} and not ((tl == B or tl == I) and bl == br):
-            # invalid pattern
+        if type_r in {I, L} and not ((type_l == B or type_l == I) and body_l == body_r):
+            is_correct = False
             tags[i + 1] = UNK.value
-    return tags[1:-1]
+    return tags[1:-1], is_correct
 
 
 def correct_bio_tags(tags: List[str]) -> List[str]:
@@ -186,6 +198,35 @@ class UserHooksMixin:
     def add_user_hook(self, k: str, fn: Callable):
         hooks = self.user_hooks
         hooks[k] = fn
+
+
+def minmax_scale(data: torch.Tensor) -> torch.Tensor:
+    M, m = data.max(), data.min()
+    if M == m:
+        return data / M
+    return (data - m) / (M - m)
+
+
+EPS = 1e-5
+
+
+def beamsearch(data: torch.Tensor, k: int) -> torch.Tensor:
+    assert len(cast(Sized, data))
+    assert len(data.shape) == 2
+
+    # scaling for score
+    data = minmax_scale(data) + EPS
+
+    _, m = data.shape
+    scores, candidates = torch.topk(data[0], k=min(k, m))
+    candidates = candidates[:, None]
+
+    for row in data[1:]:
+        z = torch.einsum("i,j->ij", scores, row).flatten()
+        scores, flat_idx = torch.topk(z, k=min(k, len(z)))
+        i, j = flat_idx // m, flat_idx % m
+        candidates = torch.cat([candidates[i], j[:, None]], dim=-1)
+    return candidates
 
 
 def flatten_docs_to_sents(docs: Iterable[Doc]) -> List[Span]:

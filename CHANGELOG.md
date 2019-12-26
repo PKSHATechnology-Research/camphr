@@ -2,6 +2,7 @@
 
 ##  New features and improvements
 
+- Add beam-search decoder for NER (#150)
 - add `KNP` pipe and `models.knp` (#157)
     - doc: /docs/usage/knp.ipynb
 - `mojimoji` is now optional dependency (#151)

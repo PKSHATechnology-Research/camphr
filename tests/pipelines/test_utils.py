@@ -1,14 +1,18 @@
 import random
+from itertools import product
 from typing import List, Tuple
 
 import pytest
 import spacy
+import torch
 from bedoner import __version__
 from bedoner.pipelines.utils import (
+    EPS,
     B,
     I,
     O,
     UserHooksMixin,
+    beamsearch,
     biluo_to_bio,
     bio_to_biluo,
     chunk,
@@ -16,6 +20,7 @@ from bedoner.pipelines.utils import (
     correct_biluo_tags,
     correct_bio_tags,
     flatten_docs_to_sents,
+    minmax_scale,
 )
 from hypothesis import given
 from hypothesis import strategies as st
@@ -48,7 +53,7 @@ TESTCAESES = [(["B-LOC", "L-LOC", "O", "L-PERSON"], ["B-LOC", "L-LOC", "O", "-"]
 
 @pytest.mark.parametrize("tags,corrected", TESTCAESES)
 def test_correct_biluo_tags_cases(nlp, tags, corrected):
-    assert correct_biluo_tags(tags) == corrected
+    assert correct_biluo_tags(tags) == (corrected, False)
 
 
 def test_correct_biluo_tags_random(nlp):
@@ -58,7 +63,7 @@ def test_correct_biluo_tags_random(nlp):
         text = ("foo " * length).strip()
         doc = nlp(text)
         tags = create_tags_sample(10)
-        corrected_tags = correct_biluo_tags(tags)
+        corrected_tags, _ = correct_biluo_tags(tags)
         spans_from_biluo_tags(doc, corrected_tags)
 
 
@@ -153,6 +158,44 @@ def test_user_hooks_mixin():
     obj = DummyForUserHooks()
     obj.add_user_hook("foo", lambda x: 2 * x)
     assert obj.user_hooks["foo"](1) == 2
+
+
+st_int = st.integers(1, 100)
+
+
+@given(st_int, st_int, st_int, st.integers(-1000, 1000))
+def test_beamsearch(n, m, k, s):
+    torch.manual_seed(s)
+    data = torch.randn(n, m)
+    output = beamsearch(data, k)
+    assert output.shape == (min(m ** n, k), n)
+    assert all(output[0] == data.argmax(1))
+
+
+def _elephant_beamsearch(data: torch.Tensor, k: int) -> torch.Tensor:
+    data = minmax_scale(data) + EPS
+    data_with_idx = [[(a, i) for i, a in enumerate(row)] for row in data]
+    ents = []
+    for items in product(*data_with_idx):
+        score, seq = 1, []
+        for s, i in items:
+            score *= s
+            seq.append(i)
+        ents.append((score, seq))
+    res = sorted(ents, reverse=True)[:k]
+    return torch.tensor(list(zip(*res))[1])
+
+
+st_small_int = st.integers(1, 4)
+
+
+@given(st_small_int, st_small_int, st.integers(1, 4 ** 4), st.integers(-1000, 1000))
+def test_with_elephant_beamsearch(n, m, k, s):
+    torch.manual_seed(s)
+    data = torch.randn(n, m)
+    output = beamsearch(data, k)
+    elephant_output = _elephant_beamsearch(data, k)
+    assert torch.all(output == elephant_output)
 
 
 def test_flatten_docs_to_sens(vocab):

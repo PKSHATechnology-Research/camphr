@@ -3,7 +3,7 @@
 Models defined in this modules must be used with `bedoner.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
 import functools
-from typing import Iterable, List, cast
+from typing import Iterable, List, Sized, cast
 
 import spacy
 import torch
@@ -19,12 +19,17 @@ from bedoner.pipelines.trf_utils import (
     get_dropout,
     get_last_hidden_state_from_docs,
 )
-from bedoner.pipelines.utils import UNK, UserHooksMixin, correct_biluo_tags
+from bedoner.pipelines.utils import (
+    UNK,
+    UserHooksMixin,
+    beamsearch,
+    correct_biluo_tags,
+    merge_entities,
+)
 from bedoner.torch_utils import add_loss_to_docs
 from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
 from spacy.tokens import Doc, Token
-from spacy.util import filter_spans
 from spacy_transformers.util import ATTRS
 
 CLS_LOGIT = "cls_logit"
@@ -108,6 +113,8 @@ class TrfForTokenClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
 class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
     """Named entity recognition component with pytorch-transformers."""
 
+    K_BEAM = "k_beam"
+
     @property
     def ignore_label_index(self) -> int:
         if UNK in self.labels:
@@ -157,21 +164,36 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
         id2label = self.labels
 
         for doc, logit in zip(docs, cast(Iterable, logits)):
-            ids = torch.argmax(logit, dim=1)
-            labels = [id2label[r] for r in cast(Iterable, ids)]
-            doc._.cls_logit = logit
-            biluo_tags = []
-            for token, a in zip(doc, doc._.trf_alignment):
-                if len(a):
-                    token._.cls_logit = logit[a[0]]
-                    biluo_tags.append(labels[a[0]])
-                else:
-                    biluo_tags.append(UNK.value)
-            biluo_tags = correct_biluo_tags(biluo_tags)
-            doc.ents = filter_spans(
-                list(doc.ents) + spans_from_biluo_tags(doc, biluo_tags)
-            )
+            logit = self._extract_logit(logit, doc._.get(ATTRS.alignment))
+            candidates = beamsearch(logit, self.k_beam)
+            assert len(cast(Sized, candidates))
+            best_tags = None
+            for cand in candidates:
+                tags, is_correct = correct_biluo_tags(
+                    [id2label[j] for j in cast(Iterable, cand)]
+                )
+                if is_correct:
+                    best_tags = tags
+                    break
+                if best_tags is None:
+                    best_tags = tags
+            doc.ents = merge_entities(doc.ents, spans_from_biluo_tags(doc, best_tags))
         return docs
+
+    def _extract_logit(
+        self, logit: torch.Tensor, alignment: List[List[int]]
+    ) -> torch.Tensor:
+        idx = [a[0] for a in alignment if len(a) > 0]
+        return logit[idx]
+
+    @property
+    def k_beam(self) -> int:
+        return self.cfg.setdefault(self.K_BEAM, 10)
+
+    @k_beam.setter
+    def k_beam(self, k: int):
+        assert isinstance(k, int)
+        self.cfg[self.K_BEAM] = k
 
 
 @spacy.component(
