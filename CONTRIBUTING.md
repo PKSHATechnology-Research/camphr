@@ -7,10 +7,9 @@
 ## setup
 
 1. clone
-2. `$ pipenv install --dev`
-3. `$ pipenv run pip install -e .`
-4. `$ pre-commit install`
-5. `$ pipenv run pytest`
+2. `$ poetry install -E all`
+3. `$ pre-commit install`
+4. `$ poetry run pytest tests`
 
 ## 構成
 
