@@ -9,14 +9,6 @@ import spacy
 import spacy.language
 import torch
 import transformers as trf
-from spacy.gold import GoldParse
-from spacy.language import Language
-from spacy.tokens import Doc
-from spacy.vocab import Vocab
-from spacy_transformers.util import ATTRS
-from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
-from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
-
 from bedoner.pipelines.utils import get_similarity
 from bedoner.torch_utils import (
     OptimizerParameters,
@@ -25,6 +17,13 @@ from bedoner.torch_utils import (
     get_parameters_with_decay,
 )
 from bedoner.utils import zero_pad
+from spacy.gold import GoldParse
+from spacy.language import Language
+from spacy.tokens import Doc
+from spacy.vocab import Vocab
+from spacy_transformers.util import ATTRS
+from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
+from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 PRETRAINED_MODEL_ARCHIVE_MAP = {
@@ -80,7 +79,7 @@ class XLNetModelOutputs:
     """A container for trf.XLNetModel outputs. See `trf.XLNetModel`'s docstring for detail."""
 
     laste_hidden_state: torch.FloatTensor  # shape ``(batch_size, sequence_length, hidden_size)``
-    mems: List[torch.FloatTensor]
+    mems: Optional[List[torch.FloatTensor]] = None
     hidden_states: Optional[torch.FloatTensor] = None
     # list of (one for the output of each layer + the output of the embeddings) of shape ``(batch_size, sequence_length, hidden_size)``
     attensions: Optional[torch.FloatTensor] = None
@@ -278,7 +277,7 @@ class TransformersModel(TorchPipe):
             self.cfg = pickle.load(f)
         with (path / "vocab.pkl").open("rb") as f:
             self.vocab = pickle.load(f)
-        self.model = self.trf_model_cls.from_pretrained(path)
+        self.model = self.trf_model_cls.from_pretrained(str(path))
         return self
 
 
