@@ -16,4 +16,4 @@ jobs:
           command: docker build -t ner .
       - run:
           name: run pytest
-          command: docker run -e CI ner pipenv run pytest -v
+          command: docker run -e CI ner poetry run pytest tests -vvv
