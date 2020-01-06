@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/PKSHATechnology/bedore-ner/blob/master/img/logoc.svg" width="300" /></p>
+<p align="center"><img src="https://github.com/PKSHATechnology/bedore-ner/blob/master/img/logoc.svg" width="200" /></p>
 
 # Camphr - spaCy plugin for Transformers, Japanese [![CircleCI](https://circleci.com/gh/PKSHATechnology/bedore-ner.svg?style=svg&circle-token=d27152116259f09d7e229ee7d5ad5f095989fc7d)](https://circleci.com/gh/PKSHATechnology/bedore-ner)
 
