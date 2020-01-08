@@ -11,10 +11,10 @@ import numpy as np
 import omegaconf
 import srsly
 import torch
-from bedoner.models import get_trf_name, trf_ner, trf_seq_classification
-from bedoner.ner_labels import LABELS
-from bedoner.ner_labels.utils import make_biluo_labels
-from bedoner.torch_utils import goldcat_to_label
+from camphr.models import get_trf_name, trf_ner, trf_seq_classification
+from camphr.ner_labels import LABELS
+from camphr.ner_labels.utils import make_biluo_labels
+from camphr.torch_utils import goldcat_to_label
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from spacy.language import Language

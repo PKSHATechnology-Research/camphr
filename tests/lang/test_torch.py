@@ -1,6 +1,6 @@
-import bedoner.lang.juman as juman
-import bedoner.lang.mecab as mecab
-import bedoner.lang.sentencepiece as sp
+import camphr.lang.juman as juman
+import camphr.lang.mecab as mecab
+import camphr.lang.sentencepiece as sp
 import pytest
 import spacy
 import torch

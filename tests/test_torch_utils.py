@@ -6,8 +6,8 @@ import torch.nn as nn
 from spacy.language import Language
 from spacy.tokens import Doc
 
-from bedoner.lang.torch_mixin import TorchLanguageMixin
-from bedoner.torch_utils import TorchPipe
+from camphr.lang.torch_mixin import TorchLanguageMixin
+from camphr.torch_utils import TorchPipe
 
 
 class TorchLang(TorchLanguageMixin, Language):

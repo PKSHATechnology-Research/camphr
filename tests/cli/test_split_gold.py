@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from bedoner.cli.split_gold import split_gold
+from camphr.cli.split_gold import split_gold
 
 from ..utils import comp_jsonl
 

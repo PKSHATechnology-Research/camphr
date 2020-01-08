@@ -1,7 +1,7 @@
 from typing import Iterable, List
 
 import pytest
-from bedoner.utils import get_doc_char_span, split_keepsep, zero_pad
+from camphr.utils import get_doc_char_span, split_keepsep, zero_pad
 from hypothesis import given
 from hypothesis import strategies as st
 from spacy.tokens import Doc

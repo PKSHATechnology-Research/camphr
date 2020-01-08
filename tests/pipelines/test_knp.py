@@ -1,8 +1,8 @@
 from typing import List, Tuple
 
 import pytest
-from bedoner.models import knp
-from bedoner.pipelines.knp import KNP_USER_KEYS
+from camphr.models import knp
+from camphr.pipelines.knp import KNP_USER_KEYS
 from spacy.language import Language
 from spacy.tokens import Doc
 

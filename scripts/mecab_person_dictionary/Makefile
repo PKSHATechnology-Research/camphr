@@ -1,11 +1,11 @@
 #!/bin/sh
 # python を指定したい場合は，PYTHON=$(which python3) make などとしてください
-JINMEIDATA_TAR := "s3://bedoner/jinmei_data.tar.gz"
+JINMEIDATA_TAR := "s3://camphr/jinmei_data.tar.gz"
 MECAB_MODEL_PATH := "./jinmei_data/mecab-ipadic-2.7.0-20070801.model"
 MECAB_IPADIC := "./jinmei_data/mecab-ipadic-2.7.0-20070801"
 MECAB_DICT_INDEX_PATH := /usr/local/libexec/mecab/mecab-dict-index
 ccend=$(echo -e "\033[0m")
-USER_DICT_DIR := ${HOME}/.bedoner
+USER_DICT_DIR := ${HOME}/.camphr
 
 PY := $(if $(PYTHON),$(PYTHON),python3)
 

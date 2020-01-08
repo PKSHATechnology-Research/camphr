@@ -1,7 +1,7 @@
 from itertools import zip_longest
 
 import pytest
-from bedoner.pipelines.regex_ruler import MultipleRegexRuler, RegexRuler
+from camphr.pipelines.regex_ruler import MultipleRegexRuler, RegexRuler
 from spacy.tokens import Doc
 
 from ..utils import check_mecab

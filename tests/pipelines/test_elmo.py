@@ -3,8 +3,8 @@ from pathlib import Path
 import pytest
 import spacy
 
-import bedoner.lang.mecab as mecab
-from bedoner.pipelines.elmo import Elmo
+import camphr.lang.mecab as mecab
+from camphr.pipelines.elmo import Elmo
 
 pytestmark = pytest.mark.slow
 

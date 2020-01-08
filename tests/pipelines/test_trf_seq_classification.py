@@ -2,14 +2,14 @@ import random
 
 import pytest
 import spacy
-from bedoner.models import trf_seq_classification
-from bedoner.pipelines.trf_seq_classification import (
+from camphr.models import trf_seq_classification
+from camphr.pipelines.trf_seq_classification import (
     TOP_LABEL,
     TOPK_LABELS,
     BertForSequenceClassification,
 )
-from bedoner.pipelines.trf_utils import CONVERT_LABEL
-from bedoner.torch_utils import get_loss_from_docs
+from camphr.pipelines.trf_utils import CONVERT_LABEL
+from camphr.torch_utils import get_loss_from_docs
 from spacy.language import Language
 from spacy.tests.util import assert_docs_equal
 

@@ -1,5 +1,5 @@
 import pytest
-from bedoner.errors import Warnings
+from camphr.errors import Warnings
 
 
 def test_warning():

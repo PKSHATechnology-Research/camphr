@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 import spacy
 import torch
-from bedoner.models import trf_model
-from bedoner.pipelines.trf_model import TransformersModel
+from camphr.models import trf_model
+from camphr.pipelines.trf_model import TransformersModel
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy_transformers.util import ATTRS

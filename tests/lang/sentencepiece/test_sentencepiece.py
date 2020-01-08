@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 import sentencepiece as spm
 import spacy
-from bedoner.lang.sentencepiece import EXTS, SentencePieceLang
+from camphr.lang.sentencepiece import EXTS, SentencePieceLang
 from spacy.vocab import Vocab
 
 

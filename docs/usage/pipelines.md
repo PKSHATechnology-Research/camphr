@@ -79,10 +79,10 @@ $ pip install git+https://github.com/PKSHATechnology/bedore-ner
 $ pip install mecab-python3
 ```
 
-あとは，`bedoner.models.bert_model`を呼べばOKです．パラメータ等は[huggingface/transformers](https://github.com/huggingface/transformers)からダウンロードされます．
+あとは，`camphr.models.bert_model`を呼べばOKです．パラメータ等は[huggingface/transformers](https://github.com/huggingface/transformers)からダウンロードされます．
 
 ```python
-from bedoner.models import bert_model
+from camphr.models import bert_model
 nlp = bert_model(lang="mecab", name="bert-base-multilingual-cased")
 doc = nlp("私は犬と猫が好きだ")
 I, dog, cat = doc[0], doc[2], doc[4]
@@ -102,7 +102,7 @@ BERTの事前学習を行うこともできます.
 
 ```python
 import spacy
-from bedoner.pipelines.trf_maskedlm import add_maskedlm_pipe
+from camphr.pipelines.trf_maskedlm import add_maskedlm_pipe
 
 nlp = spacy.load("torch_mecab_bert_ene")
 add_maskedlm_pipe(nlp)
@@ -195,9 +195,9 @@ doc1.similarity(doc2)
 以下のように，`nlp.update`にデータを与えるだけでOKです．
 
 ```python
-from bedoner.models import trf_ner
-from bedoner.ner_labels.labels_irex import ALL_LABELS
-from bedoner.ner_labels.utils import make_biluo_labels
+from camphr.models import trf_ner
+from camphr.ner_labels.labels_irex import ALL_LABELS
+from camphr.ner_labels.utils import make_biluo_labels
 from spacy.util import minibatch
 
 nlp = trf_ner(lang="mecab", labels=make_biluo_labels(ALL_LABELS), pretrained="path_to_bert")
@@ -228,12 +228,12 @@ nlp = spacy.load("./bert-foo")
 
 ## Regex NER
 
-`bedoner.pipelines.RegexRuler`を使うと，正規表現を用いたNER pipeを作ることができます．  
+`camphr.pipelines.RegexRuler`を使うと，正規表現を用いたNER pipeを作ることができます．  
 例えば，電話番号を検出したい場合は以下のようにします．  
 
 ```python
 import spacy
-from bedoner.pipelines import RegexRuler
+from camphr.pipelines import RegexRuler
 
 nlp = spacy.blank("mecab")
 # create pipe
@@ -254,7 +254,7 @@ BERTと正規表現pipeを組み合わせて使うこともできます．特定
 
 ```python
 import spacy
-from bedoner.pipelines.regex_ruler import RegexRuler
+from camphr.pipelines.regex_ruler import RegexRuler
 
 nlp = spacy.load("mecab_bert_ene")
 pipe = RegexRuler(pattern="\d{2,3}-\d{4}-\d{3}", label="PHONE")
@@ -286,7 +286,7 @@ $ pip install -U mecab_udify-0.4
 
 ```python
 import spacy
-import bedoner.pipelines.udify
+import camphr.pipelines.udify
 nlp = spacy.load("mecab_udify")
 doc = nlp("今日はいい天気だった")
 spacy.displacy.render(doc)
@@ -317,7 +317,7 @@ Example:
 
 ```python
 import spacy
-from bedoner.pipelines import postcode_ruler, carcode_ruler
+from camphr.pipelines import postcode_ruler, carcode_ruler
 
 nlp = spacy.blank("mecab")
 nlp.add_pipe(postcode_ruler)
@@ -411,7 +411,7 @@ BERT等によって計算された埋め込みベクトルを元に,キーフレ
 
 ```python
 import spacy
-from bedoner.pipelines.embedrank import EmbedRank
+from camphr.pipelines.embedrank import EmbedRank
 
 nlp = spacy.load("mecab_bert_model")
 nlp.add_pipe(EmbedRank(vocab=nlp.vocab))
@@ -433,7 +433,7 @@ https://spacy.io/api/entityruler
 mecabのタグ情報を元に，人名抽出をします．
 
 ```python
-from bedoner.models import person_ruler
+from camphr.models import person_ruler
 
 nlp = person_ruler()
 text = "2019年11月8日に高松隆と東京タワーに行った"
@@ -448,7 +448,7 @@ nlp(text).ents
 ルールベースで日付を抽出するNERパイプラインです．
 
 ```python
-from bedoner.models import date_ruler
+from camphr.models import date_ruler
 
 nlp = date_ruler()
 text = "2019年11月8日に高松隆と東京タワーに行った"
@@ -463,7 +463,7 @@ nlp(text).ents
 [KNP](http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP)を使ったNERです．
 
 ```python
-from bedoner.models import knp_ner
+from camphr.models import knp_ner
 
 nlp = knp_ner()
 text = "2019年11月8日に高松隆と東京タワーに行った"

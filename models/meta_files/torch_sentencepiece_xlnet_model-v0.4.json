@@ -25,7 +25,7 @@
 
   },
   "requirements":[
-    "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@v0.4"
+    "camphr @ git+https://github.com/PKSHATechnology/bedore-ner@v0.4"
   ],
   "factories":{
     "trf_sentencepiecer":"trf_sentencepiecer",

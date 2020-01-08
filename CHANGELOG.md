@@ -1,3 +1,7 @@
+# v0.5.0: Rename `bedoner` to `camphr`
+
+The libary name `bedoner` has been renamed to `camphr`.
+
 # v0.4.2
 
 ##  New features and improvements
@@ -46,7 +50,7 @@
 - XLNet追加
   - `trf_model.XLNetModel`を追加
   - `trf_ner.XLNetForNamedEntityRecognition`を追加
-- SentencePiece ベースの`Language`を追加: [./bedoner/lang/sentencepiece](./bedoner/lang/sentencepiece)
+- SentencePiece ベースの`Language`を追加: [./camphr/lang/sentencepiece](./camphr/lang/sentencepiece)
 - SentencePiece Language用のWordpiecer: `pipelines.wordpiecer.TrfSentencePiecer`を追加
 - テストの高速化
 - Multitask NER modelを追加
@@ -55,15 +59,15 @@
     - 例: Name/Organization/Familyの場合,"Name"と"Organization"と"Family"を予測する3種のモデルを作る．学習はマルチタスク．抽出結果が衝突した場合，下位階層予測のモデルが優先される
 - `TrfForNamedEntityRecognitionBase`にuser_hooksを追加
   - goldラベルを適当に変形したい場合，`ner.user_hooks["convert_label"] = fn`のようにする
-- `bedoner.pipelines.udify`の追加
+- `camphr.pipelines.udify`の追加
   - ref: [Parsing Universal Dependencies Universally](https://arxiv.org/abs/1904.02099)
   - リリースも追加: https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0.dev9
 
-- `bedoner.pipelines.allennlp_base`の追加
+- `camphr.pipelines.allennlp_base`の追加
   - allennlpのモデルを利用する際の機能．
-- `bedoner.pipelines.regex_pipe.MultipleRegexRuler`を追加
+- `camphr.pipelines.regex_pipe.MultipleRegexRuler`を追加
   - 複数パターンを登録できる正規表現パイプです
-- `bedoner.pipelines.EmbedRank`を追加
+- `camphr.pipelines.EmbedRank`を追加
   - [Embed Rank](https://arxiv.org/pdf/1801.04470.pdf)を用いたキーフレーズ抽出機能
 - Elmoを追加
 - `pipelines.PatternSearcher`を追加
@@ -72,7 +76,7 @@
   - `RegexPipe`ではダメなのか？ ->  キーワード量が多くなると，壊滅的に遅くなる
   - `flashtext`は? -> 単語境界があることが前提なので，日本語には使えない．(実装したやつ：https://github.com/PKSHATechnology/bedore-ner/tree/feature/flashtext)
 
-- `bedoner.pipelines.gensim`を追加
+- `camphr.pipelines.gensim`を追加
   - gensimが対応しているモデルの埋め込みベクトルを利用可能に
   - リリースも追加
 
@@ -94,7 +98,7 @@
 ##  New features and improvements
 
 - multilingual BERT (`bert-base-multilingual-cased`)を使用したNERモデル [mecab_bert_multilingual_ner をリリース](https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.3.1.dev0)しました．
-- `bedoner.models.bert_model`を改善し，transformersモデルを簡単に使用できるようにしました．
+- `camphr.models.bert_model`を改善し，transformersモデルを簡単に使用できるようにしました．
   - ex) `nlp = bert_model(lang=mecab, pretrained="bert-base-multilingual-cased")`
 
 # v0.3
@@ -154,7 +158,7 @@ nlp.to(torch.device("cuda"))
 - postcoder ruler の追加 (#43)
 - matcher_ruler の追加 (#45)
 - person_ner, date_ner について，LABELをexport
-- `bedoner.__version__` の追加
+- `camphr.__version__` の追加
 
 # v0.1
 

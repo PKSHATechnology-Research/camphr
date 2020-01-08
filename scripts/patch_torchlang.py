@@ -2,7 +2,7 @@ import tempfile
 
 import fire
 import spacy
-from bedoner.lang.torch_mixin import TorchLanguageMixin
+from camphr.lang.torch_mixin import TorchLanguageMixin
 
 
 def main(path: str, dst: str):

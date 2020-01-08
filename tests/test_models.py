@@ -1,4 +1,4 @@
-from bedoner.models import trf_model, trf_ner
+from camphr.models import trf_model, trf_ner
 
 
 def test_freeze_model(pretrained):

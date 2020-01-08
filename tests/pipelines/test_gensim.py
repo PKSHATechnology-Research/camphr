@@ -1,7 +1,7 @@
 import pytest
 import spacy
 
-from bedoner.pipelines.gensim import set_word2vec_vectors
+from camphr.pipelines.gensim import set_word2vec_vectors
 
 
 @pytest.fixture

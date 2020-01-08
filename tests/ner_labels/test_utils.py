@@ -1,6 +1,6 @@
 import pytest
 
-from bedoner.ner_labels.utils import get_full_sekine_label
+from camphr.ner_labels.utils import get_full_sekine_label
 
 
 @pytest.mark.parametrize("label,full", [("BIRD", "NATURAL_OBJECT/LIVING_THING/BIRD")])

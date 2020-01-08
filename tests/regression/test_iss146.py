@@ -1,7 +1,7 @@
 import pytest
-from bedoner.lang.sentencepiece import TorchSentencePieceLang
-from bedoner.pipelines.trf_model import BertModel
-from bedoner.pipelines.wordpiecer import TrfSentencePiecer
+from camphr.lang.sentencepiece import TorchSentencePieceLang
+from camphr.pipelines.trf_model import BertModel
+from camphr.pipelines.wordpiecer import TrfSentencePiecer
 from spacy_transformers._tokenizers import SerializableBertTokenizer
 
 

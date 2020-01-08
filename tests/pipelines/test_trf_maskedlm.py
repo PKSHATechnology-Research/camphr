@@ -1,11 +1,11 @@
 import pytest
-from bedoner.models import trf_model
-from bedoner.pipelines.trf_maskedlm import (
+from camphr.models import trf_model
+from camphr.pipelines.trf_maskedlm import (
     PIPES,
     add_maskedlm_pipe,
     remove_maskedlm_pipe,
 )
-from bedoner.torch_utils import get_loss_from_docs
+from camphr.torch_utils import get_loss_from_docs
 from spacy.language import Language
 from tests.utils import check_serialization
 

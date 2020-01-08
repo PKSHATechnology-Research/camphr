@@ -3,10 +3,10 @@ from pathlib import Path
 import pytest
 import sentencepiece as spm
 import torch
-from bedoner.lang.juman import Japanese as Juman
-from bedoner.lang.mecab import Japanese as Mecab
-from bedoner.pipelines.trf_model import XLNetModel
-from bedoner.pipelines.wordpiecer import WordPiecer
+from camphr.lang.juman import Japanese as Juman
+from camphr.lang.mecab import Japanese as Mecab
+from camphr.pipelines.trf_model import XLNetModel
+from camphr.pipelines.wordpiecer import WordPiecer
 from spacy.vocab import Vocab
 
 from .utils import check_juman, check_mecab

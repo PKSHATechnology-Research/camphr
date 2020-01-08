@@ -19,7 +19,7 @@ __dir__ = Path(__file__).parent
 PACKAGES_DIR = __dir__ / "../pkgs"
 LANG_REQUIREMENTS = {"juman": {"pyknp"}, "mecab": {"mecab-python3"}, "knp": {"pyknp"}}
 LANGS = ["juman", "mecab", "knp"]
-THIS_MODULE = "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@{ref}"
+THIS_MODULE = "camphr @ git+https://github.com/PKSHATechnology/bedore-ner@{ref}"
 Pathlike = Union[str, Path]
 
 
@@ -39,7 +39,7 @@ def requirements(meta: Dict[str, Any], ref_module: str) -> List[str]:
     lang = get_lang(meta)
     req = set(meta.get("requirements", set()))
     req |= LANG_REQUIREMENTS.get(lang, set())
-    req = {k for k in req if not k.startswith("bedoner")}
+    req = {k for k in req if not k.startswith("camphr")}
     req.add(THIS_MODULE.format(ref=ref_module))
     return list(req)
 
@@ -93,7 +93,7 @@ def abs_path(path: str) -> str:
 
 class Config(omegaconf.Config):
     model: str  # path to model dir
-    ref_module: str = ""  # git ref to bedoner
+    ref_module: str = ""  # git ref to camphr
     packages_dir: Pathlike = ""  # directory containing models
     version: str = ""  # model version. Should be same as git tag.
 

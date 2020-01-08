@@ -1936,6 +1936,6 @@
     "num_layer":1
   },
   "requirements":[
-    "bedoner @ git+https://github.com/PKSHATechnology/bedore-ner@5be39b8e327a97cf20daba1d8199d8def7d7f6ac"
+    "camphr @ git+https://github.com/PKSHATechnology/bedore-ner@5be39b8e327a97cf20daba1d8199d8def7d7f6ac"
   ]
 }

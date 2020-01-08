@@ -2,7 +2,7 @@ import tempfile
 
 import pytest
 import spacy
-from bedoner.lang.juman import Japanese as Juman
+from camphr.lang.juman import Japanese as Juman
 
 from ...utils import check_juman
 

@@ -1,7 +1,7 @@
 import pytest
 import spacy
 
-from bedoner.models import wordpiecer
+from camphr.models import wordpiecer
 
 
 @pytest.fixture(scope="module")

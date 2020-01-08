@@ -1,10 +1,10 @@
 import json
 
 import pytest
-from bedoner.models import trf_ner
-from bedoner.ner_labels.labels_ene import ALL_LABELS as enes
-from bedoner.ner_labels.labels_irex import ALL_LABELS as irexes
-from bedoner.ner_labels.utils import make_biluo_labels
+from camphr.models import trf_ner
+from camphr.ner_labels.labels_ene import ALL_LABELS as enes
+from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
+from camphr.ner_labels.utils import make_biluo_labels
 from spacy.language import Language
 
 label_types = ["ene", "irex"]

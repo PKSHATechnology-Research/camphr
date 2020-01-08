@@ -1,7 +1,7 @@
 import json
 from collections import Counter
 
-import bedoner.ner_labels.labels_ene as ene
+import camphr.ner_labels.labels_ene as ene
 import fire
 
 ENTITIES = "entities"

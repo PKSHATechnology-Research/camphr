@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import *
 from typing import IO
 
-import bedoner.ner_labels.labels_ene as ene
+import camphr.ner_labels.labels_ene as ene
 import fire
 import regex as re
 from tqdm import tqdm

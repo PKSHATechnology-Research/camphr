@@ -4,8 +4,8 @@ import pytest
 import spacy
 from spacy.tokens import Doc
 
-import bedoner.lang.mecab as mecab
-from bedoner.pipelines.pattern_search import PatternSearcher
+import camphr.lang.mecab as mecab
+from camphr.pipelines.pattern_search import PatternSearcher
 
 KEYWORDS = ["今日", "は", "明日"]
 

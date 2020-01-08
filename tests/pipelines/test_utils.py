@@ -5,8 +5,8 @@ from typing import List, Tuple
 import pytest
 import spacy
 import torch
-from bedoner import __version__
-from bedoner.pipelines.utils import (
+from camphr import __version__
+from camphr.pipelines.utils import (
     EPS,
     B,
     I,

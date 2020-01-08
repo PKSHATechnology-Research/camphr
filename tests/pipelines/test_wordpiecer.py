@@ -3,8 +3,8 @@ from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from spacy_transformers.util import ATTRS
 
-from bedoner.lang.sentencepiece import EXTS, SentencePieceLang
-from bedoner.pipelines.wordpiecer import TrfSentencePiecer
+from camphr.lang.sentencepiece import EXTS, SentencePieceLang
+from camphr.pipelines.wordpiecer import TrfSentencePiecer
 
 
 @pytest.mark.parametrize(
