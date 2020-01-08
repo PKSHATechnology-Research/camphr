@@ -1,13 +1,21 @@
+[build-system]
+requires = [ "poetry>=0.12",]
+build-backend = "poetry.masonry.api"
+
+[versionup]
+files = "camphr/VERSION.py"
+tag = true
+commit = true
+
 [tool.poetry]
-version = "v0.4.1"
+version = "0.5.0.dev0"
 name = "camphr"
-authors = ["tamuhey <tamuhey@gmail.com>"]
+authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spacy plugin"
 
 [tool.poetry.dependencies]
 python = ">=3.6.1"
 fire = "*"
-spacy-transformers = {git = "https://github.com/tamuhey/spacy-pytorch-transformers",branch = "patch/xlnet-tokenizer"}
 typing-extensions = "*"
 pyyaml = "*"
 pyahocorasick = "*"
@@ -15,23 +23,17 @@ catalogue = "*"
 cytoolz = "*"
 more-itertools = "*"
 overrides = "*"
-allennlp = {git="https://github.com/allenai/allennlp", branch="master", optional=true}
-Cython = {version="*",optional=true}
-mojimoji2 = {version="*",optional=true}
-pyknp={git="https://github.com/ku-nlp/pyknp",branch="master",optional=true}
-mecab-python3 = {version = "^0.996.3", optional=true}
 scikit-learn = "^0.22"
 gensim = "^3.8.1"
 transformers = "<2.3.0"
 
 [tool.poetry.extras]
-all = ["allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3"]
-allennlp = ["allennlp"]
-juman = ["Cython", "mojimoji2", "pyknp"]
-mecab = ["mecab-python3"]
+all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3",]
+allennlp = [ "allennlp",]
+juman = [ "Cython", "mojimoji2", "pyknp",]
+mecab = [ "mecab-python3",]
 
 [tool.poetry.dev-dependencies]
-black = { version = "*", allow-prereleases = true }
 isort = "*"
 pylint = "*"
 pytest = "*"
@@ -44,31 +46,51 @@ pandas = "*"
 hydra-core = "*"
 toml = "^0.10.0"
 
-[tool.poetry.plugins]
+[tool.poetry.dependencies.spacy-transformers]
+git = "https://github.com/tamuhey/spacy-pytorch-transformers"
+branch = "patch/xlnet-tokenizer"
+
+[tool.poetry.dependencies.allennlp]
+git = "https://github.com/allenai/allennlp"
+branch = "master"
+optional = true
+
+[tool.poetry.dependencies.Cython]
+version = "*"
+optional = true
+
+[tool.poetry.dependencies.mojimoji2]
+version = "*"
+optional = true
+
+[tool.poetry.dependencies.pyknp]
+git = "https://github.com/ku-nlp/pyknp"
+branch = "master"
+optional = true
+
+[tool.poetry.dependencies.mecab-python3]
+version = "^0.996.3"
+optional = true
+
+[tool.poetry.dev-dependencies.black]
+version = "*"
+allow-prereleases = true
+
 [tool.poetry.plugins.spacy_languages]
-"juman" = "camphr.lang.juman:Japanese"
-"mecab" = "camphr.lang.mecab:Japanese"
-"sentencepiece" = "camphr.lang.sentencepiece:SentencePieceLang"
-"torch_juman" = "camphr.lang.juman:TorchJapanese"
-"torch_mecab" = "camphr.lang.mecab:TorchJapanese"
-"torch_sentencepiece" = "camphr.lang.sentencepiece:TorchSentencePieceLang"
+juman = "camphr.lang.juman:Japanese"
+mecab = "camphr.lang.mecab:Japanese"
+sentencepiece = "camphr.lang.sentencepiece:SentencePieceLang"
+torch_juman = "camphr.lang.juman:TorchJapanese"
+torch_mecab = "camphr.lang.mecab:TorchJapanese"
+torch_sentencepiece = "camphr.lang.sentencepiece:TorchSentencePieceLang"
 
 [tool.poetry.plugins.spacy_factories]
-"transformers_wordpiecer" = "camphr.pipelines.wordpiecer:WordPiecer"
-"transformers_sentencepiecer" = "camphr.pipelines.wordpiecer:TrfSentencePiecer"
-"bert_ner" = "camphr.pipelines.trf_ner:BertForNamedEntityRecognition"
-"xlnet_ner" = "camphr.pipelines.trf_ner:XLNetForNamedEntityRecognition"
-"bert_seq_classifier" = "camphr.pipelines.trf_seq_classification:BertForSequenceClassification"
-"xlnet_seq_classifier" = "camphr.pipelines.trf_seq_classification:XLNetForSequenceClassification"
-"bert" = "camphr.pipelines.trf_model:BertModel"
-"xlnet" = "camphr.pipelines.trf_model:XLNetModel"
-"elmo" = "camphr.pipelines.elmo:Elmo"
-
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
-
-[versionup]
-files = "camphr/VERSION.py"
-tag = true
-commit = true
+transformers_wordpiecer = "camphr.pipelines.wordpiecer:WordPiecer"
+transformers_sentencepiecer = "camphr.pipelines.wordpiecer:TrfSentencePiecer"
+bert_ner = "camphr.pipelines.trf_ner:BertForNamedEntityRecognition"
+xlnet_ner = "camphr.pipelines.trf_ner:XLNetForNamedEntityRecognition"
+bert_seq_classifier = "camphr.pipelines.trf_seq_classification:BertForSequenceClassification"
+xlnet_seq_classifier = "camphr.pipelines.trf_seq_classification:XLNetForSequenceClassification"
+bert = "camphr.pipelines.trf_model:BertModel"
+xlnet = "camphr.pipelines.trf_model:XLNetModel"
+elmo = "camphr.pipelines.elmo:Elmo"
