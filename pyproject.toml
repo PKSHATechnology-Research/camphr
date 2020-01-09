@@ -25,7 +25,8 @@ more-itertools = "*"
 overrides = "*"
 scikit-learn = "^0.22"
 gensim = "^3.8.1"
-transformers = "<2.3.0"
+transformers = "^2.3.0"
+pytokenizations = "^0.2.0"
 
 [tool.poetry.extras]
 all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3",]
@@ -46,13 +47,9 @@ pandas = "*"
 hydra-core = "*"
 toml = "^0.10.0"
 
-[tool.poetry.dependencies.spacy-transformers]
-git = "https://github.com/tamuhey/spacy-pytorch-transformers"
-branch = "patch/xlnet-tokenizer"
-
 [tool.poetry.dependencies.allennlp]
 git = "https://github.com/allenai/allennlp"
-branch = "master"
+rev = "b8fdc9c988e0fbb73acd73205c4c464f8cf5a9c3"
 optional = true
 
 [tool.poetry.dependencies.Cython]
@@ -83,14 +80,3 @@ sentencepiece = "camphr.lang.sentencepiece:SentencePieceLang"
 torch_juman = "camphr.lang.juman:TorchJapanese"
 torch_mecab = "camphr.lang.mecab:TorchJapanese"
 torch_sentencepiece = "camphr.lang.sentencepiece:TorchSentencePieceLang"
-
-[tool.poetry.plugins.spacy_factories]
-transformers_wordpiecer = "camphr.pipelines.wordpiecer:WordPiecer"
-transformers_sentencepiecer = "camphr.pipelines.wordpiecer:TrfSentencePiecer"
-bert_ner = "camphr.pipelines.trf_ner:BertForNamedEntityRecognition"
-xlnet_ner = "camphr.pipelines.trf_ner:XLNetForNamedEntityRecognition"
-bert_seq_classifier = "camphr.pipelines.trf_seq_classification:BertForSequenceClassification"
-xlnet_seq_classifier = "camphr.pipelines.trf_seq_classification:XLNetForSequenceClassification"
-bert = "camphr.pipelines.trf_model:BertModel"
-xlnet = "camphr.pipelines.trf_model:XLNetModel"
-elmo = "camphr.pipelines.elmo:Elmo"

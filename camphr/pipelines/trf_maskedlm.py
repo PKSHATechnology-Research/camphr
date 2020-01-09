@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, Iterable, List, Optional
 
 import numpy as np
@@ -6,20 +7,19 @@ import spacy
 import torch
 import torch.nn.functional as F
 import transformers.modeling_bert
+from camphr.pipelines.trf_tokenizer import PIPES as TRF_TOKENIZER_PIPES
+from camphr.pipelines.trf_utils import (
+    ATTRS,
+    TrfPipeForTaskBase,
+    get_last_hidden_state_from_docs,
+)
+from camphr.torch_utils import add_loss_to_docs
+from camphr.utils import zero_pad
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
-from spacy_transformers.util import ATTRS, get_tokenizer
 from transformers import BertConfig
-
-from camphr.pipelines.trf_utils import (
-    TrfPipeForTaskBase,
-    get_last_hidden_state_from_docs,
-)
-from camphr.pipelines.wordpiecer import PIPES as WP_PIPES
-from camphr.torch_utils import add_loss_to_docs
-from camphr.utils import zero_pad
 
 MASKEDLM_PREDICTION = "maskedlm_prediction"
 MASKEDLM_LABEL = "maskedlm_label"
@@ -52,10 +52,6 @@ class BertForMaskedLMPreprocessor(Pipe):
         self.cfg = cfg
         self.model = model
         self._exclude_ids: Optional[np.ndarray] = None
-
-    @classmethod
-    def Model(cls, **kwargs):
-        return get_tokenizer(BERT).blank()
 
     @property
     def p_mask(self) -> float:
@@ -105,11 +101,11 @@ class BertForMaskedLMPreprocessor(Pipe):
 
     def _reset_wordpieces(self, docs: List[Doc], wordpieces: np.ndarray):
         for doc, wp in zip(docs, wordpieces):
-            prev = doc._.get(ATTRS.word_pieces)
-            doc._.set(ATTRS.word_pieces, wp[: len(prev)].tolist())
+            prev = doc._.get(ATTRS.token_ids)
+            doc._.set(ATTRS.token_ids, wp[: len(prev)].tolist())
 
     def _docs_to_wordpieces(self, docs: List[Doc]) -> np.ndarray:
-        wordpieces = [doc._.trf_word_pieces for doc in docs]
+        wordpieces = [doc._.transformers_token_ids for doc in docs]
         return np.array(zero_pad(wordpieces, self.model.pad_token_id))
 
     def _choice_labels(self, wordpieces: np.ndarray, target: np.ndarray) -> np.ndarray:
@@ -117,6 +113,11 @@ class BertForMaskedLMPreprocessor(Pipe):
         label = np.random.choice(3, target.sum(), p=self.p_dist)
         labels[target] = label
         return labels == 1, labels == 2  # mask index, replace index
+
+    def to_disk(self, path: Path, *args, **kwargs):
+        # This component has nothing to be saved.
+        # You should call `add_maskedlm` pipe after restoring.
+        pass
 
 
 @spacy.component(PIPES.bert_for_maskedlm)
@@ -152,7 +153,7 @@ class BertForMaskedLM(TrfPipeForTaskBase):
 
 def add_maskedlm_pipe(nlp: Language):
     """Add maskedlm pipe to nlp"""
-    wp = nlp.get_pipe(WP_PIPES.transformers_wordpiecer)
+    wp = nlp.get_pipe(TRF_TOKENIZER_PIPES.transformers_tokenizer)
     tokenizer = wp.model
     preprocessor = BertForMaskedLMPreprocessor(nlp.vocab, tokenizer)
     nlp.add_pipe(preprocessor, before=BERT)

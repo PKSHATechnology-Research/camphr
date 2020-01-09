@@ -2,13 +2,14 @@
 import dataclasses
 import pickle
 from pathlib import Path
-from typing import Iterable, List, Optional, Union, cast
+from typing import List, Optional, Sequence, Union
 
 import numpy as np
 import spacy
 import spacy.language
 import torch
 import transformers as trf
+from camphr.pipelines.trf_utils import ATTRS
 from camphr.pipelines.utils import get_similarity
 from camphr.torch_utils import (
     OptimizerParameters,
@@ -20,8 +21,6 @@ from camphr.utils import zero_pad
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.tokens import Doc
-from spacy.vocab import Vocab
-from spacy_transformers.util import ATTRS
 from transformers.modeling_bert import BERT_INPUTS_DOCSTRING
 from transformers.modeling_xlnet import XLNET_INPUTS_DOCSTRING
 
@@ -114,22 +113,21 @@ class TransformersModel(TorchPipe):
     Attach the model outputs to doc.
     """
 
-    def __init__(self, vocab, model=True, **cfg):
-        self.vocab = vocab
+    def __init__(self, model=True, **cfg):
         self.model = model
         self.cfg = cfg
 
     @classmethod
     def from_nlp(cls, nlp, **cfg):
-        return cls(nlp.vocab, **cfg)
+        return cls(**cfg)
 
     @classmethod
-    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
+    def from_pretrained(cls, name_or_path: str, **cfg):
         """Load pretrained model."""
         cfg["trf_name"] = name_or_path
         model = cls.Model(from_pretrained=True, **cfg)
         cfg["trf_config"] = dict(model.config.to_dict())
-        return cls(vocab, model=model, **cfg)
+        return cls(model=model, **cfg)
 
     @classmethod
     def Model(cls, **cfg) -> trf.PreTrainedModel:
@@ -162,41 +160,23 @@ class TransformersModel(TorchPipe):
         """Assign the extracted features to the Doc.
 
         Args:
-            set_vector: If True, attach vector to doc. This may harms speed.
+            set_vector: If True, attach vector to doc. This may harms the performance.
         """
         for i, doc in enumerate(docs):
-            length = len(doc._.trf_word_pieces)
-            if self.max_length > 0:
-                length = min(self.max_length, length)
+            length = len(doc._.get(ATTRS.token_ids))
             # Instead of assigning tensor directory, assign `TensorWrapper`
             # so that trailing pipe can handle batch tensor efficiently.
             doc._.set(
                 ATTRS.last_hidden_state,
                 TensorWrapper(outputs.laste_hidden_state, i, length),
             )
-            if outputs.hidden_states:
-                doc._.set(
-                    ATTRS.all_hidden_states,
-                    [
-                        TensorWrapper(hid_layer, i)
-                        for hid_layer in cast(Iterable, outputs.hidden_states)
-                    ],
-                )
-            if outputs.attensions:
-                doc._.set(
-                    ATTRS.all_attentions,
-                    [
-                        TensorWrapper(attention_layer, i)
-                        for attention_layer in cast(Iterable, outputs.attensions)
-                    ],
-                )
 
             if set_vector:
                 lh: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
                 doc_tensor = lh.new_zeros((len(doc), lh.shape[-1]))
                 # TODO: Inefficient
                 # TODO: Store the functionality into user_hooks after https://github.com/explosion/spaCy/issues/4439 was released
-                for i, a in enumerate(doc._.get(ATTRS.alignment)):
+                for i, a in enumerate(doc._.get(ATTRS.align)):
                     if self.max_length > 0:
                         a = [aa for aa in a if aa < len(lh)]
                     doc_tensor[i] += lh[a].sum(0)
@@ -226,32 +206,23 @@ class TransformersModel(TorchPipe):
         y = self.output_cls(*self.model(**dataclasses.asdict(x)))
         torch.set_grad_enabled(True)
         # set_vector=False because vector may not be necessary in updating.
-        # You can still use model outputs via doc._.trf_last_hidden_state etc.
+        # You can still use model outputs via doc._.transformers_last_hidden_state etc.
         self.set_annotations(docs, y, set_vector=False)
 
-    def docs_to_trfinput(self, docs: List[Doc]) -> TransformersModelInputs:
+    def docs_to_trfinput(self, docs: Sequence[Doc]) -> TransformersModelInputs:
         """Generate input data for trf model from docs."""
-        if self.max_length > 0:
-            wordpieces = [doc._.trf_word_pieces[: self.max_length] for doc in docs]
-        else:
-            wordpieces = [doc._.trf_word_pieces for doc in docs]
+        token_ids_list = [doc._.get(ATTRS.token_ids) for doc in docs]
         inputs = self.input_cls(
-            input_ids=torch.tensor(zero_pad(wordpieces), device=self.device)
+            input_ids=torch.tensor(zero_pad(token_ids_list), device=self.device)
         )
         inputs.attention_mask = torch.tensor(
-            zero_pad([[1 for _ in range(len(wp))] for wp in wordpieces]),
+            zero_pad([doc._.get(ATTRS.attention_mask) for doc in docs]),
             device=self.device,
         )
-
-        segments = []
-        for doc, wp in zip(docs, wordpieces):
-            seg = []
-            for i, s in enumerate(doc._.trf_segments):
-                seg += [i] * len(s._.trf_word_pieces)
-            if self.max_length > 0:
-                seg = seg[: self.max_length]
-            segments.append(seg)
-        inputs.token_type_ids = torch.tensor(zero_pad(segments), device=self.device)
+        inputs.token_type_ids = torch.tensor(
+            zero_pad([doc._.get(ATTRS.attention_mask) for doc in docs]),
+            device=self.device,
+        )
         return inputs
 
     def optim_parameters(self) -> OptimizerParameters:
@@ -268,15 +239,9 @@ class TransformersModel(TorchPipe):
         with (path / "cfg.pkl").open("wb") as f:
             pickle.dump(self.cfg, f)
 
-        # TODO: This may not be good because vocab is saved separetely.
-        with (path / "vocab.pkl").open("wb") as f:
-            pickle.dump(self.vocab, f)
-
     def from_disk(self, path: Path, exclude=tuple(), **kwargs) -> "TransformersModel":
         with (path / "cfg.pkl").open("rb") as f:
             self.cfg = pickle.load(f)
-        with (path / "vocab.pkl").open("rb") as f:
-            self.vocab = pickle.load(f)
         self.model = self.trf_model_cls.from_pretrained(str(path))
         return self
 
@@ -287,14 +252,6 @@ class BertModel(TransformersModel):
     input_cls = BertModelInputs
     trf_model_cls = trf.BertModel
     trf_config_cls = trf.BertConfig
-
-    def set_annotations(
-        self, docs: List[Doc], outputs: BertModelOutputs, set_vector=True
-    ) -> None:
-        super().set_annotations(docs, outputs, set_vector=set_vector)
-        for i, doc in enumerate(docs):
-            length = len(doc._.trf_word_pieces)
-            doc._.trf_pooler_output = TensorWrapper(outputs.pooler_output, i, length)
 
 
 @spacy.component("xlnet", assigns=[f"doc._.{ATTRS.last_hidden_state}"])

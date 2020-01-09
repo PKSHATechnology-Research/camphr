@@ -2,22 +2,31 @@
   "attn_type": "bi",
   "bi_data": false,
   "clamp_len": -1,
-  "d_head": 2,
+  "d_head": 8,
   "d_inner": 64,
   "d_model": 16,
   "dropout": 0.1,
   "end_n_top": 5,
   "ff_activation": "gelu",
   "finetuning_task": null,
+  "id2label": {
+    "0": "LABEL_0",
+    "1": "LABEL_1"
+  },
   "initializer_range": 0.02,
+  "is_decoder": false,
+  "label2id": {
+    "LABEL_0": 0,
+    "LABEL_1": 1
+  },
   "layer_norm_eps": 1e-12,
   "mem_len": null,
   "n_head": 2,
   "n_layer": 3,
-  "n_token": 32000,
   "num_labels": 2,
   "output_attentions": false,
   "output_hidden_states": false,
+  "output_past": true,
   "pruned_heads": {},
   "reuse_len": null,
   "same_length": false,
@@ -28,5 +37,6 @@
   "summary_use_proj": true,
   "torchscript": false,
   "untie_r": true,
-  "use_bfloat16": false
+  "use_bfloat16": false,
+  "vocab_size": 32000
 }

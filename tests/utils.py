@@ -3,6 +3,7 @@ import os
 import shutil
 import tempfile
 from itertools import zip_longest
+from pathlib import Path
 from typing import Any, Tuple
 
 import spacy
@@ -40,3 +41,9 @@ def check_serialization(nlp, text: str = "今日は，とてもいい天気だ�
         nlp.to_disk(str(d))
         nlp2 = spacy.load(str(d))
         assert_docs_equal(nlp(text), nlp2(text))
+
+
+FIXTURE_DIR = (Path(__file__).parent / "fixtures/").absolute()
+BERT_DIR = FIXTURE_DIR / "bert-base-japanese-test"
+XLNET_DIR = FIXTURE_DIR / "xlnet"
+DATA_DIR = (Path(__file__).parent / "data/").absolute()

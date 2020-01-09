@@ -11,6 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import transformers as trf
 from camphr.pipelines.trf_utils import (
+    ATTRS,
     CONVERT_LABEL,
     TRF_CONFIG,
     TrfConfig,
@@ -30,7 +31,6 @@ from camphr.torch_utils import add_loss_to_docs
 from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
 from spacy.tokens import Doc, Token
-from spacy_transformers.util import ATTRS
 
 CLS_LOGIT = "cls_logit"
 LABELS = "labels"
@@ -138,7 +138,7 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
                 ners = [convert_hook(ner) for ner in gold.ner]
             else:
                 ners = list(gold.ner)
-            for i, align in enumerate(doc._.trf_alignment):
+            for i, align in enumerate(doc._.transformers_align):
                 if len(align):
                     a = align[0]
                     if a >= length:
@@ -164,7 +164,7 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
         id2label = self.labels
 
         for doc, logit in zip(docs, cast(Iterable, logits)):
-            logit = self._extract_logit(logit, doc._.get(ATTRS.alignment))
+            logit = self._extract_logit(logit, doc._.get(ATTRS.align))
             candidates = beamsearch(logit, self.k_beam)
             assert len(cast(Sized, candidates))
             best_tags = None

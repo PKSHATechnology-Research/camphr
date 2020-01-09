@@ -2,6 +2,11 @@
 
 The libary name `bedoner` has been renamed to `camphr`.
 
+## Backwards incompatibilities
+
+- remove dependency on `spacy-transformers` (#167)
+    - This causes many backward incompatibilities. Almost all transformers models that were released before v0.5 cannot be used.
+
 # v0.4.2
 
 ##  New features and improvements
@@ -51,7 +56,7 @@ The libary name `bedoner` has been renamed to `camphr`.
   - `trf_model.XLNetModel`を追加
   - `trf_ner.XLNetForNamedEntityRecognition`を追加
 - SentencePiece ベースの`Language`を追加: [./camphr/lang/sentencepiece](./camphr/lang/sentencepiece)
-- SentencePiece Language用のWordpiecer: `pipelines.wordpiecer.TrfSentencePiecer`を追加
+- SentencePiece Language用のtransformers_tokenizer: `pipelines.transformers_tokenizer.TrfSentencePiecer`を追加
 - テストの高速化
 - Multitask NER modelを追加
   - https://github.com/PKSHATechnology/bedore-ner/releases/tag/v0.4.0.dev3

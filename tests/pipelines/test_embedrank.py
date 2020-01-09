@@ -23,9 +23,9 @@ def test_embedrank(nlp, text):
     assert doc._.get(EMBEDRANK_KEYPHRASES) is not None
 
 
-def test_serialization(nlp, tmpdir):
-    nlp.to_disk(str(tmpdir))
-    nlp = spacy.load(str(tmpdir))
+def test_serialization(nlp, tmp_path):
+    nlp.to_disk(tmp_path)
+    nlp = spacy.load(tmp_path)
     text = "今日はいい天気だった"
     doc = nlp(text)
     assert doc._.get(EMBEDRANK_KEYPHRASES) is not None

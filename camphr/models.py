@@ -20,7 +20,7 @@ from camphr.pipelines.trf_seq_classification import (
     BertForSequenceClassification,
     XLNetForSequenceClassification,
 )
-from camphr.pipelines.wordpiecer import TrfSentencePiecer, WordPiecer
+from camphr.pipelines.trf_tokenizer import TransformersTokenizer
 from spacy.language import Language
 from spacy.pipeline import Sentencizer
 from spacy.vocab import Vocab
@@ -52,7 +52,7 @@ def knp() -> juman.Japanese:
     return nlp
 
 
-def wordpiecer(lang: str, pretrained: str) -> Language:
+def transformers_tokenizer(lang: str, pretrained: str) -> Language:
     meta: Dict[str, Any] = {OPTIM_CREATOR: "adamw"}
     if lang == "juman":
         cls = juman.TorchJapanese
@@ -66,11 +66,7 @@ def wordpiecer(lang: str, pretrained: str) -> Language:
         raise ValueError(f"Unsupported lang: {lang}")
 
     nlp = cls(Vocab(), meta=meta)
-
-    if lang == "sentencepiece":
-        w = TrfSentencePiecer.from_pretrained(nlp.vocab, pretrained)
-    else:
-        w = WordPiecer.from_pretrained(nlp.vocab, pretrained)
+    w = TransformersTokenizer.from_pretrained(str(pretrained))
     nlp.add_pipe(w)
     return nlp
 
@@ -92,10 +88,10 @@ def get_trf_name(pretrained: str) -> TRF:
 
 
 def trf_model(lang: str, pretrained: str, **cfg):
-    nlp = wordpiecer(lang, pretrained=pretrained)
+    nlp = transformers_tokenizer(lang, pretrained=pretrained)
     name = get_trf_name(pretrained)
     if name:
-        model = TRF_MODEL_MAP[name].from_pretrained(nlp.vocab, pretrained, **cfg)
+        model = TRF_MODEL_MAP[name].from_pretrained(pretrained, **cfg)
         nlp.add_pipe(model)
         return nlp
 

@@ -7,12 +7,11 @@ from typing import Callable, Dict, List, Optional
 import numpy as np
 import spacy
 import spacy.language
+from camphr.utils import SerializationMixin
 from sklearn.metrics.pairwise import cosine_similarity
 from spacy.matcher import Matcher
 from spacy.tokens import Doc, Span
 from spacy.vocab import Vocab
-
-from camphr.utils import SerializationMixin
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 
@@ -67,6 +66,10 @@ class EmbedRank(SerializationMixin):
         self.extract_keyphrases = extract_keyphrases_fn
         self.max_keyphrases = max_keyphrases
         self.lambda_ = lambda_
+
+    @classmethod
+    def from_nlp(cls, nlp: spacy.language.Language) -> "EmbedRank":
+        return cls(nlp.vocab)
 
     def require_model(self):
         if self.extract_keyphrases is None:

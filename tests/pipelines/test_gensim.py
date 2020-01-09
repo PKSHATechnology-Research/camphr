@@ -1,12 +1,12 @@
 import pytest
 import spacy
-
 from camphr.pipelines.gensim import set_word2vec_vectors
+from tests.utils import FIXTURE_DIR
 
 
 @pytest.fixture
-def fixture_fasttext(fixture_dir):
-    return fixture_dir / "gensim/fasttext_tiny.model"
+def fixture_fasttext():
+    return FIXTURE_DIR / "gensim/fasttext_tiny.model"
 
 
 @pytest.mark.parametrize("text", ["日本語の埋め込みベクトルを計算します"])

@@ -19,7 +19,7 @@ from camphr.torch_utils import add_loss_to_docs, goldcat_to_label
 from overrides import overrides
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
-from spacy_transformers.util import ATTRS
+from camphr.pipelines.trf_utils import ATTRS
 from transformers.modeling_utils import SequenceSummary
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True

@@ -1,0 +1,1 @@
+{"do_lower_case": false, "word_tokenizer_type": "mecab", "subword_tokenizer_type": "wordpiece", "max_len": 512, "unk_token": "[UNK]", "sep_token": "[SEP]", "pad_token": "[PAD]", "cls_token": "[CLS]", "mask_token": "[MASK]", "init_inputs": []}

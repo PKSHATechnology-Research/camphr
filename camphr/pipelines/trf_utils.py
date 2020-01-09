@@ -5,17 +5,52 @@ from typing import Any, Dict, Iterable, List, Union
 import torch
 import torch.nn as nn
 import transformers as trf
-from spacy.gold import GoldParse
-from spacy.tokens import Doc
-from spacy.vocab import Vocab
-from spacy_transformers.util import ATTRS
-
+from camphr.lang.torch_mixin import optim_creators
 from camphr.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
     TorchPipe,
     get_parameters_with_decay,
 )
+from spacy.gold import GoldParse
+from spacy.tokens import Doc
+from spacy.vocab import Vocab
+from tokenizations import get_alignments
+from torch.optim.optimizer import Optimizer
+from transformers import AdamW
+
+
+@optim_creators.register("adamw")
+def adamw(params: OptimizerParameters, **cfg) -> Optimizer:
+    return AdamW(params, lr=cfg.get("lr", 5e-5), eps=cfg.get("eps", 1e-8))
+
+
+class ATTRS:
+    tokens = "transformers_tokens"
+    token_ids = "transformers_token_ids"
+    cleaned_tokens = "transformers_cleaned_tokens"
+    special_tokens = "transformers_special_tokens"
+    align = "transformers_align"
+    last_hidden_state = "transformers_last_hidden_state"
+    attention_mask = "transformers_attention_mask"
+    token_type_ids = "transformers_token_type_ids"
+
+
+def _get_transformers_align(doc):
+    trf_tokens = doc._.get(ATTRS.cleaned_tokens)
+    return get_alignments([token.text for token in doc], trf_tokens)[0]
+
+
+for attr in [
+    ATTRS.tokens,
+    ATTRS.token_ids,
+    ATTRS.cleaned_tokens,
+    ATTRS.attention_mask,
+    ATTRS.token_type_ids,
+    ATTRS.last_hidden_state,
+]:
+    Doc.set_extension(attr, default=None)
+Doc.set_extension(ATTRS.align, getter=_get_transformers_align)
 
 TrfConfig = Union[trf.BertConfig, trf.XLNetConfig]
 

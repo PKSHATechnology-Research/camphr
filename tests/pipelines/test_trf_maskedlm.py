@@ -1,18 +1,14 @@
 import pytest
 from camphr.models import trf_model
-from camphr.pipelines.trf_maskedlm import (
-    PIPES,
-    add_maskedlm_pipe,
-    remove_maskedlm_pipe,
-)
+from camphr.pipelines.trf_maskedlm import PIPES, add_maskedlm_pipe, remove_maskedlm_pipe
 from camphr.torch_utils import get_loss_from_docs
 from spacy.language import Language
-from tests.utils import check_serialization
+from tests.utils import BERT_DIR
 
 
 @pytest.fixture(scope="module")
-def nlp(bert_dir, device):
-    _nlp = trf_model("mecab", bert_dir)
+def nlp(device):
+    _nlp = trf_model("mecab", str(BERT_DIR))
     add_maskedlm_pipe(_nlp)
     _nlp.to(device)
     return _nlp
@@ -42,10 +38,6 @@ def test_update_for_long_seqence(nlp):
     text = "Foo " * 2000
     optim = nlp.resume_training()
     nlp.update([text], [{}], optim)
-
-
-def test_serialization(nlp):
-    check_serialization(nlp)
 
 
 def test_remove_maskedlm(nlp: Language):

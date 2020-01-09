@@ -4,15 +4,15 @@ import spacy
 import torch
 from camphr.models import trf_model
 from camphr.pipelines.trf_model import TransformersModel
+from camphr.pipelines.trf_utils import ATTRS
 from spacy.language import Language
 from spacy.tokens import Doc
-from spacy_transformers.util import ATTRS
 from transformers import AdamW
 
 
 @pytest.fixture
 def nlp(lang, trf_dir, device):
-    _nlp = trf_model(lang, trf_dir)
+    _nlp = trf_model(lang, str(trf_dir))
     _nlp.to(device)
     return _nlp
 
@@ -23,7 +23,7 @@ TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]
 @pytest.mark.parametrize("text", TESTCASES)
 def test_forward(nlp, text):
     doc = nlp(text)
-    assert doc._.trf_last_hidden_state is not None
+    assert doc._.transformers_last_hidden_state is not None
 
 
 def test_forward_for_long_input(nlp, lang):
@@ -31,14 +31,14 @@ def test_forward_for_long_input(nlp, lang):
         pytest.skip()
     text = "foo " * 2000
     doc = nlp(text)
-    assert doc._.trf_last_hidden_state is not None
+    assert doc._.transformers_last_hidden_state is not None
 
 
 @pytest.mark.parametrize("text", TESTCASES)
 def test_token_vector(nlp: Language, text: str):
     doc: Doc = nlp(text)
     tensor: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
-    for token, a in zip(doc, doc._.get(ATTRS.alignment)):
+    for token, a in zip(doc, doc._.get(ATTRS.align)):
         assert np.allclose(token.vector, tensor[a].sum(0))
 
 
@@ -79,3 +79,9 @@ def test_update(nlp: Language, tmpdir):
 
     optim = nlp.resume_training()
     nlp.update(TESTCASES, [{}] * len(TESTCASES), optim)
+
+
+def test_freeze_model(trf_name_or_path):
+    nlp = trf_model("mecab", trf_name_or_path, freeze=True)
+    pipe = nlp.pipeline[-1][1]
+    assert pipe.cfg["freeze"]

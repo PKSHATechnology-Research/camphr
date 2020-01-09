@@ -50,7 +50,7 @@ class TensorWrapper:
 
     def get(self) -> torch.Tensor:
         if self.length is not None:
-            return self.batch_tensor[self.i][: self.length]
+            return self.batch_tensor[self.i, : self.length]
         return self.batch_tensor[self.i]
 
     @property

@@ -7,6 +7,8 @@ from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
 from camphr.ner_labels.utils import make_biluo_labels
 from spacy.language import Language
 
+from ..utils import DATA_DIR
+
 label_types = ["ene", "irex"]
 
 
@@ -92,10 +94,10 @@ def test_call(nlp: Language, text, gold, label_type):
     scope="module",
     params=["ner/ner-ene.json", "ner/ner-irex.json", "ner/ner-ene2.json"],
 )
-def example_gold(request, DATADIR, label_type):
+def example_gold(request, label_type):
     fname = request.param
     if label_type in fname:
-        with (DATADIR / fname).open() as f:
+        with (DATA_DIR / fname).open() as f:
             d = json.load(f)
         return d
     else:
@@ -103,10 +105,10 @@ def example_gold(request, DATADIR, label_type):
 
 
 @pytest.fixture(scope="module", params=["ner/ner-irex-long.json"])
-def example_long(request, DATADIR, label_type, trf_name):
+def example_long(request, label_type, trf_name):
     fname = request.param
     if trf_name == "bert" and label_type in fname:
-        with (DATADIR / fname).open() as f:
+        with (DATA_DIR / fname).open() as f:
             d = json.load(f)
         return d
     else:
@@ -121,3 +123,9 @@ def test_example_batch(nlp: Language, example_gold):
 
 def test_example_batch_eval(nlp: Language, example_gold):
     nlp.evaluate(example_gold)
+
+
+def test_freeze_ner(trf_name_or_path):
+    nlp = trf_ner("mecab", trf_name_or_path, freeze=True, labels=["foo"])
+    pipe = nlp.pipeline[-2][1]
+    assert pipe.cfg["freeze"]

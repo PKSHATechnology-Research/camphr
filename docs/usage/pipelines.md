@@ -119,7 +119,7 @@ nlp.update(texts, golds, optim) # マスクデータは自動で生成され，�
 BERT or XLNetの出力は，[extension](https://spacy.io/usage/processing-pipelines/#custom-components-attributes)に格納されています．  
 
 ```python
-doc._.trf_last_hidden_state.get()
+doc._.transformers_last_hidden_state.get()
 ```
 ```
 tensor([[ 0.7485,  0.4472, -0.8713,  ...,  1.4357, -0.8676, -0.9460],

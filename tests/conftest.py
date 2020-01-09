@@ -1,15 +1,11 @@
-from pathlib import Path
-
 import pytest
 import sentencepiece as spm
 import torch
 from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
-from camphr.pipelines.trf_model import XLNetModel
-from camphr.pipelines.wordpiecer import WordPiecer
 from spacy.vocab import Vocab
 
-from .utils import check_juman, check_mecab
+from .utils import BERT_DIR, FIXTURE_DIR, XLNET_DIR, check_juman, check_mecab
 
 
 def pytest_addoption(parser):
@@ -45,62 +41,22 @@ def juman_tokenizer(request):
     return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": request.param})
 
 
-@pytest.fixture(scope="session")
-def DATADIR():
-    return Path(__file__).parent / "data/"
-
-
-@pytest.fixture(scope="session")
-def fixture_dir():
-    return (Path(__file__).parent / "fixtures/").absolute()
-
-
-@pytest.fixture(scope="session")
-def bert_dir(fixture_dir):
-    return str(fixture_dir / "bert")
-
-
-@pytest.fixture(scope="session")
-def xlnet_dir(fixture_dir):
-    return str(fixture_dir / "xlnet")
-
-
-@pytest.fixture(scope="session", params=["bert", "xlnet"])
-def trf_type(request):
-    return request.param
-
-
-@pytest.fixture(scope="session")
-def pretrained(trf_type, fixture_dir):
-    return str(fixture_dir / trf_type)
-
-
-@pytest.fixture(scope="session")
-def xlnet_wp(xlnet_dir):
-    return WordPiecer.from_pretrained(Vocab(), xlnet_dir)
-
-
-@pytest.fixture(scope="session")
-def xlnet_model(xlnet_dir):
-    return XLNetModel.from_pretrained(Vocab(), xlnet_dir)
-
-
 @pytest.fixture(scope="session", params=["bert", "xlnet"])
 def trf_name(request):
     return request.param
 
 
 @pytest.fixture(scope="session")
-def trf_dir(trf_name, bert_dir, xlnet_dir):
+def trf_dir(trf_name):
     if trf_name == "bert":
-        return bert_dir
+        return str(BERT_DIR)
     if trf_name == "xlnet":
-        return xlnet_dir
+        return str(XLNET_DIR)
 
 
 @pytest.fixture(scope="session")
-def spiece_path(fixture_dir):
-    return str(fixture_dir / "spiece.model")
+def spiece_path():
+    return str(FIXTURE_DIR / "spiece.model")
 
 
 @pytest.fixture(scope="session")
@@ -131,4 +87,18 @@ def device(request):
 
 @pytest.fixture(scope="session", params=["mecab", "juman", "sentencepiece"])
 def lang(request):
+    return request.param
+
+
+@pytest.fixture(
+    scope="session",
+    params=[
+        str(BERT_DIR),
+        "xlnet-base-cased",
+        "bert-base-uncased",
+        str(XLNET_DIR),
+        "bert-base-japanese",
+    ],
+)
+def trf_name_or_path(request):
     return request.param
