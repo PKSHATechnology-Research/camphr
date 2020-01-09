@@ -130,7 +130,7 @@ class SentencePieceLang(Language):
 
 
 class TorchSentencePieceLang(TorchLanguageMixin, SentencePieceLang):
-    lang = "torch_sentencepiece"
+    lang = "sentencepiece_torch"
 
 
 Tokenizer.install_extensions()

@@ -5,8 +5,8 @@ from typing import Any, Dict
 
 import camphr.lang.juman as juman
 import camphr.lang.mecab as mecab
-import camphr.lang.sentencepiece as sp
 import camphr.trf_utils  # noqa: import to register optimizer
+import spacy
 from camphr.lang.torch_mixin import OPTIM_CREATOR
 from camphr.pipelines.knp import KNP, juman_sentencizer
 from camphr.pipelines.person_ner import create_person_ruler
@@ -26,26 +26,12 @@ from spacy.pipeline import Sentencizer
 from spacy.vocab import Vocab
 
 
-def han_to_zen_normalizer(text):
-    try:
-        import mojimoji
-    except ImportError:
-        raise ValueError("juman or knp Language requires mojimoji.")
-    return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
-
-
-def juman_nlp() -> juman.Japanese:
-    return juman.Japanese(
-        Vocab(), meta={"tokenizer": {"preprocessor": han_to_zen_normalizer}}
-    )
-
-
 def ja_sentencizer():
     return Sentencizer(Sentencizer.default_punct_chars + ["。"])
 
 
 def knp() -> juman.Japanese:
-    nlp = juman_nlp()
+    nlp = juman.Japanese()
     nlp.add_pipe(ja_sentencizer())
     nlp.add_pipe(juman_sentencizer)
     nlp.add_pipe(KNP.from_nlp(nlp))
@@ -54,20 +40,11 @@ def knp() -> juman.Japanese:
 
 def transformers_tokenizer(lang: str, pretrained: str) -> Language:
     meta: Dict[str, Any] = {OPTIM_CREATOR: "adamw"}
-    if lang == "juman":
-        cls = juman.TorchJapanese
-        meta["tokenizer"] = {"preprocessor": han_to_zen_normalizer}
-    elif lang == "mecab":
-        cls = mecab.TorchJapanese
-    elif lang == "sentencepiece":
-        cls = sp.TorchSentencePieceLang
+    if lang == "sentencepiece_torch":
         meta["tokenizer"] = {"model_path": pretrained}
-    else:
-        raise ValueError(f"Unsupported lang: {lang}")
 
-    nlp = cls(Vocab(), meta=meta)
-    w = TransformersTokenizer.from_pretrained(str(pretrained))
-    nlp.add_pipe(w)
+    nlp = spacy.blank(lang, meta=meta)
+    nlp.add_pipe(TransformersTokenizer.from_pretrained(str(pretrained)))
     return nlp
 
 

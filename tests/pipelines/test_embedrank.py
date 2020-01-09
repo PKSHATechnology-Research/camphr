@@ -4,7 +4,7 @@ from camphr.models import trf_model
 from camphr.pipelines.embedrank import EMBEDRANK_KEYPHRASES, EmbedRank
 
 
-@pytest.fixture(scope="module", params=["mecab"])
+@pytest.fixture(scope="module", params=["ja_mecab_torch"])
 def nlp(request, trf_dir, device):
     lang = request.param
     _nlp = trf_model(lang, trf_dir)

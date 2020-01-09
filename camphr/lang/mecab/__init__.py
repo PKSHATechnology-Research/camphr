@@ -138,7 +138,7 @@ class Defaults(Language.Defaults):
 
 
 class Japanese(Language):
-    lang = "mecab"
+    lang = "ja_mecab"
     Defaults = Defaults
 
     def make_doc(self, text: str) -> Doc:
@@ -146,7 +146,7 @@ class Japanese(Language):
 
 
 class TorchJapanese(TorchLanguageMixin, Japanese):
-    lang = "torch_mecab"
+    lang = "ja_mecab_torch"
 
 
 # avoid pickling problem (see https://github.com/explosion/spaCy/issues/3191)

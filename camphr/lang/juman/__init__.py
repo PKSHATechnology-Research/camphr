@@ -15,6 +15,14 @@ ShortUnitWord = namedtuple(
 )
 
 
+def han_to_zen_normalizer(text):
+    try:
+        import mojimoji
+    except ImportError:
+        raise ValueError("juman or knp Language requires mojimoji.")
+    return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
+
+
 class Tokenizer(SerializationMixin):
     """Juman tokenizer
 
@@ -35,7 +43,7 @@ class Tokenizer(SerializationMixin):
         cls: Language,
         nlp: Optional[Language] = None,
         juman_kwargs: Optional[Dict[str, str]] = None,
-        preprocessor: Optional[Callable[[str], str]] = None,
+        preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalizer,
     ):
         """
 
@@ -116,7 +124,7 @@ class Defaults(Language.Defaults):
 
 
 class Japanese(Language):
-    lang = "juman"
+    lang = "ja_juman"
     Defaults = Defaults
 
     def make_doc(self, text: str) -> Doc:
@@ -129,7 +137,7 @@ def pickle_japanese(instance):
 
 
 class TorchJapanese(TorchLanguageMixin, Japanese):
-    lang = "torch_juman"
+    lang = "ja_juman_torch"
 
 
 copy_reg.pickle(Japanese, pickle_japanese)

@@ -29,9 +29,9 @@ def labels(label_type):
 
 
 @pytest.fixture(scope="module")
-def nlp(labels, lang, trf_dir, device):
-    _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir)
-    assert _nlp.meta["lang"] == "torch_" + lang
+def nlp(labels, torch_lang, trf_dir, device):
+    _nlp = trf_ner(lang=torch_lang, labels=labels, pretrained=trf_dir)
+    assert _nlp.meta["lang"] == torch_lang
     _nlp.to(device)
     return _nlp
 
@@ -59,7 +59,9 @@ TESTCASE_ENE = [
 ]
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
+@pytest.fixture(
+    scope="module", params=["ja_mecab_torch", "ja_juman_torch", "sentencepiece_torch"]
+)
 def nlp_for_hooks_test(request, trf_dir):
     lang = request.param
     labels = make_biluo_labels([chr(i) for i in range(65, 91)])
@@ -126,6 +128,6 @@ def test_example_batch_eval(nlp: Language, example_gold):
 
 
 def test_freeze_ner(trf_name_or_path):
-    nlp = trf_ner("mecab", trf_name_or_path, freeze=True, labels=["foo"])
+    nlp = trf_ner("ja_mecab_torch", trf_name_or_path, freeze=True, labels=["foo"])
     pipe = nlp.pipeline[-2][1]
     assert pipe.cfg["freeze"]

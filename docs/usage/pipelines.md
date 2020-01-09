@@ -83,7 +83,7 @@ $ pip install mecab-python3
 
 ```python
 from camphr.models import bert_model
-nlp = bert_model(lang="mecab", name="bert-base-multilingual-cased")
+nlp = bert_model(lang="ja_mecab_torch", name="bert-base-multilingual-cased")
 doc = nlp("私は犬と猫が好きだ")
 I, dog, cat = doc[0], doc[2], doc[4]
 print(I, dog, I.similarity(dog))
@@ -200,7 +200,7 @@ from camphr.ner_labels.labels_irex import ALL_LABELS
 from camphr.ner_labels.utils import make_biluo_labels
 from spacy.util import minibatch
 
-nlp = trf_ner(lang="mecab", labels=make_biluo_labels(ALL_LABELS), pretrained="path_to_bert")
+nlp = trf_ner(lang="ja_mecab_torch", labels=make_biluo_labels(ALL_LABELS), pretrained="path_to_bert")
 train_data = [
     ["１９９９年３月創部の同部で初の外国人選手。", {"entities": [[0, 7, "DATE"], [15, 20, "ARTIFACT"]]}]
 ]
@@ -235,7 +235,7 @@ nlp = spacy.load("./bert-foo")
 import spacy
 from camphr.pipelines import RegexRuler
 
-nlp = spacy.blank("mecab")
+nlp = spacy.blank("ja_mecab")
 # create pipe
 pipe = RegexRuler(pattern="\d{3}-\d{4}-\d{4}", label="PHONE")
 nlp.add_pipe(pipe)
@@ -305,33 +305,6 @@ spacy.displacy.render(doc)
 
 ![](./img/udify_de.png)
 
-
-### Built-In regex pipes
-
-以下のpipeは，パッケージに同梱されています．
-
-- postcode
-- carcode
-
-Example: 
-
-```python
-import spacy
-from camphr.pipelines import postcode_ruler, carcode_ruler
-
-nlp = spacy.blank("mecab")
-nlp.add_pipe(postcode_ruler)
-nlp.add_pipe(carcode_ruler)
-
-nlp("郵便番号は〒100-0001で，車の番号は品川500 さ 2345です").ents
-```
-```
-(〒100-0001, 品川500 さ 2345)
-```
-
-### Note
-
-recallを100%にしたい場合は，`pipe.destructive = True`にします．分かち書きで作成したtokenを分解し，確実にマッチするようになりますが，他のパイプの性能を落とす可能性があります．
 
 ## Word2Vec, Glove, Fasttext word embedding
 

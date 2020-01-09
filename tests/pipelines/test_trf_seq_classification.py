@@ -19,10 +19,9 @@ def labels():
     return ["one", "two", "three"]
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
-def nlp(trf_dir, labels, request, device):
-    lang = request.param
-    _nlp = trf_seq_classification(lang, pretrained=trf_dir, labels=labels)
+@pytest.fixture(scope="module")
+def nlp(trf_dir, labels, torch_lang, device):
+    _nlp = trf_seq_classification(torch_lang, pretrained=trf_dir, labels=labels)
     _nlp.to(device)
     return _nlp
 
@@ -102,10 +101,9 @@ def labels2():
     return ["o", "t"]
 
 
-@pytest.fixture(scope="module", params=["mecab", "juman", "sentencepiece"])
-def nlp2(trf_dir, labels2, request, device):
-    lang = request.param
-    _nlp = trf_seq_classification(lang, pretrained=trf_dir, labels=labels2)
+@pytest.fixture(scope="module")
+def nlp2(trf_dir, labels2, device, torch_lang):
+    _nlp = trf_seq_classification(torch_lang, pretrained=trf_dir, labels=labels2)
     _nlp.to(device)
     return _nlp
 

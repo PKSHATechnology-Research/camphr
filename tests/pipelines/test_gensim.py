@@ -11,7 +11,7 @@ def fixture_fasttext():
 
 @pytest.mark.parametrize("text", ["日本語の埋め込みベクトルを計算します"])
 def test_set_word2vec_vectors(fixture_fasttext, text):
-    nlp = spacy.blank("mecab")
+    nlp = spacy.blank("ja_mecab")
     doc = nlp(text)
     assert len(doc.vector) == 0
     set_word2vec_vectors(nlp, fixture_fasttext)

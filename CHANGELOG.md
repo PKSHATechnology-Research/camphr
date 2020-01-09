@@ -6,6 +6,8 @@ The libary name `bedoner` has been renamed to `camphr`.
 
 - remove dependency on `spacy-transformers` (#167)
     - This causes many backward incompatibilities. Almost all transformers models that were released before v0.5 cannot be used.
+- rename `Language`s (#168)
+    - now `mecab` -> `ja_mecab`, `juman` -> `ja_juman`
 
 # v0.4.2
 

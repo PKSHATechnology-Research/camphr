@@ -17,8 +17,7 @@ log = logging.getLogger(__name__)
 
 __dir__ = Path(__file__).parent
 PACKAGES_DIR = __dir__ / "../pkgs"
-LANG_REQUIREMENTS = {"juman": {"pyknp"}, "mecab": {"mecab-python3"}, "knp": {"pyknp"}}
-LANGS = ["juman", "mecab", "knp"]
+LANG_REQUIREMENTS = {"ja_juman": {"pyknp"}, "ja_mecab": {"mecab-python3"}}
 THIS_MODULE = "camphr @ git+https://github.com/PKSHATechnology/bedore-ner@{ref}"
 Pathlike = Union[str, Path]
 
@@ -29,7 +28,7 @@ def get_commit() -> str:
 
 def get_lang(meta: dict) -> str:
     lang = meta["lang"]
-    for l in LANGS:
+    for l in LANG_REQUIREMENTS:
         if l in lang:
             return l
     return ""

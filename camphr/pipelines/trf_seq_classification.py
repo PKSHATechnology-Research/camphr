@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import transformers as trf
 from camphr.pipelines.trf_utils import (
+    ATTRS,
     CONVERT_LABEL,
     TRF_CONFIG,
     TrfConfig,
@@ -19,7 +20,6 @@ from camphr.torch_utils import add_loss_to_docs, goldcat_to_label
 from overrides import overrides
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
-from camphr.pipelines.trf_utils import ATTRS
 from transformers.modeling_utils import SequenceSummary
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True

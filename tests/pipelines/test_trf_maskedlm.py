@@ -8,7 +8,7 @@ from tests.utils import BERT_DIR
 
 @pytest.fixture(scope="module")
 def nlp(device):
-    _nlp = trf_model("mecab", str(BERT_DIR))
+    _nlp = trf_model("ja_mecab_torch", str(BERT_DIR))
     add_maskedlm_pipe(_nlp)
     _nlp.to(device)
     return _nlp
