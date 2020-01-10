@@ -135,3 +135,4 @@ foo/
 output/
 .DS_Store
 data/
+poetry.lock
