@@ -25,7 +25,7 @@ more-itertools = "*"
 overrides = "*"
 scikit-learn = "^0.22"
 gensim = "^3.8.1"
-transformers = "^2.3.0"
+transformers = {extras = ["torch"], version = "^2.3.0"}
 pytokenizations = "^0.2.0"
 spacy = "^2.2.3"
 
