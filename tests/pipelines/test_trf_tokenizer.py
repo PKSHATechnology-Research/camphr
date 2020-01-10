@@ -11,7 +11,7 @@ from ..utils import BERT_DIR, XLNET_DIR
 
 @pytest.fixture(scope="session")
 def trf_tokenizer(trf_name_or_path):
-    return TransformersTokenizer.from_pretrained(trf_name_or_path)
+    return TransformersTokenizer.from_pretrained(Vocab(), trf_name_or_path)
 
 
 @pytest.mark.parametrize(
@@ -92,7 +92,7 @@ def test_tokenizer(
     tmp_path.mkdir(exist_ok=True)
     tmp_path.mkdir(exist_ok=True)
     trf_tokenizer.to_disk(tmp_path)
-    trf_tokenizer = TransformersTokenizer()
+    trf_tokenizer = TransformersTokenizer(Vocab())
     trf_tokenizer.from_disk(tmp_path)
     check()
 

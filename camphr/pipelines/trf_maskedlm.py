@@ -7,13 +7,15 @@ import spacy
 import torch
 import torch.nn.functional as F
 import transformers.modeling_bert
+from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
 from camphr.pipelines.trf_tokenizer import PIPES as TRF_TOKENIZER_PIPES
 from camphr.pipelines.trf_utils import (
     ATTRS,
-    TrfPipeForTaskBase,
+    SerializationMixinForTrfTask,
+    TrfOptimMixin,
     get_last_hidden_state_from_docs,
 )
-from camphr.torch_utils import add_loss_to_docs
+from camphr.torch_utils import TorchPipe, add_loss_to_docs
 from camphr.utils import zero_pad
 from spacy.gold import GoldParse
 from spacy.language import Language
@@ -121,7 +123,7 @@ class BertForMaskedLMPreprocessor(Pipe):
 
 
 @spacy.component(PIPES.bert_for_maskedlm)
-class BertForMaskedLM(TrfPipeForTaskBase):
+class BertForMaskedLM(TrfOptimMixin, SerializationMixinForTrfTask, TorchPipe):
     model_cls = BertOnlyMLMHead
     trf_config_cls = BertConfig
 
@@ -156,8 +158,8 @@ def add_maskedlm_pipe(nlp: Language):
     wp = nlp.get_pipe(TRF_TOKENIZER_PIPES.transformers_tokenizer)
     tokenizer = wp.model
     preprocessor = BertForMaskedLMPreprocessor(nlp.vocab, tokenizer)
-    nlp.add_pipe(preprocessor, before=BERT)
-    bert = nlp.get_pipe(BERT)
+    nlp.add_pipe(preprocessor, before=TRANSFORMERS_MODEL)
+    bert = nlp.get_pipe(TRANSFORMERS_MODEL)
     config = bert.model.config
     model = BertOnlyMLMHead(config)
     pipe = BertForMaskedLM(nlp.vocab, model)

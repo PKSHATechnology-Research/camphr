@@ -5,18 +5,18 @@ Models defined in this modules must be used with `camphr.pipelines.trf_model`'s 
 import functools
 from typing import Iterable, List, Sized, cast
 
+import more_itertools
 import spacy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import transformers as trf
+import transformers
 from camphr.pipelines.trf_utils import (
     ATTRS,
     CONVERT_LABEL,
-    TRF_CONFIG,
-    TrfConfig,
+    SerializationMixinForTrfTask,
     TrfModelForTaskBase,
-    TrfPipeForTaskBase,
+    TrfOptimMixin,
     get_dropout,
     get_last_hidden_state_from_docs,
 )
@@ -27,10 +27,13 @@ from camphr.pipelines.utils import (
     correct_biluo_tags,
     merge_entities,
 )
-from camphr.torch_utils import add_loss_to_docs
+from camphr.torch_utils import TorchPipe, add_loss_to_docs
 from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
 from spacy.tokens import Doc, Token
+from spacy.vocab import Vocab
+
+from .trf_auto import get_trf_config_cls, get_trf_name
 
 CLS_LOGIT = "cls_logit"
 LABELS = "labels"
@@ -40,7 +43,7 @@ NUM_LABELS = "num_labels"
 class TrfTokenClassifier(TrfModelForTaskBase):
     """A thin layer for classification task"""
 
-    def __init__(self, config: TrfConfig):
+    def __init__(self, config: transformers.PretrainedConfig):
         super().__init__(config)
         self.num_labels = config.num_labels
         dropout = get_dropout(config)
@@ -55,11 +58,12 @@ class TrfTokenClassifier(TrfModelForTaskBase):
 
         x = self.dropout(x)
         logits = self.classifier(x)
-
         return logits
 
 
-class TrfForTokenClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
+class TrfForTokenClassificationBase(
+    TrfOptimMixin, UserHooksMixin, SerializationMixinForTrfTask, TorchPipe
+):
     """Base class for token classification task (e.g. Named entity recognition).
 
     Requires `TrfModel` before this model in the pipeline to use this model.
@@ -83,13 +87,17 @@ class TrfForTokenClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
                 Doc.set_extension(ext, default=None)
 
     @classmethod
-    def Model(cls, **cfg) -> TrfTokenClassifier:
-        assert cfg.get(LABELS)
-        cfg.setdefault(TRF_CONFIG, {})
-        cfg[TRF_CONFIG][NUM_LABELS] = len(cfg.get(LABELS, []))
-        model = super().Model(**cfg)
-        assert model.config.num_labels == len(cfg[LABELS])
-        return cast(TrfTokenClassifier, model)
+    def Model(cls, name_or_path: str, **cfg) -> TrfTokenClassifier:
+        config = get_trf_config_cls(name_or_path).from_pretrained(name_or_path)
+        if LABELS in cfg:
+            setattr(config, NUM_LABELS, len(cfg[LABELS]))
+        return TrfTokenClassifier(config)
+
+    @classmethod
+    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
+        """Load pretrained model."""
+        name = get_trf_name(name_or_path)
+        return cls(vocab, model=cls.Model(name_or_path, **cfg), trf_name=name, **cfg)
 
     @property
     def labels(self):
@@ -110,7 +118,12 @@ class TrfForTokenClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
         return logits
 
 
-class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
+@spacy.component(
+    "transformers_ner",
+    requires=[f"doc._.{ATTRS.last_hidden_state}"],
+    assigns=["doc.ents"],
+)
+class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
     """Named entity recognition component with pytorch-transformers."""
 
     K_BEAM = "k_beam"
@@ -131,30 +144,26 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
         length = logits.shape[1]
         loss = x.new_tensor(0.0)
         for doc, gold, logit in zip(docs, golds, logits):
+            ners = self._get_nerlabel_from_gold(gold)
             # use first wordpiece for each tokens
-            idx = []
-            convert_hook = self.user_hooks.get(CONVERT_LABEL, None)
-            if convert_hook:
-                ners = [convert_hook(ner) for ner in gold.ner]
-            else:
-                ners = list(gold.ner)
-            for i, align in enumerate(doc._.transformers_align):
-                if len(align):
-                    a = align[0]
-                    if a >= length:
-                        # This is not a bug. `length` can be shorter than the pieces because of `max_length` of trf model.
-                        break
-                    idx.append(a)
-                else:
-                    ners[i] = UNK.value  # avoid calculate loss
-                    idx.append(-1)
+            idx = (more_itertools.first(a, -1) for a in doc._.get(ATTRS.align))
+            idx = [a for a in idx if a < length]
+            ners = (label2id[ner] for ner in ners)
+            ners = [ner if a != -1 else ignore_index for ner, a in zip(ners, idx)]
             pred = logit[idx]
-            target = torch.tensor(
-                [label2id[ner] for ner in ners[: len(pred)]], device=self.device
-            )
+            target = torch.tensor(ners, device=self.device)
             loss += F.cross_entropy(pred, target, ignore_index=ignore_index)
             doc._.cls_logit = logit
         add_loss_to_docs(docs, loss)
+
+    def _get_nerlabel_from_gold(self, gold: GoldParse) -> List[str]:
+        convert_hook = self.user_hooks.get(CONVERT_LABEL, None)
+        convert_hook = self.user_hooks.get(CONVERT_LABEL, None)
+        if convert_hook:
+            ners = [convert_hook(ner) for ner in gold.ner]
+        else:
+            ners = list(gold.ner)
+        return ners
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor
@@ -194,20 +203,6 @@ class TrfForNamedEntityRecognitionBase(TrfForTokenClassificationBase):
     def k_beam(self, k: int):
         assert isinstance(k, int)
         self.cfg[self.K_BEAM] = k
-
-
-@spacy.component(
-    "bert_ner", requires=[f"doc._.{ATTRS.last_hidden_state}"], assigns=["doc.ents"]
-)
-class BertForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
-    trf_config_cls = trf.BertConfig
-
-
-@spacy.component(
-    "xlnet_ner", requires=[f"doc._.{ATTRS.last_hidden_state}"], assigns=["doc.ents"]
-)
-class XLNetForNamedEntityRecognition(TrfForNamedEntityRecognitionBase):
-    trf_config_cls = trf.XLNetConfig
 
 
 TrfForTokenClassificationBase.install_extensions()

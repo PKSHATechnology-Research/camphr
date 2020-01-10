@@ -5,7 +5,7 @@ from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
 from spacy.vocab import Vocab
 
-from .utils import BERT_DIR, FIXTURE_DIR, XLNET_DIR, check_juman, check_mecab
+from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_mecab
 
 
 def pytest_addoption(parser):
@@ -39,19 +39,6 @@ def juman_tokenizer(request):
     if not check_juman():
         pytest.skip()
     return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": request.param})
-
-
-@pytest.fixture(scope="session", params=["bert", "xlnet"])
-def trf_name(request):
-    return request.param
-
-
-@pytest.fixture(scope="session")
-def trf_dir(trf_name):
-    if trf_name == "bert":
-        return str(BERT_DIR)
-    if trf_name == "xlnet":
-        return str(XLNET_DIR)
 
 
 @pytest.fixture(scope="session")
@@ -101,13 +88,19 @@ def torch_lang(request):
 
 @pytest.fixture(
     scope="session",
-    params=[
-        str(BERT_DIR),
-        "xlnet-base-cased",
-        "bert-base-uncased",
-        str(XLNET_DIR),
-        "bert-base-japanese",
-    ],
+    params=TRF_TESTMODEL_PATH
+    # + [
+    #     "xlnet-base-cased",
+    #     "bert-base-uncased",
+    #     "bert-base-japanese",
+    #     "xlm-mlm-100-1280",
+    #     "roberta-base",
+    # ],
 )
 def trf_name_or_path(request):
+    return request.param
+
+
+@pytest.fixture(scope="session", params=TRF_TESTMODEL_PATH)
+def trf_testmodel_path(request) -> str:
     return request.param

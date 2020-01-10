@@ -1,18 +1,18 @@
 import numpy as np
 import pytest
-import spacy
 import torch
 from camphr.models import trf_model
 from camphr.pipelines.trf_model import TransformersModel
 from camphr.pipelines.trf_utils import ATTRS
 from spacy.language import Language
 from spacy.tokens import Doc
+from tests.utils import TRF_TESTMODEL_PATH, check_serialization
 from transformers import AdamW
 
 
-@pytest.fixture
-def nlp(torch_lang, trf_dir, device):
-    _nlp = trf_model(torch_lang, str(trf_dir))
+@pytest.fixture(scope="session")
+def nlp(torch_lang, trf_name_or_path, device):
+    _nlp = trf_model(torch_lang, str(trf_name_or_path))
     _nlp.to(device)
     return _nlp
 
@@ -26,8 +26,8 @@ def test_forward(nlp, text):
     assert doc._.transformers_last_hidden_state is not None
 
 
-def test_forward_for_long_input(nlp, torch_lang):
-    if torch_lang != "ja_mecab_torch":
+def test_forward_for_long_input(nlp, torch_lang, trf_name_or_path):
+    if torch_lang != "ja_mecab_torch" or trf_name_or_path not in TRF_TESTMODEL_PATH:
         pytest.skip()
     text = "foo " * 2000
     doc = nlp(text)
@@ -55,7 +55,6 @@ def test_doc_similarlity(nlp, text1, text2):
     doc1 = nlp(text1)
     doc2 = nlp(text2)
     assert doc1.similarity(doc2)
-    assert np.isclose(doc1.similarity(doc2), doc2.similarity(doc1))
 
 
 def test_freeze(nlp: Language):
@@ -63,6 +62,7 @@ def test_freeze(nlp: Language):
     assert len(list(pipe.optim_parameters())) > 0
     pipe.cfg["freeze"] = True
     assert len(list(pipe.optim_parameters())) == 0
+    pipe.cfg["freeze"] = False
 
 
 def test_optim(nlp: Language):
@@ -70,18 +70,11 @@ def test_optim(nlp: Language):
     assert isinstance(optim, AdamW)
 
 
-@pytest.mark.xfail(reason="after feature/trf-maskedlm merged")
-def test_update(nlp: Language, tmpdir):
-    optim = nlp.resume_training()
-    nlp.update(TESTCASES, [{}] * len(TESTCASES), optim)
-    nlp.to_disk(str(tmpdir))
-    nlp = spacy.load(str(tmpdir))
-
-    optim = nlp.resume_training()
-    nlp.update(TESTCASES, [{}] * len(TESTCASES), optim)
-
-
-def test_freeze_model(trf_name_or_path):
-    nlp = trf_model("ja_mecab_torch", trf_name_or_path, freeze=True)
+def test_freeze_model(trf_testmodel_path):
+    nlp = trf_model("ja_mecab_torch", trf_testmodel_path, freeze=True)
     pipe = nlp.pipeline[-1][1]
     assert pipe.cfg["freeze"]
+
+
+def test_check_serialization(nlp):
+    check_serialization(nlp)

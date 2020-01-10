@@ -1,17 +1,16 @@
 import random
 
 import pytest
-import spacy
 from camphr.models import trf_seq_classification
 from camphr.pipelines.trf_seq_classification import (
     TOP_LABEL,
     TOPK_LABELS,
-    BertForSequenceClassification,
+    TrfForSequenceClassification,
 )
 from camphr.pipelines.trf_utils import CONVERT_LABEL
 from camphr.torch_utils import get_loss_from_docs
 from spacy.language import Language
-from spacy.tests.util import assert_docs_equal
+from tests.utils import check_serialization
 
 
 @pytest.fixture(scope="module")
@@ -20,8 +19,10 @@ def labels():
 
 
 @pytest.fixture(scope="module")
-def nlp(trf_dir, labels, torch_lang, device):
-    _nlp = trf_seq_classification(torch_lang, pretrained=trf_dir, labels=labels)
+def nlp(trf_name_or_path, labels, torch_lang, device):
+    _nlp = trf_seq_classification(
+        torch_lang, pretrained=trf_name_or_path, labels=labels
+    )
     _nlp.to(device)
     return _nlp
 
@@ -71,14 +72,8 @@ def test_update_convergence(nlp, labels, docs_golds):
         assert prev > get_loss_from_docs(docs).item()
 
 
-def test_serialization(nlp, tmp_path):
-    path = tmp_path / "foo"
-    path.mkdir()
-    text = TEXTS[0]
-    doc = nlp(text)
-    nlp.to_disk(path)
-    nlp = spacy.load(path)
-    assert_docs_equal(doc, nlp(text))
+def test_serialization(nlp):
+    check_serialization(nlp)
 
 
 @pytest.mark.xfail(reason="see https://github.com/explosion/spaCy/pull/4664")
@@ -90,9 +85,7 @@ def test_eval(nlp: Language, docs_golds):
 def test_weights(vocab, labels):
     weights = range(len(labels))
     weights_map = dict(zip(labels, weights))
-    pipe = BertForSequenceClassification(
-        vocab, labels=labels, label_weights=weights_map
-    )
+    pipe = TrfForSequenceClassification(vocab, labels=labels, label_weights=weights_map)
     assert pipe.label_weights.sum() == sum(weights)
 
 
@@ -102,8 +95,10 @@ def labels2():
 
 
 @pytest.fixture(scope="module")
-def nlp2(trf_dir, labels2, device, torch_lang):
-    _nlp = trf_seq_classification(torch_lang, pretrained=trf_dir, labels=labels2)
+def nlp2(trf_name_or_path, labels2, device, torch_lang):
+    _nlp = trf_seq_classification(
+        torch_lang, pretrained=trf_name_or_path, labels=labels2
+    )
     _nlp.to(device)
     return _nlp
 

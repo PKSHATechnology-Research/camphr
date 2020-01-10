@@ -5,22 +5,24 @@ import spacy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import transformers as trf
+import transformers
 from camphr.pipelines.trf_utils import (
     ATTRS,
     CONVERT_LABEL,
-    TRF_CONFIG,
-    TrfConfig,
+    SerializationMixinForTrfTask,
     TrfModelForTaskBase,
-    TrfPipeForTaskBase,
+    TrfOptimMixin,
     get_last_hidden_state_from_docs,
 )
 from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import add_loss_to_docs, goldcat_to_label
+from camphr.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
 from overrides import overrides
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
+from spacy.vocab import Vocab
 from transformers.modeling_utils import SequenceSummary
+
+from .trf_auto import get_trf_config_cls, get_trf_name
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 NUM_SEQUENCE_LABELS = "num_sequence_labels"
@@ -32,7 +34,7 @@ TOPK_LABELS = "topk_labels"
 class TrfSequenceClassifier(TrfModelForTaskBase):
     """A thin layer for sequence classification task"""
 
-    def __init__(self, config: TrfConfig):
+    def __init__(self, config: transformers.PretrainedConfig):
         super().__init__(config)
         self.config = config
         assert hasattr(config, NUM_SEQUENCE_LABELS)
@@ -48,7 +50,14 @@ class TrfSequenceClassifier(TrfModelForTaskBase):
         return logits
 
 
-class TrfForSequenceClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
+@spacy.component(
+    "transformers_sequece_classifier",
+    requires=[f"doc._.{ATTRS.last_hidden_state}"],
+    assigns=["doc.cats"],
+)
+class TrfForSequenceClassification(
+    TrfOptimMixin, UserHooksMixin, SerializationMixinForTrfTask, TorchPipe
+):
     """Base class for sequence classification task (e.g. sentiment analysis).
 
     Requires `TrfModel` before this model in the pipeline.
@@ -57,12 +66,17 @@ class TrfForSequenceClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
     model_cls = TrfSequenceClassifier
 
     @classmethod
-    def Model(cls, **cfg) -> TrfSequenceClassifier:
-        cfg.setdefault(TRF_CONFIG, {})
-        assert cfg.get(LABELS), f"'{LABELS}' required"
-        cfg[TRF_CONFIG][NUM_SEQUENCE_LABELS] = len(cfg.get(LABELS, []))
-        model = super().Model(**cfg)
-        return cast(TrfSequenceClassifier, model)
+    def Model(cls, name_or_path: str, **cfg) -> TrfSequenceClassifier:
+        config = get_trf_config_cls(name_or_path).from_pretrained(name_or_path)
+        if LABELS in cfg:
+            setattr(config, NUM_SEQUENCE_LABELS, len(cfg[LABELS]))
+        return TrfSequenceClassifier(config)
+
+    @classmethod
+    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
+        """Load pretrained model."""
+        name = get_trf_name(name_or_path)
+        return cls(vocab, model=cls.Model(name_or_path, **cfg), trf_name=name, **cfg)
 
     @property
     def labels(self):
@@ -129,24 +143,6 @@ class TrfForSequenceClassificationBase(UserHooksMixin, TrfPipeForTaskBase):
 
         loss = F.cross_entropy(logits, targets, weight=weight)
         add_loss_to_docs(docs, loss)
-
-
-@spacy.component(
-    "bert_seq_classifier",
-    requires=[f"doc._.{ATTRS.last_hidden_state}"],
-    assigns=["doc.cats"],
-)
-class BertForSequenceClassification(TrfForSequenceClassificationBase):
-    trf_config_cls = trf.BertConfig
-
-
-@spacy.component(
-    "xlnet_seq_classifier",
-    requires=[f"doc._.{ATTRS.last_hidden_state}"],
-    assigns=["doc.cats"],
-)
-class XLNetForSequenceClassification(TrfForSequenceClassificationBase):
-    trf_config_cls = trf.XLNetConfig
 
 
 def _top_label(doc: Doc) -> Optional[str]:

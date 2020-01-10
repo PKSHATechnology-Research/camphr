@@ -14,8 +14,11 @@ OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]
 class TorchPipe(Pipe):
     """Pipe wrapper for pytorch. This provides interface used by `TorchLanguageMixin`"""
 
-    def __init__(self, device: torch.device = torch.device("cpu")):
-        self._device = device
+    def __init__(self, vocab, model=True, **cfg):
+        self.vocab = vocab
+        self.model = model
+        self._device = torch.device("cpu")
+        self.cfg = cfg
 
     @property
     def device(self):

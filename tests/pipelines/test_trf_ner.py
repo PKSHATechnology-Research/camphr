@@ -7,7 +7,7 @@ from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
 from camphr.ner_labels.utils import make_biluo_labels
 from spacy.language import Language
 
-from ..utils import DATA_DIR
+from ..utils import DATA_DIR, check_serialization
 
 label_types = ["ene", "irex"]
 
@@ -29,8 +29,8 @@ def labels(label_type):
 
 
 @pytest.fixture(scope="module")
-def nlp(labels, torch_lang, trf_dir, device):
-    _nlp = trf_ner(lang=torch_lang, labels=labels, pretrained=trf_dir)
+def nlp(labels, torch_lang, trf_name_or_path, device):
+    _nlp = trf_ner(lang=torch_lang, labels=labels, pretrained=trf_name_or_path)
     assert _nlp.meta["lang"] == torch_lang
     _nlp.to(device)
     return _nlp
@@ -59,10 +59,24 @@ TESTCASE_ENE = [
 ]
 
 
+@pytest.mark.parametrize("text,gold", TESTCASE_ENE)
+def test_call(nlp: Language, text, gold, label_type):
+    if label_type == "irex":
+        pytest.skip()
+    nlp(text)
+
+
+def test_update(nlp: Language, label_type):
+    if label_type == "irex":
+        pytest.skip()
+    optim = nlp.resume_training()
+    nlp.update(*zip(*TESTCASE_ENE), optim)
+
+
 @pytest.fixture(
     scope="module", params=["ja_mecab_torch", "ja_juman_torch", "sentencepiece_torch"]
 )
-def nlp_for_hooks_test(request, trf_dir):
+def nlp_for_hooks_test(request, trf_name_or_path):
     lang = request.param
     labels = make_biluo_labels([chr(i) for i in range(65, 91)])
 
@@ -73,23 +87,18 @@ def nlp_for_hooks_test(request, trf_dir):
 
     hook = {"convert_label": convert_label}
 
-    _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_dir, user_hooks=hook)
+    _nlp = trf_ner(
+        lang=lang, labels=labels, pretrained=trf_name_or_path, user_hooks=hook
+    )
     assert lang in _nlp.meta["lang"]
     return _nlp
 
 
 @pytest.mark.parametrize("text,gold", TESTCASE_ENE)
-def test_user_hooks(nlp_for_hooks_test: Language, text, gold, trf_name):
+def test_user_hooks(nlp_for_hooks_test: Language, text, gold):
     nlp = nlp_for_hooks_test
     optim = nlp.resume_training()
     nlp.update([text], [gold], optim)
-
-
-@pytest.mark.parametrize("text,gold", TESTCASE_ENE)
-def test_call(nlp: Language, text, gold, label_type):
-    if label_type == "irex":
-        pytest.skip()
-    nlp(text)
 
 
 @pytest.fixture(
@@ -107,9 +116,9 @@ def example_gold(request, label_type):
 
 
 @pytest.fixture(scope="module", params=["ner/ner-irex-long.json"])
-def example_long(request, label_type, trf_name):
+def example_long(request, label_type, trf_name_or_path):
     fname = request.param
-    if trf_name == "bert" and label_type in fname:
+    if label_type in fname:
         with (DATA_DIR / fname).open() as f:
             d = json.load(f)
         return d
@@ -131,3 +140,7 @@ def test_freeze_ner(trf_name_or_path):
     nlp = trf_ner("ja_mecab_torch", trf_name_or_path, freeze=True, labels=["foo"])
     pipe = nlp.pipeline[-2][1]
     assert pipe.cfg["freeze"]
+
+
+def test_serialization(nlp):
+    check_serialization(nlp)

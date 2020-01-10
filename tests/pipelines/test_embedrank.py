@@ -5,9 +5,9 @@ from camphr.pipelines.embedrank import EMBEDRANK_KEYPHRASES, EmbedRank
 
 
 @pytest.fixture(scope="module", params=["ja_mecab_torch"])
-def nlp(request, trf_dir, device):
+def nlp(request, trf_name_or_path, device):
     lang = request.param
-    _nlp = trf_model(lang, trf_dir)
+    _nlp = trf_model(lang, trf_name_or_path)
     pipe = EmbedRank(vocab=_nlp.vocab)
     _nlp.add_pipe(pipe)
     _nlp.to(device)

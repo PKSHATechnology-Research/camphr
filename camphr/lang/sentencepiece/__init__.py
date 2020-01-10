@@ -45,7 +45,9 @@ class Tokenizer:
             True if next_token.startswith(self.SPACE_CHAR) else False
             for token, next_token in zip(_tokens, _tokens[1:])
             if token != self.SPACE_CHAR
-        ] + [False]
+        ]
+        if _tokens:
+            spaces += [False]
         tokens = []
         alignment = []
         buf = []

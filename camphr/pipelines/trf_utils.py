@@ -1,23 +1,24 @@
 import pickle
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Union
+from typing import Any, Callable, Dict, Iterable, Type
 
 import torch
 import torch.nn as nn
-import transformers as trf
+import transformers
 from camphr.lang.torch_mixin import optim_creators
 from camphr.torch_utils import (
     OptimizerParameters,
     TensorWrapper,
-    TorchPipe,
     get_parameters_with_decay,
 )
-from spacy.gold import GoldParse
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from tokenizations import get_alignments
 from torch.optim.optimizer import Optimizer
 from transformers import AdamW
+from typing_extensions import Protocol
+
+from .trf_auto import get_trf_config_cls, get_trf_name
 
 
 @optim_creators.register("adamw")
@@ -52,16 +53,11 @@ for attr in [
     Doc.set_extension(attr, default=None)
 Doc.set_extension(ATTRS.align, getter=_get_transformers_align)
 
-TrfConfig = Union[trf.BertConfig, trf.XLNetConfig]
 
 TRF_CONFIG = "trf_config"
 VOCAB_SIZE = "vocab_size"
 TRF_NAME = "trf_name"
 CONVERT_LABEL = "convert_label"
-
-
-class Errors:
-    E1 = "{} is not supported"
 
 
 def get_last_hidden_state_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
@@ -70,12 +66,12 @@ def get_last_hidden_state_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
     return x.batch_tensor
 
 
-def get_dropout(config: TrfConfig) -> float:
-    if isinstance(config, trf.BertConfig):
+def get_dropout(config: transformers.PretrainedConfig) -> float:
+    if isinstance(config, transformers.BertConfig):
         return config.hidden_dropout_prob
-    elif isinstance(config, trf.XLNetConfig):
+    if hasattr(config, "dropout"):
         return config.dropout
-    raise ValueError(Errors.E1.format(type(config)))
+    return 0.1
 
 
 def _setdefault(obj: Any, k: str, v: Any) -> Any:
@@ -90,22 +86,19 @@ def _setdefaults(obj: Any, kv: Dict[str, Any]):
         _setdefault(obj, k, v)
 
 
-# TODO: https://github.com/huggingface/transformers/issues/1845
-_SUMMARY_DEFAULTS = {"summary_use_proj": False, "summary_activation": "tanh"}
-
-
+_SUMMARY_DEFAULTS = {"summary_activation": "tanh"}
 _SUMMARY_TYPE = "summary_type"
 _LAST_DROPOUT = "summary_last_dropout"
 
 
-def _set_default_summary_type(config: TrfConfig):
-    if isinstance(config, trf.BertConfig):
+def _set_default_summary_type(config: transformers.PretrainedConfig):
+    if isinstance(config, transformers.BertConfig):
         _setdefault(config, _SUMMARY_TYPE, "first")
-    elif isinstance(config, trf.XLNetConfig):
+    elif isinstance(config, transformers.XLNetConfig):
         _setdefault(config, _SUMMARY_TYPE, "last")
 
 
-def set_default_config_for_sequence_summary(config: TrfConfig):
+def set_default_config_for_sequence_summary(config: transformers.PretrainedConfig):
     """Set default value for transformers.SequenceSummary"""
     _setdefaults(config, _SUMMARY_DEFAULTS)
     _set_default_summary_type(config)
@@ -113,62 +106,34 @@ def set_default_config_for_sequence_summary(config: TrfConfig):
 
 
 class TrfModelForTaskBase(nn.Module):
-    def __init__(self, config: TrfConfig):
+    def __init__(self, config: transformers.PretrainedConfig):
         super().__init__()
         self.config = config
 
 
-class TrfPipeForTaskBase(TorchPipe):
-    """Base class for end task"""
-
-    _MODEL_PTH = "model.pth"
-    _CFG_PKL = "cfg.pkl"
-
-    def __init__(self, vocab, model=True, **cfg):
-        self.vocab = vocab
-        self.model = model
-        self.cfg = cfg
-
-    @classmethod
-    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
-        cfg[TRF_NAME] = name_or_path
-        model = cls.Model(from_pretrained=True, **cfg)
-        cfg[TRF_CONFIG] = dict(model.config.to_dict())
-        return cls(vocab, model=model, **cfg)
-
-    @classmethod
-    def Model(cls, **cfg) -> TrfModelForTaskBase:
-        cfg.setdefault(TRF_CONFIG, {})
-        if cfg.get("from_pretrained"):
-            config = cls.trf_config_cls.from_pretrained(cfg[TRF_NAME])
-            for k, v in cfg[TRF_CONFIG].items():
-                setattr(config, k, v)
-            model = cls.model_cls(config)
-        else:
-            if VOCAB_SIZE in cfg[TRF_CONFIG]:
-                vocab_size = cfg[TRF_CONFIG][VOCAB_SIZE]
-                cfg[TRF_CONFIG]["vocab_size_or_config_json_file"] = vocab_size
-            model = cls.model_cls(cls.trf_config_cls.from_dict(cfg[TRF_CONFIG]))
-        return model
-
-    def predict(self, docs: Iterable[Doc]):
-        raise NotImplementedError
-
-    def set_annotations(self, docs: Iterable[Doc], preds: Any):
-        raise NotImplementedError
-
-    def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
-        raise NotImplementedError
-
+class TrfOptimMixin:
     def optim_parameters(self) -> OptimizerParameters:
         no_decay = self.cfg.get("no_decay")
         weight_decay = self.cfg.get("weight_decay")
         return get_parameters_with_decay(self.model, no_decay, weight_decay)
 
+
+class _TrfSavePathGetter:
+    def _trf_path(self, path: Path) -> Path:
+        return path / self.cfg[TRF_NAME]
+
+
+class SerializationMixinForTrfTask(_TrfSavePathGetter):
+    _MODEL_PTH = "model.pth"
+    _CFG_PKL = "cfg.pkl"
+    model_cls: Type[TrfModelForTaskBase] = TrfModelForTaskBase
+
     def to_disk(self, path: Path, exclude=tuple(), **kwargs):
         path.mkdir(exist_ok=True)
         model: TrfModelForTaskBase = self.model
-        model.config.save_pretrained(path)
+        config_save_path = self._trf_path(path)
+        config_save_path.mkdir(exist_ok=True)
+        model.config.save_pretrained(str(config_save_path))
         torch.save(model.state_dict(), str(path / self._MODEL_PTH))
 
         with (path / self._CFG_PKL).open("wb") as f:
@@ -178,7 +143,10 @@ class TrfPipeForTaskBase(TorchPipe):
     def from_disk(self, path: Path, exclude=tuple(), **kwargs):
         with (path / self._CFG_PKL).open("rb") as f:
             self.cfg = pickle.load(f)
-        config = self.trf_config_cls.from_pretrained(path)
+
+        config = get_trf_config_cls(self.cfg[TRF_NAME]).from_pretrained(
+            str(self._trf_path(path))
+        )
         model = self.model_cls(config)
         model.load_state_dict(
             torch.load(str(path / self._MODEL_PTH), map_location=self.device)
@@ -186,4 +154,43 @@ class TrfPipeForTaskBase(TorchPipe):
         model.eval()
         self.model = model
 
+        return self
+
+
+class TrfAutoProtocol(Protocol):
+    @classmethod
+    def from_pretrained(cls, pretrained_model_name_or_path, *inputs, **kwargs):
+        ...
+
+
+class TrfAutoMixin(_TrfSavePathGetter):
+
+    _MODEL_PTH = "model.pth"
+    _CFG_PKL = "cfg.pkl"
+    _MODEL_CLS_GETTER: Callable[[str], Type[TrfAutoProtocol]]
+
+    @classmethod
+    def Model(cls, trf_name_or_path: str, **cfg):
+        return cls._MODEL_CLS_GETTER(trf_name_or_path).from_pretrained(
+            trf_name_or_path, **cfg
+        )
+
+    @classmethod
+    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
+        """Load pretrained model."""
+        name = get_trf_name(name_or_path)
+        return cls(vocab, model=cls.Model(name_or_path), trf_name=name, **cfg)
+
+    def to_disk(self, path: Path, exclude=tuple(), **kwargs):
+        path.mkdir(exist_ok=True)
+        model_path = self._trf_path(path)
+        model_path.mkdir(exist_ok=True)
+        self.model.save_pretrained(str(model_path))
+        with (path / self._CFG_PKL).open("wb") as f:
+            pickle.dump(self.cfg, f)
+
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs):
+        with (path / self._CFG_PKL).open("rb") as f:
+            self.cfg = pickle.load(f)
+        self.model = self.Model(str(self._trf_path(path)))
         return self

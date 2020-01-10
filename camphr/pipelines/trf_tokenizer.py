@@ -1,14 +1,12 @@
 """Defines tokenizer for transformers."""
-import json
-from pathlib import Path
 from typing import Dict, Iterable, List, Sequence
 
 import spacy
-import transformers
-from camphr.pipelines.trf_utils import ATTRS
-from camphr.utils import SerializationMixin
+from camphr.pipelines.trf_auto import get_trf_tokenizer_cls
+from camphr.pipelines.trf_utils import ATTRS, TrfAutoMixin
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
+from spacy.vocab import Vocab
 
 
 class PIPES:
@@ -16,42 +14,14 @@ class PIPES:
 
 
 @spacy.component(PIPES.transformers_tokenizer)
-class TransformersTokenizer(Pipe, SerializationMixin):
+class TransformersTokenizer(TrfAutoMixin, Pipe):
     _TRF_NAME = "trf_name"
+    _MODEL_CLS_GETTER = get_trf_tokenizer_cls
 
-    def __init__(self, model=True, **cfg):
+    def __init__(self, vocab: Vocab, model=True, **cfg):
+        self.vocab = vocab
         self.model = model
-        self.trf_name = cfg.get("trf_name", "")
-
-    @classmethod
-    def from_nlp(cls, nlp, **cfg):
-        return cls(**cfg)
-
-    @classmethod
-    def Model(
-        cls, trf_name: str
-    ) -> transformers.tokenization_utils.PreTrainedTokenizer:
-        return transformers.AutoTokenizer.from_pretrained(trf_name)
-
-    @classmethod
-    def from_pretrained(cls, trf_name, **cfg):
-        model = cls.Model(trf_name)
-        return cls(model=model, trf_name=trf_name, **cfg)
-
-    def to_disk(self, path: Path, *args, **kwargs):
-        path.mkdir(exist_ok=True)
-        model_save_path = path / self.trf_name
-        model_save_path.mkdir(exist_ok=True)
-        self.model.save_pretrained(str(model_save_path))
-        with (path / "cfg.json").open("w") as f:
-            cfg = {self._TRF_NAME: self.trf_name}
-            json.dump(cfg, f)
-
-    def from_disk(self, path: Path, *args, **kwargs):
-        with (path / "cfg.json").open() as f:
-            cfg = json.load(f)
-            self.trf_name = cfg[self._TRF_NAME]
-        self.model = self.Model(str(path / self.trf_name))
+        self.cfg = cfg
 
     def update(self, docs: Sequence[Doc], *args, **kwargs) -> List[Doc]:
         return [self(doc) for doc in docs]
