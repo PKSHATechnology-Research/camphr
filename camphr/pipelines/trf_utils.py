@@ -1,6 +1,7 @@
+import dataclasses
 import pickle
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, Type
+from typing import Any, Callable, Dict, Iterable, Iterator, List, Sized, Type, cast
 
 import torch
 import torch.nn as nn
@@ -33,8 +34,7 @@ class ATTRS:
     special_tokens = "transformers_special_tokens"
     align = "transformers_align"
     last_hidden_state = "transformers_last_hidden_state"
-    attention_mask = "transformers_attention_mask"
-    token_type_ids = "transformers_token_type_ids"
+    batch_inputs = "transformers_batch_inputs"
 
 
 def _get_transformers_align(doc):
@@ -46,9 +46,8 @@ for attr in [
     ATTRS.tokens,
     ATTRS.token_ids,
     ATTRS.cleaned_tokens,
-    ATTRS.attention_mask,
-    ATTRS.token_type_ids,
     ATTRS.last_hidden_state,
+    ATTRS.batch_inputs,
 ]:
     Doc.set_extension(attr, default=None)
 Doc.set_extension(ATTRS.align, getter=_get_transformers_align)
@@ -194,3 +193,35 @@ class TrfAutoMixin(_TrfSavePathGetter):
             self.cfg = pickle.load(f)
         self.model = self.Model(str(self._trf_path(path)))
         return self
+
+
+@dataclasses.dataclass
+class TransformersInput:
+    input_ids: torch.Tensor
+    token_type_ids: torch.Tensor
+    attention_mask: torch.Tensor
+    input_len: torch.LongTensor
+
+    def __iter__(self) -> Iterator["TransformersInput"]:
+        for i in range(len(cast(Sized, self.input_ids))):
+            row = {k: getattr(self, k)[i] for k in self.tensor_field_names}
+            row = TransformersInput(**row)
+            yield row
+
+    def to(self, *args, **kwargs):
+        for k in self.tensor_field_names:
+            getattr(self, k).to(*args, **kwargs)
+
+    @property
+    def tensor_field_names(self) -> List[str]:
+        return [
+            field.name
+            for field in dataclasses.fields(self)
+            if field.type is torch.Tensor or field.type is torch.LongTensor
+        ]
+
+    @property
+    def model_input(self):
+        output = {k: getattr(self, k) for k in self.tensor_field_names}
+        del output["input_len"]
+        return output

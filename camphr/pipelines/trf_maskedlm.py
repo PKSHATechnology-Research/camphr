@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Iterable, List, Optional
+from typing import Any, Iterable, List, Optional, Tuple
 
 import numpy as np
 import spacy
@@ -9,14 +9,13 @@ import torch.nn.functional as F
 import transformers.modeling_bert
 from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
 from camphr.pipelines.trf_tokenizer import PIPES as TRF_TOKENIZER_PIPES
+from camphr.pipelines.trf_tokenizer import TransformersTokenizer
 from camphr.pipelines.trf_utils import (
-    ATTRS,
     SerializationMixinForTrfTask,
     TrfOptimMixin,
     get_last_hidden_state_from_docs,
 )
 from camphr.torch_utils import TorchPipe, add_loss_to_docs
-from camphr.utils import zero_pad
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.pipeline import Pipe
@@ -32,8 +31,8 @@ def get_maskedlm_labels(docs: List[Doc]) -> torch.tensor:
     return docs[0].user_data[MASKEDLM_LABEL]
 
 
-def set_maskedlm_labels(docs: List[Doc], labels: np.ndarray):
-    docs[0].user_data[MASKEDLM_LABEL] = torch.from_numpy(labels)
+def set_maskedlm_labels(docs: List[Doc], labels: torch.Tensor):
+    docs[0].user_data[MASKEDLM_LABEL] = labels
 
 
 class BertOnlyMLMHead(transformers.modeling_bert.BertOnlyMLMHead):
@@ -85,36 +84,30 @@ class BertForMaskedLMPreprocessor(Pipe):
 
     def update(self, docs: List[Doc], *args, **kwargs):
         self.require_model()
-        wordpieces = self._docs_to_wordpieces(docs)
-        set_maskedlm_labels(docs, wordpieces)
+        inputs = TransformersTokenizer.get_transformers_input(docs)
+        input_ids = inputs.input_ids
+        set_maskedlm_labels(docs, input_ids)
 
-        masked_wordpieces = wordpieces.copy()
+        masked_input_ids = input_ids.clone()
+        target = torch.from_numpy(~np.isin(masked_input_ids, self.exclude_ids))
+        mask_idx, replace_idx = self._choice_labels(masked_input_ids, target)
 
-        target = ~np.isin(masked_wordpieces, self.exclude_ids)
-        mask_idx, replace_idx = self._choice_labels(masked_wordpieces, target)
-
-        masked_wordpieces[mask_idx] = self.model.mask_token_id
-        masked_wordpieces[replace_idx] = np.random.randint(
-            max(self.model.all_special_ids),
-            self.model.vocab_size,
-            size=(replace_idx).sum(),
+        masked_input_ids[mask_idx] = self.model.mask_token_id
+        masked_input_ids[replace_idx] = torch.randint(
+            low=max(self.model.all_special_ids),
+            high=self.model.vocab_size,
+            size=((replace_idx).sum().cpu().item(),),
         )
-        self._reset_wordpieces(docs, wordpieces)
+        inputs.input_ids = masked_input_ids
 
-    def _reset_wordpieces(self, docs: List[Doc], wordpieces: np.ndarray):
-        for doc, wp in zip(docs, wordpieces):
-            prev = doc._.get(ATTRS.token_ids)
-            doc._.set(ATTRS.token_ids, wp[: len(prev)].tolist())
-
-    def _docs_to_wordpieces(self, docs: List[Doc]) -> np.ndarray:
-        wordpieces = [doc._.transformers_token_ids for doc in docs]
-        return np.array(zero_pad(wordpieces, self.model.pad_token_id))
-
-    def _choice_labels(self, wordpieces: np.ndarray, target: np.ndarray) -> np.ndarray:
-        labels = np.zeros_like(wordpieces)
-        label = np.random.choice(3, target.sum(), p=self.p_dist)
+    def _choice_labels(
+        self, wordpieces: torch.Tensor, target: torch.Tensor
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        labels = torch.zeros_like(wordpieces, device=wordpieces.device)
+        label = np.random.choice(3, target.sum().cpu().item(), p=self.p_dist)
+        label = torch.from_numpy(label).to(device=wordpieces.device)
         labels[target] = label
-        return labels == 1, labels == 2  # mask index, replace index
+        return (labels == 1, labels == 2)  # mask index, replace index
 
     def to_disk(self, path: Path, *args, **kwargs):
         # This component has nothing to be saved.

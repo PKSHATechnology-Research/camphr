@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+import spacy
 from camphr.pipelines.trf_tokenizer import TransformersTokenizer
 from camphr.pipelines.trf_utils import ATTRS
 from spacy.tokens import Doc
@@ -97,8 +98,33 @@ def test_tokenizer(
     check()
 
 
+TEXTS = ["This is a teeeest text for multiple inputs.", "複数の文章を入力した時の挙動を　，テストします"]
+
+
+@pytest.fixture
+def nlp(trf_tokenizer):
+    _nlp = spacy.blank("en")
+    _nlp.add_pipe(trf_tokenizer)
+    return _nlp
+
+
+def test_pipe(nlp):
+    docs = list(nlp.pipe(TEXTS))
+    x = TransformersTokenizer.get_transformers_input(docs)
+    assert len(x.input_ids) == len(TEXTS)
+
+
+def test_update(nlp):
+    docs = [nlp.make_doc(text) for text in TEXTS]
+    nlp.update(docs, [{} for _ in range(len(TEXTS))])
+    assert len(docs) == len(
+        TransformersTokenizer.get_transformers_input(docs).input_ids
+    )
+
+
 def test_long_sequence(trf_tokenizer: TransformersTokenizer):
     length = 10000
     doc = Doc(Vocab(), ["a"] * length, spaces=[True] * length)
     doc = trf_tokenizer(doc)
-    assert len(doc._.get(ATTRS.token_ids)) <= trf_tokenizer.model.max_len
+    x = TransformersTokenizer.get_transformers_input([doc])
+    assert len(x.input_ids) <= trf_tokenizer.model.max_len
