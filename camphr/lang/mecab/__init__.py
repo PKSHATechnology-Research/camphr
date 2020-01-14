@@ -7,7 +7,6 @@ from typing import List, Optional
 
 from camphr.consts import KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
-from camphr.lang.torch_mixin import TorchLanguageMixin
 from camphr.utils import RE_URL, SerializationMixin
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -145,10 +144,6 @@ class Japanese(Language):
         return self.tokenizer(text)
 
 
-class TorchJapanese(TorchLanguageMixin, Japanese):
-    lang = "ja_mecab_torch"
-
-
 # avoid pickling problem (see https://github.com/explosion/spaCy/issues/3191)
 def pickle_japanese(instance):
     return Japanese, tuple()
@@ -156,7 +151,6 @@ def pickle_japanese(instance):
 
 copy_reg.pickle(Japanese, pickle_japanese)
 Language.factories[Japanese.lang] = Japanese
-Language.factories[TorchJapanese.lang] = TorchJapanese
 
 Tokenizer.install_extensions()
 

@@ -20,13 +20,7 @@ from camphr.pipelines.trf_utils import (
     get_dropout,
     get_last_hidden_state_from_docs,
 )
-from camphr.pipelines.utils import (
-    UNK,
-    UserHooksMixin,
-    beamsearch,
-    correct_biluo_tags,
-    merge_entities,
-)
+from camphr.pipelines.utils import UNK, UserHooksMixin, beamsearch, correct_biluo_tags
 from camphr.torch_utils import TorchPipe, add_loss_to_docs
 from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
@@ -186,7 +180,9 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
                     break
                 if best_tags is None:
                     best_tags = tags
-            doc.ents = merge_entities(doc.ents, spans_from_biluo_tags(doc, best_tags))
+            doc.ents = spacy.util.filter_spans(
+                doc.ents + tuple(spans_from_biluo_tags(doc, best_tags))
+            )
         return docs
 
     def _extract_logit(

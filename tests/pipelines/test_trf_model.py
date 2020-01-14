@@ -11,8 +11,8 @@ from transformers import AdamW
 
 
 @pytest.fixture(scope="session")
-def nlp(torch_lang, trf_name_or_path, device):
-    _nlp = trf_model(torch_lang, str(trf_name_or_path))
+def nlp(lang, trf_name_or_path, device):
+    _nlp = trf_model(lang, str(trf_name_or_path))
     _nlp.to(device)
     return _nlp
 
@@ -26,8 +26,8 @@ def test_forward(nlp, text):
     assert doc._.transformers_last_hidden_state is not None
 
 
-def test_forward_for_long_input(nlp, torch_lang, trf_name_or_path):
-    if torch_lang != "ja_mecab_torch" or trf_name_or_path not in TRF_TESTMODEL_PATH:
+def test_forward_for_long_input(nlp, lang, trf_name_or_path):
+    if lang != "ja_mecab" or trf_name_or_path not in TRF_TESTMODEL_PATH:
         pytest.skip()
     text = "foo " * 2000
     doc = nlp(text)
@@ -71,7 +71,7 @@ def test_optim(nlp: Language):
 
 
 def test_freeze_model(trf_testmodel_path):
-    nlp = trf_model("ja_mecab_torch", trf_testmodel_path, freeze=True)
+    nlp = trf_model("ja_mecab", trf_testmodel_path, freeze=True)
     pipe = nlp.pipeline[-1][1]
     assert pipe.cfg["freeze"]
 

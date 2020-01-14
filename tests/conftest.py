@@ -72,17 +72,11 @@ def device(request):
     return torch.device("cuda")
 
 
-TORCH_LANGS = ["ja_mecab_torch", "ja_juman_torch"]
-ALL_LANGS = ["ja_mecab", "ja_juman"] + TORCH_LANGS
+ALL_LANGS = ["ja_mecab", "ja_juman"]
 
 
 @pytest.fixture(scope="session", params=ALL_LANGS)
 def lang(request):
-    return request.param
-
-
-@pytest.fixture(scope="session", params=TORCH_LANGS)
-def torch_lang(request):
     return request.param
 
 

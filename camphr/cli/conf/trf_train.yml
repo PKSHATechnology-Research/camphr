@@ -1,0 +1,15 @@
+model:
+    lang: en # en or textcat
+    task: ner
+    pretrained: bert-base-cased
+    model_name:
+    label:
+        path:
+train:
+    data:
+        path:
+        ndata: -1
+        val_size: 0.1
+    niter: 10
+    nbatch: 16
+    freeze: false

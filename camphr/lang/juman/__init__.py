@@ -4,7 +4,6 @@ from typing import Any, Callable, Dict, List, Optional
 
 from camphr.consts import JUMAN_LINES, KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
-from camphr.lang.torch_mixin import TorchLanguageMixin
 from camphr.utils import SerializationMixin
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -136,13 +135,8 @@ def pickle_japanese(instance):
     return Japanese, tuple()
 
 
-class TorchJapanese(TorchLanguageMixin, Japanese):
-    lang = "ja_juman_torch"
-
-
 copy_reg.pickle(Japanese, pickle_japanese)
 Language.factories[Japanese.lang] = Japanese
-Language.factories[TorchJapanese.lang] = TorchJapanese
 
 # for lazy loading. see https://spacy.io/usage/adding-languages
 __all__ = ["Japanese"]

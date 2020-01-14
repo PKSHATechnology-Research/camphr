@@ -1,13 +1,16 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
 import itertools
 import logging
-from typing import List
+from pathlib import Path
+from typing import List, Sequence, Union
 
 import catalogue
+import srsly
 import torch
 import torch.optim as optim
 from camphr.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
+from spacy.language import Language
 from spacy.tokens import Doc
 
 logger = logging.getLogger(__name__)
@@ -21,7 +24,7 @@ def base(params: OptimizerParameters, **cfg) -> optim.Optimizer:
 
 
 class TorchLanguageMixin:
-    """Language mixin for pytorch.
+    """spacy.Language mixin for pytorch.
 
     This mixin manages all `TorchPipe` components for the sake of training.
 
@@ -35,7 +38,7 @@ class TorchLanguageMixin:
     """
 
     def resume_training(self, **kwargs) -> optim.Optimizer:
-        """Gather torch parameters in `TorchPipe`, and create optimizers.
+        """Gather all torch parameters in each `TorchPipe`s, and create an optimizer.
 
         Args:
             kwargs: passed to `self.make_optimizers`
@@ -84,8 +87,8 @@ class TorchLanguageMixin:
 
     def update(
         self,
-        docs: List[Doc],
-        golds: List[GoldParse],
+        docs: Sequence[Doc],
+        golds: Sequence[GoldParse],
         optimizer: optim.Optimizer,
         debug: bool = False,
     ):
@@ -101,3 +104,26 @@ class TorchLanguageMixin:
         optimizer.step()
         if debug:
             logger.info(f"Loss: {loss.detach().item()}")
+
+    def to_disk(self, path: Union[str, Path], exclude=tuple(), disable=None):
+        """Overrides Language.to_disk to save `nlp.lang` properly"""
+        path = Path(path)
+        super().to_disk(path, exclude, disable)
+        meta = self.meta
+        meta["lang"] = self.lang
+        srsly.write_json(path / "meta.json", meta)
+
+
+class TorchLanguage(TorchLanguageMixin, Language):
+    """This class is useful for type annotation.
+
+    Python doesn't have `Intersection` type, so you cannot use `TorchLanguageMixin` for type annotation well.
+    So why `TorchLanguageMixin` is there? - That's because you can use the functionality of
+    `TorchLanguageMixin` with already implemented Language class, for example, `spacy.English`.
+    """
+
+    def __init__(self) -> None:
+        raise NotImplementedError(
+            """This class is only for type annotation.
+            You should use `TorchLanguageMixin` to use the functionality instea instead."""
+        )

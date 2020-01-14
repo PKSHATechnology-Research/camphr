@@ -6,7 +6,7 @@ from typing import Any, Dict, List
 import camphr.lang.juman as juman
 import camphr.lang.mecab as mecab
 import camphr.pipelines.trf_utils  # noqa: import to register optimizer
-import spacy
+from camphr.lang.torch_langs import get_torch_lang_cls
 from camphr.lang.torch_mixin import OPTIM_CREATOR
 from camphr.pipelines.knp import KNP, juman_sentencizer
 from camphr.pipelines.person_ner import create_person_ruler
@@ -32,7 +32,8 @@ def knp() -> juman.Japanese:
 
 def transformers_tokenizer(lang: str, pretrained: str) -> Language:
     meta: Dict[str, Any] = {OPTIM_CREATOR: "adamw"}
-    nlp = spacy.blank(lang, meta=meta)
+    cls = get_torch_lang_cls(lang)
+    nlp = cls(meta=meta)
     nlp.add_pipe(TransformersTokenizer.from_pretrained(nlp.vocab, str(pretrained)))
     return nlp
 

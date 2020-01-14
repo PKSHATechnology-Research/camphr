@@ -1,4 +1,5 @@
 import functools
+import operator
 from typing import Dict, Iterable, List, Optional, cast
 
 import spacy
@@ -148,13 +149,13 @@ class TrfForSequenceClassification(
 def _top_label(doc: Doc) -> Optional[str]:
     if not doc.cats:
         return None
-    return max(doc.cats.items(), key=lambda x: x[1])[0]
+    return max(doc.cats.items(), key=operator.itemgetter(1))[0]
 
 
 def _topk_labels(doc: Doc, k: int) -> List[str]:
     if not doc.cats:
         return []
-    return sorted(doc.cats.items(), key=lambda x: x[1], reverse=True)[:k]
+    return sorted(doc.cats.items(), key=operator.itemgetter(1), reverse=True)[:k]
 
 
 Doc.set_extension(TOP_LABEL, getter=_top_label)

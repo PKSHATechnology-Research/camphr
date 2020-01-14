@@ -1,7 +1,7 @@
 import pytest
 import spacy
 
-LANGS = ["ja_mecab", "ja_juman", "ja_mecab_torch", "ja_juman_torch", "ja_mecab_torch"]
+LANGS = ["ja_mecab", "ja_juman"]
 
 
 @pytest.mark.parametrize("lang", LANGS)

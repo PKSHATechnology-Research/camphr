@@ -8,7 +8,7 @@ class W:
         self.warning_cls = warning_cls
 
     def __call__(self, *args, **kwargs):
-        warnings.warn(self.msg.format(*args, **kwargs), self.warning_cls)
+        warnings.warn(self.msg.format(*args, **kwargs), self.warning_cls, stacklevel=3)
 
 
 class Warnings:

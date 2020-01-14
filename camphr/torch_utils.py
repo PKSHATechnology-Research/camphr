@@ -105,25 +105,25 @@ def get_parameters_with_decay(
         return model.parameters()
 
 
-GoldCats = Dict[str, Union[bool, float]]
+GoldCat = Dict[str, Union[bool, float]]
 
 
-def goldcat_to_label(cats: GoldCats) -> str:
-    assert len(cats)
-    return max(cats.items(), key=operator.itemgetter(1))[0]
+def goldcat_to_label(goldcat: GoldCat) -> str:
+    assert len(goldcat)
+    return max(goldcat.items(), key=operator.itemgetter(1))[0]
 
 
 def goldcats_to_tensor(
-    cats: Iterable[GoldCats], label2id: Dict[str, int]
+    goldcats: Iterable[GoldCat], label2id: Dict[str, int]
 ) -> torch.Tensor:
-    ids = [label2id[goldcat_to_label(cat)] for cat in cats]
+    ids = [label2id[goldcat_to_label(cat)] for cat in goldcats]
     return torch.tensor(ids)
 
 
 TORCH_LOSS = "torch_loss"
 
 
-def get_loss_from_docs(docs: List[Doc]) -> torch.Tensor:
+def get_loss_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
     losses = (doc.user_data.get(TORCH_LOSS) for doc in docs)
     losses = [loss for loss in losses if isinstance(loss, torch.Tensor)]
     if not losses:

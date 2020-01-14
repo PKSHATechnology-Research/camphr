@@ -19,10 +19,8 @@ def labels():
 
 
 @pytest.fixture(scope="module")
-def nlp(trf_name_or_path, labels, torch_lang, device):
-    _nlp = trf_seq_classification(
-        torch_lang, pretrained=trf_name_or_path, labels=labels
-    )
+def nlp(trf_name_or_path, labels, lang, device):
+    _nlp = trf_seq_classification(lang, pretrained=trf_name_or_path, labels=labels)
     _nlp.to(device)
     return _nlp
 
@@ -95,10 +93,8 @@ def labels2():
 
 
 @pytest.fixture(scope="module")
-def nlp2(trf_name_or_path, labels2, device, torch_lang):
-    _nlp = trf_seq_classification(
-        torch_lang, pretrained=trf_name_or_path, labels=labels2
-    )
+def nlp2(trf_name_or_path, labels2, device, lang):
+    _nlp = trf_seq_classification(lang, pretrained=trf_name_or_path, labels=labels2)
     _nlp.to(device)
     return _nlp
 

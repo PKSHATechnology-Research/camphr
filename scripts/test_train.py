@@ -7,7 +7,7 @@ import fire
 basedir = Path(__file__).parent
 
 
-def main(lang="ja_mecab_torch", pretrained=""):
+def main(lang="ja_mecab", pretrained=""):
     if not pretrained:
         pretrained = str((basedir / "../tests/fixtures/bert").absolute())
     cfg = {
@@ -26,7 +26,7 @@ def main(lang="ja_mecab_torch", pretrained=""):
 
 def matrix():
     fixturesdir = basedir / "../tests/fixtures"
-    langs = ["ja_mecab_torch", "ja_juman_torch"]
+    langs = ["ja_mecab", "ja_juman"]
     pretrained_dirs = [
         str((fixturesdir / "bert").absolute()),
         str((fixturesdir / "xlnet").absolute()),
