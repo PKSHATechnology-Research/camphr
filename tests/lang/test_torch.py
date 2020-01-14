@@ -1,14 +1,11 @@
 import camphr.lang.juman as juman
 import camphr.lang.mecab as mecab
-import camphr.lang.sentencepiece as sp
 import pytest
 import spacy
 import torch
 
 
-@pytest.mark.parametrize(
-    "cls", [mecab.TorchJapanese, juman.TorchJapanese, sp.TorchSentencePieceLang]
-)
+@pytest.mark.parametrize("cls", [mecab.TorchJapanese, juman.TorchJapanese])
 def test_torchlang_serialization(cls, tmpdir):
     nlp = cls()
     nlp.to(torch.device("cpu"))

@@ -26,7 +26,7 @@ def main(lang="ja_mecab_torch", pretrained=""):
 
 def matrix():
     fixturesdir = basedir / "../tests/fixtures"
-    langs = ["ja_mecab_torch", "ja_juman_torch", "sentencepiece_torch"]
+    langs = ["ja_mecab_torch", "ja_juman_torch"]
     pretrained_dirs = [
         str((fixturesdir / "bert").absolute()),
         str((fixturesdir / "xlnet").absolute()),

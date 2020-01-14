@@ -73,9 +73,7 @@ def test_update(nlp: Language, label_type):
     nlp.update(*zip(*TESTCASE_ENE), optim)
 
 
-@pytest.fixture(
-    scope="module", params=["ja_mecab_torch", "ja_juman_torch", "sentencepiece_torch"]
-)
+@pytest.fixture(scope="module", params=["ja_mecab_torch", "ja_juman_torch"])
 def nlp_for_hooks_test(request, trf_name_or_path):
     lang = request.param
     labels = make_biluo_labels([chr(i) for i in range(65, 91)])

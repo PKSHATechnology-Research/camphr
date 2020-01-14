@@ -9,6 +9,7 @@ The libary name `bedoner` has been renamed to `camphr`.
 - rename `Language`s (#168)
     - now `mecab` -> `ja_mecab`, `juman` -> `ja_juman`
 - remove gensim (#170)
+- remove sentencepiece lang (#172)
 
 # v0.4.2
 

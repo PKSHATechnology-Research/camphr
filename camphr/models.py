@@ -32,9 +32,6 @@ def knp() -> juman.Japanese:
 
 def transformers_tokenizer(lang: str, pretrained: str) -> Language:
     meta: Dict[str, Any] = {OPTIM_CREATOR: "adamw"}
-    if lang == "sentencepiece_torch":
-        meta["tokenizer"] = {"model_path": pretrained}
-
     nlp = spacy.blank(lang, meta=meta)
     nlp.add_pipe(TransformersTokenizer.from_pretrained(nlp.vocab, str(pretrained)))
     return nlp
