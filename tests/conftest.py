@@ -1,8 +1,15 @@
+import os
+from pathlib import Path
+
+import omegaconf
 import pytest
 import sentencepiece as spm
 import torch
 from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
+from camphr.models import create_model
+from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
+from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
 from spacy.vocab import Vocab
 
 from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_mecab
@@ -98,3 +105,38 @@ def trf_name_or_path(request):
 @pytest.fixture(scope="session", params=TRF_TESTMODEL_PATH)
 def trf_testmodel_path(request) -> str:
     return request.param
+
+
+@pytest.fixture(scope="session")
+def trf_model_config(lang, trf_name_or_path, device):
+    return omegaconf.OmegaConf.create(
+        f"""
+    lang:
+        name: {lang}
+        torch: true
+        optimizer:
+            class: torch.optim.SGD
+            lr: 0.01
+    pipeline:
+        {TRANSFORMERS_TOKENIZER}:
+          trf_name_or_path: {trf_name_or_path}
+        {TRANSFORMERS_MODEL}:
+          trf_name_or_path: {trf_name_or_path}
+    """
+    )
+
+
+@pytest.fixture(scope="module")
+def nlp_trf_model(trf_model_config, device):
+    _nlp = create_model(trf_model_config)
+    _nlp.to(device)
+    return _nlp
+
+
+@pytest.fixture
+def chdir(tmp_path: Path):
+    tmp_path.mkdir(exist_ok=True)
+    cwd = os.getcwd()
+    os.chdir(tmp_path)
+    yield
+    os.chdir(cwd)

@@ -9,9 +9,10 @@ import subprocess
 from pathlib import Path
 from typing import IO, Dict, Iterable, List, Optional, Union
 
-import yaml
-
 import camphr.ner_labels.labels_sekine as sekine
+import yaml
+from camphr.types import Pathlike
+from camphr.utils import get_labels
 
 __dir__ = Path(__file__).parent
 
@@ -44,6 +45,13 @@ def make_bio_labels(entity_types: Iterable[str]) -> List[str]:
         for pref in prefix:
             labels.append(pref + "-" + l)
     return labels
+
+
+def get_biluo_labels(labels: Union[List[str], Pathlike]):
+    labels = get_labels(labels)
+    if all(l[:2] in {"-", "O", "I-", "B-", "L-", "U-"} for l in labels):
+        return labels
+    return make_biluo_labels(labels)
 
 
 def yml_to_py(yml_path: Union[str, Path], py_path: Union[str, Path]):

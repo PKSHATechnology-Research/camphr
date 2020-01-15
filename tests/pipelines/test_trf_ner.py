@@ -1,10 +1,14 @@
 import json
 
+import omegaconf
 import pytest
-from camphr.models import trf_ner
+from camphr.models import create_model
 from camphr.ner_labels.labels_ene import ALL_LABELS as enes
 from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
 from camphr.ner_labels.utils import make_biluo_labels
+from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
+from camphr.pipelines.trf_ner import TRANSFORMERS_NER
+from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
 from spacy.language import Language
 
 from ..utils import DATA_DIR, check_serialization
@@ -29,9 +33,30 @@ def labels(label_type):
 
 
 @pytest.fixture(scope="module")
-def nlp(labels, lang, trf_name_or_path, device):
-    _nlp = trf_ner(lang=lang, labels=labels, pretrained=trf_name_or_path)
-    assert _nlp.meta["lang"] == lang + "_torch"
+def config(labels, lang, trf_name_or_path, device):
+    return omegaconf.OmegaConf.create(
+        f"""
+    lang:
+        name: {lang}
+        torch: true
+        optimizer:
+            class: torch.optim.SGD
+            lr: 0.01
+    pipeline:
+        {TRANSFORMERS_TOKENIZER}:
+            trf_name_or_path: {trf_name_or_path}
+        {TRANSFORMERS_MODEL}:
+            trf_name_or_path: {trf_name_or_path}
+        {TRANSFORMERS_NER}:
+            trf_name_or_path: {trf_name_or_path}
+            labels: {labels}
+    """
+    )
+
+
+@pytest.fixture(scope="module")
+def nlp(config, device):
+    _nlp = create_model(config)
     _nlp.to(device)
     return _nlp
 
@@ -73,32 +98,6 @@ def test_update(nlp: Language, label_type):
     nlp.update(*zip(*TESTCASE_ENE), optim)
 
 
-@pytest.fixture(scope="module", params=["ja_mecab", "ja_juman"])
-def nlp_for_hooks_test(request, trf_name_or_path):
-    lang = request.param
-    labels = make_biluo_labels([chr(i) for i in range(65, 91)])
-
-    def convert_label(label: str) -> str:
-        if len(label) == 1:
-            return label
-        return label[:3]
-
-    hook = {"convert_label": convert_label}
-
-    _nlp = trf_ner(
-        lang=lang, labels=labels, pretrained=trf_name_or_path, user_hooks=hook
-    )
-    assert lang in _nlp.meta["lang"]
-    return _nlp
-
-
-@pytest.mark.parametrize("text,gold", TESTCASE_ENE)
-def test_user_hooks(nlp_for_hooks_test: Language, text, gold):
-    nlp = nlp_for_hooks_test
-    optim = nlp.resume_training()
-    nlp.update([text], [gold], optim)
-
-
 @pytest.fixture(
     scope="module",
     params=["ner/ner-ene.json", "ner/ner-irex.json", "ner/ner-ene2.json"],
@@ -132,12 +131,6 @@ def test_example_batch(nlp: Language, example_gold):
 
 def test_example_batch_eval(nlp: Language, example_gold):
     nlp.evaluate(example_gold)
-
-
-def test_freeze_ner(trf_name_or_path):
-    nlp = trf_ner("ja_mecab", trf_name_or_path, freeze=True, labels=["foo"])
-    pipe = nlp.pipeline[-2][1]
-    assert pipe.cfg["freeze"]
 
 
 def test_serialization(nlp):

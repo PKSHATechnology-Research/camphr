@@ -3,17 +3,15 @@ import os
 import random
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, List
+from typing import Callable, Dict
 
 import hydra
 import numpy as np
 import omegaconf
-import srsly
 import torch
 from camphr.cli.utils import InputData, create_data, evaluate, report_fail
-from camphr.lang.torch_mixin import TorchLanguage
-from camphr.models import get_trf_name, trf_ner, trf_seq_classification
-from camphr.ner_labels.utils import make_biluo_labels
+from camphr.lang.torch import TorchLanguage
+from camphr.models import create_model
 from camphr.pipelines.trf_seq_classification import TOP_LABEL
 from camphr.torch_utils import goldcat_to_label
 from sklearn.metrics import classification_report
@@ -21,31 +19,6 @@ from spacy.language import Language
 from spacy.util import minibatch
 
 log = logging.getLogger(__name__)
-
-
-def get_labels(cfg: omegaconf.Config) -> List[str]:
-    if cfg.path:
-        labels = srsly.read_json(Path(cfg.path).expanduser())
-        return make_biluo_labels(labels)
-    return []
-
-
-def create_nlp(cfg: omegaconf.Config) -> TorchLanguage:
-    labels = get_labels(cfg.label)
-    nlp = None
-    if cfg.task == "ner":
-        nlp = trf_ner(
-            lang=cfg.lang, pretrained=cfg.pretrained, labels=labels, freeze=cfg.freeze
-        )
-    elif cfg.task == "textcat":
-        nlp = trf_seq_classification(
-            lang=cfg.lang, pretrained=cfg.pretrained, labels=labels, freeze=cfg.freeze
-        )
-    else:
-        raise ValueError(f"Cannot use \"{cfg.task}\" as 'cfg.task'.")
-    name = get_trf_name(cfg.pretrained)
-    nlp.meta["name"] = name.value + "_" + (cfg.model_name or cfg.task)
-    return nlp
 
 
 def evaluate_textcat(cfg: omegaconf.Config, nlp: Language, val_data) -> Dict:
@@ -113,7 +86,7 @@ def _main(cfg: omegaconf.Config) -> None:
     log.info(cfg.pretty())
     log.info("output dir: {}".format(os.getcwd()))
     train_data, val_data = create_data(cfg.train.data)
-    nlp = create_nlp(cfg.model)
+    nlp = create_model(cfg.model)
     if torch.cuda.is_available():
         log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))

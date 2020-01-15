@@ -1,13 +1,18 @@
 """The utils module defines util functions used accross sub packages."""
 import bisect
+import importlib
 import re
 from collections import OrderedDict
 from pathlib import Path
-from typing import Iterable, List, Optional, Tuple
+from typing import Any, Iterable, List, Optional, Tuple, Type, Union
 
+import spacy
 import srsly
+from camphr.types import Pathlike
+from camphr.VERSION import __version__
 from more_itertools import padded
 from spacy.errors import Errors
+from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 
@@ -139,3 +144,27 @@ def get_sents(doc: Doc) -> Iterable[Span]:
     if doc.is_sentenced:
         return doc.sents
     return doc[:]
+
+
+def import_attr(import_path: str) -> Any:
+    items = import_path.split(".")
+    module_name = ".".join(items[:-1])
+    return getattr(importlib.import_module(module_name), items[-1])
+
+
+def get_requirements_line():
+    return f"camphr @ git+https://github.com/PKSHATechnology/bedore-ner@{__version__}"
+
+
+def get_defaults(lang: str) -> Type[BaseDefaults]:
+    try:
+        lang_cls = spacy.util.get_lang_class(lang)
+    except Exception:
+        return BaseDefaults
+    return getattr(lang_cls, "Defaults", BaseDefaults)
+
+
+def get_labels(labels_or_path: Union[List[str], Pathlike]) -> List[str]:
+    if isinstance(labels_or_path, (str, Path)):
+        return srsly.read_json(labels_or_path)
+    return labels_or_path

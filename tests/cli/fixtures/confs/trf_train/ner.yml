@@ -1,10 +1,10 @@
 model:
-    lang: ja_mecab # en or textcat
-    task: ner
-    pretrained:
-    model_name:
-    label:
-        path:
+    lang:
+        name: en
+        torch: true
+        optimizer:
+            class: torch.optim.SGD
+            lr: 0.01
 train:
     data:
         path:

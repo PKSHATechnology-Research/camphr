@@ -77,3 +77,4 @@ allow-prereleases = true
 [tool.poetry.plugins.spacy_languages]
 ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
+camphr_torch = "camphr.lang.torch:TorchLanguage"

@@ -1,14 +1,15 @@
 import pytest
-from camphr.models import trf_model
+from camphr.pipelines.trf_auto import get_trf_name
 from camphr.pipelines.trf_maskedlm import PIPES, add_maskedlm_pipe, remove_maskedlm_pipe
 from camphr.torch_utils import get_loss_from_docs
 from spacy.language import Language
-from tests.utils import BERT_DIR
 
 
 @pytest.fixture(scope="module")
-def nlp(device):
-    _nlp = trf_model("ja_mecab", str(BERT_DIR))
+def nlp(device, nlp_trf_model, trf_name_or_path):
+    if get_trf_name(trf_name_or_path) != "bert":
+        pytest.skip()
+    _nlp = nlp_trf_model
     add_maskedlm_pipe(_nlp)
     _nlp.to(device)
     return _nlp

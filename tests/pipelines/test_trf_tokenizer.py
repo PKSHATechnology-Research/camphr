@@ -1,8 +1,9 @@
 from pathlib import Path
+from typing import Sized, cast
 
 import pytest
-import spacy
-from camphr.pipelines.trf_tokenizer import TransformersTokenizer
+from camphr.models import create_model
+from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER, TransformersTokenizer
 from camphr.pipelines.trf_utils import ATTRS
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
@@ -102,10 +103,18 @@ TEXTS = ["This is a teeeest text for multiple inputs.", "複数の文章を入�
 
 
 @pytest.fixture
-def nlp(trf_tokenizer):
-    _nlp = spacy.blank("en")
-    _nlp.add_pipe(trf_tokenizer)
-    return _nlp
+def nlp(trf_name_or_path):
+    config = f"""
+    lang:
+        name: en
+        torch: true
+        optimizer:
+            class: torch.optim.SGD
+    pipeline:
+        {TRANSFORMERS_TOKENIZER}:
+          trf_name_or_path: {trf_name_or_path}
+    """
+    return create_model(config)
 
 
 def test_pipe(nlp):
@@ -114,11 +123,11 @@ def test_pipe(nlp):
     assert len(x.input_ids) == len(TEXTS)
 
 
-def test_update(nlp):
+def test_update(trf_tokenizer, nlp):
     docs = [nlp.make_doc(text) for text in TEXTS]
-    nlp.update(docs, [{} for _ in range(len(TEXTS))])
+    trf_tokenizer.update(docs, [{} for _ in range(len(TEXTS))])
     assert len(docs) == len(
-        TransformersTokenizer.get_transformers_input(docs).input_ids
+        cast(Sized, TransformersTokenizer.get_transformers_input(docs).input_ids)
     )
 
 

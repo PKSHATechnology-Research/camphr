@@ -1,8 +1,10 @@
+from pathlib import Path
 from typing import List, Tuple
 
 import pytest
-from camphr.models import knp
+from camphr.models import create_model
 from camphr.pipelines.knp import KNP_USER_KEYS
+from omegaconf import OmegaConf
 from spacy.language import Language
 from spacy.tokens import Doc
 
@@ -13,7 +15,8 @@ pytestmark = pytest.mark.skipif(not check_knp(), reason="knp is not always neces
 
 @pytest.fixture
 def nlp():
-    return knp()
+    cfgpath = Path(__file__).parent.parent.parent / "camphr/model_config" / "knp.yml"
+    return create_model(OmegaConf.load(str(cfgpath.absolute())))
 
 
 TEXTS = ["今日は\u3000いい天気だったので山田太郎と散歩に行きました。帰りni富士山が見えた。"]

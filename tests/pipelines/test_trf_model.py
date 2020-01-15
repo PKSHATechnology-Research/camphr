@@ -1,23 +1,20 @@
 import numpy as np
+import omegaconf
 import pytest
 import torch
-from camphr.models import trf_model
-from camphr.pipelines.trf_model import TransformersModel
+from camphr.models import NLPConfig, create_model
+from camphr.pipelines.trf_model import TRANSFORMERS_MODEL, TransformersModel
 from camphr.pipelines.trf_utils import ATTRS
 from spacy.language import Language
 from spacy.tokens import Doc
 from tests.utils import TRF_TESTMODEL_PATH, check_serialization
-from transformers import AdamW
-
-
-@pytest.fixture(scope="session")
-def nlp(lang, trf_name_or_path, device):
-    _nlp = trf_model(lang, str(trf_name_or_path))
-    _nlp.to(device)
-    return _nlp
-
 
 TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]
+
+
+@pytest.fixture
+def nlp(nlp_trf_model):
+    return nlp_trf_model
 
 
 @pytest.mark.parametrize("text", TESTCASES)
@@ -65,13 +62,10 @@ def test_freeze(nlp: Language):
     pipe.cfg["freeze"] = False
 
 
-def test_optim(nlp: Language):
-    optim = nlp.resume_training()
-    assert isinstance(optim, AdamW)
-
-
-def test_freeze_model(trf_testmodel_path):
-    nlp = trf_model("ja_mecab", trf_testmodel_path, freeze=True)
+def test_freeze_model(trf_testmodel_path, trf_model_config: NLPConfig):
+    config = omegaconf.OmegaConf.to_container(trf_model_config)
+    config["pipeline"][TRANSFORMERS_MODEL]["freeze"] = True
+    nlp = create_model(config)
     pipe = nlp.pipeline[-1][1]
     assert pipe.cfg["freeze"]
 

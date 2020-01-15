@@ -2,7 +2,6 @@
 
 Models defined in this modules must be used with `camphr.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
-import functools
 from typing import Iterable, List, Sized, cast
 
 import more_itertools
@@ -13,10 +12,11 @@ import torch.nn.functional as F
 import transformers
 from camphr.pipelines.trf_utils import (
     ATTRS,
-    CONVERT_LABEL,
+    LABELS,
+    FromNLPMixinForTrfTask,
+    LabelsMixin,
     SerializationMixinForTrfTask,
     TrfModelForTaskBase,
-    TrfOptimMixin,
     get_dropout,
     get_last_hidden_state_from_docs,
 )
@@ -25,12 +25,10 @@ from camphr.torch_utils import TorchPipe, add_loss_to_docs
 from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
 from spacy.tokens import Doc, Token
-from spacy.vocab import Vocab
 
-from .trf_auto import get_trf_config_cls, get_trf_name
+from .trf_auto import get_trf_config_cls
 
 CLS_LOGIT = "cls_logit"
-LABELS = "labels"
 NUM_LABELS = "num_labels"
 
 
@@ -56,7 +54,11 @@ class TrfTokenClassifier(TrfModelForTaskBase):
 
 
 class TrfForTokenClassificationBase(
-    TrfOptimMixin, UserHooksMixin, SerializationMixinForTrfTask, TorchPipe
+    LabelsMixin,
+    FromNLPMixinForTrfTask,
+    UserHooksMixin,
+    SerializationMixinForTrfTask,
+    TorchPipe,
 ):
     """Base class for token classification task (e.g. Named entity recognition).
 
@@ -81,26 +83,10 @@ class TrfForTokenClassificationBase(
                 Doc.set_extension(ext, default=None)
 
     @classmethod
-    def Model(cls, name_or_path: str, **cfg) -> TrfTokenClassifier:
-        config = get_trf_config_cls(name_or_path).from_pretrained(name_or_path)
-        if LABELS in cfg:
-            setattr(config, NUM_LABELS, len(cfg[LABELS]))
+    def Model(cls, trf_name_or_path: str, **cfg) -> TrfTokenClassifier:
+        config = get_trf_config_cls(trf_name_or_path).from_pretrained(trf_name_or_path)
+        setattr(config, NUM_LABELS, len(cfg[LABELS]))
         return TrfTokenClassifier(config)
-
-    @classmethod
-    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
-        """Load pretrained model."""
-        name = get_trf_name(name_or_path)
-        return cls(vocab, model=cls.Model(name_or_path, **cfg), trf_name=name, **cfg)
-
-    @property
-    def labels(self):
-        return tuple(self.cfg.setdefault(LABELS, []))
-
-    @property
-    @functools.lru_cache()
-    def label2id(self):
-        return {v: i for i, v in enumerate(self.labels)}
 
     @overrides
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
@@ -112,8 +98,11 @@ class TrfForTokenClassificationBase(
         return logits
 
 
+TRANSFORMERS_NER = "transformers_ner"
+
+
 @spacy.component(
-    "transformers_ner",
+    TRANSFORMERS_NER,
     requires=[f"doc._.{ATTRS.last_hidden_state}"],
     assigns=["doc.ents"],
 )
@@ -124,8 +113,8 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
 
     @property
     def ignore_label_index(self) -> int:
-        if UNK in self.labels:
-            return self.labels.index(UNK)
+        if UNK.value in self.labels:
+            return self.labels.index(UNK.value)
         return -1
 
     def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
@@ -151,12 +140,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         add_loss_to_docs(docs, loss)
 
     def _get_nerlabel_from_gold(self, gold: GoldParse) -> List[str]:
-        convert_hook = self.user_hooks.get(CONVERT_LABEL, None)
-        convert_hook = self.user_hooks.get(CONVERT_LABEL, None)
-        if convert_hook:
-            ners = [convert_hook(ner) for ner in gold.ner]
-        else:
-            ners = list(gold.ner)
+        ners = [self.convert_label(ner) for ner in gold.ner]
         return ners
 
     def set_annotations(

@@ -1,13 +1,15 @@
 import random
 
 import pytest
-from camphr.models import trf_seq_classification
+from camphr.models import create_model
+from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
 from camphr.pipelines.trf_seq_classification import (
     TOP_LABEL,
     TOPK_LABELS,
+    TRANSFORMERS_SEQ_CLASSIFIER,
     TrfForSequenceClassification,
 )
-from camphr.pipelines.trf_utils import CONVERT_LABEL
+from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.torch_utils import get_loss_from_docs
 from spacy.language import Language
 from tests.utils import check_serialization
@@ -20,9 +22,23 @@ def labels():
 
 @pytest.fixture(scope="module")
 def nlp(trf_name_or_path, labels, lang, device):
-    _nlp = trf_seq_classification(lang, pretrained=trf_name_or_path, labels=labels)
-    _nlp.to(device)
-    return _nlp
+    config = f"""
+    lang:
+        name: {lang}
+        torch: true
+        optimizer:
+            class: torch.optim.SGD
+            lr: 0.01
+    pipeline:
+        {TRANSFORMERS_TOKENIZER}:
+            trf_name_or_path: {trf_name_or_path}
+        {TRANSFORMERS_MODEL}:
+            trf_name_or_path: {trf_name_or_path}
+        {TRANSFORMERS_SEQ_CLASSIFIER}:
+            trf_name_or_path: {trf_name_or_path}
+            labels: {labels}
+    """
+    return create_model(config)
 
 
 TEXTS = ["トランスフォーマーズを使ってテキスト分類をします", "うまくclassificationできるかな?"]
@@ -85,22 +101,3 @@ def test_weights(vocab, labels):
     weights_map = dict(zip(labels, weights))
     pipe = TrfForSequenceClassification(vocab, labels=labels, label_weights=weights_map)
     assert pipe.label_weights.sum() == sum(weights)
-
-
-@pytest.fixture(scope="module")
-def labels2():
-    return ["o", "t"]
-
-
-@pytest.fixture(scope="module")
-def nlp2(trf_name_or_path, labels2, device, lang):
-    _nlp = trf_seq_classification(lang, pretrained=trf_name_or_path, labels=labels2)
-    _nlp.to(device)
-    return _nlp
-
-
-def test_user_hooks(nlp2, docs_golds):
-    pipe = nlp2.pipeline[-1][1]
-    pipe.add_user_hook(CONVERT_LABEL, lambda x: x[0])
-    optim = nlp2.resume_training()
-    nlp2.update(*zip(*docs_golds), optim)

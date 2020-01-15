@@ -10,12 +10,7 @@ from camphr.pipelines.trf_auto import get_trf_model_cls
 from camphr.pipelines.trf_tokenizer import TransformersTokenizer
 from camphr.pipelines.trf_utils import ATTRS, TrfAutoMixin
 from camphr.pipelines.utils import get_similarity
-from camphr.torch_utils import (
-    OptimizerParameters,
-    TensorWrapper,
-    TorchPipe,
-    get_parameters_with_decay,
-)
+from camphr.torch_utils import TensorWrapper, TorchPipe
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
 
@@ -106,13 +101,6 @@ class TransformersModel(TrfAutoMixin, TorchPipe):
         # `set_vector = False` because the tensor may not be necessary in updating.
         # The tensor is still available via doc._.transformers_last_hidden_state.
         self.set_annotations(docs, y, set_vector=False)
-
-    def optim_parameters(self) -> OptimizerParameters:
-        if self.freeze:
-            return []
-        no_decay = self.cfg.get("no_decay")
-        weight_decay = self.cfg.get("weight_decay")
-        return get_parameters_with_decay(self.model, no_decay, weight_decay)
 
 
 def get_doc_vector_via_tensor(doc) -> np.ndarray:

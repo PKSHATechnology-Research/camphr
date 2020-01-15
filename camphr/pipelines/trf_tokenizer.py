@@ -9,12 +9,10 @@ from spacy.pipeline import Pipe
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 
-
-class PIPES:
-    transformers_tokenizer = "transformers_tokenizer"
+TRANSFORMERS_TOKENIZER = "transformers_tokenizer"
 
 
-@spacy.component(PIPES.transformers_tokenizer)
+@spacy.component(TRANSFORMERS_TOKENIZER)
 class TransformersTokenizer(TrfAutoMixin, Pipe):
     _TRF_NAME = "trf_name"
     _MODEL_CLS_GETTER = get_trf_tokenizer_cls

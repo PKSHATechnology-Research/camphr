@@ -1,0 +1,11 @@
+lang:
+    name: en
+    torch: true
+    optimizer:
+        class: torch.optim.SGD
+        lr: 0.01
+pipeline:
+    transformers_tokenizer:
+        trf_name_or_path: bert-base-cased
+    transformers_model:
+        trf_name_or_path: bert-base-cased

@@ -1,21 +1,11 @@
-import os
 from pathlib import Path
 
 import omegaconf
 import pytest
 from camphr.cli.trf_train import _main
+from camphr.pipelines.trf_ner import TRANSFORMERS_NER
 
 from ..utils import BERT_DIR
-
-
-@pytest.fixture
-def chdir(tmp_path: Path):
-    tmp_path.mkdir(exist_ok=True)
-    cwd = os.getcwd()
-    os.chdir(tmp_path)
-    yield
-    os.chdir(cwd)
-
 
 DATA_DIR = Path(__file__).parent / "fixtures"
 
@@ -24,13 +14,16 @@ DATA_DIR = Path(__file__).parent / "fixtures"
     params=[
         (
             "ner.yml",
-            {
-                "model": {
-                    "pretrained": str(BERT_DIR),
-                    "label": {"path": str(DATA_DIR / "irex.json")},
-                },
-                "train": {"data": {"path": str(DATA_DIR / "test_ner_irex_ja.jsonl")}},
-            },
+            f"""
+            model:
+                pipeline:
+                    {TRANSFORMERS_NER}:
+                        trf_name_or_path: {BERT_DIR}
+                        labels: {DATA_DIR/"irex.json"}
+            train:
+                data:
+                    path: {DATA_DIR / "test_ner_irex_ja.jsonl"}
+            """,
         )
     ]
 )

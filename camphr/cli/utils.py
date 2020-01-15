@@ -32,9 +32,7 @@ def report_fail(json_serializable_data: Any) -> None:
     fail_path = Path("fail.json").absolute()
     with fail_path.open("w") as f:
         json.dump(json_serializable_data, f, ensure_ascii=False)
-        log.error(
-            f"Error raised during evaluation. The input data is saved in {str(fail_path)}"
-        )
+        log.error(f"Error raised. The input data is saved in {str(fail_path)}")
 
 
 def evaluate(cfg: omegaconf.Config, nlp: Language, val_data: InputData) -> Dict:

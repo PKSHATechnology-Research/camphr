@@ -1,4 +1,3 @@
-import functools
 import operator
 from typing import Dict, Iterable, List, Optional, cast
 
@@ -9,10 +8,10 @@ import torch.nn.functional as F
 import transformers
 from camphr.pipelines.trf_utils import (
     ATTRS,
-    CONVERT_LABEL,
+    FromNLPMixinForTrfTask,
+    LabelsMixin,
     SerializationMixinForTrfTask,
     TrfModelForTaskBase,
-    TrfOptimMixin,
     get_last_hidden_state_from_docs,
 )
 from camphr.pipelines.utils import UserHooksMixin
@@ -20,10 +19,9 @@ from camphr.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
 from overrides import overrides
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
-from spacy.vocab import Vocab
 from transformers.modeling_utils import SequenceSummary
 
-from .trf_auto import get_trf_config_cls, get_trf_name
+from .trf_auto import get_trf_config_cls
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 NUM_SEQUENCE_LABELS = "num_sequence_labels"
@@ -51,13 +49,20 @@ class TrfSequenceClassifier(TrfModelForTaskBase):
         return logits
 
 
+TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequece_classifier"
+
+
 @spacy.component(
-    "transformers_sequece_classifier",
+    TRANSFORMERS_SEQ_CLASSIFIER,
     requires=[f"doc._.{ATTRS.last_hidden_state}"],
     assigns=["doc.cats"],
 )
 class TrfForSequenceClassification(
-    TrfOptimMixin, UserHooksMixin, SerializationMixinForTrfTask, TorchPipe
+    LabelsMixin,
+    FromNLPMixinForTrfTask,
+    UserHooksMixin,
+    SerializationMixinForTrfTask,
+    TorchPipe,
 ):
     """Base class for sequence classification task (e.g. sentiment analysis).
 
@@ -67,38 +72,11 @@ class TrfForSequenceClassification(
     model_cls = TrfSequenceClassifier
 
     @classmethod
-    def Model(cls, name_or_path: str, **cfg) -> TrfSequenceClassifier:
-        config = get_trf_config_cls(name_or_path).from_pretrained(name_or_path)
+    def Model(cls, trf_name_or_path: str, **cfg) -> TrfSequenceClassifier:
+        config = get_trf_config_cls(trf_name_or_path).from_pretrained(trf_name_or_path)
         if LABELS in cfg:
             setattr(config, NUM_SEQUENCE_LABELS, len(cfg[LABELS]))
         return TrfSequenceClassifier(config)
-
-    @classmethod
-    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
-        """Load pretrained model."""
-        name = get_trf_name(name_or_path)
-        return cls(vocab, model=cls.Model(name_or_path, **cfg), trf_name=name, **cfg)
-
-    @property
-    def labels(self):
-        return tuple(self.cfg.setdefault(LABELS, []))
-
-    @property
-    @functools.lru_cache()
-    def label2id(self):
-        return {v: i for i, v in enumerate(self.labels)}
-
-    @property
-    @functools.lru_cache()
-    def label_weights(self) -> torch.Tensor:
-        weights_map = self.cfg.get("label_weights")
-        weights = torch.ones(len(self.label2id))
-        if weights_map:
-            assert len(weights_map) == len(self.label2id)
-            for k, v in weights_map.items():
-                weights[self.label2id[k]] = v
-            return weights
-        return weights
 
     @overrides
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
@@ -119,12 +97,6 @@ class TrfForSequenceClassification(
     def get_cats_from_prob(self, prob: torch.Tensor) -> Dict[str, float]:
         assert len(prob.shape) == 1
         return dict(zip(self.labels, prob.tolist()))
-
-    def convert_label(self, label: str) -> str:
-        fn = self.user_hooks.get(CONVERT_LABEL)
-        if fn:
-            return fn(label)
-        return label
 
     def golds_to_tensor(self, golds: Iterable[GoldParse]) -> torch.Tensor:
         labels = (goldcat_to_label(gold.cats) for gold in golds)

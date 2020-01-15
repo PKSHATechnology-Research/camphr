@@ -1,4 +1,5 @@
 import dataclasses
+import functools
 import pickle
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Sized, Type, cast
@@ -6,25 +7,15 @@ from typing import Any, Callable, Dict, Iterable, Iterator, List, Sized, Type, c
 import torch
 import torch.nn as nn
 import transformers
-from camphr.lang.torch_mixin import optim_creators
-from camphr.torch_utils import (
-    OptimizerParameters,
-    TensorWrapper,
-    get_parameters_with_decay,
-)
+from camphr.pipelines.utils import UserHooksMixin
+from camphr.torch_utils import TensorWrapper, TorchPipe
+from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from tokenizations import get_alignments
-from torch.optim.optimizer import Optimizer
-from transformers import AdamW
 from typing_extensions import Protocol
 
 from .trf_auto import get_trf_config_cls, get_trf_name
-
-
-@optim_creators.register("adamw")
-def adamw(params: OptimizerParameters, **cfg) -> Optimizer:
-    return AdamW(params, lr=cfg.get("lr", 5e-5), eps=cfg.get("eps", 1e-8))
 
 
 class ATTRS:
@@ -57,6 +48,8 @@ TRF_CONFIG = "trf_config"
 VOCAB_SIZE = "vocab_size"
 TRF_NAME = "trf_name"
 CONVERT_LABEL = "convert_label"
+LABEL_WEIGHTS = "label_weights"
+LABELS = "labels"
 
 
 def get_last_hidden_state_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
@@ -110,13 +103,6 @@ class TrfModelForTaskBase(nn.Module):
         self.config = config
 
 
-class TrfOptimMixin:
-    def optim_parameters(self) -> OptimizerParameters:
-        no_decay = self.cfg.get("no_decay")
-        weight_decay = self.cfg.get("weight_decay")
-        return get_parameters_with_decay(self.model, no_decay, weight_decay)
-
-
 class _TrfSavePathGetter:
     def _trf_path(self, path: Path) -> Path:
         return path / self.cfg[TRF_NAME]
@@ -156,6 +142,53 @@ class SerializationMixinForTrfTask(_TrfSavePathGetter):
         return self
 
 
+class FromNLPMixinForTrfTask:
+    @classmethod
+    def from_pretrained(cls: TorchPipe, vocab: Vocab, trf_name_or_path: str, **cfg):
+        """Load pretrained model."""
+        name = get_trf_name(trf_name_or_path)
+        return cls(
+            vocab, model=cls.Model(trf_name_or_path, **cfg), trf_name=name, **cfg
+        )
+
+    @classmethod
+    def from_nlp(cls, nlp: Language, **cfg):
+        if cfg.get("trf_name_or_path"):
+            return cls.from_pretrained(nlp.vocab, **cfg)
+        return cls(nlp.vocab)
+
+
+class LabelsMixin:
+    @property
+    def labels(self: TorchPipe) -> List[str]:
+        # The reason to return empty list is that `spacy.Language` calls `Pipe.labels` when restoring,
+        # before the `labels` is not set to this Pipe.
+        return self.cfg.get(LABELS, [])
+
+    @property
+    @functools.lru_cache()
+    def label2id(self):
+        return {v: i for i, v in enumerate(self.labels)}
+
+    @property
+    @functools.lru_cache()
+    def label_weights(self: TorchPipe) -> torch.Tensor:
+        weights_map = self.cfg.get(LABEL_WEIGHTS)
+        weights = torch.ones(len(self.label2id))
+        if weights_map:
+            assert len(weights_map) == len(self.label2id)
+            for k, v in weights_map.items():
+                weights[self.label2id[k]] = v
+            return weights
+        return weights
+
+    def convert_label(self: UserHooksMixin, label: str) -> str:
+        fn = self.user_hooks.get(CONVERT_LABEL)
+        if fn:
+            return fn(label)
+        return label
+
+
 class TrfAutoProtocol(Protocol):
     @classmethod
     def from_pretrained(cls, pretrained_model_name_or_path, *inputs, **kwargs):
@@ -175,10 +208,16 @@ class TrfAutoMixin(_TrfSavePathGetter):
         )
 
     @classmethod
-    def from_pretrained(cls, vocab: Vocab, name_or_path: str, **cfg):
+    def from_pretrained(cls, vocab: Vocab, trf_name_or_path: str, **cfg):
         """Load pretrained model."""
-        name = get_trf_name(name_or_path)
-        return cls(vocab, model=cls.Model(name_or_path), trf_name=name, **cfg)
+        name = get_trf_name(trf_name_or_path)
+        return cls(vocab, model=cls.Model(trf_name_or_path), trf_name=name, **cfg)
+
+    @classmethod
+    def from_nlp(cls, nlp: Language, **cfg):
+        if cfg.get("trf_name_or_path"):
+            return cls.from_pretrained(nlp.vocab, **cfg)
+        return cls(nlp.vocab)
 
     def to_disk(self, path: Path, exclude=tuple(), **kwargs):
         path.mkdir(exist_ok=True)
