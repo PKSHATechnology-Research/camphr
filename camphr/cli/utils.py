@@ -50,7 +50,7 @@ def evaluate(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
 
 def convert_fullpath_if_path(text: str) -> str:
     path = hydra.utils.to_absolute_path(text)
-    if os.path.isfile(path):
+    if os.path.exists(path):
         return path
     return text
 
@@ -81,7 +81,7 @@ def validate(cfg: Config):
     ]
     check_nonempty(cfg, mustfields)
 
-    pathkey = ["model.ner_label", "model.textcat_label", "train.data.path"]
+    pathkey = ["model.ner_label", "model.textcat_label", "train.data.path", "model.pretrained"]
     for key in pathkey:
         path = get_by_dotkey(cfg, key)
         if path:
