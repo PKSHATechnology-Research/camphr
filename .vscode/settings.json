@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/Users/yohei_tamura/work/camphr/.venv/bin/python3",
+    "python.pythonPath": ".venv/bin/python",
     "python.testing.pytestArgs": [
         "tests"
     ],

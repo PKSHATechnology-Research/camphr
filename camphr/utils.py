@@ -4,17 +4,19 @@ import importlib
 import re
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union, cast
 
 import spacy
 import srsly
-from camphr.types import Pathlike
-from camphr.VERSION import __version__
+import yaml
 from more_itertools import padded
 from spacy.errors import Errors
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
+
+from camphr.types import Pathlike
+from camphr.VERSION import __version__
 
 
 class SerializationMixin:
@@ -166,8 +168,12 @@ def get_defaults(lang: str) -> Type[BaseDefaults]:
 
 def get_labels(labels_or_path: Union[List[str], Pathlike]) -> List[str]:
     if isinstance(labels_or_path, (str, Path)):
-        return srsly.read_json(labels_or_path)
-    return labels_or_path
+        path = Path(labels_or_path)
+        if path.suffix == ".json":
+            return srsly.read_json(labels_or_path)
+        elif path.suffix in {".yml", ".yaml"}:
+            return yaml.safe_load(path.read_text())
+    return cast(List[str], labels_or_path)
 
 
 def get_by_dotkey(d: dict, dotkey: str) -> Any:
