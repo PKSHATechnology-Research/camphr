@@ -12,7 +12,7 @@ from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
 from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
 from spacy.vocab import Vocab
 
-from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_mecab
+from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
 
 
 def pytest_addoption(parser):
@@ -84,6 +84,8 @@ ALL_LANGS = ["ja_mecab", "ja_juman"]
 
 @pytest.fixture(scope="session", params=ALL_LANGS)
 def lang(request):
+    if not check_lang(request.param):
+        pytest.skip()
     return request.param
 
 

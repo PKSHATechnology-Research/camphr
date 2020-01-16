@@ -22,6 +22,14 @@ def check_mecab():
     return shutil.which("mecab") is not None
 
 
+checks = {"ja_mecab": check_mecab, "ja_juman": check_juman}
+
+
+def check_lang(lang: str):
+    fn = checks.get(lang)
+    return fn and fn()
+
+
 def comp_jsonl(fname1: str, fname2: str) -> Tuple[bool, Any]:
     with open(fname1) as f1, open(fname2) as f2:
         for line1, line2 in zip_longest(f1, f2, fillvalue=[]):

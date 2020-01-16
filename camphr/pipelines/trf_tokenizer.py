@@ -1,4 +1,5 @@
 """Defines tokenizer for transformers."""
+from multiprocessing import Value
 from typing import Iterable, List, Optional, Sequence, Sized, cast
 
 import spacy
@@ -39,14 +40,9 @@ class TransformersTokenizer(TrfAutoMixin, Pipe):
         self.set_transformers_input(docs, inputs)
         self._set_tokens(docs, inputs)
 
-    def pipe(self, docs: Iterable[Doc], *args, **kwargs) -> List[Doc]:
-        ldocs = list(docs)
-        pred = self.predict(ldocs)
-        self.set_annotations(ldocs, pred)
-        return ldocs
-
     def update(self, docs: Sequence[Doc], *args, **kwargs):
-        self.pipe(docs)
+        y = self.predict(docs)
+        self.set_annotations(docs, y)
 
     @staticmethod
     def set_transformers_input(docs: Sequence[Doc], inputs: TransformersInput):
@@ -57,7 +53,13 @@ class TransformersTokenizer(TrfAutoMixin, Pipe):
     def get_transformers_input(docs: Sequence[Doc]) -> Optional[TransformersInput]:
         if docs:
             output: TransformersInput = docs[0]._.get(ATTRS.batch_inputs)
-            assert len(docs) == len(cast(Sized, output.input_ids))
+            if len(docs) != len(cast(Sized, output.input_ids)):
+                ValueError(
+                    f"""Mismatching batch size during processing.
+                `docs` has {len(docs)} length, but `batch_inputs` has {len(output.input_ids)}.
+                Maybe each component is processing with a different batch size.
+                """
+                )
             return output
 
     def _set_tokens(self, docs: Sequence[Doc], inputs: TransformersInput) -> None:

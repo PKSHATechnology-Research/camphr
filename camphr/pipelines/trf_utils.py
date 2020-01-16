@@ -249,7 +249,8 @@ class TransformersInput:
 
     def to(self, *args, **kwargs):
         for k in self.tensor_field_names:
-            getattr(self, k).to(*args, **kwargs)
+            t = getattr(self, k).to(*args, **kwargs)
+            setattr(self, k, t)
 
     @property
     def tensor_field_names(self) -> List[str]:
