@@ -28,7 +28,8 @@ def nlp(trf_name_or_path, labels, lang, device):
         torch: true
         optimizer:
             class: torch.optim.SGD
-            lr: 0.01
+            params:
+                lr: 0.01
     pipeline:
         {TRANSFORMERS_TOKENIZER}:
             trf_name_or_path: {trf_name_or_path}

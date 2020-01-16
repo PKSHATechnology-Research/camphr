@@ -1,0 +1,18 @@
+model:
+    lang:
+        name:
+        torch: true
+        optimizer:
+            class: transformers.optimization.AdamW
+            params:
+                lr: 0.001
+    pretrained:
+train:
+    data:
+        path:
+        ndata: -1
+        val_size: 0.1
+    niter: 10
+    nbatch: 16
+defaults:
+    - task: ner

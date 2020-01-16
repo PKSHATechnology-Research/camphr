@@ -6,10 +6,11 @@ from pathlib import Path
 from typing import Callable, Dict
 
 import hydra
+import hydra.utils
 import numpy as np
 import omegaconf
 import torch
-from camphr.cli.utils import InputData, create_data, evaluate, report_fail
+from camphr.cli.utils import InputData, create_data, evaluate, report_fail, validate
 from camphr.lang.torch import TorchLanguage
 from camphr.models import create_model
 from camphr.pipelines.trf_seq_classification import TOP_LABEL
@@ -55,7 +56,7 @@ def train_epoch(
         except Exception:
             report_fail(batch)
             raise
-        log.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.ndata}")
+        log.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.data.ndata}")
 
 
 def save_model(nlp: Language, path: Path) -> None:
@@ -83,10 +84,11 @@ def train(
 
 
 def _main(cfg: omegaconf.Config) -> None:
+    cfg = validate(cfg)
     log.info(cfg.pretty())
-    log.info("output dir: {}".format(os.getcwd()))
     train_data, val_data = create_data(cfg.train.data)
     nlp = create_model(cfg.model)
+    log.info("output dir: {}".format(os.getcwd()))
     if torch.cuda.is_available():
         log.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
@@ -95,8 +97,8 @@ def _main(cfg: omegaconf.Config) -> None:
     train(cfg.train, nlp, train_data, val_data, savedir)
 
 
-# Avoid to use decorator because of testing.
-main = hydra.main(config_path="conf/train.yml")(_main)
+# Avoid to use decorator for testing
+main = hydra.main(config_path="conf/trf_train/config.yaml", strict=False)(_main)
 
 if __name__ == "__main__":
     main()

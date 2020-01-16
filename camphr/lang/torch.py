@@ -93,9 +93,7 @@ class TorchLanguage(Language):
         self: Language, params: OptimizerParameters, **kwargs
     ) -> optim.Optimizer:
         cls = import_attr(self.optimizer_config["class"])
-        return cls(
-            params, **{k: v for k, v in self.optimizer_config.items() if k != "class"}
-        )
+        return cls(params, **self.optimizer_config.get("params", {}))
 
     @property
     def device(self) -> torch.device:

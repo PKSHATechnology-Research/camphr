@@ -1,0 +1,4 @@
+model:
+    pipeline:
+        transformers_sequence_classification:
+    textcat_label:

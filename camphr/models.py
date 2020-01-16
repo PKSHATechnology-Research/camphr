@@ -1,4 +1,5 @@
 """The models module defines functions to create spacy models."""
+import copy
 from dataclasses import dataclass
 from typing import Any, Dict, Optional, Union
 
@@ -11,7 +12,7 @@ from camphr.pipelines.trf_ner import TRANSFORMERS_NER
 from camphr.pipelines.trf_seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
 from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.pipelines.trf_utils import LABELS
-from camphr.utils import get_labels
+from camphr.utils import create_dict_from_dotkey, get_by_dotkey, get_labels
 from cytoolz import merge
 from omegaconf import OmegaConf
 from spacy.language import Language
@@ -49,7 +50,7 @@ def create_lang(cfg: LangConfig) -> Language:
 def create_model(cfg: Union[NLPConfig, Any]) -> Language:
     if not isinstance(cfg, omegaconf.Config):
         cfg = OmegaConf.create(cfg)
-    cfg = correct_nlp_config(cfg)
+    cfg = correct_model_config(cfg)
     nlp = create_lang(cfg.lang)
     for name, config in cfg.pipeline.items():
         if config:
@@ -60,7 +61,9 @@ def create_model(cfg: Union[NLPConfig, Any]) -> Language:
     return nlp
 
 
-def correct_nlp_config(cfg: NLPConfig) -> NLPConfig:
+def correct_model_config(cfg: NLPConfig) -> NLPConfig:
+    cfg = _resolve_alias(cfg)
+    cfg = _align_pipeline(cfg)
     cfg = _correct_trf_pipeline(cfg)
     cfg = _resolve_label(cfg)
     return cfg
@@ -70,15 +73,9 @@ def _correct_trf_pipeline(cfg: NLPConfig) -> NLPConfig:
     """Correct config for transformers pipeline
 
     Note:
-        1. Complement missing pipeline.
-
-            For example, `transformers_ner` requires `transformers_model` and `transformers_tokenizer`.
-            If they are missed, assign them to config.
-
-        2. Complement `trf_name_or_path` for transformers pipelines.
-        3. If there are trf pipe in pipeline, set lang.torch = true
+        1. Complement `trf_name_or_path` for transformers pipelines.
+        2. If there are trf pipe in pipeline, set lang.torch = true
     """
-    cfg = _complement_trf_pipeline(cfg)
     cfg = _complement_trf_name(cfg)
     cfg = _correct_torch(cfg)
     return cfg
@@ -88,17 +85,54 @@ TRF_BASES = [TRANSFORMERS_TOKENIZER, TRANSFORMERS_MODEL]
 TRF_TASKS = [TRANSFORMERS_SEQ_CLASSIFIER, TRANSFORMERS_NER]
 TRF_PIPES = TRF_BASES + TRF_TASKS
 
+ALIASES = {
+    "pretrained": f"pipeline.{TRANSFORMERS_MODEL}.trf_name_or_path",
+    "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",
+    "textcat_label": f"pipeline.{TRANSFORMERS_SEQ_CLASSIFIER}.labels",
+}
 
-def _complement_trf_pipeline(cfg: NLPConfig) -> NLPConfig:
+
+def _resolve_alias(cfg: NLPConfig) -> NLPConfig:
+    for alias, name in ALIASES.items():
+        v = get_by_dotkey(cfg, alias)
+        if v is None:
+            continue
+        cfg = OmegaConf.merge(cfg, OmegaConf.create(create_dict_from_dotkey(name, v)))
+    return cfg
+
+
+# Mapping for pipeline alignment.
+# pipename: required pipe names in front
+# e.g. `TRANSFORMERS_MODEL` requires `TRANSFORMERS_TOKENIZER` in front.
+# Why `required pipe` is list? - For depending on multiple pipes.
+PIPELINE_ALIGNMENT = {
+    TRANSFORMERS_MODEL: [TRANSFORMERS_TOKENIZER],
+    TRANSFORMERS_NER: [TRANSFORMERS_MODEL],
+    TRANSFORMERS_SEQ_CLASSIFIER: [TRANSFORMERS_MODEL],
+}
+
+
+def _align_pipeline(cfg: NLPConfig) -> NLPConfig:
     pipe_names = list(cfg.pipeline.keys())
-    trf_task_indices = [pipe_names.index(k) for k in TRF_TASKS if k in pipe_names]
-    if not trf_task_indices:
-        # No transformers task pipes
-        return cfg
-    trf_task_idx = min(trf_task_indices)
-    for k in reversed(TRF_BASES):
-        if k not in pipe_names:
-            pipe_names.insert(trf_task_idx, k)
+
+    def _align(pipe_names):
+        for p in set(PIPELINE_ALIGNMENT) & set(pipe_names):
+            for q in PIPELINE_ALIGNMENT[p]:
+                pi = pipe_names.index(p)
+                if q not in pipe_names:
+                    pipe_names.insert(pi, q)
+                else:
+                    qi = pipe_names.index(q)
+                    if pi < qi:
+                        pipe_names[pi], pipe_names[qi] = pipe_names[qi], pipe_names[pi]
+        return pipe_names
+
+    while True:
+        prev = copy.copy(pipe_names)
+        pipe_names = _align(pipe_names)
+        if prev == pipe_names:
+            break
+
     cfg.pipeline = {k: cfg.pipeline.get(k, {}) for k in pipe_names}
     return cfg
 

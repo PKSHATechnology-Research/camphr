@@ -1,5 +1,5 @@
 """Defines tokenizer for transformers."""
-from typing import List, Optional, Sequence, Sized, cast
+from typing import Iterable, List, Optional, Sequence, Sized, cast
 
 import spacy
 import transformers
@@ -22,9 +22,6 @@ class TransformersTokenizer(TrfAutoMixin, Pipe):
         self.model: transformers.PretrainedTokenizer = model
         self.cfg = cfg
 
-    def update(self, docs: Sequence[Doc], *args, **kwargs) -> List[Doc]:
-        return list(self.pipe(docs))
-
     def predict(self, docs: Sequence[Doc]) -> TransformersInput:
         output = self.model.batch_encode_plus(
             [doc.text for doc in docs],
@@ -41,6 +38,15 @@ class TransformersTokenizer(TrfAutoMixin, Pipe):
     def set_annotations(self, docs: Sequence[Doc], inputs: TransformersInput):
         self.set_transformers_input(docs, inputs)
         self._set_tokens(docs, inputs)
+
+    def pipe(self, docs: Iterable[Doc], *args, **kwargs) -> List[Doc]:
+        ldocs = list(docs)
+        pred = self.predict(ldocs)
+        self.set_annotations(ldocs, pred)
+        return ldocs
+
+    def update(self, docs: Sequence[Doc], *args, **kwargs):
+        self.pipe(docs)
 
     @staticmethod
     def set_transformers_input(docs: Sequence[Doc], inputs: TransformersInput):

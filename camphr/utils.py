@@ -4,7 +4,7 @@ import importlib
 import re
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Tuple, Type, Union
+from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union
 
 import spacy
 import srsly
@@ -168,3 +168,26 @@ def get_labels(labels_or_path: Union[List[str], Pathlike]) -> List[str]:
     if isinstance(labels_or_path, (str, Path)):
         return srsly.read_json(labels_or_path)
     return labels_or_path
+
+
+def get_by_dotkey(d: dict, dotkey: str) -> Any:
+    assert dotkey
+    keys = dotkey.split(".")
+    cur = d
+    for key in keys:
+        cur = cur.get(key, None)
+        if cur is None:
+            return None
+    return cur
+
+
+def create_dict_from_dotkey(dotkey: str, value: Any) -> Dict[str, Any]:
+    assert dotkey
+    keys = dotkey.split(".")
+    result = {}
+    cur = result
+    for key in keys[:-1]:
+        cur[key] = {}
+        cur = cur[key]
+    cur[keys[-1]] = value
+    return result
