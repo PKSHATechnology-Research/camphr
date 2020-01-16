@@ -3,6 +3,8 @@ from pathlib import Path
 import pytest
 import spacy
 import toml
+import pytest
+from .utils import check_juman, check_lang, check_mecab
 
 with (Path(__file__).parent / "../pyproject.toml") as f:
     conf = toml.load(f)
@@ -11,7 +13,10 @@ LANGS = conf["tool"]["poetry"]["plugins"]["spacy_languages"]
 
 @pytest.fixture(params=LANGS)
 def lang(request):
-    return request.param
+    name = request.param
+    if not check_lang(name):
+        pytest.skip()
+    return name
 
 
 def test_foo(lang):

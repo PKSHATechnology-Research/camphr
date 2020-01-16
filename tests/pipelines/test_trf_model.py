@@ -9,7 +9,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 from tests.utils import TRF_TESTMODEL_PATH, check_serialization
 
-TESTCASES = ["今日はいい天気です", "今日は　いい天気です"]
+TESTCASES = ["今日はいい天気です", "今日は　いい天気です", "1月16日(木)18時36分頃、沖縄県で最大震度4を観測する地震がありました。"]
 
 
 @pytest.fixture
@@ -23,6 +23,12 @@ def test_forward(nlp, text):
     assert doc._.transformers_last_hidden_state is not None
 
 
+def test_evaluate(nlp: Language):
+    docs_golds = [(text, {}) for text in TESTCASES]
+    nlp.evaluate(docs_golds, batch_size=1)
+
+
+@pytest.mark.slow
 def test_forward_for_long_input(nlp, lang, trf_name_or_path):
     if lang != "ja_mecab" or trf_name_or_path not in TRF_TESTMODEL_PATH:
         pytest.skip()
@@ -34,7 +40,7 @@ def test_forward_for_long_input(nlp, lang, trf_name_or_path):
 @pytest.mark.parametrize("text", TESTCASES)
 def test_token_vector(nlp: Language, text: str):
     doc: Doc = nlp(text)
-    tensor: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
+    tensor: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get().cpu()
     for token, a in zip(doc, doc._.get(ATTRS.align)):
         assert np.allclose(token.vector, tensor[a].sum(0))
 

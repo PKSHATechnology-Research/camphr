@@ -46,6 +46,7 @@ class TransformersModel(TrfAutoMixin, TorchPipe):
         self.require_model()
         self.model.eval()
         x = TransformersTokenizer.get_transformers_input(docs)
+        x.to(device=self.device)
         with torch.no_grad():
             y = self.model(**x.model_input)
         return self._get_last_hidden_state(y)
