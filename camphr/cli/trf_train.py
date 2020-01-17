@@ -8,21 +8,23 @@ from typing import Callable, Dict
 import hydra
 import hydra.utils
 import numpy as np
-import omegaconf
 import torch
-from camphr.cli.utils import InputData, create_data, evaluate, report_fail, validate
+from omegaconf import Config, OmegaConf
+from sklearn.metrics import classification_report
+from spacy.language import Language
+from spacy.scorer import Scorer
+from spacy.util import minibatch
+
+from camphr.cli.utils import InputData, create_data, report_fail, validate
 from camphr.lang.torch import TorchLanguage
 from camphr.models import create_model
 from camphr.pipelines.trf_seq_classification import TOP_LABEL
 from camphr.torch_utils import goldcat_to_label
-from sklearn.metrics import classification_report
-from spacy.language import Language
-from spacy.util import minibatch
 
 log = logging.getLogger(__name__)
 
 
-def evaluate_textcat(cfg: omegaconf.Config, nlp: Language, val_data) -> Dict:
+def evaluate_textcat(cfg: Config, nlp: Language, val_data) -> Dict:
     # TODO: https://github.com/explosion/spaCy/pull/4664
     texts, golds = zip(*val_data)
     try:
@@ -35,13 +37,22 @@ def evaluate_textcat(cfg: omegaconf.Config, nlp: Language, val_data) -> Dict:
     return classification_report(y, preds, output_dict=True)
 
 
-EvalFn = Callable[[omegaconf.Config, Language, InputData], Dict]
+def evaluate(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
+    try:
+        scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
+    except Exception:
+        report_fail(val_data)
+        raise
+    return scorer.scores
+
+
+EvalFn = Callable[[Config, Language, InputData], Dict]
 
 EVAL_FN_MAP = defaultdict(lambda: evaluate, {"textcat": evaluate_textcat})
 
 
 def train_epoch(
-    cfg: omegaconf.Config,
+    cfg: Config,
     nlp: TorchLanguage,
     optim: torch.optim.Optimizer,
     train_data: InputData,
@@ -65,7 +76,7 @@ def save_model(nlp: Language, path: Path) -> None:
 
 
 def train(
-    cfg: omegaconf.Config,
+    cfg: Config,
     nlp: TorchLanguage,
     train_data: InputData,
     val_data: InputData,
@@ -77,13 +88,11 @@ def train(
         random.shuffle(train_data)
         train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
         scores = eval_fn(cfg, nlp, val_data)
-        nlp.meta.update(
-            {"score": scores, "config": omegaconf.OmegaConf.to_container(cfg)}
-        )
+        nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))
 
 
-def _main(cfg: omegaconf.Config) -> None:
+def _main(cfg: Config) -> None:
     cfg = validate(cfg)
     log.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)

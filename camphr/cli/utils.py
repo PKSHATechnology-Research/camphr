@@ -7,12 +7,11 @@ from typing import Any, Dict, List, Tuple, Union
 
 import hydra
 import srsly
-from camphr.models import correct_model_config
-from camphr.utils import create_dict_from_dotkey, get_by_dotkey
 from omegaconf import Config, OmegaConf
 from sklearn.model_selection import train_test_split
-from spacy.language import Language
-from spacy.scorer import Scorer
+
+from camphr.models import correct_model_config
+from camphr.utils import create_dict_from_dotkey, get_by_dotkey
 
 GoldParsable = Dict[str, Any]
 InputData = List[Tuple[str, GoldParsable]]
@@ -37,15 +36,6 @@ def report_fail(json_serializable_data: Any) -> None:
     with fail_path.open("w") as f:
         json.dump(json_serializable_data, f, ensure_ascii=False)
         log.error(f"Error raised. The input data is saved in {str(fail_path)}")
-
-
-def evaluate(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
-    try:
-        scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
-    except Exception:
-        report_fail(val_data)
-        raise
-    return scorer.scores
 
 
 def convert_fullpath_if_path(text: str) -> str:
@@ -81,7 +71,12 @@ def validate(cfg: Config):
     ]
     check_nonempty(cfg, mustfields)
 
-    pathkey = ["model.ner_label", "model.textcat_label", "train.data.path", "model.pretrained"]
+    pathkey = [
+        "model.ner_label",
+        "model.textcat_label",
+        "train.data.path",
+        "model.pretrained",
+    ]
     for key in pathkey:
         path = get_by_dotkey(cfg, key)
         if path:
