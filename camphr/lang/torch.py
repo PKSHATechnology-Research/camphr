@@ -125,5 +125,5 @@ class TorchLanguage(Language):
         srsly.write_json(path / "meta.json", meta)
 
 
-def get_torch_nlp(lang: str):
-    return TorchLanguage(meta={"lang": lang})
+def get_torch_nlp(lang: str, **cfg):
+    return TorchLanguage(meta={"lang": lang}, **cfg)
