@@ -2,11 +2,12 @@ import numpy as np
 import omegaconf
 import pytest
 import torch
-from camphr.models import NLPConfig, create_model
-from camphr.pipelines.trf_model import TRANSFORMERS_MODEL, TransformersModel
-from camphr.pipelines.trf_utils import ATTRS
 from spacy.language import Language
 from spacy.tokens import Doc
+
+from camphr.models import NLPConfig, create_model
+from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL, TransformersModel
+from camphr.pipelines.transformers.utils import ATTRS
 from tests.utils import TRF_TESTMODEL_PATH, check_serialization
 
 TESTCASES = ["今日はいい天気です", "今日は　いい天気です", "1月16日(木)18時36分頃、沖縄県で最大震度4を観測する地震がありました。"]

@@ -2,15 +2,17 @@ from pathlib import Path
 from typing import Sized, cast
 
 import pytest
-from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 
-from camphr.models import LangConfig, create_model
-from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER, TransformersTokenizer
-from camphr.pipelines.trf_utils import ATTRS
+from camphr.models import create_model
+from camphr.pipelines.transformers.tokenizer import (
+    TRANSFORMERS_TOKENIZER,
+    TransformersTokenizer,
+)
+from camphr.pipelines.transformers.utils import ATTRS
 
-from ..utils import BERT_DIR, XLNET_DIR
+from ...utils import BERT_DIR, XLNET_DIR
 
 
 @pytest.fixture(scope="session")

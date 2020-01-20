@@ -2,10 +2,11 @@ import re
 from typing import Callable, Dict, List, NamedTuple, Optional, Tuple
 
 import spacy
-from camphr.consts import JUMAN_LINES
 from cytoolz import curry
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
+
+from camphr.consts import JUMAN_LINES
 
 LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
 Span.set_extension(JUMAN_LINES, default=None)

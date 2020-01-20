@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+
 from camphr.ner_labels.utils import get_biluo_labels, get_full_sekine_label
 
 

@@ -38,7 +38,6 @@ juman = [ "Cython", "mojimoji2", "pyknp",]
 mecab = [ "mecab-python3",]
 
 [tool.poetry.dev-dependencies]
-isort = "*"
 pylint = "*"
 pytest = "<5.3.3" # version 5.3.3 has a bug and error occurs. Report the bug after open-source.
 flake8 = "*"
@@ -47,6 +46,7 @@ rope = "*"
 hypothesis = "*"
 pre-commit = "*"
 toml = "^0.10.0"
+isort = {extras = ["toml"], version = "^4.3.21"}
 
 [tool.poetry.dependencies.allennlp]
 git = "https://github.com/allenai/allennlp"
@@ -81,3 +81,10 @@ allow-prereleases = true
 ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
+
+[tool.isort]
+skip = ".venv/**/*.py"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_first_party = "camphr"

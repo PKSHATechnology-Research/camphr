@@ -2,12 +2,13 @@
 from collections import namedtuple
 from typing import Any, Callable, Dict, List, Optional
 
-from camphr.consts import JUMAN_LINES, KEY_FSTRING
-from camphr.lang.stop_words import STOP_WORDS
-from camphr.utils import SerializationMixin
 from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc, Token
+
+from camphr.consts import JUMAN_LINES, KEY_FSTRING
+from camphr.lang.stop_words import STOP_WORDS
+from camphr.utils import SerializationMixin
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]

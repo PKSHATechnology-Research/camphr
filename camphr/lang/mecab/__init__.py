@@ -5,12 +5,13 @@ from pathlib import Path
 from shutil import copytree
 from typing import List, Optional
 
-from camphr.consts import KEY_FSTRING
-from camphr.lang.stop_words import STOP_WORDS
-from camphr.utils import RE_URL, SerializationMixin
 from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc, Token
+
+from camphr.consts import KEY_FSTRING
+from camphr.lang.stop_words import STOP_WORDS
+from camphr.utils import RE_URL, SerializationMixin
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "space", "fstring"]

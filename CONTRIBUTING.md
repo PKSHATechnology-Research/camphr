@@ -16,4 +16,3 @@
 - `camphr`: package source
 - `tests`: test files
 - `scripts`: 細々としたスクリプト. packagingに必要なものなど
-

@@ -5,12 +5,13 @@ import omegaconf
 import pytest
 import sentencepiece as spm
 import torch
+from spacy.vocab import Vocab
+
 from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
 from camphr.models import create_model
-from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
-from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
-from spacy.vocab import Vocab
+from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 
 from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
 

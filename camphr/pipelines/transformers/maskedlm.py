@@ -7,18 +7,17 @@ import spacy
 import torch
 import torch.nn.functional as F
 import transformers.modeling_bert
-from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
-from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER, TransformersTokenizer
-from camphr.pipelines.trf_utils import (
-    SerializationMixinForTrfTask,
-    get_last_hidden_state_from_docs,
-)
-from camphr.torch_utils import TorchPipe, add_loss_to_docs
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
 from transformers import BertConfig
+
+from camphr.torch_utils import TorchPipe, add_loss_to_docs
+
+from .model import TRANSFORMERS_MODEL
+from .tokenizer import TRANSFORMERS_TOKENIZER, TransformersTokenizer
+from .utils import SerializationMixinForTrfTask, get_last_hidden_state_from_docs
 
 MASKEDLM_PREDICTION = "maskedlm_prediction"
 MASKEDLM_LABEL = "maskedlm_label"

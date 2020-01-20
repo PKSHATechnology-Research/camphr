@@ -5,18 +5,19 @@ from typing import Any, Dict, Optional, Union
 
 import omegaconf
 import spacy
-from camphr.lang.torch import TorchLanguage
-from camphr.ner_labels.utils import get_biluo_labels
-from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
-from camphr.pipelines.trf_ner import TRANSFORMERS_NER
-from camphr.pipelines.trf_seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
-from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
-from camphr.pipelines.trf_utils import LABELS
-from camphr.utils import create_dict_from_dotkey, get_by_dotkey, get_labels
 from cytoolz import merge
 from omegaconf import OmegaConf
 from spacy.language import Language
 from spacy.vocab import Vocab
+
+from camphr.lang.torch import TorchLanguage
+from camphr.ner_labels.utils import get_biluo_labels
+from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
+from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
+from camphr.pipelines.transformers.utils import LABELS
+from camphr.utils import create_dict_from_dotkey, get_by_dotkey, get_labels
 
 
 @dataclass

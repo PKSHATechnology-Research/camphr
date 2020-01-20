@@ -2,11 +2,12 @@ from pathlib import Path
 from typing import List, Tuple
 
 import pytest
-from camphr.models import create_model
-from camphr.pipelines.knp import KNP_USER_KEYS
 from omegaconf import OmegaConf
 from spacy.language import Language
 from spacy.tokens import Doc
+
+from camphr.models import create_model
+from camphr.pipelines.knp import KNP_USER_KEYS
 
 from ..utils import check_knp
 

@@ -6,7 +6,16 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from camphr.pipelines.trf_utils import (
+from overrides import overrides
+from spacy.gold import GoldParse
+from spacy.tokens import Doc
+from transformers.modeling_utils import SequenceSummary
+
+from camphr.pipelines.utils import UserHooksMixin
+from camphr.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
+
+from .auto import get_trf_config_cls
+from .utils import (
     ATTRS,
     FromNLPMixinForTrfTask,
     LabelsMixin,
@@ -14,14 +23,6 @@ from camphr.pipelines.trf_utils import (
     TrfModelForTaskBase,
     get_last_hidden_state_from_docs,
 )
-from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
-from overrides import overrides
-from spacy.gold import GoldParse
-from spacy.tokens import Doc
-from transformers.modeling_utils import SequenceSummary
-
-from .trf_auto import get_trf_config_cls
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 NUM_SEQUENCE_LABELS = "num_sequence_labels"

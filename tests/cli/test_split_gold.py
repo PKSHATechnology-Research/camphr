@@ -1,4 +1,5 @@
 import pytest
+
 from camphr.cli.split_gold import split_gold
 
 from ..utils import DATA_DIR, comp_jsonl

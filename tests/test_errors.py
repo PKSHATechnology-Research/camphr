@@ -1,4 +1,5 @@
 import pytest
+
 from camphr.errors import Warnings
 
 

@@ -2,16 +2,17 @@ import json
 
 import omegaconf
 import pytest
+from spacy.language import Language
+
 from camphr.models import create_model
 from camphr.ner_labels.labels_ene import ALL_LABELS as enes
 from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
 from camphr.ner_labels.utils import make_biluo_labels
-from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
-from camphr.pipelines.trf_ner import TRANSFORMERS_NER
-from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
-from spacy.language import Language
+from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 
-from ..utils import DATA_DIR, check_serialization
+from ...utils import DATA_DIR, check_serialization
 
 label_types = ["ene", "irex"]
 

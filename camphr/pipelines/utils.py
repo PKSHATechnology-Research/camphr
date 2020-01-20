@@ -16,10 +16,11 @@ from typing import (
 
 import numpy as np
 import torch
-from camphr.errors import Warnings
 from spacy.gold import iob_to_biluo
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
+
+from camphr.errors import Warnings
 
 
 class BILUO(Enum):

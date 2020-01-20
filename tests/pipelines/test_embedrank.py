@@ -1,5 +1,6 @@
 import pytest
 import spacy
+
 from camphr.pipelines.embedrank import EMBEDRANK_KEYPHRASES, EmbedRank
 
 

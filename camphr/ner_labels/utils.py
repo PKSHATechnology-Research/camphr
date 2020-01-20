@@ -9,8 +9,9 @@ import subprocess
 from pathlib import Path
 from typing import IO, Dict, Iterable, List, Optional, Union
 
-import camphr.ner_labels.labels_sekine as sekine
 import yaml
+
+import camphr.ner_labels.labels_sekine as sekine
 from camphr.types import Pathlike
 from camphr.utils import get_labels
 

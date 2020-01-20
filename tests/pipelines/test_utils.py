@@ -5,6 +5,13 @@ from typing import List, Tuple
 import pytest
 import spacy
 import torch
+from hypothesis import given
+from hypothesis import strategies as st
+from spacy.gold import spans_from_biluo_tags
+from spacy.language import Language
+from spacy.pipeline import Sentencizer
+from spacy.tokens import Span
+
 from camphr import __version__
 from camphr.pipelines.utils import (
     EPS,
@@ -22,12 +29,6 @@ from camphr.pipelines.utils import (
     flatten_docs_to_sents,
     minmax_scale,
 )
-from hypothesis import given
-from hypothesis import strategies as st
-from spacy.gold import spans_from_biluo_tags
-from spacy.language import Language
-from spacy.pipeline import Sentencizer
-from spacy.tokens import Span
 
 
 @pytest.fixture

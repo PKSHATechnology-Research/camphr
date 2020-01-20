@@ -3,8 +3,8 @@ from pathlib import Path
 import pytest
 import spacy
 import toml
-import pytest
-from .utils import check_juman, check_lang, check_mecab
+
+from .utils import check_lang
 
 with (Path(__file__).parent / "../pyproject.toml") as f:
     conf = toml.load(f)

@@ -6,13 +6,15 @@ import numpy as np
 import spacy
 import spacy.language
 import torch
-from camphr.pipelines.trf_auto import get_trf_model_cls
-from camphr.pipelines.trf_tokenizer import TransformersTokenizer
-from camphr.pipelines.trf_utils import ATTRS, TrfAutoMixin
-from camphr.pipelines.utils import get_similarity
-from camphr.torch_utils import TensorWrapper, TorchPipe
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
+
+from camphr.pipelines.utils import get_similarity
+from camphr.torch_utils import TensorWrapper, TorchPipe
+
+from .auto import get_trf_model_cls
+from .tokenizer import TransformersTokenizer
+from .utils import ATTRS, TrfAutoMixin
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 

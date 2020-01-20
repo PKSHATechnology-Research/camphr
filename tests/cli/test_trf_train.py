@@ -2,8 +2,9 @@ from pathlib import Path
 
 import omegaconf
 import pytest
+
 from camphr.cli.trf_train import _main
-from camphr.pipelines.trf_ner import TRANSFORMERS_NER
+from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 
 from ..utils import BERT_DIR
 

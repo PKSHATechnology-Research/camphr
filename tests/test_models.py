@@ -1,6 +1,8 @@
 from contextlib import contextmanager
 
 import pytest
+from omegaconf import OmegaConf
+
 from camphr.lang.torch import TorchLanguage
 from camphr.models import (
     PIPELINE_ALIGNMENT,
@@ -10,10 +12,9 @@ from camphr.models import (
     correct_model_config,
     create_lang,
 )
-from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
-from camphr.pipelines.trf_ner import TRANSFORMERS_NER
-from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
-from omegaconf import OmegaConf
+from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 
 
 @pytest.mark.parametrize(

@@ -5,10 +5,11 @@ import pytest
 import spacy
 import torch
 import torch.nn as nn
-from camphr.lang.torch import TorchLanguage
-from camphr.torch_utils import TensorWrapper, TorchPipe
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
+
+from camphr.lang.torch import TorchLanguage
+from camphr.torch_utils import TensorWrapper, TorchPipe
 
 
 @pytest.fixture

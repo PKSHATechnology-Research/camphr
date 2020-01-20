@@ -7,15 +7,16 @@ from typing import Any, Callable, Dict, Iterable, Iterator, List, Sized, Type, c
 import torch
 import torch.nn as nn
 import transformers
-from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TensorWrapper, TorchPipe
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from tokenizations import get_alignments
 from typing_extensions import Protocol
 
-from .trf_auto import get_trf_config_cls, get_trf_name
+from camphr.pipelines.utils import UserHooksMixin
+from camphr.torch_utils import TensorWrapper, TorchPipe
+
+from .auto import get_trf_config_cls, get_trf_name
 
 
 class ATTRS:

@@ -10,7 +10,15 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from camphr.pipelines.trf_utils import (
+from overrides import overrides
+from spacy.gold import GoldParse, spans_from_biluo_tags
+from spacy.tokens import Doc, Token
+
+from camphr.pipelines.utils import UNK, UserHooksMixin, beamsearch, correct_biluo_tags
+from camphr.torch_utils import TorchPipe, add_loss_to_docs
+
+from .auto import get_trf_config_cls
+from .utils import (
     ATTRS,
     LABELS,
     FromNLPMixinForTrfTask,
@@ -20,13 +28,6 @@ from camphr.pipelines.trf_utils import (
     get_dropout,
     get_last_hidden_state_from_docs,
 )
-from camphr.pipelines.utils import UNK, UserHooksMixin, beamsearch, correct_biluo_tags
-from camphr.torch_utils import TorchPipe, add_loss_to_docs
-from overrides import overrides
-from spacy.gold import GoldParse, spans_from_biluo_tags
-from spacy.tokens import Doc, Token
-
-from .trf_auto import get_trf_config_cls
 
 CLS_LOGIT = "cls_logit"
 NUM_LABELS = "num_labels"

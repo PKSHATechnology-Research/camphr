@@ -5,10 +5,11 @@ from pathlib import Path
 from typing import Dict, Iterable
 
 import torch
-from camphr.pipelines.utils import flatten_docs_to_sents
-from camphr.types import Pathlike
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
+
+from camphr.pipelines.utils import flatten_docs_to_sents
+from camphr.types import Pathlike
 
 VALIDATION = "validation"
 VALIDATION_DATASET_READER = "validation_dataset_reader"

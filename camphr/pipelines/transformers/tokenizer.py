@@ -1,14 +1,14 @@
 """Defines tokenizer for transformers."""
-from multiprocessing import Value
-from typing import Iterable, List, Optional, Sequence, Sized, cast
+from typing import List, Optional, Sequence, Sized, cast
 
 import spacy
 import transformers
-from camphr.pipelines.trf_auto import get_trf_tokenizer_cls
-from camphr.pipelines.trf_utils import ATTRS, TransformersInput, TrfAutoMixin
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
+
+from .auto import get_trf_tokenizer_cls
+from .utils import ATTRS, TransformersInput, TrfAutoMixin
 
 TRANSFORMERS_TOKENIZER = "transformers_tokenizer"
 

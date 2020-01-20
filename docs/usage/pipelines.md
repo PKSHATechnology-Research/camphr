@@ -21,7 +21,17 @@ Example:
 計算されたvectorは`doc.vector`に入っています．
 
 ```python
+import camphr.pipelines.udify
 import spacy
+import torch
+from camphr.models import bert_model, date_ruler, knp_ner, person_ruler, trf_ner
+from camphr.ner_labels.labels_irex import ALL_LABELS
+from camphr.ner_labels.utils import make_biluo_labels
+from camphr.pipelines import RegexRuler
+from camphr.pipelines.embedrank import EmbedRank
+from camphr.pipelines.regex_ruler import RegexRuler
+from camphr.pipelines.trf_maskedlm import add_maskedlm_pipe
+from spacy.util import minibatch
 
 nlp = spacy.load("mecab_bert_model")
 doc = nlp("今日はいい天気だった")
@@ -82,7 +92,6 @@ $ pip install mecab-python3
 あとは，`camphr.models.bert_model`を呼べばOKです．パラメータ等は[huggingface/transformers](https://github.com/huggingface/transformers)からダウンロードされます．
 
 ```python
-from camphr.models import bert_model
 nlp = bert_model(lang="ja_mecab_torch", name="bert-base-multilingual-cased")
 doc = nlp("私は犬と猫が好きだ")
 I, dog, cat = doc[0], doc[2], doc[4]
@@ -101,8 +110,6 @@ print(cat, dog, cat.similarity(dog))
 BERTの事前学習を行うこともできます.
 
 ```python
-import spacy
-from camphr.pipelines.trf_maskedlm import add_maskedlm_pipe
 
 nlp = spacy.load("torch_mecab_bert_ene")
 add_maskedlm_pipe(nlp)
@@ -148,7 +155,6 @@ $ pip install torch_sentencepiece-xlnet-ene.VERSION.tar.gz
 ```
 
 ```python
-import spacy
 
 nlp = spacy.load("torch_mecab_bert_ene")
 doc = nlp("10日発表されたノーベル文学賞の受賞者をめぐり、選考機関のスウェーデン・アカデミーが批判されている。")
@@ -173,7 +179,6 @@ for doc in docs:
 GPUを使うことでさらに高速に処理できます．(内部ではpytorchを使用しています)
 
 ```python
-import torch
 
 nlp.to(torch.device("gpu"))
 docs = nlp(texts)
@@ -195,10 +200,6 @@ doc1.similarity(doc2)
 以下のように，`nlp.update`にデータを与えるだけでOKです．
 
 ```python
-from camphr.models import trf_ner
-from camphr.ner_labels.labels_irex import ALL_LABELS
-from camphr.ner_labels.utils import make_biluo_labels
-from spacy.util import minibatch
 
 nlp = trf_ner(lang="ja_mecab_torch", labels=make_biluo_labels(ALL_LABELS), pretrained="path_to_bert")
 train_data = [
@@ -232,8 +233,6 @@ nlp = spacy.load("./bert-foo")
 例えば，電話番号を検出したい場合は以下のようにします．  
 
 ```python
-import spacy
-from camphr.pipelines import RegexRuler
 
 nlp = spacy.blank("ja_mecab")
 # create pipe
@@ -253,8 +252,6 @@ BERTと正規表現pipeを組み合わせて使うこともできます．特定
 例えばルールベースの電話番号検出をBERTに加える場合，以下のようにします．
 
 ```python
-import spacy
-from camphr.pipelines.regex_ruler import RegexRuler
 
 nlp = spacy.load("mecab_bert_ene")
 pipe = RegexRuler(pattern="\d{2,3}-\d{4}-\d{3}", label="PHONE")
@@ -285,8 +282,6 @@ $ pip install -U mecab_udify-0.4
 ### Example
 
 ```python
-import spacy
-import camphr.pipelines.udify
 nlp = spacy.load("mecab_udify")
 doc = nlp("今日はいい天気だった")
 spacy.displacy.render(doc)
@@ -320,7 +315,6 @@ $ pip install -U *tar.gz
 ### Usage
 
 ```python
-import spacy
 
 nlp = spacy.load("mecab_fasttext_wikipedia")
 doc = nlp("私は犬と猫を飼っている")
@@ -383,8 +377,6 @@ doc[0].similarity(doc[1])
 BERT等によって計算された埋め込みベクトルを元に,キーフレーズを抽出します.  
 
 ```python
-import spacy
-from camphr.pipelines.embedrank import EmbedRank
 
 nlp = spacy.load("mecab_bert_model")
 nlp.add_pipe(EmbedRank(vocab=nlp.vocab))
@@ -406,7 +398,6 @@ https://spacy.io/api/entityruler
 mecabのタグ情報を元に，人名抽出をします．
 
 ```python
-from camphr.models import person_ruler
 
 nlp = person_ruler()
 text = "2019年11月8日に高松隆と東京タワーに行った"
@@ -421,7 +412,6 @@ nlp(text).ents
 ルールベースで日付を抽出するNERパイプラインです．
 
 ```python
-from camphr.models import date_ruler
 
 nlp = date_ruler()
 text = "2019年11月8日に高松隆と東京タワーに行った"
@@ -436,7 +426,6 @@ nlp(text).ents
 [KNP](http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP)を使ったNERです．
 
 ```python
-from camphr.models import knp_ner
 
 nlp = knp_ner()
 text = "2019年11月8日に高松隆と東京タワーに行った"

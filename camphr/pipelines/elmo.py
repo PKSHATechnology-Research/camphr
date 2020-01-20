@@ -5,6 +5,9 @@ from typing import Generator, Iterable, List
 
 import numpy as np
 import spacy
+from spacy.pipeline import Pipe
+from spacy.tokens import Doc
+
 from camphr.pipelines.allennlp_base import Pathlike
 from camphr.pipelines.utils import (
     get_doc_vector_via_tensor,
@@ -12,8 +15,6 @@ from camphr.pipelines.utils import (
     get_span_vector_via_tensor,
     get_token_vector_via_tensor,
 )
-from spacy.pipeline import Pipe
-from spacy.tokens import Doc
 
 
 @spacy.component("elmo", assigns=["doc.tensor", "doc.vector", "token.vector"])

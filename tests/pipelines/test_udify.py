@@ -1,12 +1,13 @@
 from itertools import zip_longest
 from pathlib import Path
 
-import camphr.lang.mecab as mecab
 import pytest
 import spacy
-from camphr.pipelines.udify import Udify
 from spacy.tests.util import assert_docs_equal
 from spacy.tokens import Doc
+
+import camphr.lang.mecab as mecab
+from camphr.pipelines.udify import Udify
 
 pytestmark = pytest.mark.slow
 

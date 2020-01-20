@@ -1,8 +1,13 @@
 import pytest
-from camphr.pipelines.trf_auto import get_trf_name
-from camphr.pipelines.trf_maskedlm import PIPES, add_maskedlm_pipe, remove_maskedlm_pipe
-from camphr.torch_utils import get_loss_from_docs
 from spacy.language import Language
+
+from camphr.pipelines.transformers.auto import get_trf_name
+from camphr.pipelines.transformers.maskedlm import (
+    PIPES,
+    add_maskedlm_pipe,
+    remove_maskedlm_pipe,
+)
+from camphr.torch_utils import get_loss_from_docs
 
 
 @pytest.fixture(scope="module")

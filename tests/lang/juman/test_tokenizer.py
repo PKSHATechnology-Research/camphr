@@ -2,6 +2,7 @@ import tempfile
 
 import pytest
 import spacy
+
 from camphr.lang.juman import Japanese as Juman
 
 from ...utils import check_juman

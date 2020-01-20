@@ -1,8 +1,9 @@
 from itertools import zip_longest
 
 import pytest
-from camphr.pipelines.regex_ruler import MultipleRegexRuler, RegexRuler
 from spacy.tokens import Doc
+
+from camphr.pipelines.regex_ruler import MultipleRegexRuler, RegexRuler
 
 from ..utils import check_mecab
 

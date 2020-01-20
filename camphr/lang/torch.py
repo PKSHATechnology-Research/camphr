@@ -7,11 +7,12 @@ from typing import Any, Dict, List, Sequence, Union
 import srsly
 import torch
 import torch.optim as optim
-from camphr.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
-from camphr.utils import get_defaults, get_requirements_line, import_attr
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.language import Language
 from spacy.tokens import Doc
+
+from camphr.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
+from camphr.utils import get_defaults, get_requirements_line, import_attr
 
 logger = logging.getLogger(__name__)
 

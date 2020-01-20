@@ -18,7 +18,7 @@ from spacy.util import minibatch
 from camphr.cli.utils import InputData, create_data, report_fail, validate
 from camphr.lang.torch import TorchLanguage
 from camphr.models import create_model
-from camphr.pipelines.trf_seq_classification import TOP_LABEL
+from camphr.pipelines.transformers.seq_classification import TOP_LABEL
 from camphr.torch_utils import goldcat_to_label
 
 log = logging.getLogger(__name__)

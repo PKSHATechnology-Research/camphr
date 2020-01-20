@@ -1,17 +1,18 @@
 import random
 
 import pytest
+from spacy.language import Language
+
 from camphr.models import create_model
-from camphr.pipelines.trf_model import TRANSFORMERS_MODEL
-from camphr.pipelines.trf_seq_classification import (
+from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+from camphr.pipelines.transformers.seq_classification import (
     TOP_LABEL,
     TOPK_LABELS,
     TRANSFORMERS_SEQ_CLASSIFIER,
     TrfForSequenceClassification,
 )
-from camphr.pipelines.trf_tokenizer import TRANSFORMERS_TOKENIZER
+from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.torch_utils import get_loss_from_docs
-from spacy.language import Language
 from tests.utils import check_serialization
 
 
