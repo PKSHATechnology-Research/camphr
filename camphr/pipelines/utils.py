@@ -2,17 +2,7 @@ import copy
 import warnings
 from enum import Enum
 from itertools import chain
-from typing import (
-    Callable,
-    Iterable,
-    List,
-    Sequence,
-    Sized,
-    Tuple,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 import torch
@@ -213,7 +203,7 @@ EPS = 1e-5
 
 def beamsearch(data: torch.Tensor, k: int) -> torch.Tensor:
     """Beam search for sequential scores
-    
+
     Args:
         data: tensor of shape (length, d). requires d > 0
         k: beam width
