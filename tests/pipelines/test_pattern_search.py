@@ -4,15 +4,18 @@ import pytest
 import spacy
 from spacy.tokens import Doc
 
-import camphr.lang.mecab as mecab
 from camphr.pipelines.pattern_search import PatternSearcher
+from tests.utils import check_mecab
 
 KEYWORDS = ["今日", "は", "明日"]
 
 
-@pytest.fixture(scope="module")
-def nlp():
-    _nlp = mecab.Japanese()
+@pytest.fixture(scope="module", params=["en", "ja_mecab"])
+def nlp(request):
+    lang: str = request.param
+    if lang == "ja_mecab" and not check_mecab():
+        pytest.skip()
+    _nlp = spacy.blank(request.param)
     pipe = PatternSearcher.from_words(KEYWORDS)
     _nlp.add_pipe(pipe)
     return _nlp

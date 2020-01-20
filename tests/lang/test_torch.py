@@ -3,6 +3,7 @@ import spacy
 import torch
 
 from camphr.lang.torch import TorchLanguage, get_torch_nlp
+from tests.utils import check_mecab
 
 
 @pytest.fixture
@@ -22,6 +23,8 @@ def optimizer_config(request):
 
 @pytest.mark.parametrize("lang", ["en", "ja_mecab", "fa"])
 def test_torchlang(lang, tmp_path, device, dummy_params, optimizer_config):
+    if lang == "ja_mecab" and not check_mecab():
+        pytest.skip()
     nlp = get_torch_nlp(lang, optimizer_config=optimizer_config)
     assert isinstance(nlp, TorchLanguage)
     assert nlp.lang == lang

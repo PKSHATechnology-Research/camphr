@@ -1,6 +1,5 @@
 import json
 import os
-import shutil
 import tempfile
 from itertools import zip_longest
 from pathlib import Path
@@ -10,16 +9,24 @@ import spacy
 from spacy.tests.util import assert_docs_equal
 
 
-def check_juman():
-    return shutil.which("juman") is not None
+def check_juman() -> bool:
+    try:
+        import pyknp  # noqa
+    except ImportError:
+        return False
+    return True
 
 
-def check_knp():
-    return shutil.which("knp") is not None
+def check_knp() -> bool:
+    return check_juman()
 
 
-def check_mecab():
-    return shutil.which("mecab") is not None
+def check_mecab() -> bool:
+    try:
+        import MeCab  # noqa
+    except ImportError:
+        return False
+    return True
 
 
 checks = {"ja_mecab": check_mecab, "ja_juman": check_juman}

@@ -25,7 +25,7 @@ from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
     torch: true
     """,
         """
-    name: ja_mecab
+    name: en
     torch: false
     """,
     ],

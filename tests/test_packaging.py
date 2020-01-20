@@ -9,7 +9,7 @@ from camphr.lang.torch import TorchLanguage
 
 @pytest.fixture(scope="session")
 def nlp():
-    return TorchLanguage(meta={"lang": "ja_mecab"})
+    return TorchLanguage(meta={"lang": "en"})
 
 
 def test_package(nlp: Language, chdir):

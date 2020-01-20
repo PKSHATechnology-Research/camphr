@@ -102,6 +102,9 @@ def lang(request):
     # ],
 )
 def trf_name_or_path(request):
+    name: str = request.param
+    if "bert-base-japanese" in name:
+        pytest.skip()
     return request.param
 
 
