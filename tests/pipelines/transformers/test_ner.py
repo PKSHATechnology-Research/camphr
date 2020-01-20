@@ -1,7 +1,10 @@
 import json
 
+import hypothesis.strategies as st
 import omegaconf
 import pytest
+import torch
+from hypothesis import given
 from spacy.language import Language
 
 from camphr.models import create_model
@@ -9,7 +12,7 @@ from camphr.ner_labels.labels_ene import ALL_LABELS as enes
 from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
 from camphr.ner_labels.utils import make_biluo_labels
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
-from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+from camphr.pipelines.transformers.ner import TRANSFORMERS_NER, _create_target
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 
 from ...utils import DATA_DIR, check_serialization
@@ -139,3 +142,46 @@ def test_example_batch_eval(nlp: Language, example_gold):
 
 def test_serialization(nlp):
     check_serialization(nlp)
+
+
+def st_justsize_list(elements, size: int):
+    return st.lists(elements, min_size=size, max_size=size)
+
+
+@st.composite
+def case_for_create_target(draw):
+    batchsize = draw(st.integers(0, 10))
+    length = draw(st.integers(0, 100))
+    n_class = draw(st.integers(1, 10))
+    seed = draw(st.integers(0, 10000))
+    torch.manual_seed(seed)
+    logits = torch.rand((batchsize, length, n_class))
+    all_aligns = []
+    all_ners = []
+    for _ in range(batchsize):
+        aligns = []
+        ntokens = draw(st.integers(0, int(length * 1.2)))
+        all_ners.append(draw(st_justsize_list(st.integers(0, n_class - 1), ntokens)))
+        cur = 0
+        for _ in range(ntokens):
+            align = sorted(draw(st.sets(st.integers(cur, length - 1))))
+            aligns.append(align)
+            cur = max(align) if align else cur
+            if cur == length - 1 and draw(st.booleans()):
+                break
+        all_aligns.append(aligns)
+    return all_aligns, all_ners, logits
+
+
+@given(case_for_create_target())
+def test_hyp_create_target(case):
+    ignore_index = -1
+    all_aligns, _, logits = case
+    b, l, _ = logits.shape  # noqa
+    targets = _create_target(*case, ignore_index)
+    assert targets.shape == (b, l)
+    for align, target in zip(all_aligns, targets):
+        heads = [a[0] for a in align if a]
+        not_heads = [i for i in range(len(target)) if i not in heads]
+        assert torch.all(target[heads] != ignore_index)
+        assert torch.all(target[not_heads] == ignore_index)

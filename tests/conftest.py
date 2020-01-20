@@ -76,7 +76,7 @@ def device(request):
     if request.param == "cpu":
         return torch.device("cpu")
     if not torch.cuda.is_available():
-        pytest.skip()
+        pytest.skip("cuda is required")
     return torch.device("cuda")
 
 
@@ -90,21 +90,10 @@ def lang(request):
     return request.param
 
 
-@pytest.fixture(
-    scope="session",
-    params=TRF_TESTMODEL_PATH
-    # + [
-    #     "xlnet-base-cased",
-    #     "bert-base-uncased",
-    #     "bert-base-japanese",
-    #     "xlm-mlm-100-1280",
-    #     "roberta-base",
-    # ],
-)
+@pytest.fixture(scope="session", params=TRF_TESTMODEL_PATH)
 def trf_name_or_path(request):
-    name: str = request.param
-    if "bert-base-japanese" in name:
-        pytest.skip()
+    if "bert-base-japanese" in request.param and not check_mecab():
+        pytest.skip("mecab is required")
     return request.param
 
 
@@ -122,7 +111,8 @@ def trf_model_config(lang, trf_name_or_path, device):
         torch: true
         optimizer:
             class: torch.optim.SGD
-            lr: 0.01
+            params:
+                lr: 0.01
     pipeline:
         {TRANSFORMERS_TOKENIZER}:
           trf_name_or_path: {trf_name_or_path}

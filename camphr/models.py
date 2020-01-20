@@ -1,6 +1,7 @@
 """The models module defines functions to create spacy models."""
 import copy
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
 import omegaconf
@@ -19,6 +20,17 @@ from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.pipelines.transformers.utils import LABELS
 from camphr.utils import create_dict_from_dotkey, get_by_dotkey, get_labels
 
+__dir__ = Path(__file__).parent
+_MODEL_CFG_DIR = __dir__ / "model_config"
+_PREDEFINED_CONFS = {"knp": _MODEL_CFG_DIR / "knp.yml"}
+CFG_SRC = Union[str, Dict[str, Any]]
+
+
+def load(cfg_or_name: Union[str, CFG_SRC]) -> Language:
+    if isinstance(cfg_or_name, str) and cfg_or_name in _PREDEFINED_CONFS:
+        cfg_or_name = _PREDEFINED_CONFS[cfg_or_name].read_text()
+    return create_model(cfg_or_name)
+
 
 @dataclass
 class LangConfig(omegaconf.Config):
@@ -35,19 +47,6 @@ class NLPConfig(omegaconf.Config):
     pipeline: omegaconf.DictConfig
 
 
-def create_lang(cfg: LangConfig) -> Language:
-    kwargs = cfg.kwargs or {}
-    kwargs = (
-        OmegaConf.to_container(kwargs)
-        if isinstance(kwargs, omegaconf.Config)
-        else kwargs
-    )
-    if cfg.torch:
-        kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})
-        return TorchLanguage(Vocab(), optimizer_config=cfg.optimizer, **kwargs)
-    return spacy.blank(cfg.name, **kwargs)
-
-
 def create_model(cfg: Union[NLPConfig, Any]) -> Language:
     if not isinstance(cfg, omegaconf.Config):
         cfg = OmegaConf.create(cfg)
@@ -60,6 +59,19 @@ def create_model(cfg: Union[NLPConfig, Any]) -> Language:
     if cfg.name and isinstance(cfg.name, str):
         nlp._meta["name"] = cfg.name
     return nlp
+
+
+def create_lang(cfg: LangConfig) -> Language:
+    kwargs = cfg.kwargs or {}
+    kwargs = (
+        OmegaConf.to_container(kwargs)
+        if isinstance(kwargs, omegaconf.Config)
+        else kwargs
+    )
+    if cfg.torch:
+        kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})
+        return TorchLanguage(Vocab(), optimizer_config=cfg.optimizer, **kwargs)
+    return spacy.blank(cfg.name, **kwargs)
 
 
 def correct_model_config(cfg: NLPConfig) -> NLPConfig:

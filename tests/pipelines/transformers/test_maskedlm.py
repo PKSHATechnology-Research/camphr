@@ -12,7 +12,7 @@ from camphr.torch_utils import get_loss_from_docs
 
 @pytest.fixture(scope="module")
 def nlp(device, nlp_trf_model, trf_name_or_path):
-    if get_trf_name(trf_name_or_path) != "bert":
+    if get_trf_name(trf_name_or_path) not in {"bert" or "bert-base-japanese"}:
         pytest.skip()
     _nlp = nlp_trf_model
     add_maskedlm_pipe(_nlp)

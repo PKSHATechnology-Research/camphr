@@ -2,7 +2,7 @@
 
 Models defined in this modules must be used with `camphr.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
-from typing import Iterable, List, Sized, cast
+from typing import Generator, Iterable, List, Sized, cast
 
 import more_itertools
 import spacy
@@ -118,35 +118,24 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
             return self.labels.index(UNK.value)
         return -1
 
-    def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
+    def update(self, docs: List[Doc], golds: List[GoldParse]):
         assert isinstance(docs, list)
         self.require_model()
-        label2id = self.label2id
         ignore_index = self.ignore_label_index
         x = get_last_hidden_state_from_docs(docs)
         logits = self.model(x)
-        length = logits.shape[1]
-        loss = x.new_tensor(0.0)
-        for doc, gold, logit in zip(docs, golds, logits):
-            doc._.cls_logit = logit
-            # use first wordpiece for each tokens
-            idx = (more_itertools.first(a, -1) for a in doc._.get(ATTRS.align))
-            idx = [a for a in idx if a < length]
-            ners = self._get_nerlabel_from_gold(gold)
-            ners = (label2id[ner] for ner in ners)
-            ners = [ner if a != -1 else ignore_index for ner, a in zip(ners, idx)]
-            if not ners:
-                continue
-            pred = logit[idx]
-            target = torch.tensor(ners, device=self.device, dtype=torch.long)
-            loss += F.cross_entropy(pred, target, ignore_index=ignore_index)
+        all_ners = (self._get_nerlabel_from_gold(gold) for gold in golds)
+        all_aligns = (doc._.get(ATTRS.align) for doc in docs)
+        target = _create_target(all_aligns, all_ners, logits, self.ignore_label_index)
+        loss = F.cross_entropy(
+            logits.transpose(1, 2), target, ignore_index=ignore_index
+        )
         add_loss_to_docs(docs, loss)
 
-    def _get_nerlabel_from_gold(self, gold: GoldParse) -> List[str]:
-        if gold.ner is None:
-            return []
-        ners = [self.convert_label(ner) for ner in gold.ner]
-        return ners
+    def _get_nerlabel_from_gold(self, gold: GoldParse) -> Generator[int, None, None]:
+        if gold.ner is not None:
+            for ner in gold.ner:
+                yield self.label2id[self.convert_label(ner)]
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor
@@ -157,18 +146,8 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
 
         for doc, logit in zip(docs, cast(Iterable, logits)):
             logit = self._extract_logit(logit, doc._.get(ATTRS.align))
-            candidates = beamsearch(logit, self.k_beam)
-            assert len(cast(Sized, candidates))
-            best_tags = None
-            for cand in candidates:
-                tags, is_correct = correct_biluo_tags(
-                    [id2label[j] for j in cast(Iterable, cand)]
-                )
-                if is_correct:
-                    best_tags = tags
-                    break
-                if best_tags is None:
-                    best_tags = tags
+            best_tags = get_best_tags(logit, id2label, self.k_beam)
+            assert len(doc) == len(best_tags), (doc, best_tags)
             doc.ents = spacy.util.filter_spans(
                 doc.ents + tuple(spans_from_biluo_tags(doc, best_tags))
             )
@@ -177,7 +156,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
     def _extract_logit(
         self, logit: torch.Tensor, alignment: List[List[int]]
     ) -> torch.Tensor:
-        idx = [a[0] for a in alignment if len(a) > 0]
+        idx = [a[0] if len(a) > 0 else self.ignore_label_index for a in alignment]
         return logit[idx]
 
     @property
@@ -188,6 +167,44 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
     def k_beam(self, k: int):
         assert isinstance(k, int)
         self.cfg[self.K_BEAM] = k
+
+
+def _create_target(
+    all_aligns: Iterable[Iterable[Iterable[int]]],
+    all_ners: Iterable[Iterable[int]],
+    logits: torch.Tensor,
+    ignore_index: int,
+) -> torch.Tensor:
+    # Why aren't this method accepting `docs` and `golds` directly? - testability.
+    batch_size, length, _ = logits.shape
+    target = logits.new_full((batch_size, length), ignore_index, dtype=torch.long)
+    for i, (aligns, ners) in enumerate(zip(all_aligns, all_ners)):
+        # use first wordpiece for each tokens
+        idx = (more_itertools.first(a, None) for a in aligns)
+        # drop elements where idx == None
+        idx_ners = [(i, ner) for i, ner in zip(idx, ners) if i is not None]
+        if not idx_ners:
+            continue
+        idx, ners = zip(*idx_ners)
+        target[i, idx] = target.new_tensor(ners)
+    return target
+
+
+def get_best_tags(logit: torch.Tensor, id2label: List[str], k_beam: int) -> List[str]:
+    """Select best tags from logit based on beamsearch."""
+    candidates = beamsearch(logit, k_beam)
+    assert len(cast(Sized, candidates))
+    best_tags = []
+    for cand in candidates:
+        tags, is_correct = correct_biluo_tags(
+            [id2label[j] for j in cast(Iterable, cand)]
+        )
+        if is_correct:
+            best_tags = tags
+            break
+        if not best_tags:
+            best_tags = tags
+    return best_tags
 
 
 TrfForTokenClassificationBase.install_extensions()
