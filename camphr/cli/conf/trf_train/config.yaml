@@ -5,8 +5,6 @@ model:
         optimizer:
             class: transformers.optimization.AdamW
             params:
-                lr: 0.00005
-                eps: 0.00000001
     pretrained:
 train:
     data:

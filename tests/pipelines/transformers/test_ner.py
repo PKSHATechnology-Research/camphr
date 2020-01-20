@@ -144,10 +144,6 @@ def test_serialization(nlp):
     check_serialization(nlp)
 
 
-def st_justsize_list(elements, size: int):
-    return st.lists(elements, min_size=size, max_size=size)
-
-
 @st.composite
 def case_for_create_target(draw):
     batchsize = draw(st.integers(0, 10))
@@ -161,7 +157,7 @@ def case_for_create_target(draw):
     for _ in range(batchsize):
         aligns = []
         ntokens = draw(st.integers(0, int(length * 1.2)))
-        all_ners.append(draw(st_justsize_list(st.integers(0, n_class - 1), ntokens)))
+        all_ners.append(draw(st.lists(st.integers(0, n_class - 1), ntokens, ntokens)))
         cur = 0
         for _ in range(ntokens):
             align = sorted(draw(st.sets(st.integers(cur, length - 1))))
