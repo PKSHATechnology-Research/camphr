@@ -46,7 +46,6 @@ pyyaml = "*"
 rope = "*"
 hypothesis = "*"
 pre-commit = "*"
-pandas = "*"
 toml = "^0.10.0"
 
 [tool.poetry.dependencies.allennlp]
