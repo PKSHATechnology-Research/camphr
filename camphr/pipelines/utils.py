@@ -212,8 +212,15 @@ EPS = 1e-5
 
 
 def beamsearch(data: torch.Tensor, k: int) -> torch.Tensor:
-    assert len(cast(Sized, data))
+    """Beam search for sequential scores
+    
+    Args:
+        data: tensor of shape (length, d). requires d > 0
+        k: beam width
+    Returns: (k, length) tensor"""
     assert len(data.shape) == 2
+    if len(data) == 0:
+        return torch.zeros(k, 0)
 
     # scaling for score
     data = minmax_scale(data) + EPS

@@ -164,13 +164,14 @@ def test_user_hooks_mixin():
 st_int = st.integers(1, 100)
 
 
-@given(st_int, st_int, st_int, st.integers(-1000, 1000))
+@given(st.integers(0, 100), st_int, st_int, st.integers(-1000, 1000))
 def test_beamsearch(n, m, k, s):
     torch.manual_seed(s)
     data = torch.randn(n, m)
     output = beamsearch(data, k)
-    assert output.shape == (min(m ** n, k), n)
-    assert all(output[0] == data.argmax(1))
+    if n != 0:
+        assert output.shape == (min(m ** n, k), n)
+        assert all(output[0] == data.argmax(1))
 
 
 def _elephant_beamsearch(data: torch.Tensor, k: int) -> torch.Tensor:

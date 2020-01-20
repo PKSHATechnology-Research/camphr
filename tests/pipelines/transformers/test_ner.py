@@ -83,6 +83,8 @@ TESTCASE_ENE = [
     ("。", {"entities": []}),
     (" おはよう", {"entities": []}),
     ("　おはよう", {"entities": []}),
+    ("", {"entities": []}),
+    ("\n\n\n", {"entities": []}),
 ]
 
 

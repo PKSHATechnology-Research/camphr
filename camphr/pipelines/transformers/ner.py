@@ -128,19 +128,23 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         length = logits.shape[1]
         loss = x.new_tensor(0.0)
         for doc, gold, logit in zip(docs, golds, logits):
-            ners = self._get_nerlabel_from_gold(gold)
+            doc._.cls_logit = logit
             # use first wordpiece for each tokens
             idx = (more_itertools.first(a, -1) for a in doc._.get(ATTRS.align))
             idx = [a for a in idx if a < length]
+            ners = self._get_nerlabel_from_gold(gold)
             ners = (label2id[ner] for ner in ners)
             ners = [ner if a != -1 else ignore_index for ner, a in zip(ners, idx)]
+            if not ners:
+                continue
             pred = logit[idx]
-            target = torch.tensor(ners, device=self.device)
+            target = torch.tensor(ners, device=self.device, dtype=torch.long)
             loss += F.cross_entropy(pred, target, ignore_index=ignore_index)
-            doc._.cls_logit = logit
         add_loss_to_docs(docs, loss)
 
     def _get_nerlabel_from_gold(self, gold: GoldParse) -> List[str]:
+        if gold.ner is None:
+            return []
         ners = [self.convert_label(ner) for ner in gold.ner]
         return ners
 
