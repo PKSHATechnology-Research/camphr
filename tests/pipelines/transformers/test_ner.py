@@ -94,13 +94,13 @@ TESTCASE_ENE = [
 @pytest.mark.parametrize("text,gold", TESTCASE_ENE)
 def test_call(nlp: Language, text, gold, label_type):
     if label_type == "irex":
-        pytest.skip()
+        pytest.skip("label type mismatch")
     nlp(text)
 
 
 def test_update(nlp: Language, label_type):
     if label_type == "irex":
-        pytest.skip()
+        pytest.skip("label type mismatch")
     optim = nlp.resume_training()
     nlp.update(*zip(*TESTCASE_ENE), optim)
 
@@ -116,7 +116,7 @@ def example_gold(request, label_type):
             d = json.load(f)
         return d
     else:
-        pytest.skip()
+        pytest.skip("label type mismatch")
 
 
 @pytest.fixture(scope="module", params=["ner/ner-irex-long.json"])

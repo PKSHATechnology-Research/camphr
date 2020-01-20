@@ -29,7 +29,11 @@ def check_mecab() -> bool:
     return True
 
 
-checks = {"ja_mecab": check_mecab, "ja_juman": check_juman}
+checks = {
+    "ja_mecab": check_mecab,
+    "ja_juman": check_juman,
+    "camphr_torch": lambda: True,
+}
 
 
 def check_lang(lang: str):

@@ -15,7 +15,7 @@ LANGS = conf["tool"]["poetry"]["plugins"]["spacy_languages"]
 def lang(request):
     name = request.param
     if not check_lang(name):
-        pytest.skip()
+        pytest.skip(f"{name} is required")
     return name
 
 

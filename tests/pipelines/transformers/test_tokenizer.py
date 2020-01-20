@@ -84,7 +84,7 @@ def test_tokenizer(
     tmp_path: Path,
 ):
     if model_name != trf_name_or_path:
-        pytest.skip()
+        pytest.skip("model type mismatch")
     doc = Doc(Vocab(), tokens, spaces=spaces)
 
     def check():
