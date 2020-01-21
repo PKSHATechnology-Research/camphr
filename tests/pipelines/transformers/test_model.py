@@ -5,9 +5,11 @@ import torch
 from spacy.language import Language
 from spacy.tokens import Doc
 
+from camphr.lang.torch import TorchLanguage
 from camphr.models import NLPConfig, create_model
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL, TrfModel
-from camphr.pipelines.transformers.utils import ATTRS
+from camphr.pipelines.transformers.utils import ATTRS, get_last_hidden_state_from_docs
+from camphr.torch_utils import add_loss_to_docs
 from tests.utils import TRF_TESTMODEL_PATH, check_serialization
 
 TESTCASES = [
@@ -70,11 +72,32 @@ def test_doc_similarlity(nlp, text1, text2):
     assert doc1.similarity(doc2)
 
 
-def test_freeze(nlp: Language):
-    pipe: TrfModel = nlp.pipeline[-1][1]
-    assert len(list(pipe.optim_parameters())) > 0
+def test_update(nlp: TorchLanguage):
+    texts = ["This is a test sentence to check\u3000model.update!"]
+    labels = [{}]
+    pipe: TrfModel = nlp.get_pipe(TRANSFORMERS_MODEL)
+    optimizer = nlp.resume_training()
+    eps = 1e-5
+
+    def sum_param(params):
+        return sum(p.sum().item() for p in params)
+
+    def train():
+        docs, golds = nlp._format_docs_and_golds(texts, labels)
+        before = sum_param(pipe.optim_parameters())
+        nlp._update_pipes(docs, golds)
+        h = get_last_hidden_state_from_docs(docs)
+        loss = h.sum() + torch.tensor(0.0, requires_grad=True)
+        add_loss_to_docs(docs, loss)
+        nlp._update_params(docs, optimizer)
+        return abs(before - sum_param(pipe.optim_parameters()))
+
+    assert train() > eps
+
+    # freeze model
     pipe.cfg["freeze"] = True
-    assert len(list(pipe.optim_parameters())) == 0
+    assert train() < eps
+    # restore freeze state
     pipe.cfg["freeze"] = False
 
 

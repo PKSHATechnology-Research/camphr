@@ -63,7 +63,7 @@ def train_epoch(
     for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
         texts, golds = zip(*batch)
         try:
-            nlp.update(texts, golds, optim, debug=True)
+            nlp.update(texts, golds, optim, verbose=True)
         except Exception:
             report_fail(batch)
             raise
@@ -83,7 +83,7 @@ def train(
     savedir: Path,
 ) -> None:
     eval_fn = EVAL_FN_MAP[cfg.task]
-    optim = nlp.resume_training(t_total=cfg.niter)
+    optim = nlp.resume_training()
     for i in range(cfg.niter):
         random.shuffle(train_data)
         train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)

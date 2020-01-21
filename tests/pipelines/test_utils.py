@@ -1,4 +1,3 @@
-import math
 import random
 from typing import List, Tuple
 
@@ -159,49 +158,20 @@ def test_user_hooks_mixin():
     assert obj.user_hooks["foo"](1) == 2
 
 
-st_int = st.integers(1, 10)
-
-
-@given(st.integers(0, 20), st_int, st_int, st.integers(-1000, 1000))
+@given(
+    st.integers(0, 200),
+    st.integers(1, 100),
+    st.integers(1, 10),
+    st.integers(-1000, 1000),
+)
 def test_beamsearch(n, m, k, s):
     torch.manual_seed(s)
-    data = torch.randn(n, m).softmax(1)
-    output = beamsearch(data, k)
+    prob = torch.rand((n, m))
+    output = beamsearch(prob, k)
     if n != 0:
         assert output.shape == (min(m ** n, k), n)
-        assert all(output[0] == data.argmax(1)), data
-
-
-def _heavy_beamsearch(data: torch.Tensor, k: int) -> torch.Tensor:
-    # copied from https://machinelearningmastery.com/beam-search-decoder-natural-language-processing/
-    sequences: List[Tuple[List[int], float]] = [([], 1.0)]
-    # walk over each step in sequence
-    for row in data:
-        all_candidates = list()
-        # expand each current candidate
-        for i in range(len(sequences)):
-            seq, score = sequences[i]
-            for j in range(len(row)):
-                candidate = (seq + [j], score * -math.log(row[j]))
-                all_candidates.append(candidate)
-        # order all candidates by score
-        ordered = sorted(all_candidates, key=lambda tup: tup[1])
-        # select k best
-        sequences = ordered[:k]
-    return torch.tensor([seq[0] for seq in sequences])
-
-
-L = 10
-st_small_int = st.integers(1, L)
-
-
-@given(st_small_int, st_small_int, st.integers(1, L ** 2), st.integers(-1000, 1000))
-def test_with_heavy_beamsearch(n, m, k, s):
-    torch.manual_seed(s)
-    data = torch.randn(n, m).softmax(1)
-    output = beamsearch(data, k)
-    output2 = _heavy_beamsearch(data, k)
-    assert torch.all(output == output2), data
+        assert all(output[0] == prob.argmax(1))
+        assert all(output[0] == beamsearch(prob, 1)[0])
 
 
 def test_flatten_docs_to_sens(vocab):

@@ -195,23 +195,24 @@ def beamsearch(probs: torch.Tensor, k: int) -> torch.Tensor:
     """Beam search for sequential probabilities.
 
     Args:
-        data: tensor of shape (length, d). requires d > 0. Assumed softmaxed.
+        data: tensor of shape (length, d). requires d > 0. Assumed all items in `probs` in range [0, 1].
         k: beam width
-    Returns: (k, length) tensor"""
+    Returns: (k, length) tensor
+    """
     assert len(probs.shape) == 2
     if len(probs) == 0:
         return torch.zeros(k, 0)
 
-    # scaling for score
-    data = -probs.log()
-
+    # We calculate top k-th argmax of E = p0p1p2..pn-1.
+    # To avoid over(under)flow, evaluete log(E) instead of E.
+    # By doing this, E can be evaluated by addition.
+    data = probs.to(torch.double).log()
     _, m = data.shape
-    scores, candidates = torch.topk(data[0], k=min(k, m), largest=False)
+    scores, candidates = torch.topk(data[0], k=min(k, m))
     candidates = candidates[:, None]
-
     for row in data[1:]:
-        z = torch.einsum("i,j->ij", scores, row).flatten()
-        scores, flat_idx = torch.topk(z, k=min(k, len(z)), largest=False)
+        z = (scores[:, None] + row[None, :]).flatten()
+        scores, flat_idx = torch.topk(z, k=min(k, len(z)))
         i, j = flat_idx // m, flat_idx % m
         candidates = torch.cat([candidates[i], j[:, None]], dim=-1)
     return candidates

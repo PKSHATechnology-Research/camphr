@@ -55,19 +55,25 @@ class TorchLanguage(Language):
         docs: Sequence[Doc],
         golds: Sequence[GoldParse],
         optimizer: optim.Optimizer,
-        debug: bool = False,
+        verbose: bool = False,
     ):
         """Update `TorchPipe` models in pipline."""
         docs, golds = self._format_docs_and_golds(docs, golds)
+        self._update_pipes(docs, golds)
+        self._update_params(docs, optimizer, verbose)
 
+    def _update_pipes(self, docs: Sequence[Doc], golds: Sequence[GoldParse]) -> None:
         for _, pipe in self.pipeline:
             pipe.update(docs, golds)
 
+    def _update_params(
+        self, docs: Sequence[Doc], optimizer: optim.Optimizer, verbose: bool = False
+    ):
         loss = get_loss_from_docs(docs)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        if debug:
+        if verbose:
             logger.info(f"Loss: {loss.detach().item()}")
 
     def resume_training(self, **kwargs) -> optim.Optimizer:
@@ -78,12 +84,15 @@ class TorchLanguage(Language):
         """
         assert hasattr(self, "pipeline")
 
-        params = itertools.chain.from_iterable(
+        params = self.get_params()
+        return self.create_optimizer(params, **kwargs)
+
+    def get_params(self):
+        return itertools.chain.from_iterable(
             pipe.optim_parameters()
             for _, pipe in self.pipeline
             if isinstance(pipe, TorchPipe)
         )
-        return self.create_optimizer(params, **kwargs)
 
     def require_optimizer_config(self):
         assert isinstance(

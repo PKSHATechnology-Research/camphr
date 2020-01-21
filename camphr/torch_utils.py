@@ -1,9 +1,11 @@
 """The module torch_utils defines utilities for pytorch."""
+import contextlib
 import operator
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Optional, Union, cast
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
 
 import torch
+import torch._C
 import torch.nn as nn
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
@@ -87,3 +89,11 @@ def add_loss_to_docs(docs: List[Doc], loss: torch.Tensor):
         doc.user_data[TORCH_LOSS] += loss
     else:
         doc.user_data[TORCH_LOSS] = loss
+
+
+@contextlib.contextmanager
+def set_grad(grad: bool) -> Iterator[None]:
+    prev = torch.is_grad_enabled()
+    torch.set_grad_enabled(grad)
+    yield
+    torch.set_grad_enabled(prev)

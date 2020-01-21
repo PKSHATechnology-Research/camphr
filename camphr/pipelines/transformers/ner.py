@@ -12,7 +12,7 @@ import torch.nn.functional as F
 import transformers
 from overrides import overrides
 from spacy.gold import GoldParse, spans_from_biluo_tags
-from spacy.tokens import Doc, Token
+from spacy.tokens import Doc
 
 from camphr.pipelines.utils import UNK, UserHooksMixin, beamsearch, correct_biluo_tags
 from camphr.torch_utils import TorchPipe, add_loss_to_docs
@@ -29,7 +29,6 @@ from .utils import (
     get_last_hidden_state_from_docs,
 )
 
-CLS_LOGIT = "cls_logit"
 NUM_LABELS = "num_labels"
 
 
@@ -64,24 +63,9 @@ class TrfForTokenClassificationBase(
     """Base class for token classification task (e.g. Named entity recognition).
 
     Requires `TrfModel` before this model in the pipeline to use this model.
-
-    Notes:
-        `Token._.cls_logit` is set and stored the output of this model into. This is usefule to calculate the probability of the classification.
-        `Doc._.cls_logit` is set and stored the output of this model into.
     """
 
     model_cls = TrfTokenClassifier
-
-    @staticmethod
-    def install_extensions():
-        token_exts = [CLS_LOGIT]
-        doc_exts = [CLS_LOGIT]
-        for ext in token_exts:
-            if Token.get_extension(ext) is None:
-                Token.set_extension(ext, default=None)
-        for ext in doc_exts:
-            if Doc.get_extension(ext) is None:
-                Doc.set_extension(ext, default=None)
 
     @classmethod
     def Model(cls, trf_name_or_path: str, **cfg) -> TrfTokenClassifier:
@@ -111,6 +95,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
     """Named entity recognition component with pytorch-transformers."""
 
     K_BEAM = "k_beam"
+    DEFAULT_BEAM_WIDTH = 5
 
     @property
     def ignore_label_index(self) -> int:
@@ -147,7 +132,6 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         for doc, logit in zip(docs, cast(Iterable, logits)):
             logit = self._extract_logit(logit, doc._.get(ATTRS.align))
             best_tags = get_best_tags(logit, id2label, self.k_beam)
-            assert len(doc) == len(best_tags), (doc, best_tags)
             doc.ents = spacy.util.filter_spans(
                 doc.ents + tuple(spans_from_biluo_tags(doc, best_tags))
             )
@@ -161,7 +145,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
 
     @property
     def k_beam(self) -> int:
-        return self.cfg.setdefault(self.K_BEAM, 10)
+        return self.cfg.setdefault(self.K_BEAM, self.DEFAULT_BEAM_WIDTH)
 
     @k_beam.setter
     def k_beam(self, k: int):
@@ -205,6 +189,3 @@ def get_best_tags(logit: torch.Tensor, id2label: List[str], k_beam: int) -> List
         if not best_tags:
             best_tags = tags
     return best_tags
-
-
-TrfForTokenClassificationBase.install_extensions()

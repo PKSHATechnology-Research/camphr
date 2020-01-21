@@ -10,7 +10,7 @@ from spacy.gold import GoldParse
 from spacy.tokens import Doc
 
 from camphr.pipelines.utils import get_similarity
-from camphr.torch_utils import TensorWrapper, TorchPipe
+from camphr.torch_utils import TensorWrapper, TorchPipe, set_grad
 
 from .auto import get_trf_model_cls
 from .tokenizer import TrfTokenizer
@@ -45,11 +45,14 @@ class TrfModel(TrfAutoMixin, TorchPipe):
         return output[0]
 
     def predict(self, docs: List[Doc]) -> torch.Tensor:
-        self.require_model()
         self.model.eval()
+        return self._apply_model(docs, False)
+
+    def _apply_model(self, docs: List[Doc], grad: bool) -> torch.Tensor:
+        self.require_model()
         x = TrfTokenizer.get_transformers_input(docs)
         x.to(device=self.device)
-        with torch.no_grad():
+        with set_grad(grad):
             y = self.model(**x.model_input)
         return self._get_last_hidden_state(y)
 
@@ -92,15 +95,11 @@ class TrfModel(TrfAutoMixin, TorchPipe):
 
     def update(self, docs: List[Doc], golds: List[GoldParse]):
         """Simply forward `docs` in training mode."""
-        self.require_model()
         if self.freeze:
-            torch.set_grad_enabled(False)
             self.model.eval()
         else:
             self.model.train()
-        y = self.predict(docs)
-        torch.set_grad_enabled(True)
-
+        y = self._apply_model(docs, not self.freeze)
         # `set_vector = False` because the tensor may not be necessary in updating.
         # The tensor is still available via doc._.transformers_last_hidden_state.
         self.set_annotations(docs, y, set_vector=False)

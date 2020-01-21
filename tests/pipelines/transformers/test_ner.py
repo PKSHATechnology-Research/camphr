@@ -7,7 +7,7 @@ import torch
 from hypothesis import given
 from spacy.language import Language
 
-from camphr.models import create_model
+from camphr.models import create_model, load
 from camphr.ner_labels.labels_ene import ALL_LABELS as enes
 from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
 from camphr.ner_labels.utils import make_biluo_labels
@@ -15,7 +15,7 @@ from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER, _create_target
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 
-from ...utils import DATA_DIR, check_serialization
+from ...utils import BERT_DIR, DATA_DIR, check_mecab, check_serialization
 
 label_types = ["ene", "irex"]
 
@@ -105,6 +105,9 @@ def test_update(nlp: Language, label_type):
     nlp.update(*zip(*TESTCASE_ENE), optim)
 
 
+# def test_update_long(nlp: Language):
+
+
 @pytest.fixture(
     scope="module",
     params=["ner/ner-ene.json", "ner/ner-irex.json", "ner/ner-ene2.json"],
@@ -181,3 +184,20 @@ def test_hyp_create_target(case):
         not_heads = [i for i in range(len(target)) if i not in heads]
         assert torch.all(target[heads] != ignore_index)
         assert torch.all(target[not_heads] == ignore_index)
+
+
+@pytest.mark.skipif(not check_mecab(), reason="mecab is required")
+def test_kbeam_config(labels):
+    nlp = load(
+        f"""
+    lang:
+        name: ja_mecab
+    pipeline:
+        {TRANSFORMERS_NER}:
+            k_beam: 111
+            labels: {labels}
+    pretrained: {BERT_DIR}
+    """
+    )
+    ner = nlp.get_pipe(TRANSFORMERS_NER)
+    assert ner.k_beam == 111
