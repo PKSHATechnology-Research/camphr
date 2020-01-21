@@ -191,37 +191,27 @@ class UserHooksMixin:
         hooks[k] = fn
 
 
-def minmax_scale(data: torch.Tensor) -> torch.Tensor:
-    M, m = data.max(), data.min()
-    if M == m:
-        return data / M
-    return (data - m) / (M - m)
-
-
-EPS = 1e-5
-
-
-def beamsearch(data: torch.Tensor, k: int) -> torch.Tensor:
-    """Beam search for sequential scores
+def beamsearch(probs: torch.Tensor, k: int) -> torch.Tensor:
+    """Beam search for sequential probabilities.
 
     Args:
-        data: tensor of shape (length, d). requires d > 0
+        data: tensor of shape (length, d). requires d > 0. Assumed softmaxed.
         k: beam width
     Returns: (k, length) tensor"""
-    assert len(data.shape) == 2
-    if len(data) == 0:
+    assert len(probs.shape) == 2
+    if len(probs) == 0:
         return torch.zeros(k, 0)
 
     # scaling for score
-    data = minmax_scale(data) + EPS
+    data = -probs.log()
 
     _, m = data.shape
-    scores, candidates = torch.topk(data[0], k=min(k, m))
+    scores, candidates = torch.topk(data[0], k=min(k, m), largest=False)
     candidates = candidates[:, None]
 
     for row in data[1:]:
         z = torch.einsum("i,j->ij", scores, row).flatten()
-        scores, flat_idx = torch.topk(z, k=min(k, len(z)))
+        scores, flat_idx = torch.topk(z, k=min(k, len(z)), largest=False)
         i, j = flat_idx // m, flat_idx % m
         candidates = torch.cat([candidates[i], j[:, None]], dim=-1)
     return candidates

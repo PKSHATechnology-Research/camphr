@@ -192,7 +192,7 @@ def _create_target(
 
 def get_best_tags(logit: torch.Tensor, id2label: List[str], k_beam: int) -> List[str]:
     """Select best tags from logit based on beamsearch."""
-    candidates = beamsearch(logit, k_beam)
+    candidates = beamsearch(logit.softmax(-1), k_beam)
     assert len(cast(Sized, candidates))
     best_tags = []
     for cand in candidates:
