@@ -111,7 +111,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         logits = self.model(x)
         all_ners = (self._get_nerlabel_from_gold(gold) for gold in golds)
         all_aligns = (doc._.get(ATTRS.align) for doc in docs)
-        target = _create_target(all_aligns, all_ners, logits, self.ignore_label_index)
+        target = _create_target(all_aligns, all_ners, logits, ignore_index)
         loss = F.cross_entropy(
             logits.transpose(1, 2), target, ignore_index=ignore_index
         )

@@ -40,10 +40,6 @@ class TrfModel(TrfAutoMixin, TorchPipe):
     def max_length(self) -> int:
         return self.model.config.max_position_embeddings
 
-    def _get_last_hidden_state(self, output: Tuple[Any]) -> torch.Tensor:
-        # assumes output[0] is the last hidden state
-        return output[0]
-
     def predict(self, docs: List[Doc]) -> torch.Tensor:
         self.model.eval()
         return self._apply_model(docs, False)
@@ -55,6 +51,10 @@ class TrfModel(TrfAutoMixin, TorchPipe):
         with set_grad(grad):
             y = self.model(**x.model_input)
         return self._get_last_hidden_state(y)
+
+    def _get_last_hidden_state(self, output: Tuple[Any]) -> torch.Tensor:
+        # assumes output[0] is the last hidden state
+        return output[0]
 
     def set_annotations(
         self, docs: List[Doc], outputs: torch.Tensor, set_vector: bool = True
