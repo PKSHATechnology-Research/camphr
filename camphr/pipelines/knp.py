@@ -65,6 +65,11 @@ def juman_sentencizer(doc: Doc) -> Doc:
     return doc
 
 
+# For spacy factory. see pyproject.toml
+def juman_sentencizer_factory(*args, **kwargs):
+    return juman_sentencizer
+
+
 @spacy.component("knp", assigns=["doc.ents"])
 class KNP:
     @staticmethod

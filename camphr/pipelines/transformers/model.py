@@ -13,14 +13,14 @@ from camphr.pipelines.utils import get_similarity
 from camphr.torch_utils import TensorWrapper, TorchPipe
 
 from .auto import get_trf_model_cls
-from .tokenizer import TransformersTokenizer
+from .tokenizer import TrfTokenizer
 from .utils import ATTRS, TrfAutoMixin
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 
 
 @dataclasses.dataclass
-class TransformersModelInputs:
+class TrfModelInputs:
     input_ids: torch.Tensor
     token_type_ids: Optional[torch.Tensor] = None
     attention_mask: Optional[torch.Tensor] = None
@@ -30,7 +30,7 @@ TRANSFORMERS_MODEL = "transformers_model"
 
 
 @spacy.component(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
-class TransformersModel(TrfAutoMixin, TorchPipe):
+class TrfModel(TrfAutoMixin, TorchPipe):
     """Transformers Model component."""
 
     _TRF_NAME = "trf_name"
@@ -47,7 +47,7 @@ class TransformersModel(TrfAutoMixin, TorchPipe):
     def predict(self, docs: List[Doc]) -> torch.Tensor:
         self.require_model()
         self.model.eval()
-        x = TransformersTokenizer.get_transformers_input(docs)
+        x = TrfTokenizer.get_transformers_input(docs)
         x.to(device=self.device)
         with torch.no_grad():
             y = self.model(**x.model_input)

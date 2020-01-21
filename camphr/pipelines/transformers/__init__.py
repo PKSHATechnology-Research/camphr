@@ -4,14 +4,14 @@ from .maskedlm import (
     add_maskedlm_pipe,
     remove_maskedlm_pipe,
 )
-from .model import TransformersModel
+from .model import TrfModel
 from .ner import TrfForNamedEntityRecognition
 from .seq_classification import TrfForSequenceClassification
-from .tokenizer import TransformersTokenizer
+from .tokenizer import TrfTokenizer
 
 __all__ = [
-    "TransformersModel",
-    "TransformersTokenizer",
+    "TrfModel",
+    "TrfTokenizer",
     "BertForMaskedLMPreprocessor",
     "BertForMaskedLM",
     "TrfForNamedEntityRecognition",

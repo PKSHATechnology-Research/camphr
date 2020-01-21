@@ -6,7 +6,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 
 from camphr.models import NLPConfig, create_model
-from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL, TransformersModel
+from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL, TrfModel
 from camphr.pipelines.transformers.utils import ATTRS
 from tests.utils import TRF_TESTMODEL_PATH, check_serialization
 
@@ -71,7 +71,7 @@ def test_doc_similarlity(nlp, text1, text2):
 
 
 def test_freeze(nlp: Language):
-    pipe: TransformersModel = nlp.pipeline[-1][1]
+    pipe: TrfModel = nlp.pipeline[-1][1]
     assert len(list(pipe.optim_parameters())) > 0
     pipe.cfg["freeze"] = True
     assert len(list(pipe.optim_parameters())) == 0

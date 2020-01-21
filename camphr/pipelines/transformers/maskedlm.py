@@ -16,7 +16,7 @@ from transformers import BertConfig
 from camphr.torch_utils import TorchPipe, add_loss_to_docs
 
 from .model import TRANSFORMERS_MODEL
-from .tokenizer import TRANSFORMERS_TOKENIZER, TransformersTokenizer
+from .tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer
 from .utils import SerializationMixinForTrfTask, get_last_hidden_state_from_docs
 
 MASKEDLM_PREDICTION = "maskedlm_prediction"
@@ -81,7 +81,7 @@ class BertForMaskedLMPreprocessor(Pipe):
 
     def update(self, docs: List[Doc], *args, **kwargs):
         self.require_model()
-        inputs = TransformersTokenizer.get_transformers_input(docs)
+        inputs = TrfTokenizer.get_transformers_input(docs)
         input_ids = inputs.input_ids
         set_maskedlm_labels(docs, input_ids)
 

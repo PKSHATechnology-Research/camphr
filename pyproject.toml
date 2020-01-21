@@ -82,6 +82,15 @@ ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
 
+[tool.poetry.plugins.spacy_factories]
+transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
+transformers_ner = "camphr.pipelines.transformers:TrfForNamedEntityRecognition.from_nlp"
+transformers_sequece_classifier = "camphr.pipelines.transformers:TrfForSequenceClassification.from_nlp"
+transformers_tokenizer = "camphr.pipelines.transformers:TrfTokenizer.from_nlp"
+juman_sentencizer = "camphr.pipelines.knp:juman_sentencizer_factory"
+knp = "camphr.pipelines.knp:KNP.from_nlp"
+
+
 [tool.isort]
 skip = ".venv/**/*.py"
 line_length = 88

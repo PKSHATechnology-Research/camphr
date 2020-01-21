@@ -6,10 +6,7 @@ from spacy.tokens import Doc
 from spacy.vocab import Vocab
 
 from camphr.models import create_model
-from camphr.pipelines.transformers.tokenizer import (
-    TRANSFORMERS_TOKENIZER,
-    TransformersTokenizer,
-)
+from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer
 from camphr.pipelines.transformers.utils import ATTRS
 
 from ...utils import BERT_DIR, XLNET_DIR
@@ -17,7 +14,7 @@ from ...utils import BERT_DIR, XLNET_DIR
 
 @pytest.fixture(scope="session")
 def trf_tokenizer(trf_name_or_path):
-    return TransformersTokenizer.from_pretrained(Vocab(), trf_name_or_path)
+    return TrfTokenizer.from_pretrained(Vocab(), trf_name_or_path)
 
 
 @pytest.mark.parametrize(
@@ -98,7 +95,7 @@ def test_tokenizer(
     tmp_path.mkdir(exist_ok=True)
     tmp_path.mkdir(exist_ok=True)
     trf_tokenizer.to_disk(tmp_path)
-    trf_tokenizer = TransformersTokenizer(Vocab())
+    trf_tokenizer = TrfTokenizer(Vocab())
     trf_tokenizer.from_disk(tmp_path)
     check()
 
@@ -123,7 +120,7 @@ def nlp(trf_name_or_path):
 
 def test_pipe(nlp):
     docs = list(nlp.pipe(TEXTS))
-    x = TransformersTokenizer.get_transformers_input(docs)
+    x = TrfTokenizer.get_transformers_input(docs)
     assert len(x.input_ids) == len(TEXTS)
 
 
@@ -131,13 +128,13 @@ def test_update(trf_tokenizer, nlp):
     docs = [nlp.make_doc(text) for text in TEXTS]
     trf_tokenizer.update(docs, [{} for _ in range(len(TEXTS))])
     assert len(docs) == len(
-        cast(Sized, TransformersTokenizer.get_transformers_input(docs).input_ids)
+        cast(Sized, TrfTokenizer.get_transformers_input(docs).input_ids)
     )
 
 
-def test_long_sequence(trf_tokenizer: TransformersTokenizer):
+def test_long_sequence(trf_tokenizer: TrfTokenizer):
     length = 10000
     doc = Doc(Vocab(), ["a"] * length, spaces=[True] * length)
     doc = trf_tokenizer(doc)
-    x = TransformersTokenizer.get_transformers_input([doc])
+    x = TrfTokenizer.get_transformers_input([doc])
     assert len(x.input_ids) <= trf_tokenizer.model.max_len

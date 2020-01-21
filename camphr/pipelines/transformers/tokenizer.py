@@ -14,7 +14,7 @@ TRANSFORMERS_TOKENIZER = "transformers_tokenizer"
 
 
 @spacy.component(TRANSFORMERS_TOKENIZER)
-class TransformersTokenizer(TrfAutoMixin, Pipe):
+class TrfTokenizer(TrfAutoMixin, Pipe):
     _TRF_NAME = "trf_name"
     _MODEL_CLS_GETTER = get_trf_tokenizer_cls
 
@@ -24,6 +24,7 @@ class TransformersTokenizer(TrfAutoMixin, Pipe):
         self.cfg = cfg
 
     def predict(self, docs: Sequence[Doc]) -> TransformersInput:
+        self.require_model()
         output = self.model.batch_encode_plus(
             [doc.text for doc in docs],
             add_special_tokens=True,
