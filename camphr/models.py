@@ -1,9 +1,11 @@
-"""The models module defines functions to create spacy models."""
-import copy
+"""`models` defined `camphr.load`, camphr model loader."""
+import functools
+from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
+import cytoolz
 import omegaconf
 import spacy
 from cytoolz import merge
@@ -30,6 +32,9 @@ def load(cfg_or_name: Union[str, CFG_SRC]) -> Language:
     if isinstance(cfg_or_name, str) and cfg_or_name in _PREDEFINED_CONFS:
         cfg_or_name = _PREDEFINED_CONFS[cfg_or_name].read_text()
     return create_model(cfg_or_name)
+
+
+__all__ = ["load"]
 
 
 @dataclass
@@ -74,16 +79,105 @@ def create_lang(cfg: LangConfig) -> Language:
     return spacy.blank(cfg.name, **kwargs)
 
 
+_ConfigParser = Callable[[NLPConfig], NLPConfig]
+
+
 def correct_model_config(cfg: NLPConfig) -> NLPConfig:
-    cfg = _resolve_alias(cfg)
-    cfg = _align_pipeline(cfg)
-    cfg = _correct_trf_pipeline(cfg)
-    cfg = _resolve_label(cfg)
+    """Parse config. Complement missing informations, resolve aliases, etc."""
+    PARSERS: List[_ConfigParser] = [
+        _resolve_alias,
+        _assign_pipeline,
+        _align_pipeline,
+        _correct_trf_pipeline,
+        _resolve_label,
+    ]
+    return cytoolz.pipe(cfg, *PARSERS)
+
+
+# Alias definition.
+# For example, `pretrained` key is converted to `pipeline.transformers_model.trf_name_or_path`.
+# The aliases in config is resolved by `_resolved_alias`
+ALIASES = {
+    "pretrained": f"pipeline.{TRANSFORMERS_MODEL}.trf_name_or_path",
+    "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",
+    "textcat_label": f"pipeline.{TRANSFORMERS_SEQ_CLASSIFIER}.labels",
+    "optimizer": f"lang.optimizer",
+}
+
+
+def _resolve_alias(cfg: NLPConfig) -> NLPConfig:
+    """Resolver for configuration alias."""
+    for alias, name in ALIASES.items():
+        v = get_by_dotkey(cfg, alias)
+        if v is None:
+            continue
+        cfg = OmegaConf.merge(cfg, OmegaConf.create(create_dict_from_dotkey(name, v)))
     return cfg
 
 
+TRF_BASES = [TRANSFORMERS_TOKENIZER, TRANSFORMERS_MODEL]
+TRF_TASKS = [TRANSFORMERS_SEQ_CLASSIFIER, TRANSFORMERS_NER]
+TRF_PIPES = TRF_BASES + TRF_TASKS
+
+
+# Mapping for pipeline requirements.
+# {"pipename": [required pipe names in front]}
+# e.g. `TRANSFORMERS_MODEL` requires `TRANSFORMERS_TOKENIZER` in front.
+PIPELINE_ALIGNMENT = {
+    TRANSFORMERS_MODEL: [TRANSFORMERS_TOKENIZER],
+    TRANSFORMERS_NER: [TRANSFORMERS_MODEL],
+    TRANSFORMERS_SEQ_CLASSIFIER: [TRANSFORMERS_MODEL],
+}
+
+
+def _assign_pipeline(cfg: NLPConfig) -> NLPConfig:
+    """assign required pipes defined in  `PIPELINE_ALIGNMENT`"""
+    pipe_names = list(cfg.pipeline.keys())
+    while True:
+        prev_len = len(pipe_names)
+        for k, v in PIPELINE_ALIGNMENT.items():
+            if k in pipe_names:
+                i = pipe_names.index(k)
+                for vv in v:
+                    if vv not in pipe_names:
+                        pipe_names.insert(i, vv)
+        if prev_len == len(pipe_names):
+            break
+    cfg.pipeline = {k: cfg.pipeline.get(k, {}) for k in pipe_names}
+    return cfg
+
+
+def _align_pipeline(cfg: NLPConfig) -> NLPConfig:
+    """align pipelines based on `PIPELINE_ALIGNMENT`"""
+    pipe_names = sorted(cfg.pipeline.keys(), key=_pipe_cmp_key)
+    cfg.pipeline = {k: cfg.pipeline.get(k, {}) for k in pipe_names}
+    return cfg
+
+
+@functools.cmp_to_key
+def _pipe_cmp_key(x: str, y: str) -> int:
+    """key function for `_align_pipeline`"""
+    if _is_ancestor(x, y):
+        return 1  # x comes after y
+    if _is_ancestor(y, x):
+        return -1  # y comes after x
+    return 0  # no order relation to x and y
+
+
+def _is_ancestor(child: str, ancestor: str) -> bool:
+    if child not in PIPELINE_ALIGNMENT:
+        return False
+    parents = deque(PIPELINE_ALIGNMENT[child])
+    while parents:
+        p = parents.popleft()
+        if p == ancestor:
+            return True
+        parents.extend(PIPELINE_ALIGNMENT.get(p, []))
+    return False
+
+
 def _correct_trf_pipeline(cfg: NLPConfig) -> NLPConfig:
-    """Correct config for transformers pipeline
+    """Correct config of transformers pipeline
 
     Note:
         1. Complement `trf_name_or_path` for transformers pipelines.
@@ -94,63 +188,12 @@ def _correct_trf_pipeline(cfg: NLPConfig) -> NLPConfig:
     return cfg
 
 
-TRF_BASES = [TRANSFORMERS_TOKENIZER, TRANSFORMERS_MODEL]
-TRF_TASKS = [TRANSFORMERS_SEQ_CLASSIFIER, TRANSFORMERS_NER]
-TRF_PIPES = TRF_BASES + TRF_TASKS
-
-ALIASES = {
-    "pretrained": f"pipeline.{TRANSFORMERS_MODEL}.trf_name_or_path",
-    "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",
-    "textcat_label": f"pipeline.{TRANSFORMERS_SEQ_CLASSIFIER}.labels",
-}
-
-
-def _resolve_alias(cfg: NLPConfig) -> NLPConfig:
-    for alias, name in ALIASES.items():
-        v = get_by_dotkey(cfg, alias)
-        if v is None:
-            continue
-        cfg = OmegaConf.merge(cfg, OmegaConf.create(create_dict_from_dotkey(name, v)))
-    return cfg
-
-
-# Mapping for pipeline alignment.
-# pipename: required pipe names in front
-# e.g. `TRANSFORMERS_MODEL` requires `TRANSFORMERS_TOKENIZER` in front.
-# Why `required pipe` is list? - For depending on multiple pipes.
-PIPELINE_ALIGNMENT = {
-    TRANSFORMERS_MODEL: [TRANSFORMERS_TOKENIZER],
-    TRANSFORMERS_NER: [TRANSFORMERS_MODEL],
-    TRANSFORMERS_SEQ_CLASSIFIER: [TRANSFORMERS_MODEL],
-}
-
-
-def _align_pipeline(cfg: NLPConfig) -> NLPConfig:
-    pipe_names = list(cfg.pipeline.keys())
-
-    def _align(pipe_names):
-        for p in set(PIPELINE_ALIGNMENT) & set(pipe_names):
-            for q in PIPELINE_ALIGNMENT[p]:
-                pi = pipe_names.index(p)
-                if q not in pipe_names:
-                    pipe_names.insert(pi, q)
-                else:
-                    qi = pipe_names.index(q)
-                    if pi < qi:
-                        pipe_names[pi], pipe_names[qi] = pipe_names[qi], pipe_names[pi]
-        return pipe_names
-
-    while True:
-        prev = copy.copy(pipe_names)
-        pipe_names = _align(pipe_names)
-        if prev == pipe_names:
-            break
-
-    cfg.pipeline = {k: cfg.pipeline.get(k, {}) for k in pipe_names}
-    return cfg
-
-
 def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
+    """For transformers pipeline.
+
+    All transformers pipeline requires same `trf_name_or_path`, but it is a pain to write down.
+    So if there is any transformers pipeline with `trf_name_or_path`, copy to other transformers pipes.
+    """
     KEY = "trf_name_or_path"
     VAL = ""
     if not set(cfg.pipeline.keys()) & set(TRF_PIPES):
@@ -169,17 +212,19 @@ def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
     return cfg
 
 
+def _correct_torch(cfg: NLPConfig) -> NLPConfig:
+    """If there is any transformers pipeline, set `torch` to True"""
+    if set(cfg.pipeline) & set(TRF_PIPES):
+        cfg.lang.torch = True
+    return cfg
+
+
 def _resolve_label(cfg: NLPConfig) -> NLPConfig:
+    """Resolver for ner and sequence classification label config."""
     ner = cfg.pipeline[TRANSFORMERS_NER]
     if ner:
         ner[LABELS] = get_biluo_labels(ner[LABELS])
     seq = cfg.pipeline[TRANSFORMERS_SEQ_CLASSIFIER]
     if seq:
         seq[LABELS] = get_labels(seq[LABELS])
-    return cfg
-
-
-def _correct_torch(cfg: NLPConfig) -> NLPConfig:
-    if set(cfg.pipeline) & set(TRF_PIPES):
-        cfg.lang.torch = True
     return cfg

@@ -8,6 +8,7 @@ from camphr.models import (
     PIPELINE_ALIGNMENT,
     LangConfig,
     _align_pipeline,
+    _assign_pipeline,
     _resolve_alias,
     correct_model_config,
     create_lang,
@@ -187,8 +188,9 @@ def inject_dummy():
         ),
     ],
 )
-def test_align_pipeline(yml, modified, inject_dummy):
+def test_assign_and_align_pipeline(yml, modified, inject_dummy):
     config = OmegaConf.create(yml)
+    config = _assign_pipeline(config)
     config = _align_pipeline(config)
     assert config.pipeline == OmegaConf.create(modified).pipeline
 
@@ -228,6 +230,7 @@ def test_align_pipeline(yml, modified, inject_dummy):
 def test_align_pipeline_and_alias(yml, modified):
     config = OmegaConf.create(yml)
     config = _resolve_alias(config)
+    config = _assign_pipeline(config)
     config = _align_pipeline(config)
     modified = OmegaConf.create(modified)
     assert list(config.pipeline) == list(modified.pipeline)
