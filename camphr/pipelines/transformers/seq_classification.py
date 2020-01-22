@@ -131,5 +131,5 @@ def _topk_labels(doc: Doc, k: int) -> List[str]:
     return sorted(doc.cats.items(), key=operator.itemgetter(1), reverse=True)[:k]
 
 
-Doc.set_extension(TOP_LABEL, getter=_top_label)
-Doc.set_extension(TOPK_LABELS, method=_topk_labels)
+Doc.set_extension(TOP_LABEL, getter=_top_label, force=True)
+Doc.set_extension(TOPK_LABELS, method=_topk_labels, force=True)
