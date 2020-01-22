@@ -8,10 +8,17 @@ tag = true
 commit = true
 
 [tool.poetry]
-version = "0.5.0.dev2"
+version = "0.5.0.dev3"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spacy plugin"
+
+[tool.isort]
+skip = ".venv/**/*.py"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_first_party = "camphr"
 
 [tool.poetry.dependencies]
 python = ">=3.6.1,<3.8.0"
@@ -39,14 +46,16 @@ mecab = [ "mecab-python3",]
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
-pytest = "<5.3.3" # version 5.3.3 has a bug and error occurs. Report the bug after open-source.
+pytest = "<5.3.3"
 flake8 = "*"
 pyyaml = "*"
 rope = "*"
 hypothesis = "*"
 pre-commit = "*"
 toml = "^0.10.0"
-isort = {extras = ["toml"], version = "^4.3.21"}
+
+[tool.poetry.scripts]
+camphr = "camphr.cli.__main__:main"
 
 [tool.poetry.dependencies.allennlp]
 git = "https://github.com/allenai/allennlp"
@@ -61,9 +70,6 @@ optional = true
 version = "*"
 optional = true
 
-[tool.poetry.scripts]
-camphr = "camphr.cli.__main__:main"
-
 [tool.poetry.dependencies.pyknp]
 git = "https://github.com/ku-nlp/pyknp"
 branch = "master"
@@ -72,6 +78,10 @@ optional = true
 [tool.poetry.dependencies.mecab-python3]
 version = "^0.996.3"
 optional = true
+
+[tool.poetry.dev-dependencies.isort]
+extras = [ "toml",]
+version = "^4.3.21"
 
 [tool.poetry.dev-dependencies.black]
 version = "*"
@@ -89,11 +99,3 @@ transformers_sequece_classifier = "camphr.pipelines.transformers:TrfForSequenceC
 transformers_tokenizer = "camphr.pipelines.transformers:TrfTokenizer.from_nlp"
 juman_sentencizer = "camphr.pipelines.knp:juman_sentencizer_factory"
 knp = "camphr.pipelines.knp:KNP.from_nlp"
-
-
-[tool.isort]
-skip = ".venv/**/*.py"
-line_length = 88
-multi_line_output = 3
-include_trailing_comma = true
-known_first_party = "camphr"
