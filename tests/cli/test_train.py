@@ -1,9 +1,9 @@
 from pathlib import Path
 
-import omegaconf
 import pytest
+from omegaconf import OmegaConf
 
-from camphr.cli.trf_train import _main
+from camphr.cli.train import _main
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 
 from ..utils import BERT_DIR
@@ -46,18 +46,18 @@ DATA_DIR = Path(__file__).parent / "fixtures"
 )
 def config(request):
     ident, diff = request.param
-    _config = omegaconf.OmegaConf.load(
+    _config = OmegaConf.load(
         str(
             Path(__file__).parent.parent.parent
             / "camphr"
             / "cli"
             / "conf"
-            / "trf_train"
+            / "train"
             / "config.yaml"
         )
     )
-    diff = omegaconf.OmegaConf.create(diff)
-    _config = omegaconf.OmegaConf.merge(_config, diff)
+    diff = OmegaConf.create(diff)
+    _config = OmegaConf.merge(_config, diff)
     return _config
 
 

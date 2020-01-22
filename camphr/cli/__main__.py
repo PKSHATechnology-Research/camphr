@@ -3,7 +3,7 @@ import sys
 
 from wasabi import msg
 
-commands = ["trf-train"]
+commands = ["train"]
 MSG_AVAILABLE_COMMANDS = f"Available commands: {', '.join(commands)}"
 
 

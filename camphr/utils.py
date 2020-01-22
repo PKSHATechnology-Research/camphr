@@ -9,7 +9,9 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union, cast
 import spacy
 import srsly
 import yaml
+from cytoolz import curry
 from more_itertools import padded
+from omegaconf import Config, OmegaConf
 from spacy.errors import Errors
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
@@ -197,3 +199,13 @@ def create_dict_from_dotkey(dotkey: str, value: Any) -> Dict[str, Any]:
         cur = cur[key]
     cur[keys[-1]] = value
     return result
+
+
+@curry
+def resolve_alias(aliases: Dict[str, str], cfg: Config) -> Config:
+    for alias, name in aliases.items():
+        v = get_by_dotkey(cfg, alias)
+        if v is None:
+            continue
+        cfg = OmegaConf.merge(cfg, OmegaConf.create(create_dict_from_dotkey(name, v)))
+    return cfg

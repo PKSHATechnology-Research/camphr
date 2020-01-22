@@ -7,11 +7,10 @@ from typing import Any, Dict, List, Tuple, Union
 
 import hydra
 import srsly
-from omegaconf import Config, OmegaConf
+from omegaconf import Config
 from sklearn.model_selection import train_test_split
 
-from camphr.models import correct_model_config
-from camphr.utils import create_dict_from_dotkey, get_by_dotkey
+from camphr.utils import get_by_dotkey
 
 GoldParsable = Dict[str, Any]
 InputData = List[Tuple[str, GoldParsable]]
@@ -39,6 +38,7 @@ def report_fail(json_serializable_data: Any) -> None:
 
 
 def convert_fullpath_if_path(text: str) -> str:
+    path = os.path.expanduser(text)
     path = hydra.utils.to_absolute_path(text)
     if os.path.exists(path):
         return path
@@ -56,34 +56,3 @@ def check_nonempty(cfg: Config, fields: List[Union[str, List[str]]]):
                 errors.append(f"Any of {', '.join(key)} is required.")
     if errors:
         raise ValueError("\n".join(errors))
-
-
-def validate(cfg: Config):
-    mustfields = [
-        "train.data.path",
-        [
-            "model.ner_label",
-            "model.textcat_label",
-            "model.pipeline.transformers_ner.labels",
-            "model.pipeline.transformers_seq_classification.labels",
-        ],
-        "model.lang.name",
-    ]
-    check_nonempty(cfg, mustfields)
-
-    pathkey = [
-        "model.ner_label",
-        "model.textcat_label",
-        "train.data.path",
-        "model.pretrained",
-    ]
-    for key in pathkey:
-        path = get_by_dotkey(cfg, key)
-        if path:
-            path = convert_fullpath_if_path(path)
-            cfg = OmegaConf.merge(
-                cfg, OmegaConf.create(create_dict_from_dotkey(key, path))
-            )
-
-    cfg.model = correct_model_config(cfg.model)
-    return cfg

@@ -20,7 +20,7 @@ from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.pipelines.transformers.utils import LABELS
-from camphr.utils import create_dict_from_dotkey, get_by_dotkey, get_labels
+from camphr.utils import get_labels, resolve_alias
 
 __dir__ = Path(__file__).parent
 _MODEL_CFG_DIR = __dir__ / "model_config"
@@ -85,7 +85,7 @@ _ConfigParser = Callable[[NLPConfig], NLPConfig]
 def correct_model_config(cfg: NLPConfig) -> NLPConfig:
     """Parse config. Complement missing informations, resolve aliases, etc."""
     PARSERS: List[_ConfigParser] = [
-        _resolve_alias,
+        resolve_alias(ALIASES),
         _assign_pipeline,
         _align_pipeline,
         _correct_trf_pipeline,
@@ -103,16 +103,6 @@ ALIASES = {
     "textcat_label": f"pipeline.{TRANSFORMERS_SEQ_CLASSIFIER}.labels",
     "optimizer": f"lang.optimizer",
 }
-
-
-def _resolve_alias(cfg: NLPConfig) -> NLPConfig:
-    """Resolver for configuration alias."""
-    for alias, name in ALIASES.items():
-        v = get_by_dotkey(cfg, alias)
-        if v is None:
-            continue
-        cfg = OmegaConf.merge(cfg, OmegaConf.create(create_dict_from_dotkey(name, v)))
-    return cfg
 
 
 TRF_BASES = [TRANSFORMERS_TOKENIZER, TRANSFORMERS_MODEL]
