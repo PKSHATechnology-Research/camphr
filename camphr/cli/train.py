@@ -157,13 +157,20 @@ def train(
     for i in range(cfg.niter):
         random.shuffle(train_data)
         train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
-        scheduler.step()  # noqa
+        scheduler.step()  # noqa: invalid type annotation in pytorch
         scores = eval_fn(cfg, nlp, val_data)
         nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))
 
 
 def _main(cfg: Config) -> None:
+    if cfg.user_config is not None:
+        # Override config by user config.
+        # This `user_config` have some limitations, and it will be improved
+        # after the issue https://github.com/facebookresearch/hydra/issues/386 solved
+        cfg = OmegaConf.merge(
+            cfg, OmegaConf.load(hydra.utils.to_absolute_path(cfg.user_config))
+        )
     cfg = parse(cfg)
     log.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
