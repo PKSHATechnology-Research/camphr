@@ -64,7 +64,7 @@ def does_not_raise():
     pipeline:
         {TRANSFORMERS_NER}:
             trf_name_or_path: foo
-            labels: ['-', 'O', 'B-Foo', 'I-Foo', 'L-Foo', 'U-Foo']
+            labels: ['-', 'O', 'I-Foo', 'B-Foo']
     """,
             f"""
     lang:
@@ -77,7 +77,7 @@ def does_not_raise():
             trf_name_or_path: foo
         {TRANSFORMERS_NER}:
             trf_name_or_path: foo
-            labels: ['-', 'O', 'B-Foo', 'I-Foo', 'L-Foo', 'U-Foo']
+            labels: ['-', 'O', 'I-Foo', 'B-Foo']
     """,
             does_not_raise(),
         ),
@@ -101,7 +101,7 @@ def does_not_raise():
             trf_name_or_path: foo
         {TRANSFORMERS_NER}:
             trf_name_or_path: foo
-            labels: ['-', 'O', 'B-Foo', 'I-Foo', 'L-Foo', 'U-Foo']
+            labels: ['-', 'O', 'B-Foo','I-Foo']
     """,
             does_not_raise(),
         ),

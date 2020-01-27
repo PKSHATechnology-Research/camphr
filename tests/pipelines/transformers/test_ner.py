@@ -1,18 +1,21 @@
 import json
+from typing import Dict, List
 
-import hypothesis.strategies as st
 import omegaconf
 import pytest
 import torch
-from hypothesis import given
 from spacy.language import Language
 
 from camphr.models import create_model, load
 from camphr.ner_labels.labels_ene import ALL_LABELS as enes
 from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
-from camphr.ner_labels.utils import make_biluo_labels
+from camphr.ner_labels.utils import make_ner_labels
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
-from camphr.pipelines.transformers.ner import TRANSFORMERS_NER, _create_target
+from camphr.pipelines.transformers.ner import (
+    TRANSFORMERS_NER,
+    _convert_goldner,
+    _create_target,
+)
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 
 from ...utils import BERT_DIR, DATA_DIR, check_mecab, check_serialization
@@ -29,9 +32,9 @@ def label_type(request):
 def labels(label_type):
     if label_type == "ene":
         shortenes = [label.split("/")[-1] for label in enes]
-        return make_biluo_labels(shortenes)
+        return make_ner_labels(shortenes)
     elif label_type == "irex":
-        return make_biluo_labels(irexes)
+        return make_ner_labels(irexes)
     else:
         raise ValueError
 
@@ -147,43 +150,22 @@ def test_serialization(nlp):
     check_serialization(nlp)
 
 
-@st.composite
-def case_for_create_target(draw):
-    batchsize = draw(st.integers(0, 10))
-    length = draw(st.integers(0, 100))
-    n_class = draw(st.integers(1, 10))
-    seed = draw(st.integers(0, 10000))
-    torch.manual_seed(seed)
-    logits = torch.rand((batchsize, length, n_class))
-    all_aligns = []
-    all_ners = []
-    for _ in range(batchsize):
-        aligns = []
-        ntokens = draw(st.integers(0, int(length * 1.2)))
-        all_ners.append(draw(st.lists(st.integers(0, n_class - 1), ntokens, ntokens)))
-        cur = 0
-        for _ in range(ntokens):
-            align = sorted(draw(st.sets(st.integers(cur, length - 1))))
-            aligns.append(align)
-            cur = max(align) if align else cur
-            if cur == length - 1 and draw(st.booleans()):
-                break
-        all_aligns.append(aligns)
-    return all_aligns, all_ners, logits
-
-
-@given(case_for_create_target())
-def test_hyp_create_target(case):
-    ignore_index = -1
-    all_aligns, _, logits = case
-    b, l, _ = logits.shape  # noqa
-    targets = _create_target(*case, ignore_index)
-    assert targets.shape == (b, l)
-    for align, target in zip(all_aligns, targets):
-        heads = [a[0] for a in align if a]
-        not_heads = [i for i in range(len(target)) if i not in heads]
-        assert torch.all(target[heads] != ignore_index)
-        assert torch.all(target[not_heads] == ignore_index)
+@pytest.mark.parametrize(
+    "ners,length,dim", [([{1: "B-A", 2: "I-A", 3: "O", 5: "O"}], 7, 10)]
+)
+def test_create_target(ners: List[Dict[int, str]], length, dim):
+    LABELS = ["-", "O", "B-A", "I-A", "B-B", "B-B"]
+    label2id = {s: i for i, s in enumerate(LABELS)}
+    logits = torch.empty(len(ners), length, dim)
+    ignore_index = 0
+    targets = _create_target(ners, logits, ignore_index, label2id)
+    assert targets.shape == (len(ners), length)
+    for ner, target in zip(ners, targets):
+        idx = list(ner)
+        labels = [label2id[s] for s in ner.values()]
+        not_idx = [i for i in range(len(target)) if i not in idx]
+        assert target[idx].tolist() == labels
+        assert torch.all(target[not_idx] == ignore_index)
 
 
 @pytest.mark.skipif(not check_mecab(), reason="mecab is required")
@@ -201,3 +183,18 @@ def test_kbeam_config(labels):
     )
     ner = nlp.get_pipe(TRANSFORMERS_NER)
     assert ner.k_beam == 111
+
+
+@pytest.mark.parametrize(
+    "ner_labels,alignments,expected",
+    [
+        (
+            ["O", "B-FOO", "I-FOO", "-"],
+            [[0, 1], [2, 3], [4], [5]],
+            {0: "O", 1: "O", 2: "B-FOO", 3: "I-FOO", 4: "I-FOO", 5: "-"},
+        ),
+        (["U-FOO"], [[1, 2, 3]], {1: "B-FOO", 2: "I-FOO", 3: "I-FOO"}),
+    ],
+)
+def test_convert_goldner(ner_labels, alignments, expected):
+    assert expected == _convert_goldner(ner_labels, alignments)

@@ -164,6 +164,7 @@ class LabelsMixin:
     def labels(self: TorchPipe) -> List[str]:
         # The reason to return empty list is that `spacy.Language` calls `Pipe.labels` when restoring,
         # before the `labels` is not set to this Pipe.
+        # For the same reason cache cannot be used.
         return self.cfg.get(LABELS, [])
 
     @property

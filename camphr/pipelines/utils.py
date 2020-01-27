@@ -1,6 +1,5 @@
 import copy
 import warnings
-from enum import Enum
 from itertools import chain
 from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union
 
@@ -13,7 +12,7 @@ from spacy.util import filter_spans
 from camphr.errors import Warnings
 
 
-class BILUO(Enum):
+class BILUO:
     B = "B"
     I = "I"  # noqa: E741
     L = "L"
@@ -30,7 +29,7 @@ O = BILUO.O  # noqa: E741
 UNK = BILUO.UNKNOWN
 
 
-def biluo_type(tag: str) -> BILUO:
+def biluo_type(tag: str) -> str:
     if tag.startswith("B-"):
         return B
     elif tag.startswith("I-"):
@@ -44,14 +43,14 @@ def biluo_type(tag: str) -> BILUO:
     return UNK
 
 
-def deconstruct_biluo_tag(tag: str) -> Tuple[BILUO, str]:
-    """Deconstruct string tag into BILUO type and its body"""
-    biluo = biluo_type(tag)
+def deconstruct_biluo_label(label: str) -> Tuple[str, str]:
+    """Deconstruct biluo label into BILUO prefix and its label type"""
+    biluo = biluo_type(label)
     if biluo == UNK:
         return biluo, ""
     if biluo == O:
         return biluo, ""
-    return biluo, tag[2:]
+    return biluo, label[2:]
 
 
 def is_group(tagl: BILUO, bl: str, tagr: BILUO, br: str) -> bool:
@@ -60,12 +59,12 @@ def is_group(tagl: BILUO, bl: str, tagr: BILUO, br: str) -> bool:
     return tagl in {B, I} and tagr in {I, L}
 
 
-def construct_biluo_tag(biluo: BILUO, body: str = "") -> str:
+def construct_biluo_tag(biluo: str, body: str = "") -> str:
     if body:
         assert biluo not in {O, UNK}
-        return biluo.value + "-" + body
+        return biluo + "-" + body
     assert biluo in {O, UNK}
-    return biluo.value
+    return biluo
 
 
 def bio_to_biluo(tags: List[str]) -> List[str]:
@@ -77,7 +76,7 @@ def biluo_to_bio(tags: List[str]) -> List[str]:
     """convert biluo tags to bio tags. Input `tags` is expected to be syntactically correct."""
     tags = copy.copy(tags)
     for i, tag in enumerate(tags):
-        t, b = deconstruct_biluo_tag(tag)
+        t, b = deconstruct_biluo_label(tag)
         if t == L:
             tags[i] = construct_biluo_tag(I, b)
         elif t == U:
@@ -96,47 +95,39 @@ def correct_biluo_tags(tags: List[str]) -> Tuple[List[str], bool]:
         tagl = tags[i]
         tagr = tags[i + 1]
 
-        type_l, body_l = deconstruct_biluo_tag(tagl)
-        type_r, body_r = deconstruct_biluo_tag(tagr)
+        type_l, body_l = deconstruct_biluo_label(tagl)
+        type_r, body_r = deconstruct_biluo_label(tagr)
         if type_l == UNK:
-            tags[i] == UNK.value
+            tags[i] == UNK
         if type_r == UNK:
-            tags[i + 1] == UNK.value
+            tags[i + 1] == UNK
 
         # left check
         if type_l in {B, I} and not ((type_r == I or type_r == L) and body_l == body_r):
             is_correct = False
-            tags[i] = UNK.value
+            tags[i] = UNK
 
         # right check
         if type_r in {I, L} and not ((type_l == B or type_l == I) and body_l == body_r):
             is_correct = False
-            tags[i + 1] = UNK.value
+            tags[i + 1] = UNK
     return tags[1:-1], is_correct
 
 
-def correct_bio_tags(tags: List[str]) -> List[str]:
+def correct_bio_tags(tags: List[str]) -> Tuple[List[str], bool]:
     """Check and correct bio tags list.
 
     All invalid tags will be replaced with `-`
     """
-    tags = ["O"] + copy.copy(tags)
-    for i in range(len(tags) - 1):
-        tagl = tags[i]
-        tagr = tags[i + 1]
-
-        tl, bl = deconstruct_biluo_tag(tagl)
-        tr, br = deconstruct_biluo_tag(tagr)
-        if tl == UNK:
-            tags[i] == UNK.value
-        if tr == UNK:
-            tags[i + 1] == UNK.value
-
-        # right check
+    tags = copy.copy(tags)
+    is_correct = True
+    for i, (tagl, tagr) in enumerate(zip(tags, tags[1:])):
+        tl, bl = deconstruct_biluo_label(tagl)
+        tr, br = deconstruct_biluo_label(tagr)
+        # Convert invalid I to B
         if tr == I and not (tl in {B, I} and bl == br):
-            # invalid pattern
-            tags[i + 1] = UNK.value
-    return tags[1:]
+            tags[i + 1] = construct_biluo_tag(B, br)
+    return tags, is_correct
 
 
 def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:

@@ -2,19 +2,29 @@
 
 Models defined in this modules must be used with `camphr.pipelines.trf_model`'s model in `spacy.Language` pipeline
 """
-from typing import Generator, Iterable, List, Sized, cast
+from typing import Dict, Iterable, Iterator, List, Sized, cast
 
-import more_itertools
 import spacy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
 from overrides import overrides
-from spacy.gold import GoldParse, spans_from_biluo_tags
+from spacy.gold import GoldParse, iob_to_biluo, spans_from_biluo_tags
 from spacy.tokens import Doc
 
-from camphr.pipelines.utils import UNK, UserHooksMixin, beamsearch, correct_biluo_tags
+from camphr.pipelines.utils import (
+    UNK,
+    B,
+    I,
+    L,
+    U,
+    UserHooksMixin,
+    beamsearch,
+    construct_biluo_tag,
+    correct_bio_tags,
+    deconstruct_biluo_label,
+)
 from camphr.torch_utils import TorchPipe, add_loss_to_docs
 
 from .auto import get_trf_config_cls
@@ -82,7 +92,12 @@ class TrfForTokenClassificationBase(
             logits = self.model(x)
         return logits
 
+    @staticmethod
+    def install_extensions():
+        Doc.set_extension("tokens_logit", default=None, force=True)
 
+
+TrfForTokenClassificationBase.install_extensions()
 TRANSFORMERS_NER = "transformers_ner"
 
 
@@ -99,43 +114,50 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
 
     @property
     def ignore_label_index(self) -> int:
-        if UNK.value in self.labels:
-            return self.labels.index(UNK.value)
+        if UNK in self.labels:
+            return self.labels.index(UNK)
         return -1
 
     def update(self, docs: List[Doc], golds: List[GoldParse]):
         assert isinstance(docs, list)
         self.require_model()
-        ignore_index = self.ignore_label_index
-        x = get_last_hidden_state_from_docs(docs)
-        logits = self.model(x)
-        all_ners = (self._get_nerlabel_from_gold(gold) for gold in golds)
-        all_aligns = (doc._.get(ATTRS.align) for doc in docs)
-        target = _create_target(all_aligns, all_ners, logits, ignore_index)
+        logits = self.model(get_last_hidden_state_from_docs(docs))
+        target = self._create_target_from_docs_golds(docs, golds, logits)
         loss = F.cross_entropy(
-            logits.transpose(1, 2), target, ignore_index=ignore_index
+            logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
         )
         add_loss_to_docs(docs, loss)
-
-    def _get_nerlabel_from_gold(self, gold: GoldParse) -> Generator[int, None, None]:
-        if gold.ner is not None:
-            for ner in gold.ner:
-                yield self.label2id[self.convert_label(ner)]
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor
     ) -> Iterable[Doc]:
-        """Modify a batch of documents, using pre-computed scores."""
         assert len(logits.shape) == 3  # (batch, length, nclass)
         id2label = self.labels
 
         for doc, logit in zip(docs, cast(Iterable, logits)):
-            logit = self._extract_logit(logit, doc._.get(ATTRS.align))
+            doc._.set("tokens_logit", logit)
             best_tags = get_best_tags(logit, id2label, self.k_beam)
+            ents = [best_tags[a[0]] if len(a) else "O" for a in doc._.get(ATTRS.align)]
+            biluo_ents = iob_to_biluo(ents)
             doc.ents = spacy.util.filter_spans(
-                doc.ents + tuple(spans_from_biluo_tags(doc, best_tags))
+                doc.ents + tuple(spans_from_biluo_tags(doc, biluo_ents))
             )
         return docs
+
+    def _create_target_from_docs_golds(
+        self, docs: List[Doc], golds: List[GoldParse], logits: torch.Tensor
+    ) -> torch.Tensor:
+        all_aligns = (doc._.get(ATTRS.align) for doc in docs)
+        new_ners = (
+            _convert_goldner(gold.ner or [], align)
+            for gold, align in zip(golds, all_aligns)
+        )
+        return _create_target(new_ners, logits, self.ignore_label_index, self.label2id)
+
+    def _get_nerlabel_from_gold(self, gold: GoldParse) -> Iterator[int]:
+        if gold.ner is not None:
+            for ner in gold.ner:
+                yield self.label2id[self.convert_label(ner)]
 
     def _extract_logit(
         self, logit: torch.Tensor, alignment: List[List[int]]
@@ -153,20 +175,31 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         self.cfg[self.K_BEAM] = k
 
 
+def _convert_goldner(
+    labels: Iterable[int], alignment: List[List[int]]
+) -> Dict[int, str]:
+    new_ner = {}
+    prefixmap = {L: I, U: B}
+    for label, align in zip(cast(Iterable[str], labels), alignment):
+        prefix, type_ = deconstruct_biluo_label(label)
+        new_prefix = prefixmap.get(prefix, prefix)
+        for i in align:
+            new_ner[i] = construct_biluo_tag(new_prefix, type_)
+            if new_prefix == B:
+                new_prefix = I
+    return new_ner
+
+
 def _create_target(
-    all_aligns: Iterable[Iterable[Iterable[int]]],
-    all_ners: Iterable[Iterable[int]],
+    new_ners: Iterable[Dict[int, str]],
     logits: torch.Tensor,
     ignore_index: int,
+    label2id: Dict[str, int],
 ) -> torch.Tensor:
-    # Why aren't this method accepting `docs` and `golds` directly? - testability.
     batch_size, length, _ = logits.shape
     target = logits.new_full((batch_size, length), ignore_index, dtype=torch.long)
-    for i, (aligns, ners) in enumerate(zip(all_aligns, all_ners)):
-        # use first wordpiece for each tokens
-        idx = (more_itertools.first(a, None) for a in aligns)
-        # drop elements where idx == None
-        idx_ners = [(i, ner) for i, ner in zip(idx, ners) if i is not None]
+    for i, ners in enumerate(new_ners):
+        idx_ners = [(i, label2id[ner]) for i, ner in ners.items()]
         if not idx_ners:
             continue
         idx, ners = zip(*idx_ners)
@@ -178,14 +211,13 @@ def get_best_tags(logit: torch.Tensor, id2label: List[str], k_beam: int) -> List
     """Select best tags from logit based on beamsearch."""
     candidates = beamsearch(logit.softmax(-1), k_beam)
     assert len(cast(Sized, candidates))
-    best_tags = []
+    best_tags: List[str] = []
     for cand in candidates:
-        tags, is_correct = correct_biluo_tags(
-            [id2label[j] for j in cast(Iterable, cand)]
-        )
+        tags, is_correct = correct_bio_tags([id2label[j] for j in cast(Iterable, cand)])
         if is_correct:
             best_tags = tags
             break
         if not best_tags:
             best_tags = tags
+    best_tags = [t if t != "-" else "O" for t in best_tags]
     return best_tags

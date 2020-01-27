@@ -14,7 +14,7 @@ from spacy.language import Language
 from spacy.vocab import Vocab
 
 from camphr.lang.torch import TorchLanguage
-from camphr.ner_labels.utils import get_biluo_labels
+from camphr.ner_labels.utils import get_ner_labels
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
@@ -213,7 +213,7 @@ def _resolve_label(cfg: NLPConfig) -> NLPConfig:
     """Resolver for ner and sequence classification label config."""
     ner = cfg.pipeline[TRANSFORMERS_NER]
     if ner:
-        ner[LABELS] = get_biluo_labels(ner[LABELS])
+        ner[LABELS] = get_ner_labels(ner[LABELS])
     seq = cfg.pipeline[TRANSFORMERS_SEQ_CLASSIFIER]
     if seq:
         seq[LABELS] = get_labels(seq[LABELS])

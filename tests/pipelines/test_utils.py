@@ -100,12 +100,14 @@ def test_biluo_to_bio(biluo, bio):
     assert bio == converted
 
 
-TESTCAESES_BIO = [(["B-LOC", "I-LOC", "O", "I-PERSON"], ["B-LOC", "I-LOC", "O", "-"])]
+TESTCAESES_BIO = [
+    (["B-LOC", "I-LOC", "O", "I-PERSON"], ["B-LOC", "I-LOC", "O", "B-PERSON"])
+]
 
 
 @pytest.mark.parametrize("tags,expected", TESTCAESES_BIO)
 def test_correct_bio(tags, expected):
-    corrected = correct_bio_tags(tags)
+    corrected, _ = correct_bio_tags(tags)
     assert corrected == expected
 
 
