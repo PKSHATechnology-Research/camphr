@@ -40,7 +40,7 @@ class MultipleRegexRuler(SerializationMixin):
 
     def _proc(self, doc: Doc, pattern: Pattern, label: str) -> Doc:
         spans = self.get_spans(doc, pattern, label)
-        doc.ents = filter_spans(doc.ents + tuple(spans))
+        doc.ents = filter_spans(tuple(spans) + doc.ents)
         if self.merge:
             merge_spans(doc, spans)
         return doc
