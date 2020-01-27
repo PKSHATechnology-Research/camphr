@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict, List, Pattern, Union
+from typing import AnyStr, Dict, List, Pattern
 
 import spacy
 from spacy.tokens import Doc, Span
@@ -16,16 +16,18 @@ class MultipleRegexRuler(SerializationMixin):
 
     def __init__(
         self,
-        patterns: Dict[str, Union[str, Any]],
+        patterns: Dict[str, AnyStr],
         destructive: bool = False,
         merge: bool = False,
+        regex_flag: int = 0,
     ):
-        self.patterns = self.compile(patterns)
+        self.patterns = self.compile(patterns, regex_flag)
         self.destructive = destructive
         self.merge = merge
+        self.regex_flag = regex_flag
 
-    def compile(self, patterns: Dict[str, Union[str, str]]) -> Dict[str, Pattern]:
-        return {k: re.compile(v) for k, v in patterns.items()}
+    def compile(self, patterns: Dict[str, AnyStr], flag: int) -> Dict[str, Pattern]:
+        return {k: re.compile(v, flag) for k, v in patterns.items()}
 
     @property
     def labels(self) -> List[str]:

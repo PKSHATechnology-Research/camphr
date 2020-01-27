@@ -16,7 +16,7 @@ def nlp(request):
     if lang == "ja_mecab" and not check_mecab():
         pytest.skip()
     _nlp = spacy.blank(request.param)
-    pipe = PatternSearcher.from_words(KEYWORDS)
+    pipe = PatternSearcher.from_words(KEYWORDS, destructive=True)
     _nlp.add_pipe(pipe)
     return _nlp
 

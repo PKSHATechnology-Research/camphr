@@ -23,12 +23,12 @@ class PatternSearcher(SerializationMixin):
     def __init__(
         self,
         model: Optional[ahocorasick.Automaton] = None,
-        label_type: Literal[
-            "custom_label_map", "custom_label", "value", "matched"
-        ] = "matched",
+        label_type: Optional[
+            Literal["custom_label_map", "custom_label", "value", "matched"]
+        ] = None,
         custom_label: Optional[str] = None,
         custom_label_map: Optional[Dict[str, str]] = None,
-        destructive=True,
+        destructive=False,
         **cfg
     ):
         self.model = model
@@ -38,6 +38,18 @@ class PatternSearcher(SerializationMixin):
         self._validate_label()
         self.destructive = destructive
         self.cfg = cfg
+
+        if custom_label:
+            self.label_type = "custom_label"
+            assert custom_label_map is None
+            assert label_type == "custom_label" or label_type is None
+        elif custom_label_map:
+            self.label_type = "custom_label_map"
+            assert custom_label is None
+            assert label_type == "custom_label_map" or label_type is None
+        if self.label_type is None:
+            # default
+            self.label_type = "matched"
 
     def _validate_label(self):
         if self.custom_label:
