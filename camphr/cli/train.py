@@ -1,4 +1,5 @@
 import logging
+import optuna
 import os
 import random
 from collections import defaultdict
@@ -150,10 +151,11 @@ def train(
     train_data: InputData,
     val_data: InputData,
     savedir: Path,
-) -> None:
+) -> float:
     eval_fn = EVAL_FN_MAP[cfg.task]
     optim = nlp.resume_training()
     scheduler = load_scheduler(cfg, optim)
+    scores = None
     for i in range(cfg.niter):
         random.shuffle(train_data)
         train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
@@ -161,6 +163,7 @@ def train(
         scores = eval_fn(cfg, nlp, val_data)
         nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))
+    return -scores["ents_f"] if scores else 1e5
 
 
 def _main(cfg: Config) -> None:
@@ -174,14 +177,22 @@ def _main(cfg: Config) -> None:
     cfg = parse(cfg)
     log.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
-    nlp = create_model(cfg.model)
-    log.info("output dir: {}".format(os.getcwd()))
-    if torch.cuda.is_available():
-        log.info("CUDA enabled")
-        nlp.to(torch.device("cuda"))
-    savedir = Path.cwd() / "models"
-    savedir.mkdir(exist_ok=True)
-    train(cfg.train, nlp, train_data, val_data, savedir)
+
+    def objective(trial: optuna.Trial):
+        savedir = Path.cwd() / f"models{trial.trial_id}"
+        savedir.mkdir(exist_ok=True)
+        cfg.model.lang.optimizer.params.lr = trial.suggest_uniform("lr", 1e-7, 1e-1)
+        cfg.model.lang.optimizer.params.eps = trial.suggest_uniform("eps", 1e-10, 1e-2)
+        nlp = create_model(cfg.model)
+        if torch.cuda.is_available():
+            log.info("CUDA enabled")
+            nlp.to(torch.device("cuda"))
+        return train(cfg.train, nlp, train_data, val_data, savedir)
+
+    study = optuna.create_study(study_name="capmhr", storage="sqlite:///optuna.db")
+    study.optimize(objective, n_trials=cfg.optuna.ntrials)
+    log.info(f"Best trial: {study.best_trial.trial_id}")
+    log.info(f"Best score: {study.best_value}")
 
 
 # Avoid to use decorator for testing
