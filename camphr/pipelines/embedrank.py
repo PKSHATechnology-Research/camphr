@@ -53,7 +53,7 @@ class EmbedRank(SerializationMixin):
         self,
         vocab: Optional[Vocab] = None,
         max_keyphrases: int = -1,
-        extract_keyphrases_fn: Callable[[Doc], List[Span]] = None,
+        extract_keyphrases_fn: Optional[Callable[[Doc], List[Span]]] = None,
         lambda_: float = 0.5,
     ):
         """
@@ -82,7 +82,8 @@ class EmbedRank(SerializationMixin):
     def __call__(self, doc: Doc) -> Doc:
         """Extract keyphrases from doc.vector and span.vector, and set them into Doc._.embed_keyphrases sorted by score."""
         self.require_model()
-        spans = self.extract_keyphrases(doc)
+        spans = self.extract_keyphrases(doc)  # type: ignore
+        # we know `extract_keyphrases` cannot be `None` after `require_model`
         if not spans:
             return doc
         spans_vectors = np.array([np.array(span.vector) for span in spans])

@@ -9,59 +9,16 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union, cast
 import spacy
 import srsly
 import yaml
-from cytoolz import curry
 from more_itertools import padded
 from omegaconf import Config, OmegaConf
 from spacy.errors import Errors
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
+from toolz import curry
 
 from camphr.types import Pathlike
 from camphr.VERSION import __version__
-
-
-class SerializationMixin:
-    """Serializes the items in `serialization_fields`
-
-    Example:
-        >>> class FooComponent(SerializationMixin, Pipe):
-        >>>     serialization_fields = ["bar_attribute"]
-        >>> comp = FooComponent(Vocab())
-        >>> save_dir = Path("baz_directory")
-        >>> comp.to_disk(save_dir) # saved the component into directory
-        >>> loaded_comp = spacy.from_disk(save_dir) # load from directory
-    """
-
-    serialization_fields = []
-
-    def from_bytes(self, bytes_data, exclude=tuple(), **kwargs):
-        pkls = srsly.pickle_loads(bytes_data)
-        for field in self.serialization_fields:
-            setattr(self, field, pkls[field])
-        return self
-
-    def to_bytes(self, exclude=tuple(), **kwargs):
-        pkls = OrderedDict()
-        for field in self.serialization_fields:
-            pkls[field] = getattr(self, field, None)
-        return srsly.pickle_dumps(pkls)
-
-    def from_disk(self, path: Path, exclude=tuple(), **kwargs):
-        path.mkdir(exist_ok=True)
-        with (path / f"data.pkl").open("rb") as file_:
-            data = file_.read()
-        return self.from_bytes(data, **kwargs)
-
-    def to_disk(self, path: Path, exclude=tuple(), **kwargs):
-        path.mkdir(exist_ok=True)
-        data = self.to_bytes(**kwargs)
-        with (path / "data.pkl").open("wb") as file_:
-            file_.write(data)
-
-    def require_model(self):
-        if getattr(self, "model", None) in (None, True, False):
-            raise ValueError(Errors.E109.format(name=self.name))
 
 
 def zero_pad(a: List[List[int]], pad_value: int = 0) -> List[List[int]]:
@@ -192,7 +149,7 @@ def get_by_dotkey(d: dict, dotkey: str) -> Any:
 def create_dict_from_dotkey(dotkey: str, value: Any) -> Dict[str, Any]:
     assert dotkey
     keys = dotkey.split(".")
-    result = {}
+    result: Dict[str, Any] = {}
     cur = result
     for key in keys[:-1]:
         cur[key] = {}
@@ -209,3 +166,74 @@ def resolve_alias(aliases: Dict[str, str], cfg: Config) -> Config:
             continue
         cfg = OmegaConf.merge(cfg, OmegaConf.create(create_dict_from_dotkey(name, v)))
     return cfg
+
+
+"""
+The following `SerializationMixin` is adopted from spacy-transformers,
+which is distributed under the following license:
+
+MIT License
+
+Copyright (c) 2019 ExplosionAI GmbH
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
+
+class SerializationMixin:
+    """Serializes the items in `serialization_fields`
+
+    Example:
+        >>> class FooComponent(SerializationMixin, Pipe):
+        >>>     serialization_fields = ["bar_attribute"]
+        >>> comp = FooComponent(Vocab())
+        >>> save_dir = Path("baz_directory")
+        >>> comp.to_disk(save_dir) # saved the component into directory
+        >>> loaded_comp = spacy.from_disk(save_dir) # load from directory
+    """
+
+    serialization_fields: List[str] = []
+
+    def from_bytes(self, bytes_data, **kwargs):
+        pkls = srsly.pickle_loads(bytes_data)
+        for field in self.serialization_fields:
+            setattr(self, field, pkls[field])
+        return self
+
+    def to_bytes(self, **kwargs):
+        pkls = OrderedDict()
+        for field in self.serialization_fields:
+            pkls[field] = getattr(self, field, None)
+        return srsly.pickle_dumps(pkls)
+
+    def from_disk(self, path: Path, **kwargs):
+        path.mkdir(exist_ok=True)
+        with (path / f"data.pkl").open("rb") as file_:
+            data = file_.read()
+        return self.from_bytes(data, **kwargs)
+
+    def to_disk(self, path: Path, **kwargs):
+        path.mkdir(exist_ok=True)
+        data = self.to_bytes(**kwargs)
+        with (path / "data.pkl").open("wb") as file_:
+            file_.write(data)
+
+    def require_model(self):
+        if getattr(self, "model", None) in (None, True, False):
+            raise ValueError(Errors.E109.format(name=self.name))

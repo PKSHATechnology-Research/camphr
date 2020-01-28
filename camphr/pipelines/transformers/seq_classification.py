@@ -6,7 +6,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from overrides import overrides
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
 from transformers.modeling_utils import SequenceSummary
@@ -42,8 +41,7 @@ class TrfSequenceClassifier(TrfModelForTaskBase):
         self.sequence_summary = SequenceSummary(config)
         self.classifier = nn.Linear(config.hidden_size, self.num_labels)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-
+    def forward(self, x: torch.Tensor) -> torch.Tensor:  # type: ignore
         x = self.sequence_summary(x)
         logits = self.classifier(x)
 
@@ -79,7 +77,6 @@ class TrfForSequenceClassification(
             setattr(config, NUM_SEQUENCE_LABELS, len(cfg[LABELS]))
         return TrfSequenceClassifier(config)
 
-    @overrides
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
         self.model.eval()
@@ -89,7 +86,6 @@ class TrfForSequenceClassification(
         assert len(logits.shape) == 2  # (len(docs), num_class)
         return logits
 
-    @overrides
     def set_annotations(self, docs: Iterable[Doc], logits: torch.Tensor):
         probs = torch.softmax(logits, 1)
         for doc, prob in zip(docs, cast(Iterable, probs)):
@@ -113,7 +109,7 @@ class TrfForSequenceClassification(
         x = get_last_hidden_state_from_docs(docs)
         logits = self.model(x)
         targets = self.golds_to_tensor(golds)
-        weight = self.label_weights.to(device=self.device)
+        weight = self.label_weights.to(device=self.device)  # type: ignore
 
         loss = F.cross_entropy(logits, targets, weight=weight)
         add_loss_to_docs(docs, loss)

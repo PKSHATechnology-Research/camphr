@@ -4,7 +4,7 @@ from itertools import chain
 from pathlib import Path
 from typing import Callable, List, Optional, Union
 
-import sentencepiece as spm
+import sentencepiece as spm  # type: ignore
 from spacy.language import Language
 from spacy.tokens import Doc, Span, Token
 
@@ -49,7 +49,7 @@ class Tokenizer:
             spaces += [False]
         tokens = []
         alignment = []
-        buf = []
+        buf: List[int] = []
         for i, token in enumerate(_tokens):
             if token != self.SPACE_CHAR:
                 tokens.append(token.lstrip(self.SPACE_CHAR))

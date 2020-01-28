@@ -8,7 +8,6 @@ from allennlp.data.fields import Field, MetadataField, SequenceLabelField, TextF
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Token
-from overrides import overrides
 
 from .lemma_edit import gen_lemma_rule
 from .parser import DEFAULT_FIELDS, parse_line
@@ -264,7 +263,6 @@ class Sigmorphon2019Task2DatasetReader(DatasetReader):
             for label in labels:
                 self.label_to_dimension[label] = dimension
 
-    @overrides
     def _read(self, file_path: str):
         # if `file_path` is a URL, redirect to the cache
         file_path = cached_path(file_path)
@@ -317,7 +315,6 @@ class Sigmorphon2019Task2DatasetReader(DatasetReader):
                     multiword_forms,
                 )
 
-    @overrides
     def text_to_instance(
         self,  # type: ignore
         words: List[str],

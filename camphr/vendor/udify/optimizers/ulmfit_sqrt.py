@@ -8,7 +8,6 @@ import torch
 from allennlp.training.learning_rate_schedulers.learning_rate_scheduler import (
     LearningRateScheduler,
 )
-from overrides import overrides
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +59,6 @@ class UlmfitSqrtLR(LearningRateScheduler):
                     self.base_values[i] = param_group["lr"]
                     exponent += 1
 
-    @overrides
     def step(self, metric: float = None, epoch: int = None) -> None:
         if self.gradual_unfreezing:
             # the method is called once when initialising before the

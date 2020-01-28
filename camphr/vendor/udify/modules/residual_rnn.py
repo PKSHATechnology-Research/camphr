@@ -7,7 +7,6 @@ import torch
 from allennlp.common.checks import ConfigurationError
 from allennlp.modules.seq2seq_encoders import PytorchSeq2SeqWrapper
 from allennlp.modules.seq2seq_encoders.seq2seq_encoder import Seq2SeqEncoder
-from overrides import overrides
 
 
 @Seq2SeqEncoder.register("udify_residual_rnn")
@@ -52,15 +51,12 @@ class ResidualRNN(Seq2SeqEncoder):
             self.add_module("rnn_layer_{}".format(layer_index), layer)
         self._layers = layers
 
-    @overrides
     def get_input_dim(self) -> int:
         return self._input_size
 
-    @overrides
     def get_output_dim(self) -> int:
         return self._hidden_size
 
-    @overrides
     def is_bidirectional(self):
         return True
 

@@ -3,7 +3,7 @@ import logging
 import os
 import random
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Sequence, Tuple, Union
 
 import hydra
 import srsly
@@ -45,14 +45,12 @@ def convert_fullpath_if_path(text: str) -> str:
     return text
 
 
-def check_nonempty(cfg: Config, fields: List[Union[str, List[str]]]):
+def check_nonempty(cfg: Config, fields: Sequence[Union[str, Sequence[str]]]):
     errors = []
     for key in fields:
-        if isinstance(key, str):
-            if not get_by_dotkey(cfg, key):
-                errors.append(f"{key} is required.")
-        elif isinstance(key, list):
-            if not any(get_by_dotkey(cfg, k) for k in key):
-                errors.append(f"Any of {', '.join(key)} is required.")
+        if isinstance(key, str) and (not get_by_dotkey(cfg, key)):
+            errors.append(f"{key} is required.")
+        elif isinstance(key, list) and (not any(get_by_dotkey(cfg, k) for k in key)):
+            errors.append(f"Any of {', '.join(key)} is required.")
     if errors:
         raise ValueError("\n".join(errors))

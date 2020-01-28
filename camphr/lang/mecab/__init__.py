@@ -70,10 +70,10 @@ class Tokenizer(SerializationMixin):
         node = node.next
         words: List[ShortUnitWord] = []
         while node.posid != 0:
-            surface = node.surface
-            base = surface
             parts = node.feature.split(",")
             pos = ",".join(parts[0:4])
+            surface = node.surface
+            base = surface
             if len(parts) > 6:
                 base = parts[6]
             nextnode = node.next
@@ -120,7 +120,7 @@ class Tokenizer(SerializationMixin):
 
         assets = (path / self.ASSETS).absolute()
         if assets.exists():
-            self.assets = assets
+            self.assets = str(assets)
         return self
 
 

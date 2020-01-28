@@ -30,15 +30,10 @@ UNK = BILUO.UNKNOWN
 
 
 def biluo_type(tag: str) -> str:
-    if tag.startswith("B-"):
-        return B
-    elif tag.startswith("I-"):
-        return I
-    elif tag.startswith("L-"):
-        return L
-    elif tag.startswith("U-"):
-        return U
-    elif tag == "O":
+    for prefix, biluo in [("B-", B), ("I-", I), ("L-", L), ("U-", U)]:
+        if tag.startswith(prefix):
+            return biluo
+    if tag == "O":
         return O
     return UNK
 
@@ -97,10 +92,6 @@ def correct_biluo_tags(tags: List[str]) -> Tuple[List[str], bool]:
 
         type_l, body_l = deconstruct_biluo_label(tagl)
         type_r, body_r = deconstruct_biluo_label(tagr)
-        if type_l == UNK:
-            tags[i] == UNK
-        if type_r == UNK:
-            tags[i + 1] == UNK
 
         # left check
         if type_l in {B, I} and not ((type_r == I or type_r == L) and body_l == body_r):
@@ -216,7 +207,7 @@ def flatten_docs_to_sents(docs: Iterable[Doc]) -> List[Span]:
 T = TypeVar("T")
 
 
-def chunk(seq: Sequence[T], nums: Sequence[int]) -> List[List[T]]:
+def chunk(seq: Sequence[T], nums: Sequence[int]) -> List[Sequence[T]]:
     i = 0
     output = []
     for n in nums:

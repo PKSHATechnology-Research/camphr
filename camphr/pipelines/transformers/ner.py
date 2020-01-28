@@ -9,7 +9,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from overrides import overrides
 from spacy.gold import GoldParse, iob_to_biluo, spans_from_biluo_tags
 from spacy.tokens import Doc
 
@@ -54,7 +53,7 @@ class TrfTokenClassifier(TrfModelForTaskBase):
         self.classifier = nn.Linear(hidden_size, self.num_labels)
         self.loss_fct = nn.CrossEntropyLoss()
 
-    def forward(
+    def forward(  # type:ignore
         self, x: torch.Tensor, mask: torch.Tensor = None, labels=None
     ) -> torch.Tensor:
 
@@ -83,7 +82,6 @@ class TrfForTokenClassificationBase(
         setattr(config, NUM_LABELS, len(cfg[LABELS]))
         return TrfTokenClassifier(config)
 
-    @overrides
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
         self.model.eval()
@@ -202,8 +200,8 @@ def _create_target(
         idx_ners = [(i, label2id[ner]) for i, ner in ners.items()]
         if not idx_ners:
             continue
-        idx, ners = zip(*idx_ners)
-        target[i, idx] = target.new_tensor(ners)
+        idx, _ners = zip(*idx_ners)
+        target[i, idx] = target.new_tensor(_ners)
     return target
 
 

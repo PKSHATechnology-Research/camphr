@@ -30,7 +30,6 @@ from allennlp.nn.util import (
     masked_log_softmax,
 )
 from allennlp.training.metrics import AttachmentScores
-from overrides import overrides
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +122,6 @@ class DependencyDecoder(Model):
         self._attachment_scores = AttachmentScores()
         initializer(self)
 
-    @overrides
     def forward(
         self,  # type: ignore
         # words: Dict[str, torch.LongTensor],
@@ -243,7 +241,6 @@ class DependencyDecoder(Model):
 
         return output_dict
 
-    @overrides
     def decode(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
 
         head_tags = output_dict.pop("head_tags").cpu().detach().numpy()
@@ -607,7 +604,6 @@ class DependencyDecoder(Model):
             new_mask = new_mask * (1 - label_mask)
         return new_mask
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         return {
             f".run/deps/{metric_name}": metric

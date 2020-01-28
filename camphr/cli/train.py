@@ -10,10 +10,11 @@ import hydra.utils
 import numpy as np
 import torch
 from omegaconf import Config, OmegaConf
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report  # type: ignore
 from spacy.language import Language
 from spacy.scorer import Scorer
 from spacy.util import minibatch
+from torch.optim.optimizer import Optimizer
 
 from camphr.cli.utils import (
     InputData,
@@ -106,7 +107,7 @@ EVAL_FN_MAP = defaultdict(lambda: evaluate, {"textcat": evaluate_textcat})
 def train_epoch(
     cfg: Config,
     nlp: TorchLanguage,
-    optim: torch.optim.Optimizer,
+    optim: Optimizer,
     train_data: InputData,
     val_data: InputData,
     epoch: int,
@@ -134,7 +135,7 @@ class DummyScheduler:
 
 
 def load_scheduler(
-    cfg: Config, optimizer: torch.optim.Optimizer
+    cfg: Config, optimizer: Optimizer
 ) -> Union[torch.optim.lr_scheduler.LambdaLR, Type[DummyScheduler]]:
     cls_str = get_by_dotkey(cfg, "scheduler.class")
     if not cls_str:
@@ -157,7 +158,7 @@ def train(
     for i in range(cfg.niter):
         random.shuffle(train_data)
         train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
-        scheduler.step()  # noqa: invalid type annotation in pytorch
+        scheduler.step()  # type: ignore # (https://github.com/pytorch/pytorch/pull/26531)
         scores = eval_fn(cfg, nlp, val_data)
         nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))

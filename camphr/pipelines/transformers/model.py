@@ -6,6 +6,7 @@ import numpy as np
 import spacy
 import spacy.language
 import torch
+import transformers
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
 
@@ -30,7 +31,7 @@ TRANSFORMERS_MODEL = "transformers_model"
 
 
 @spacy.component(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
-class TrfModel(TrfAutoMixin, TorchPipe):
+class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
     """Transformers Model component."""
 
     _TRF_NAME = "trf_name"
@@ -47,6 +48,7 @@ class TrfModel(TrfAutoMixin, TorchPipe):
     def _apply_model(self, docs: List[Doc], grad: bool) -> torch.Tensor:
         self.require_model()
         x = TrfTokenizer.get_transformers_input(docs)
+        assert x is not None
         x.to(device=self.device)
         with set_grad(grad):
             y = self.model(**x.model_input)

@@ -28,7 +28,7 @@ class Elmo(Pipe):
 
     @classmethod
     def Model(cls, options_file: Pathlike, weight_file: Pathlike, **cfg):
-        from allennlp.commands.elmo import ElmoEmbedder
+        from allennlp.commands.elmo import ElmoEmbedder  # type: ignore
 
         return ElmoEmbedder(
             str(Path(options_file).absolute()), str(Path(weight_file).absolute())

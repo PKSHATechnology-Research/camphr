@@ -5,13 +5,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union
 
-import cytoolz
 import omegaconf
 import spacy
-from cytoolz import merge
+import toolz
 from omegaconf import OmegaConf
 from spacy.language import Language
 from spacy.vocab import Vocab
+from toolz import merge
 
 from camphr.lang.torch import TorchLanguage
 from camphr.ner_labels.utils import get_ner_labels
@@ -57,10 +57,9 @@ def create_model(cfg: Union[NLPConfig, Any]) -> Language:
         cfg = OmegaConf.create(cfg)
     cfg = correct_model_config(cfg)
     nlp = create_lang(cfg.lang)
-    for name, config in cfg.pipeline.items():
-        if config:
-            config = OmegaConf.to_container(config)
-        nlp.add_pipe(nlp.create_pipe(name, config=config or dict()))
+    for name, pipe_config in cfg.pipeline.items():
+        pipe_config = OmegaConf.to_container(pipe_config or OmegaConf.create({}))
+        nlp.add_pipe(nlp.create_pipe(name, config=pipe_config or dict()))
     if cfg.name and isinstance(cfg.name, str):
         nlp._meta["name"] = cfg.name
     return nlp
@@ -91,7 +90,7 @@ def correct_model_config(cfg: NLPConfig) -> NLPConfig:
         _correct_trf_pipeline,
         _resolve_label,
     ]
-    return cytoolz.pipe(cfg, *PARSERS)
+    return toolz.pipe(cfg, *PARSERS)
 
 
 # Alias definition.
@@ -126,11 +125,9 @@ def _assign_pipeline(cfg: NLPConfig) -> NLPConfig:
     while True:
         prev_len = len(pipe_names)
         for k, v in PIPELINE_ALIGNMENT.items():
-            if k in pipe_names:
-                i = pipe_names.index(k)
-                for vv in v:
-                    if vv not in pipe_names:
-                        pipe_names.insert(i, vv)
+            for vv in v:
+                if k in pipe_names and (vv not in pipe_names):
+                    pipe_names.insert(pipe_names.index(k), vv)
         if prev_len == len(pipe_names):
             break
     cfg.pipeline = {k: cfg.pipeline.get(k, {}) for k in pipe_names}
@@ -189,8 +186,7 @@ def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
     if not set(cfg.pipeline.keys()) & set(TRF_PIPES):
         return cfg
     for k, v in cfg.pipeline.items():
-        if k in TRF_PIPES and v[KEY]:
-            VAL = v[KEY]
+        VAL = v[KEY] or VAL
     if not VAL:
         raise ValueError(
             f"Invalid configuration. At least one of transformer's pipe needs `{KEY}`, but the configuration is:\n"

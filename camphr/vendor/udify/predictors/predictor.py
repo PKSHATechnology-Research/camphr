@@ -8,7 +8,6 @@ from allennlp.common.util import JsonDict, sanitize
 from allennlp.data import DatasetReader, Instance
 from allennlp.models import Model
 from allennlp.predictors.predictor import Predictor
-from overrides import overrides
 
 
 @Predictor.register("udify_predictor")
@@ -24,7 +23,6 @@ class UdifyPredictor(Predictor):
     def predict(self, sentence: str) -> JsonDict:
         return self.predict_json({"sentence": sentence})
 
-    @overrides
     def predict_batch_instance(self, instances: List[Instance]) -> List[JsonDict]:
         if "@@UNKNOWN@@" not in self._model.vocab._token_to_index["lemmas"]:
             # Handle cases where the labels are present in the test set but not training set
@@ -33,7 +31,6 @@ class UdifyPredictor(Predictor):
         outputs = self._model.forward_on_instances(instances)
         return sanitize(outputs)
 
-    @overrides
     def predict_instance(self, instance: Instance) -> JsonDict:
         if "@@UNKNOWN@@" not in self._model.vocab._token_to_index["lemmas"]:
             # Handle cases where the labels are present in the test set but not training set
@@ -64,7 +61,6 @@ class UdifyPredictor(Predictor):
         replace_tokens(instance, "upos", "NOUN")
         replace_tokens(instance, "head_tags", "case")
 
-    @overrides
     def _json_to_instance(self, json_dict: JsonDict) -> Instance:
         """
         Expects JSON that looks like ``{"sentence": "..."}``.
@@ -74,7 +70,6 @@ class UdifyPredictor(Predictor):
         tokens = sentence.split()
         return self._dataset_reader.text_to_instance(tokens)
 
-    @overrides
     def dump_line(self, outputs: JsonDict) -> str:
         word_count = len([word for word in outputs["words"]])
         tags = [

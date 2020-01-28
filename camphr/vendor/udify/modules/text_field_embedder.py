@@ -12,7 +12,6 @@ from allennlp.data import Vocabulary
 from allennlp.modules.text_field_embedders import TextFieldEmbedder
 from allennlp.modules.time_distributed import TimeDistributed
 from allennlp.modules.token_embedders.token_embedder import TokenEmbedder
-from overrides import overrides
 from torch.nn.modules.linear import Linear
 
 
@@ -61,7 +60,6 @@ class UdifyTextFieldEmbedder(TextFieldEmbedder):
         else:
             self._projection_layer = Linear(hidden_dim, self._output_dim)
 
-    @overrides
     def get_output_dim(self) -> int:
         return self._output_dim
 

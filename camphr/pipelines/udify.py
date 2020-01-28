@@ -4,7 +4,7 @@ from typing import Dict, Iterable
 
 import spacy
 import spacy.language
-from spacy.tokens import Doc, Token
+from spacy.tokens import Doc
 
 from .allennlp_base import AllennlpPipe
 from .utils import flatten_docs_to_sents, set_heads
@@ -12,7 +12,7 @@ from .utils import flatten_docs_to_sents, set_heads
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 
 try:
-    from allennlp.common.util import import_submodules
+    from allennlp.common.util import import_submodules  # type: ignore
     from camphr.vendor.udify.models.udify_model import OUTPUTS as UdifyOUTPUTS
 
     import_submodules("camphr.vendor.udify")
@@ -41,7 +41,6 @@ class Udify(AllennlpPipe):
                 )
 
             for token, dep, upos, lemma in zip(sent, deps, uposes, lemmas):
-                token: Token = token
                 token.dep_ = dep
                 token.lemma_ = lemma
                 token.pos_ = upos

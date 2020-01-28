@@ -14,7 +14,6 @@ from allennlp.data.tokenizers.token import Token
 from allennlp.data.vocabulary import Vocabulary
 from allennlp.modules.token_embedders import TokenEmbedder
 from allennlp.nn import util
-from overrides import overrides
 from transformers import BertConfig, BertModel, BertTokenizer
 
 from .scalar_mix import ScalarMixWithDropout
@@ -125,7 +124,6 @@ class WordpieceIndexer(TokenIndexer[int]):
             vocab[wordpiece] for wordpiece in wordpiece_tokenizer(separator_token)
         ]
 
-    @overrides
     def count_vocab_items(self, token: Token, counter: Dict[str, Dict[str, int]]):
         # If we only use pretrained models, we don't need to do anything here.
         pass
@@ -136,7 +134,6 @@ class WordpieceIndexer(TokenIndexer[int]):
             vocabulary._token_to_index[self._namespace][word] = idx
             vocabulary._index_to_token[self._namespace][idx] = word
 
-    @overrides
     def tokens_to_indices(
         self, tokens: List[Token], vocabulary: Vocabulary, index_name: str
     ) -> Dict[str, List[List[int]]]:
@@ -271,17 +268,14 @@ class WordpieceIndexer(TokenIndexer[int]):
             "mask": mask,
         }
 
-    @overrides
     def get_padding_token(self) -> int:
         return 0
 
-    @overrides
     def get_padding_lengths(
         self, token: int
     ) -> Dict[str, int]:  # pylint: disable=unused-argument
         return {}
 
-    @overrides
     def pad_token_sequence(
         self,
         tokens: Dict[str, List[int]],
@@ -293,7 +287,6 @@ class WordpieceIndexer(TokenIndexer[int]):
             for key, val in tokens.items()
         }
 
-    @overrides
     def get_keys(self, index_name: str) -> List[str]:
         """
         We need to override this because the indexer generates multiple keys.

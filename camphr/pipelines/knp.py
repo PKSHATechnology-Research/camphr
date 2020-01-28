@@ -1,10 +1,10 @@
 import re
-from typing import Callable, Dict, List, NamedTuple, Optional, Tuple
+from typing import Callable, Dict, List, NamedTuple, Optional, Sequence, Tuple
 
 import spacy
-from cytoolz import curry
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
+from toolz import curry
 
 from camphr.consts import JUMAN_LINES
 
@@ -117,7 +117,7 @@ class KNP:
             assert len(mlist) == len(sent)
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
-        doc.ents = filter_spans(doc.ents + _extract_knp_ent(doc))
+        doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))
         return doc
 
 
@@ -155,10 +155,10 @@ def get_knp_element_id(elem) -> int:
 def get_knp_parent(type_: str, span: Span) -> Optional[Span]:
     tag_or_bunsetsu = span._.get(getattr(KNP_USER_KEYS, type_).element)
     if not tag_or_bunsetsu:
-        return
+        return None
     p = tag_or_bunsetsu.parent
     if not p:
-        return
+        return None
     spans = span.sent._.get(getattr(KNP_USER_KEYS, type_).spans)
     return spans[get_knp_element_id(p)]
 
@@ -173,7 +173,7 @@ def get_knp_children(type_: str, span: Span) -> List[Span]:
     return [spans[get_knp_element_id(child)] for child in children]
 
 
-def _extract_knp_ent(doc: Doc) -> Tuple[Span]:
+def _extract_knp_ent(doc: Doc) -> Sequence[Span]:
     ents = []
     for token in doc:
         ent_match = re.search(
@@ -187,10 +187,10 @@ def _extract_knp_ent(doc: Doc) -> Tuple[Span]:
             else:
                 ents[-1][2] = token.i + 1
     ents = _create_ents(doc, ents)
-    return tuple(ents)
+    return ents
 
 
-def _create_ents(doc: Doc, ents) -> Doc:
+def _create_ents(doc: Doc, ents) -> List[Span]:
     new_ents = []
     for text, start, end in ents:
         new_ents.append(Span(doc, start, end, label=text))

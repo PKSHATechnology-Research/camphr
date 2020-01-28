@@ -67,6 +67,7 @@ class PatternSearcher(SerializationMixin):
         if self.label_type == "custom_label":
             return cast(str, self.custom_label)
         if self.label_type == "custom_label_map":
+            assert self.custom_label_map is not None
             return self.custom_label_map[item]
 
         raise ValueError("Internal Error")
@@ -86,7 +87,7 @@ class PatternSearcher(SerializationMixin):
 
     def get_char_spans(self, text: str) -> Generator[Tuple[int, int, str], None, None]:
         self.require_model()
-        for j, word in self.model.iter(text):
+        for j, word in cast(ahocorasick.Automaton, self.model).iter(text):
             i = j - len(word) + 1
             yield i, j + 1, word
 

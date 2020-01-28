@@ -62,6 +62,7 @@ class TrfTokenizer(TrfAutoMixin, Pipe):
                 """
                 )
             return output
+        return None
 
     def _set_tokens(self, docs: Sequence[Doc], inputs: TransformersInput) -> None:
         for doc, x in zip(docs, inputs):

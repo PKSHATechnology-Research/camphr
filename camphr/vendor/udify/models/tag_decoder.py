@@ -13,7 +13,6 @@ from allennlp.modules import Seq2SeqEncoder, TimeDistributed
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import sequence_cross_entropy_with_logits
 from allennlp.training.metrics import CategoricalAccuracy
-from overrides import overrides
 from torch.nn.modules.adaptive import AdaptiveLogSoftmaxWithLoss
 from torch.nn.modules.linear import Linear
 
@@ -138,7 +137,6 @@ class TagDecoder(Model):
 
         initializer(self)
 
-    @overrides
     def forward(
         self,
         encoded_text: torch.FloatTensor,
@@ -212,7 +210,6 @@ class TagDecoder(Model):
             for metric in self.features_metrics[feature].values():
                 metric(logits, gold_tags[feature], mask.float())
 
-    @overrides
     def decode(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
         all_words = output_dict["words"]
 
@@ -250,7 +247,6 @@ class TagDecoder(Model):
 
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         main_metrics = {
             f".run/{self.task}/{metric_name}": metric.get_metric(reset)

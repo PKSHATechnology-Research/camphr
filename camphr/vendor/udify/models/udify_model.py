@@ -12,7 +12,6 @@ from allennlp.models.model import Model
 from allennlp.modules import Seq2SeqEncoder, TextFieldEmbedder
 from allennlp.nn import InitializerApplicator, RegularizerApplicator
 from allennlp.nn.util import get_text_field_mask
-from overrides import overrides
 from transformers import BertTokenizer
 
 from ..modules.scalar_mix import ScalarMixWithDropout
@@ -53,8 +52,8 @@ class UdifyModel(Model):
         post_encoder_embedder: TextFieldEmbedder = None,
         dropout: float = 0.0,
         word_dropout: float = 0.0,
-        mix_embedding: int = None,
-        layer_dropout: int = 0.0,
+        mix_embedding: Optional[int] = None,
+        layer_dropout: float = 0.0,
         initializer: InitializerApplicator = InitializerApplicator(),
         regularizer: Optional[RegularizerApplicator] = None,
     ) -> None:
@@ -71,7 +70,7 @@ class UdifyModel(Model):
         self.decoders = torch.nn.ModuleDict(decoders)
 
         if mix_embedding:
-            self.scalar_mix = torch.nn.ModuleDict(
+            self.scalar_mix: Optional[torch.nn.ModuleDict] = torch.nn.ModuleDict(
                 {
                     task: ScalarMixWithDropout(
                         mix_embedding, do_layer_norm=False, dropout=layer_dropout
@@ -81,8 +80,6 @@ class UdifyModel(Model):
             )
         else:
             self.scalar_mix = None
-
-        self.metrics = {}
 
         for task in self.tasks:
             if task not in self.decoders:
@@ -100,12 +97,11 @@ class UdifyModel(Model):
         initializer(self)
         self._count_params()
 
-    @overrides
     def forward(
         self,
         tokens: Dict[str, torch.LongTensor],
         metadata: List[Dict[str, Any]] = None,
-        **kwargs: Dict[str, torch.LongTensor],
+        **kwargs: torch.LongTensor,
     ) -> Dict[str, torch.Tensor]:
         if "track_epoch" in kwargs:
             kwargs.pop("track_epoch")
@@ -126,8 +122,8 @@ class UdifyModel(Model):
 
         encoded_text = self.shared_encoder(embedded_text_input, mask)
 
-        logits = {}
-        class_probabilities = {}
+        logits: Dict[str, Any] = {}
+        class_probabilities: Dict[str, Any] = {}
         output_dict: Dict[str, Any] = {
             "logits": logits,
             "class_probabilities": class_probabilities,
@@ -223,7 +219,7 @@ class UdifyModel(Model):
         padding_tokens: List[int],
         p: float = 0.2,
         training: bool = True,
-    ) -> torch.LongTensor:
+    ) -> torch.Tensor:
         """
         During training, randomly replaces some of the non-padding tokens to a mask token with probability ``p``
 
@@ -257,14 +253,12 @@ class UdifyModel(Model):
         else:
             return tokens
 
-    @overrides
     def decode(self, output_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
         for task in self.tasks:
             self.decoders[task].decode(output_dict)
 
         return output_dict
 
-    @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
         metrics = {
             name: task_metric
