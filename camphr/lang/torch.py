@@ -1,8 +1,9 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
 import itertools
+import spacy
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Union
+from typing import Any, Dict, List, Sequence, Tuple, Union, cast
 
 import srsly
 import torch
@@ -59,12 +60,24 @@ class TorchLanguage(Language):
     ):
         """Update `TorchPipe` models in pipline."""
         docs, golds = self._format_docs_and_golds(docs, golds)
-        self._update_pipes(docs, golds)
-        self._update_params(docs, optimizer, verbose)
-
-    def _update_pipes(self, docs: Sequence[Doc], golds: Sequence[GoldParse]) -> None:
         for _, pipe in self.pipeline:
             pipe.update(docs, golds)
+        self._update_params(docs, optimizer, verbose)
+
+    def eval_loss(
+        self, docs_golds: Sequence[Tuple[Doc, GoldParse]], batch_size: int
+    ) -> float:
+        docs, golds = zip(*docs_golds)
+        docs, golds = self._format_docs_and_golds(docs, golds)
+
+        for _, pipe in self.pipeline:
+            if not hasattr(pipe, "pipe"):
+                spacy.language._pipe(docs, pipe, {})
+            elif hasattr(pipe, "eval"):
+                pipe.eval(docs, golds)
+            else:
+                pipe.pipe(docs)
+        return cast(float, get_loss_from_docs(docs).cpu().float().item())
 
     def _update_params(
         self, docs: Sequence[Doc], optimizer: optim.Optimizer, verbose: bool = False

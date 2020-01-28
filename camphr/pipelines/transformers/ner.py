@@ -12,6 +12,7 @@ import transformers
 from overrides import overrides
 from spacy.gold import GoldParse, iob_to_biluo, spans_from_biluo_tags
 from spacy.tokens import Doc
+from typing_extensions import Literal
 
 from camphr.pipelines.utils import (
     UNK,
@@ -25,11 +26,12 @@ from camphr.pipelines.utils import (
     correct_bio_tags,
     deconstruct_biluo_label,
 )
-from camphr.torch_utils import TorchPipe, add_loss_to_docs
+from camphr.torch_utils import TorchPipe, add_loss_to_docs, set_grad
 
 from .auto import get_trf_config_cls
 from .utils import (
     ATTRS,
+    ComputeLossMixin,
     LABELS,
     FromNLPMixinForTrfTask,
     LabelsMixin,
@@ -64,6 +66,7 @@ class TrfTokenClassifier(TrfModelForTaskBase):
 
 
 class TrfForTokenClassificationBase(
+    ComputeLossMixin,
     LabelsMixin,
     FromNLPMixinForTrfTask,
     UserHooksMixin,
@@ -118,15 +121,16 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
             return self.labels.index(UNK)
         return -1
 
-    def update(self, docs: List[Doc], golds: List[GoldParse]):
-        assert isinstance(docs, list)
-        self.require_model()
-        logits = self.model(get_last_hidden_state_from_docs(docs))
-        target = self._create_target_from_docs_golds(docs, golds, logits)
-        loss = F.cross_entropy(
-            logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
-        )
-        add_loss_to_docs(docs, loss)
+    def compute_loss(
+        self, docs: List[Doc], golds: List[GoldParse], mode: Literal["train", "eval"]
+    ):
+        with self.switch(mode):
+            logits = self.model(get_last_hidden_state_from_docs(docs))
+            target = self._create_target_from_docs_golds(docs, golds, logits)
+            loss = F.cross_entropy(
+                logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
+            )
+            add_loss_to_docs(docs, loss)
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor

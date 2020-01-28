@@ -99,9 +99,20 @@ def evaluate(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
     return scorer.scores
 
 
+def eval_loss(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Dict[str, float]:
+    try:
+        loss = nlp.eval_loss(val_data, batch_size=cfg.nbatch * 2)
+    except Exception:
+        report_fail(val_data)
+        raise
+    return {"loss": loss}
+
+
 EvalFn = Callable[[Config, Language, InputData], Dict]
 
-EVAL_FN_MAP = defaultdict(lambda: evaluate, {"textcat": evaluate_textcat})
+EVAL_FN_MAP = defaultdict(
+    lambda: evaluate, {"textcat": evaluate_textcat, "loss": eval_loss}
+)
 
 
 def train_epoch(
@@ -152,7 +163,10 @@ def train(
     val_data: InputData,
     savedir: Path,
 ) -> float:
-    eval_fn = EVAL_FN_MAP[cfg.task]
+    socorer_key = cfg.task
+    if cfg.optuna and cfg.optuna.objective:
+        socorer_key = cfg.optuna.objective
+    eval_fn = EVAL_FN_MAP[socorer_key]
     optim = nlp.resume_training()
     scheduler = load_scheduler(cfg, optim)
     scores = None
@@ -163,7 +177,8 @@ def train(
         scores = eval_fn(cfg, nlp, val_data)
         nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))
-    return -scores["ents_f"] if scores else 1e5
+    score = scores[cfg.optuna.objective]
+    return score
 
 
 def _main(cfg: Config) -> None:
@@ -190,7 +205,7 @@ def _main(cfg: Config) -> None:
         return train(cfg.train, nlp, train_data, val_data, savedir)
 
     study = optuna.create_study(study_name="capmhr", storage="sqlite:///optuna.db")
-    study.optimize(objective, n_trials=cfg.optuna.ntrials)
+    study.optimize(objective, n_trials=cfg.train.optuna.ntrials)
     log.info(f"Best trial: {study.best_trial.trial_id}")
     log.info(f"Best score: {study.best_value}")
 

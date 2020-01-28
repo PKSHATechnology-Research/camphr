@@ -87,12 +87,6 @@ class TrfModel(TrfAutoMixin, TorchPipe):
                 doc.user_span_hooks["similarity"] = get_similarity
                 doc.user_token_hooks["similarity"] = get_similarity
 
-    @property
-    def freeze(self) -> bool:
-        if self.cfg.get("freeze"):
-            return True
-        return False
-
     def update(self, docs: List[Doc], golds: List[GoldParse]):
         """Simply forward `docs` in training mode."""
         if self.freeze:
@@ -103,6 +97,12 @@ class TrfModel(TrfAutoMixin, TorchPipe):
         # `set_vector = False` because the tensor may not be necessary in updating.
         # The tensor is still available via doc._.transformers_last_hidden_state.
         self.set_annotations(docs, y, set_vector=False)
+
+    @property
+    def freeze(self) -> bool:
+        if self.cfg.get("freeze"):
+            return True
+        return False
 
 
 def get_doc_vector_via_tensor(doc) -> np.ndarray:

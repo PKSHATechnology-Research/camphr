@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import dataclasses
 import functools
 import pickle
@@ -11,10 +12,11 @@ from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from tokenizations import get_alignments
-from typing_extensions import Protocol
+from typing_extensions import Protocol, Literal
+from spacy.gold import GoldParse
 
 from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TensorWrapper, TorchPipe
+from camphr.torch_utils import TensorWrapper, TorchPipe, set_grad
 
 from .auto import get_trf_config_cls, get_trf_name
 
@@ -234,6 +236,34 @@ class TrfAutoMixin(_TrfSavePathGetter):
             self.cfg = pickle.load(f)
         self.model = self.Model(str(self._trf_path(path)))
         return self
+
+
+class ComputeLossMixin:
+    def update(self, docs: List[Doc], golds: List[GoldParse]):
+        return self.compute_loss(docs, golds, "train")
+
+    def eval(self, docs: List[Doc], golds: List[GoldParse]):
+        return self.compute_loss(docs, golds, "eval")
+
+    def compute_loss(
+        self: TorchPipe,
+        docs: List[Doc],
+        golds: List[GoldParse],
+        mode: Literal["train", "eval"],
+    ):
+        raise NotImplementedError
+
+    @contextmanager
+    def switch(self: TorchPipe, mode: Literal["train", "eval"]):
+        self.require_model()
+        if mode == "train":
+            self.model.train()
+            grad = True
+        else:
+            self.model.eval()
+            grad = False
+        with set_grad(grad):
+            yield
 
 
 @dataclasses.dataclass
