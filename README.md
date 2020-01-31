@@ -2,6 +2,12 @@
 
 # Camphr - spaCy plugin for Transformers, Japanese [![CircleCI](https://circleci.com/gh/PKSHATechnology/bedore-ner.svg?style=svg&circle-token=d27152116259f09d7e229ee7d5ad5f095989fc7d)](https://circleci.com/gh/PKSHATechnology/bedore-ner)
 
+
+# OSS化にむけレビュアー募集中！
+
+- 勝手にパッチ or Issueください！
+- ドキュメントも作成中です！
+
 # Installation
 
 ```bash
