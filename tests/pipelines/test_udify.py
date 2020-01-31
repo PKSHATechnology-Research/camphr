@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 import spacy
+from spacy.language import Language
 from spacy.tests.util import assert_docs_equal
-from spacy.tokens import Doc
 
 import camphr.lang.mecab as mecab
 from camphr.pipelines.udify import Udify
@@ -31,8 +31,8 @@ TEXTS = [
 
 
 @pytest.mark.parametrize("text,roots", zip(TEXTS, [["店"], ["天気", "晴れる"]]))
-def test_udify(nlp, text, roots):
-    doc: Doc = nlp(text)
+def test_udify(nlp: Language, text, roots):
+    doc = nlp(text)
     assert doc.is_parsed
     for s, root in zip_longest(doc.sents, roots):
         assert s.root.text == root

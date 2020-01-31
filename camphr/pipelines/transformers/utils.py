@@ -1,3 +1,4 @@
+"""Defines utility functions, classes, mixins for transformers pipelines."""
 import dataclasses
 import pickle
 from pathlib import Path
@@ -25,12 +26,14 @@ from tokenizations import get_alignments
 from typing_extensions import Protocol
 
 from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TensorWrapper, TorchPipe
+from camphr.torch_utils import TensorWrapper
 
 from .auto import get_trf_config_cls, get_trf_name
 
 
 class ATTRS:
+    """Attribute names for spacy.Underscore"""
+
     tokens = "transformers_tokens"
     token_ids = "transformers_token_ids"
     cleaned_tokens = "transformers_cleaned_tokens"
@@ -40,20 +43,25 @@ class ATTRS:
     batch_inputs = "transformers_batch_inputs"
 
 
-def _get_transformers_align(doc):
+def _get_transformers_align(doc: Doc) -> List[List[int]]:
+    """Get tokens alignment from spacy tokens to transformers tokens"""
     trf_tokens = doc._.get(ATTRS.cleaned_tokens)
     return get_alignments([token.text for token in doc], trf_tokens)[0]
 
 
-for attr in [
-    ATTRS.tokens,
-    ATTRS.token_ids,
-    ATTRS.cleaned_tokens,
-    ATTRS.last_hidden_state,
-    ATTRS.batch_inputs,
-]:
-    Doc.set_extension(attr, default=None)
-Doc.set_extension(ATTRS.align, getter=_get_transformers_align)
+def _set_extensions():
+    for attr in [
+        ATTRS.tokens,
+        ATTRS.token_ids,
+        ATTRS.cleaned_tokens,
+        ATTRS.last_hidden_state,
+        ATTRS.batch_inputs,
+    ]:
+        Doc.set_extension(attr, default=None)
+    Doc.set_extension(ATTRS.align, getter=_get_transformers_align)
+
+
+_set_extensions()
 
 
 TRF_CONFIG = "trf_config"
@@ -65,48 +73,22 @@ LABELS = "labels"
 
 
 def get_last_hidden_state_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
+    """Get transformers text embedding from docs.
+    
+    Useful for downstream task pipelines.
+    """
     # assumed that the batch tensor of all docs is stored in the extension.
     x: TensorWrapper = next(iter(docs))._.get(ATTRS.last_hidden_state)
     return x.batch_tensor
 
 
 def get_dropout(config: transformers.PretrainedConfig) -> float:
+    """Get dropout rate from config"""
     if isinstance(config, transformers.BertConfig):
         return config.hidden_dropout_prob
     if hasattr(config, "dropout"):
         return config.dropout
     return 0.1
-
-
-def _setdefault(obj: Any, k: str, v: Any) -> Any:
-    if hasattr(obj, k):
-        return getattr(obj, k)
-    setattr(obj, k, v)
-    return v
-
-
-def _setdefaults(obj: Any, kv: Dict[str, Any]):
-    for k, v in kv.items():
-        _setdefault(obj, k, v)
-
-
-_SUMMARY_DEFAULTS = {"summary_activation": "tanh"}
-_SUMMARY_TYPE = "summary_type"
-_LAST_DROPOUT = "summary_last_dropout"
-
-
-def _set_default_summary_type(config: transformers.PretrainedConfig):
-    if isinstance(config, transformers.BertConfig):
-        _setdefault(config, _SUMMARY_TYPE, "first")
-    elif isinstance(config, transformers.XLNetConfig):
-        _setdefault(config, _SUMMARY_TYPE, "last")
-
-
-def set_default_config_for_sequence_summary(config: transformers.PretrainedConfig):
-    """Set default value for transformers.SequenceSummary"""
-    _setdefaults(config, _SUMMARY_DEFAULTS)
-    _set_default_summary_type(config)
-    _setdefault(config, _LAST_DROPOUT, get_dropout(config))
 
 
 class TrfModelForTaskBase(nn.Module):
@@ -116,16 +98,19 @@ class TrfModelForTaskBase(nn.Module):
 
 
 class _TrfSavePathGetter:
-    """For transformers Pipelines."""
-
     def _trf_path(self, path: Path) -> Path:
         return path / self.cfg[TRF_NAME]  # type: ignore
 
 
 class SerializationMixinForTrfTask(_TrfSavePathGetter):
+    """Mixin for transoformers pipeline
+
+    Constraints: `TorchPipe`
+    """
+
     _MODEL_PTH = "model.pth"
     _CFG_PKL = "cfg.pkl"
-    model_cls: Type[TrfModelForTaskBase] = TrfModelForTaskBase
+    model_cls: Type[TrfModelForTaskBase]
 
     def to_disk(self, path: Path, exclude=tuple(), **kwargs):
         path.mkdir(exist_ok=True)
@@ -139,9 +124,7 @@ class SerializationMixinForTrfTask(_TrfSavePathGetter):
             cfg = {k: v for k, v in self.cfg.items() if k not in exclude}
             pickle.dump(cfg, f)
 
-    def from_disk(  # type: ignore
-        self: TorchPipe, path: Path, exclude=tuple(), **kwargs
-    ):
+    def from_disk(self, path: Path, exclude=tuple(), **kwargs):
         with (path / self._CFG_PKL).open("rb") as f:
             self.cfg = pickle.load(f)
 
@@ -150,59 +133,80 @@ class SerializationMixinForTrfTask(_TrfSavePathGetter):
         )
         model = self.model_cls(config)
         model.load_state_dict(
-            torch.load(str(path / self._MODEL_PTH), map_location=self.device)
+            torch.load(
+                str(path / self._MODEL_PTH), map_location=self.device  # type: ignore
+            )
         )
         model.eval()
         self.model = model
-
         return self
 
 
 class FromNLPMixinForTrfTask:
+    """Mixin for transformers task pipeline.
+
+    Constraints: `TorchPipe`
+    """
+
     @classmethod
-    def from_pretrained(  # type: ignore
-        cls: Type[TorchPipe], vocab: Vocab, trf_name_or_path: str, **cfg
-    ):
+    def from_pretrained(cls, vocab: Vocab, trf_name_or_path: str, **cfg):
         """Load pretrained model."""
         name = get_trf_name(trf_name_or_path)
-        return cls(
-            vocab, model=cls.Model(trf_name_or_path, **cfg), trf_name=name, **cfg
+        return cls(  # type: ignore
+            vocab,
+            model=cls.Model(trf_name_or_path, **cfg),  # type: ignore
+            trf_name=name,
+            **cfg
         )
 
     @classmethod
-    def from_nlp(cls: Type[TorchPipe], nlp: Language, **cfg):  # type: ignore
+    def from_nlp(cls, nlp: Language, **cfg):
         if cfg.get("trf_name_or_path"):
             return cls.from_pretrained(nlp.vocab, **cfg)
-        return cls(nlp.vocab)
+        return cls(nlp.vocab)  # type: ignore
+
+
+class PipeProtocol(Protocol):
+    """For mypy. See https://mypy.readthedocs.io/en/latest/more_types.html#mixin-classes"""
+
+    cfg: Dict[str, Any]
 
 
 class LabelsMixin:
+    """Mixin for pipes which has labels.
+
+
+    Constraints: `Pipe`
+    Optional constraints:
+        - `UserHooksMixin`: to use `def convert_label`
+    """
+
     @property
-    def labels(self: TorchPipe) -> List[str]:  # type: ignore
+    def labels(self: PipeProtocol) -> List[str]:
         # The reason to return empty list is that `spacy.Language` calls `Pipe.labels` when restoring,
         # before the `labels` is not set to this Pipe.
         # For the same reason cache cannot be used.
         return self.cfg.get(LABELS, [])
 
     @property
-    def label2id(self: TorchPipe) -> Dict[str, int]:  # type: ignore
+    def label2id(self: PipeProtocol) -> Dict[str, int]:
         # `lru_cache` is not adopted because mypy doesn't support `Decorated property`
         # https://github.com/python/mypy/issues/1362
         if not hasattr(self, "_label2id"):
-            self._label2id = {v: i for i, v in enumerate(self.labels)}
-        return self._label2id
+            self._label2id = {v: i for i, v in enumerate(self.labels)}  # type: ignore
+        return self._label2id  # type: ignore
 
     @property
-    def label_weights(self: TorchPipe) -> torch.Tensor:  # type: ignore
+    def label_weights(self: PipeProtocol) -> torch.Tensor:
         if not hasattr(self, "_label_weights"):
             weights_map = self.cfg.get(LABEL_WEIGHTS)
-            weights = torch.ones(len(self.label2id))
+            weights = torch.ones(len(self.label2id))  # type: ignore
             if weights_map:
-                assert len(weights_map) == len(self.label2id)
+                assert len(weights_map) == len(self.label2id)  # type: ignore
                 for k, v in weights_map.items():
-                    weights[self.label2id[k]] = v
+                    weights[self.label2id[k]] = v  # type: ignore
             self._label_weights = weights
-        return self._label_weights
+        return self._label_weights  # type: ignore
 
     def convert_label(self: UserHooksMixin, label: str) -> str:  # type:ignore
         fn = self.user_hooks.get(CONVERT_LABEL)
@@ -238,17 +242,17 @@ class TrfAutoMixin(_TrfSavePathGetter, Generic[T]):
 
     @classmethod
     def Model(cls, trf_name_or_path: str, **cfg):
-        return cls._MODEL_CLS_GETTER(trf_name_or_path).from_pretrained(
-            trf_name_or_path, **cfg
-        )
+        _cls = cls._MODEL_CLS_GETTER(trf_name_or_path)
+        return _cls.from_pretrained(trf_name_or_path, **cfg)
 
     @classmethod
     def from_pretrained(cls, vocab: Vocab, trf_name_or_path: str, **cfg):
         """Load pretrained model."""
         name = get_trf_name(trf_name_or_path)
-        return cls(  # type: ignore
+        model = cls(  # type: ignore
             vocab, model=cls.Model(trf_name_or_path), trf_name=name, **cfg
         )
+        return model
 
     @classmethod
     def from_nlp(cls, nlp: Language, **cfg):

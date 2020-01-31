@@ -1,0 +1,6 @@
+- [ ] pypi
+- [ ] ライセンスファイル
+- [ ] modelのmetaを書き換える
+    - [ ] requirements
+    - [ ] license
+- [ ] grep TODO で TODOを潰す

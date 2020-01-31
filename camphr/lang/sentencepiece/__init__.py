@@ -2,7 +2,7 @@ import os
 import shutil
 from itertools import chain
 from pathlib import Path
-from typing import Callable, List, Optional, Union
+from typing import Callable, List, Optional, Type, Union
 
 import sentencepiece as spm  # type: ignore
 from spacy.language import Language
@@ -32,7 +32,10 @@ class Tokenizer:
         Token.set_extension(EXTS.alignment, getter=get_token_align)
 
     def __init__(
-        self, cls: Language, nlp: Optional[Language] = None, model_path: str = ""
+        self,
+        cls: Type["Defaults"],
+        nlp: Optional[Language] = None,
+        model_path: str = "",
     ):
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         self.tokenizer = spm.SentencePieceProcessor()
@@ -114,7 +117,7 @@ def make_token_span_spiece_getter(text: bool) -> Callable:
     return getter
 
 
-class Defaults(Language.Defaults):
+class Defaults(Language.Defaults):  # type: ignore
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
 
     @classmethod

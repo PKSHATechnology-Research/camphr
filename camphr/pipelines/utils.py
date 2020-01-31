@@ -1,7 +1,7 @@
 import copy
 import warnings
 from itertools import chain
-from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union
+from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union, overload
 
 import numpy as np
 import torch
@@ -127,7 +127,17 @@ def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:
     return filter_spans(list(ents1) + list(ents0))
 
 
+@overload
+def set_heads(doc: Span, heads: List[int]) -> Span:
+    ...
+
+
+@overload
 def set_heads(doc: Doc, heads: List[int]) -> Doc:
+    ...
+
+
+def set_heads(doc, heads):
     """Set heads to doc in UD annotation style.
 
     If fail to set, return doc without doing anything.

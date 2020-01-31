@@ -79,7 +79,7 @@ class BertForMaskedLMPreprocessor(Pipe):
     def pipe(self, docs: Iterable[Doc], *args, **kwargs):
         return docs
 
-    def update(self, docs: List[Doc], *args, **kwargs):
+    def update(self, docs: List[Doc], *args, **kwargs):  # type: ignore
         self.require_model()
         inputs = TrfTokenizer.get_transformers_input(docs)
         assert inputs is not None
@@ -131,7 +131,9 @@ class BertForMaskedLM(SerializationMixinForTrfTask, TorchPipe):
         for doc, pred in zip(docs, preds):
             doc.user_data[MASKEDLM_PREDICTION] = torch.max(pred)
 
-    def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
+    def update(  # type: ignore
+        self, docs: List[Doc], golds: Iterable[GoldParse], **kwargs
+    ):
         self.require_model()
         self.model.train()
         x = get_last_hidden_state_from_docs(docs)

@@ -95,7 +95,7 @@ class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
             return True
         return False
 
-    def update(self, docs: List[Doc], golds: List[GoldParse]):
+    def update(self, docs: List[Doc], golds: List[GoldParse]):  # type: ignore
         """Simply forward `docs` in training mode."""
         if self.freeze:
             self.model.eval()

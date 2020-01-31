@@ -10,7 +10,7 @@ repos:
     - id: check-merge-conflict
     - id: check-symlinks
     - id: flake8
-      exclude: "^camphr/vendor"
+      exclude: "^camphr/_vendor"
 
 - repo: git@github.com:humitos/mirrors-autoflake.git
   rev: v1.1
@@ -35,3 +35,4 @@ repos:
   rev: 'v0.761'  # Use the sha / tag you want to point at
   hooks:
   - id: mypy
+    exclude: "docs/"

@@ -4,7 +4,18 @@ import importlib
 import re
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple, Type, Union, cast
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import spacy
 import srsly
@@ -47,6 +58,7 @@ def destruct_token(doc: Doc, *char_pos: int) -> Doc:
             token = token_from_char_pos(doc, i)
             heads = [token] * len(token)
             retokenizer.split(doc[token.i], list(token.text), heads=heads)
+    return doc
 
 
 def get_doc_char_span(
@@ -99,12 +111,6 @@ def split_keepsep(text: str, sep: str):
             last += sep
         res.append(last)
     return res
-
-
-def get_sents(doc: Doc) -> Iterable[Span]:
-    if doc.is_sentenced:
-        return doc.sents
-    return doc[:]
 
 
 def import_attr(import_path: str) -> Any:
@@ -237,3 +243,20 @@ class SerializationMixin:
     def require_model(self):
         if getattr(self, "model", None) in (None, True, False):
             raise ValueError(Errors.E109.format(name=self.name))
+
+
+T = TypeVar("T")
+
+
+def _setdefault(obj: Any, k: str, v: T) -> T:
+    """Set attribute to object like dict.setdefault."""
+    if hasattr(obj, k):
+        return getattr(obj, k)
+    setattr(obj, k, v)
+    return v
+
+
+def setdefaults(obj: Any, kv: Dict[str, Any]):
+    """Set all attribute in kv to object"""
+    for k, v in kv.items():
+        _setdefault(obj, k, v)

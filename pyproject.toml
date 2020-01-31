@@ -52,6 +52,8 @@ rope = "*"
 hypothesis = "*"
 pre-commit = "*"
 toml = "^0.10.0"
+sphinx = "*"
+doc8 = "*"
 
 [tool.poetry.scripts]
 camphr = "camphr.cli.__main__:main"
@@ -90,6 +92,7 @@ allow-prereleases = true
 ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
+
 
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"

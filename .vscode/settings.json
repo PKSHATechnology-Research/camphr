@@ -1,9 +1,13 @@
 {
-    "python.pythonPath": ".venv/bin/python",
+    "python.pythonPath": "/Users/yohei_tamura/Library/Caches/pypoetry/virtualenvs/camphr-v19AnSgn-py3.7/bin/python",
     "python.testing.pytestArgs": [
         "tests"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "restructuredtext.confPath": "${workspaceFolder}/.venv/lib/python3.6/site-packages/importlib_metadata/docs",
+    "restructuredtext.linter.extraArgs": [
+        "--ignore D001"
+    ]
 }

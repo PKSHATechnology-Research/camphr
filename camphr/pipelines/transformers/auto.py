@@ -1,3 +1,4 @@
+"""Defines utilities to get transformers attributes from name string."""
 from typing import NamedTuple, Type
 
 import transformers as trf
@@ -14,7 +15,12 @@ _TRF_MAPS = (
     _TrfMap(
         "bert-base-japanese", trf.BertConfig, trf.BertJapaneseTokenizer, trf.BertModel
     ),
-    _TrfMap("xlm-roberta", trf.XLMConfig, trf.XLMTokenizer, trf.XLMModel),
+    _TrfMap(
+        "xlm-roberta",
+        trf.XLMRobertaConfig,
+        trf.XLMRobertaTokenizer,
+        trf.XLMRobertaModel,
+    ),
     _TrfMap(
         "openai-gpt", trf.OpenAIGPTConfig, trf.OpenAIGPTTokenizer, trf.OpenAIGPTModel
     ),
@@ -36,6 +42,8 @@ _TRF_MAPS = (
     _TrfMap("xlm", trf.XLMConfig, trf.XLMTokenizer, trf.XLMModel),
     _TrfMap("t5", trf.T5Config, trf.T5Tokenizer, trf.T5Model),
 )
+
+ALL_MODELS = [k.name for k in _TRF_MAPS]
 
 
 def _get_trf_map(text: str) -> _TrfMap:

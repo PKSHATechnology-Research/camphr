@@ -1,5 +1,6 @@
+"""Defines transformers sequence classification pipe"""
 import operator
-from typing import Dict, Iterable, List, Optional, cast
+from typing import Any, Dict, Iterable, List, Optional, Tuple, cast
 
 import spacy
 import torch
@@ -31,7 +32,7 @@ TOPK_LABELS = "topk_labels"
 
 
 class TrfSequenceClassifier(TrfModelForTaskBase):
-    """A thin layer for sequence classification task"""
+    """Head layer for sequence classification task"""
 
     def __init__(self, config: transformers.PretrainedConfig):
         super().__init__(config)
@@ -101,7 +102,9 @@ class TrfForSequenceClassification(
         targets = [self.label2id[label] for label in labels]
         return torch.tensor(targets, device=self.device)
 
-    def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
+    def update(  # type: ignore
+        self, docs: List[Doc], golds: Iterable[GoldParse], **kwargs
+    ):
         assert isinstance(docs, list)
         self.require_model()
         self.model.train()
@@ -121,7 +124,7 @@ def _top_label(doc: Doc) -> Optional[str]:
     return max(doc.cats.items(), key=operator.itemgetter(1))[0]
 
 
-def _topk_labels(doc: Doc, k: int) -> List[str]:
+def _topk_labels(doc: Doc, k: int) -> List[Tuple[str, Any]]:
     if not doc.cats:
         return []
     return sorted(doc.cats.items(), key=operator.itemgetter(1), reverse=True)[:k]

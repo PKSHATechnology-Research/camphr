@@ -50,17 +50,17 @@ class TorchLanguage(Language):
         self.optimizer_config = optimizer_config
         super().__init__(vocab, make_doc, max_length, meta=meta, **kwargs)
 
-    def update(
+    def update(  # type: ignore
         self,
-        docs: Sequence[Doc],
-        golds: Sequence[GoldParse],
+        docs: Sequence[Union[str, Doc]],
+        golds: Sequence[Union[Dict[str, Any], GoldParse]],
         optimizer: Optimizer,
         verbose: bool = False,
     ):
         """Update `TorchPipe` models in pipline."""
-        docs, golds = self._format_docs_and_golds(docs, golds)
-        self._update_pipes(docs, golds)
-        self._update_params(docs, optimizer, verbose)
+        _docs, _golds = self._format_docs_and_golds(docs, golds)
+        self._update_pipes(_docs, _golds)
+        self._update_params(_docs, optimizer, verbose)
 
     def _update_pipes(self, docs: Sequence[Doc], golds: Sequence[GoldParse]) -> None:
         for _, pipe in self.pipeline:
@@ -76,7 +76,7 @@ class TorchLanguage(Language):
         if verbose:
             logger.info(f"Loss: {loss.detach().item()}")
 
-    def resume_training(self, **kwargs) -> Optimizer:
+    def resume_training(self, **kwargs) -> Optimizer:  # type: ignore
         """Gather all torch parameters in each `TorchPipe`s, and create an optimizer.
 
         Args:
@@ -99,9 +99,7 @@ class TorchLanguage(Language):
             self.optimizer_config, dict
         ), f"`self.optimizer_config` must be set."
 
-    def create_optimizer(
-        self: Language, params: OptimizerParameters, **kwargs
-    ) -> Optimizer:
+    def create_optimizer(self, params: OptimizerParameters, **kwargs) -> Optimizer:
         cls = import_attr(self.optimizer_config["class"])
         return cls(params, **self.optimizer_config.get("params", {}))
 

@@ -3,7 +3,7 @@ import shutil
 from collections import namedtuple
 from pathlib import Path
 from shutil import copytree
-from typing import List, Optional
+from typing import List, Optional, Type
 
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -29,7 +29,7 @@ class Tokenizer(SerializationMixin):
 
     def __init__(
         self,
-        cls: Language,
+        cls: Type["Defaults"],
         nlp: Optional[Language] = None,
         dicdir: Optional[str] = None,
         userdic: Optional[str] = None,
@@ -125,7 +125,7 @@ class Tokenizer(SerializationMixin):
 
 
 # for pickling. see https://spacy.io/usage/adding-languages
-class Defaults(Language.Defaults):
+class Defaults(Language.Defaults):  # type: ignore
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
     stop_words = STOP_WORDS
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}

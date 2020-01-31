@@ -102,5 +102,5 @@ class PatternSearcher(SerializationMixin):
                 spans.append(span)
         [s.text for s in spans]  # TODO: resolve the evaluation bug and remove this line
         ents = filter_spans(doc.ents + tuple(spans))
-        doc.ents = ents
+        doc.ents = tuple(ents)
         return doc

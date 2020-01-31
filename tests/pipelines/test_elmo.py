@@ -15,9 +15,8 @@ def nlp():
     elmod = Path(__file__).parent / "../../data/elmo"
     options = elmod / "options.json"
     weights = elmod / "weights.hdf5"
-    m = Elmo.Model(options, weights)
-    p = Elmo(model=m)
-    _nlp.add_pipe(p)
+    elmo = Elmo.from_elmofiles(options, weights)
+    _nlp.add_pipe(elmo)
     return _nlp
 
 

@@ -11,7 +11,7 @@ download_xlnet:
 
 download_udify:
 	mkdir -p data/udify
-	aws s3 cp s3://bedoner/models/udify.tar.gz data/ \
+	aws s3 cp s3://bedoner/models/udify.tar.gz data/ && \
 	cd data && tar xzvf udify.tar.gz -C udify/ && \
 	mv udify/udify-model tmp && rm -r udify && mv tmp udify
 

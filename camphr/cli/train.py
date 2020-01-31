@@ -3,7 +3,7 @@ import os
 import random
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, Type, Union
+from typing import Callable, Dict, Type, Union, cast
 
 import hydra
 import hydra.utils
@@ -55,7 +55,11 @@ PATH_FIELDS = [
     "model.pretrained",
 ]
 
-ALIASES = {"train.optimizer": "model.lang.optimizer"}
+ALIASES = {
+    "train.optimizer": "model.lang.optimizer",
+    "data": "train.data",
+    "lang": "model.lang.name",
+}
 
 
 def resolve_path(cfg: Config) -> Config:
@@ -70,9 +74,9 @@ def resolve_path(cfg: Config) -> Config:
 
 
 def parse(cfg: Config):
+    cfg = resolve_alias(ALIASES, cfg)
     check_nonempty(cfg, MUST_FIELDS)
     cfg = resolve_path(cfg)
-    cfg = resolve_alias(ALIASES, cfg)
     cfg.model = correct_model_config(cfg.model)
     return cfg
 
@@ -130,7 +134,7 @@ def save_model(nlp: Language, path: Path) -> None:
 
 class DummyScheduler:
     @staticmethod
-    def step():
+    def step() -> None:
         ...
 
 
@@ -140,7 +144,7 @@ def load_scheduler(
     cls_str = get_by_dotkey(cfg, "scheduler.class")
     if not cls_str:
         return DummyScheduler
-    cls = import_attr(cls_str)
+    cls = cast(Type[torch.optim.lr_scheduler.LambdaLR], import_attr(cls_str))
     params = OmegaConf.to_container(cfg.scheduler.params) or {}
     return cls(optimizer, **params)
 
@@ -175,7 +179,7 @@ def _main(cfg: Config) -> None:
     cfg = parse(cfg)
     log.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
-    nlp = create_model(cfg.model)
+    nlp = cast(TorchLanguage, create_model(cfg.model))
     log.info("output dir: {}".format(os.getcwd()))
     if torch.cuda.is_available():
         log.info("CUDA enabled")

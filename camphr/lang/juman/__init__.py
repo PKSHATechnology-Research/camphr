@@ -1,6 +1,6 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
 from collections import namedtuple
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Type
 
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -40,7 +40,7 @@ class Tokenizer(SerializationMixin):
 
     def __init__(
         self,
-        cls: Language,
+        cls: Type["Defaults"],
         nlp: Optional[Language] = None,
         juman_kwargs: Optional[Dict[str, str]] = None,
         preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalizer,
@@ -108,7 +108,7 @@ class Tokenizer(SerializationMixin):
 
 
 # for pickling. see https://spacy.io/usage/adding-languages
-class Defaults(Language.Defaults):
+class Defaults(Language.Defaults):  # type: ignore
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
     stop_words = STOP_WORDS
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}

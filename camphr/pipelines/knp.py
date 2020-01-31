@@ -1,5 +1,5 @@
 import re
-from typing import Callable, Dict, List, NamedTuple, Optional, Sequence, Tuple
+from typing import Callable, Dict, Iterable, List, NamedTuple, Optional, Tuple
 
 import spacy
 from spacy.tokens import Doc, Span, Token
@@ -117,7 +117,8 @@ class KNP:
             assert len(mlist) == len(sent)
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
-        doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))
+        doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore
+        # TODO: https://stackoverflow.com/questions/59964767/mypy-incompatible-types-in-assignment-for-property-setter
         return doc
 
 
@@ -173,8 +174,8 @@ def get_knp_children(type_: str, span: Span) -> List[Span]:
     return [spans[get_knp_element_id(child)] for child in children]
 
 
-def _extract_knp_ent(doc: Doc) -> Sequence[Span]:
-    ents = []
+def _extract_knp_ent(doc: Doc) -> List[Span]:
+    ents: List[Tuple[str, int, int]] = []
     for token in doc:
         ent_match = re.search(
             r"\<NE\:(\w+)\:(.*)?\>", token._.get(KNP_USER_KEYS.morph.element).fstring
@@ -183,14 +184,15 @@ def _extract_knp_ent(doc: Doc) -> Sequence[Span]:
             ent, loc = ent_match.groups()
             iob = LOC2IOB[loc]
             if iob == "B":
-                ents.append([ent, token.i, token.i + 1])
+                ents.append((ent, token.i, token.i + 1))
             else:
-                ents[-1][2] = token.i + 1
-    ents = _create_ents(doc, ents)
-    return ents
+                last = ents[-1]
+                ents[-1] = (last[0], last[1], token.i + 1)
+    spacy_ents = _create_ents(doc, ents)
+    return spacy_ents
 
 
-def _create_ents(doc: Doc, ents) -> List[Span]:
+def _create_ents(doc: Doc, ents: Iterable[Tuple[str, int, int]]) -> List[Span]:
     new_ents = []
     for text, start, end in ents:
         new_ents.append(Span(doc, start, end, label=text))

@@ -1,4 +1,4 @@
-"""Basic class and utils for AllenNLP"""
+"""Base class and utils for AllenNLP"""
 import pickle
 import shutil
 from pathlib import Path
@@ -18,9 +18,12 @@ ARCHIVE = "archive"
 
 
 class AllennlpPipe(Pipe):
-    def __init__(
-        self, model=None, dataset_reader=None, archive_path: Path = None, **cfg
-    ):
+    """Base class for allennlp Pipe.
+
+    See .udify as an example.
+    """
+
+    def __init__(self, model=None, dataset_reader=None, archive_path=None, **cfg):
         self.model = model
         self.dataset_reader = dataset_reader
         self.cfg = cfg
@@ -30,6 +33,8 @@ class AllennlpPipe(Pipe):
     def from_archive(
         cls, archive_path: Pathlike, dataset_reader_to_load: str = VALIDATION
     ):
+        """Construct from `allnlp.Archive`'s file."""
+        # Uses lazy import because allennlp is an extra requirements.
         from allennlp.data import DatasetReader
         from allennlp.models.archival import load_archive
 
@@ -47,7 +52,7 @@ class AllennlpPipe(Pipe):
             archive_path=Path(archive_path).absolute(),
         )
 
-    def to_disk(self, path: Pathlike, exclude=tuple(), **kwargs):
+    def to_disk(self, path: Pathlike, **kwargs):
         path = Path(path)
         path.mkdir(exist_ok=True)
         if self.archive_path:
@@ -56,7 +61,7 @@ class AllennlpPipe(Pipe):
         with (path / "cfg.pkl").open("wb") as f:
             pickle.dump(self.cfg, f)
 
-    def from_disk(self, path: Pathlike, exclude=tuple(), **kwargs) -> "AllennlpPipe":
+    def from_disk(self, path: Pathlike, **kwargs) -> "AllennlpPipe":
         path = Path(path)
         archive_path = path / ARCHIVE
         new_self = self.from_archive(archive_path)

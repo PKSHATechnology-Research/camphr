@@ -10,6 +10,7 @@ import spacy
 import toolz
 from omegaconf import OmegaConf
 from spacy.language import Language
+from spacy.pipeline import Pipe
 from spacy.vocab import Vocab
 from toolz import merge
 
@@ -57,9 +58,8 @@ def create_model(cfg: Union[NLPConfig, Any]) -> Language:
         cfg = OmegaConf.create(cfg)
     cfg = correct_model_config(cfg)
     nlp = create_lang(cfg.lang)
-    for name, pipe_config in cfg.pipeline.items():
-        pipe_config = OmegaConf.to_container(pipe_config or OmegaConf.create({}))
-        nlp.add_pipe(nlp.create_pipe(name, config=pipe_config or dict()))
+    for pipe in create_pipeline(nlp, cfg.pipeline):
+        nlp.add_pipe(pipe)
     if cfg.name and isinstance(cfg.name, str):
         nlp._meta["name"] = cfg.name
     return nlp
@@ -76,6 +76,17 @@ def create_lang(cfg: LangConfig) -> Language:
         kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})
         return TorchLanguage(Vocab(), optimizer_config=cfg.optimizer, **kwargs)
     return spacy.blank(cfg.name, **kwargs)
+
+
+def create_pipeline(nlp: Language, cfg: omegaconf.DictConfig) -> List[Pipe]:
+    if not isinstance(cfg, omegaconf.DictConfig):
+        cfg = OmegaConf.create(cfg)
+
+    pipes = []
+    for name, pipe_config in cfg.items():
+        pipe_config = OmegaConf.to_container(pipe_config or OmegaConf.create({}))
+        pipes.append(nlp.create_pipe(name, config=pipe_config or dict()))
+    return pipes
 
 
 _ConfigParser = Callable[[NLPConfig], NLPConfig]
@@ -95,7 +106,7 @@ def correct_model_config(cfg: NLPConfig) -> NLPConfig:
 
 # Alias definition.
 # For example, `pretrained` key is converted to `pipeline.transformers_model.trf_name_or_path`.
-# The aliases in config is resolved by `_resolved_alias`
+# The aliases in config is resolved by `resolved_alias`
 ALIASES = {
     "pretrained": f"pipeline.{TRANSFORMERS_MODEL}.trf_name_or_path",
     "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",

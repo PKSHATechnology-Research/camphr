@@ -64,9 +64,9 @@ class EmbedRank(SerializationMixin):
             lambda_: Hyperparameter of Maximal Marginal Relevance (MMR). See the paper (https://arxiv.org/pdf/1801.04470.pdf) for details.
         """
         self.vocab = vocab
-        self.extract_keyphrases = extract_keyphrases_fn
         self.max_keyphrases = max_keyphrases
         self.lambda_ = lambda_
+        self.extract_keyphrases = extract_keyphrases_fn
 
     @classmethod
     def from_nlp(cls, nlp: spacy.language.Language) -> "EmbedRank":
@@ -82,7 +82,7 @@ class EmbedRank(SerializationMixin):
     def __call__(self, doc: Doc) -> Doc:
         """Extract keyphrases from doc.vector and span.vector, and set them into Doc._.embed_keyphrases sorted by score."""
         self.require_model()
-        spans = self.extract_keyphrases(doc)  # type: ignore
+        spans: List[Span] = self.extract_keyphrases(doc)  # type: ignore
         # we know `extract_keyphrases` cannot be `None` after `require_model`
         if not spans:
             return doc
