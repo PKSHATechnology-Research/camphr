@@ -4,4 +4,6 @@ ARG GITHUB_TOKEN
 
 COPY . /app
 WORKDIR /app
-RUN pip install -U poetry github_asset && poetry install -E allennlp && make download_elmo
+RUN pip install -U poetry github_asset
+RUN make download_elmo
+RUN poetry install -E allennlp
