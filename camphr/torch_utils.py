@@ -1,4 +1,4 @@
-"""The module torch_utils defines utilities for pytorch."""
+"""Defines utilities for pytorch."""
 import contextlib
 import operator
 from dataclasses import dataclass
