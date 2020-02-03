@@ -1,14 +1,30 @@
 version: "3"
 services: 
     mecab:
-        image: tamuhey/mecab:py3.7.6-ipadic-1.0.1
-        volumes: 
-            - .:/app
-        command: >
-            bash -c "cd app && pip install -U pip setuptools poetry && poetry install -E mecab && poetry run pytest"
+        build:
+            dockerfile: dockerfiles/mecab/Dockerfile
+            context: .
+        command: poetry run pytest tests
     juman:
-        image: tamuhey/knp:py3.7.6-1.0.1
+        build:
+            dockerfile: dockerfiles/juman/Dockerfile
+            context: .
+        command: poetry run pytest tests
+    udify:
+        build: 
+            dockerfile: dockerfiles/udify/Dockerfile 
+            context: .
+            args: 
+                - GITHUB_TOKEN=${GITHUB_TOKEN}
         volumes: 
             - .:/app
-        command: >
-            bash -c "cd app && pip install -U pip setuptools poetry && poetry install -E juman && poetry run pytest -x"
+        command: poetry run pytest tests -k udify
+    elmo:
+        build: 
+            dockerfile: dockerfiles/elmo/Dockerfile 
+            context: .
+            args: 
+                - GITHUB_TOKEN=${GITHUB_TOKEN}
+        volumes: 
+            - .:/app
+        command: poetry run pytest tests -k elmo 
