@@ -10,6 +10,7 @@ Camphr uses [poetry package manager](https://github.com/python-poetry/poetry), a
 ```
 $ git clone https://github.com/PKSHATechnology/agsnlp_camphr
 $ poetry install
+# $ poetry install -E all # for all extras
 $ pre-commit intall
 $ poetry run pytest tests
 ```
