@@ -11,7 +11,7 @@ Camphr provides a *command line interface* to fine-tune `Transformers <https://g
 Text classification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can fine-tune the text classification task as follows:
+You can fine-tune Transformers pretrained models for the text classification task as follows:
 
 .. code-block:: console
 
@@ -88,7 +88,7 @@ Of course you can also use non-English languages, by changing *model.lang.name*:
 Named entity recognition
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can also fine-tune Transformers model for `named entity recognition <https://en.wikipedia.org/wiki/Named-entity_recognition>`_ with Camphr's cli:
+You can also fine-tune Transformers models for `named entity recognition <https://en.wikipedia.org/wiki/Named-entity_recognition>`_ with Camphr's cli:
 
 .. code-block:: console
 

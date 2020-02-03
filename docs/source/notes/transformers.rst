@@ -10,7 +10,7 @@ Camphr provides `Transformers <https://github.com/huggingface/transformers>`_ as
 You can use the transformers output with spaCy interface, or :doc:`finetune it for downstream tasks <finetune_transformers>`.
 
 In this section, we explain how to use Transformers model as *text embedding layer*.
-See :doc:`finetune_transformers` for finetuning transformers models.
+See :doc:`finetune_transformers` for fine-tuning transformers models.
 
 
 Install
@@ -33,7 +33,8 @@ Create and add :code:`transformers_tokenizer` and :code:`transformers_model` to 
 
 Or, you can get this :code:`nlp` more easily with :doc:`camphr.load <camphr_load>`
 
-    >>> nlp = load(
+    >>> import camphr
+    >>> nlp = camphr.load(
     >>> """
     >>> lang:
     >>>     name: en
