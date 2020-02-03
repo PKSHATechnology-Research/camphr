@@ -1,8 +1,5 @@
 """Udify: '75 Languages, 1 Model: Parsing Universal Dependencies Universally' (https://arxiv.org/abs/1904.02099)
-
-Note: The model in `Udify` pipe is defined in `camphr._vendor.udify`
 """
-import warnings
 from typing import Dict, Iterable, Optional, Tuple
 
 import spacy
@@ -11,16 +8,10 @@ from spacy.language import Language
 from spacy.pipeline.pipes import Sentencizer
 from spacy.tokens import Doc
 
-from .allennlp_base import AllennlpPipe
+from camphr.types import Pathlike
+
+from .allennlp_base import VALIDATION, AllennlpPipe
 from .utils import flatten_docs_to_sents, set_heads
-
-try:
-    from allennlp.common.util import import_submodules  # type: ignore
-    from camphr._vendor.udify.models.udify_model import OUTPUTS as UdifyOUTPUTS
-
-    import_submodules("camphr._vendor.udify")
-except ImportError:
-    warnings.warn("Udify requires allennlp")
 
 
 def load_udify_pipes(
@@ -72,8 +63,27 @@ def load_udify(
     "udify", assigns=["token.lemma", "token.dep", "token.pos", "token.head"]
 )
 class Udify(AllennlpPipe):
+    @staticmethod
+    def import_udify():
+        from allennlp.common.util import import_submodules  # type: ignore
+
+        import_submodules("udify")
+
+    @classmethod
+    def from_archive(
+        cls, archive_path: Pathlike, dataset_reader_to_load: str = VALIDATION
+    ):
+        cls.import_udify()
+        return super().from_archive(archive_path, dataset_reader_to_load)
+
+    def __init__(self, *args, **kwargs) -> None:
+        self.import_udify()
+        super().__init__(*args, **kwargs)
+
     def set_annotations(self, docs: Iterable[Doc], outputs: Dict):
         """Set udify's output, which is calculated in self.predict, to docs"""
+        from udify.models.udify_model import OUTPUTS as UdifyOUTPUTS
+
         for sent, output in zip(flatten_docs_to_sents(docs), outputs):
             words = output[UdifyOUTPUTS.words]
             _doc_tokens = [token.text for token in sent]

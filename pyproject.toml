@@ -38,8 +38,9 @@ dataclasses = "^0.6"
 toolz = "^0.10.0"
 
 [tool.poetry.extras]
-all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3",]
-allennlp = [ "allennlp",]
+all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3", "udify"]
+allennlp = ["allennlp"]
+udify = ["allennlp", "udify"]
 juman = [ "Cython", "mojimoji2", "pyknp",]
 mecab = [ "mecab-python3",]
 
@@ -61,6 +62,11 @@ camphr = "camphr.cli.__main__:main"
 [tool.poetry.dependencies.allennlp]
 git = "https://github.com/allenai/allennlp"
 rev = "b8fdc9c988e0fbb73acd73205c4c464f8cf5a9c3"
+optional = true
+
+[tool.poetry.dependencies.udify]
+git = "https://github.com/tamuhey/udify"
+branch = "library"
 optional = true
 
 [tool.poetry.dependencies.Cython]
