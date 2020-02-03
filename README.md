@@ -3,7 +3,7 @@
 # Camphr - spaCy plugin for Transformers, Udify, Elmo, etc.
 
 ![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test/badge.svg)
-![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20mecab%20and%20juman/badge.svg)
+![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20extras/badge.svg)
 ![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20package/badge.svg)
 
 Capmhr is a spaCy plugin to easily use [Transformers ](https://huggingface.co/transformers/) ,  [Udify ](https://github.com/Hyperparticle/udify), [ELmo ](https://allennlp.org/elmo), etc.

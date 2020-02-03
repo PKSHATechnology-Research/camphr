@@ -1,4 +1,4 @@
-name: test mecab and juman
+name: test extras
 
 on: [push]
 
@@ -7,7 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        extras: [mecab, juman]
+        extras: [mecab, juman, udify, elmo]
     steps:
     - uses: actions/checkout@v1
-    - run: docker-compose up ${{ matrix.extras }}
+    - run: docker-compose up --exit-code-from ${{ matrix.extras }} ${{ matrix.extras }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
