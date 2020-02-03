@@ -131,7 +131,6 @@ Untitled*.ipynb
 pkgs
 *.tar.gz
 
-foo/
 output/
 .DS_Store
 data/
@@ -142,3 +141,5 @@ train-data.jsonl
 val-data.jsonl
 fail.json
 outputs/
+
+/.vscode
