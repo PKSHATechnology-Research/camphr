@@ -13,7 +13,7 @@ Check the [documentation ](http://camphr-doc.s3-website.ap-northeast-1.amazonaws
 # OSS化にむけレビュアー募集中！
 
 - 勝手にパッチ or Issueください！
-- [document]((http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/))もみてください！(英語あまり自信ない)
+- [document](http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/)もみてください！(英語あまり自信ない)
 
 # Contributing
 
