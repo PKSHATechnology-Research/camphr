@@ -34,7 +34,7 @@ from camphr.utils import (
     resolve_alias,
 )
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 MUST_FIELDS = [
@@ -124,12 +124,12 @@ def train_epoch(
         except Exception:
             report_fail(batch)
             raise
-        log.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.data.ndata}")
+        logger.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.data.ndata}")
 
 
 def save_model(nlp: Language, path: Path) -> None:
     nlp.to_disk(path)
-    log.info(f"Saved the model in {str(path.absolute())}")
+    logger.info(f"Saved the model in {str(path.absolute())}")
 
 
 class DummyScheduler:
@@ -177,12 +177,12 @@ def _main(cfg: Config) -> None:
             cfg, OmegaConf.load(hydra.utils.to_absolute_path(cfg.user_config))
         )
     cfg = parse(cfg)
-    log.info(cfg.pretty())
+    logger.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
     nlp = cast(TorchLanguage, create_model(cfg.model))
-    log.info("output dir: {}".format(os.getcwd()))
+    logger.info("output dir: {}".format(os.getcwd()))
     if torch.cuda.is_available():
-        log.info("CUDA enabled")
+        logger.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
     savedir = Path.cwd() / "models"
     savedir.mkdir(exist_ok=True)

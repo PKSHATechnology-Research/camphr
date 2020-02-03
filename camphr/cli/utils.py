@@ -15,7 +15,7 @@ from camphr.utils import get_by_dotkey
 GoldParsable = Dict[str, Any]
 InputData = List[Tuple[str, GoldParsable]]
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def create_data(cfg: Config) -> Tuple[InputData, InputData]:
@@ -34,7 +34,7 @@ def report_fail(json_serializable_data: Any) -> None:
     fail_path = Path("fail.json").absolute()
     with fail_path.open("w") as f:
         json.dump(json_serializable_data, f, ensure_ascii=False)
-        log.error(f"Error raised. The input data is saved in {str(fail_path)}")
+        logger.error(f"Error raised. The input data is saved in {str(fail_path)}")
 
 
 def convert_fullpath_if_path(text: str) -> str:
