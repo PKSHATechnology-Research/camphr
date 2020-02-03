@@ -6,8 +6,8 @@
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
-    "restructuredtext.confPath": "${workspaceFolder}/.venv/lib/python3.6/site-packages/importlib_metadata/docs",
     "restructuredtext.linter.extraArgs": [
         "--ignore D001"
-    ]
+    ],
+    "restructuredtext.confPath": "${workspaceFolder}/docs/source"
 }

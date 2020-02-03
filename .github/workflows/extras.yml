@@ -1,0 +1,13 @@
+name: test mecab and juman
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        extras: [mecab, juman]
+    steps:
+    - uses: actions/checkout@v1
+    - run: docker-compose up ${{ matrix.extras }}

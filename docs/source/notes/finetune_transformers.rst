@@ -6,25 +6,16 @@ Fine tuning Transformers
 Overview
 ~~~~~~~~~
 
-`Transformers <https://github.com/huggingface/transformers>`_ is a libary that provides state-of-the-art general-purpose architectures (BERT, GPT-2, RoBERTa, XLM, DistilBert, XLNet, CTRL...).
+Camphr provides a *command line interface* to fine-tune `Transformers <https://github.com/huggingface/transformers>`_' pretrained model for downstream tasks, e.g. *text classification* and *named entity recognition*
 
-With Camphr, you can easily fine-tune transformers' pretrained model and use it as a spaCy pipeline.
-
-Install
-~~~~~~~
-
-.. parsed-literal::
-
-    \ |install-camphr|\
-
-Sequence classification
+Text classification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Camphr provides a cli to fine-tune transformers' models, as follows:
+You can fine-tune the text classification task as follows:
 
 .. code-block:: console
 
-    $ capmhr train train.data.path="./train.jsonl" \
+    $ camphr train train.data.path="./train.jsonl" \
                    textcat_label="./label.json" \
                    pretrained=bert-base-cased  \
                    lang=en
@@ -65,12 +56,12 @@ The following is the minimal configuration to fine-tune *bert-base-cased* with *
 
 .. code-block:: console
 
-    $ capmhr train train.data.path="./train.jsonl" \
+    $ camphr train train.data.path="./train.jsonl" \
                    model.textcat_label="./label.json" \
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
-Of course you can also use non-English languages, by changing *lang*:
+Of course you can also use non-English languages, by changing *model.lang.name*:
 
 .. code-block:: console
 
@@ -83,14 +74,14 @@ Of course you can also use non-English languages, by changing *lang*:
 
 :note: |use-cuda|
 
-.. include:: fragments/to-advance-config.txt
-
 .. include:: fragments/note-output-dir.txt
 
+.. include:: fragments/to-advance-config.txt
 
 
-4. Use model
-============
+
+4. Use fine-tuned model
+================================
 
 .. include:: fragments/use-model.txt
 
@@ -120,7 +111,7 @@ Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` con
     ["Today is January 30th", {"entities": [[9, 21, "DATE"]] }]
      ...
 
-*"entities"* in labels is an array containing arrays that consist :code:`[start_char, end_char, label_type]`.
+*"entities"* is an array containing arrays that consist :code:`[start_char_pos, end_char_pos, label_type]`.
 
 :code:`label.json` is a json file defining classification labels. For example:
 
@@ -142,17 +133,17 @@ The following is the minimal configuration to fine-tune *bert-base-cased* with *
 
 .. code-block:: console
 
-    $ capmhr train train.data.path="./train.jsonl" \
-                   model.textcat_label="./label.json" \
+    $ camphr train train.data.path="./train.jsonl" \
+                   model.ner_label="./label.json" \
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
-Of course you can also use non-English languages, by changing *lang*:
+Of course you can also use *non-English languages*, by changing *model.lang.name*:
 
 .. code-block:: console
 
     $ camphr train train.data.path="./train.jsonl" \
-                   model.textcat_label="./label.json" \
+                   model.ner_label="./label.json" \
                    model.pretrained=bert-base-multilingual-cased  \
                    model.lang.name=ja # Japanese
 
@@ -162,8 +153,8 @@ Of course you can also use non-English languages, by changing *lang*:
 
 .. include:: fragments/note-output-dir.txt
 
-4. Use model
-============
+4. Use fine-tuned model
+================================
 
 .. include:: fragments/use-model.txt
 
@@ -246,7 +237,10 @@ For example, prepare :code:`user.yaml` as follows:
 
 And pass the yaml to cli as follows:
 
-... code-block:: console
+.. code-block:: console
 
     $ camphr cli user=user.yaml
 
+.. seealso::
+
+    :doc:`transformers`: For use embedding vector, without fine-tuning

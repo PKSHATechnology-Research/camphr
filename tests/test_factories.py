@@ -4,11 +4,18 @@ import pytest
 import spacy
 import toml
 
-from .utils import check_lang
+from .utils import (
+    check_allennlp,
+    check_juman,
+    check_knp,
+    check_lang,
+    check_serialization,
+)
 
 with (Path(__file__).parent / "../pyproject.toml") as f:
     conf = toml.load(f)
 LANGS = conf["tool"]["poetry"]["plugins"]["spacy_languages"]
+PIPES = conf["tool"]["poetry"]["plugins"]["spacy_factories"]
 
 
 @pytest.fixture(params=LANGS)
@@ -19,10 +26,27 @@ def lang(request):
     return name
 
 
-def test_foo(lang):
+def test_blank(lang):
     spacy.blank(lang)
 
 
 @pytest.fixture
 def nlp():
     return spacy.blank("en")
+
+
+SKIPS = {
+    "knp": check_knp(),
+    "juman_sentencizer": check_juman(),
+    "udify": check_allennlp(),
+    "elmo": check_allennlp(),
+}
+
+
+@pytest.mark.parametrize("name", PIPES)
+def test_pipe(nlp, name):
+    if SKIPS.get(name, True):
+        nlp.create_pipe(name)
+        check_serialization(nlp)
+    else:
+        pytest.skip()

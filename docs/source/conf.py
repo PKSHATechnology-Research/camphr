@@ -17,6 +17,8 @@
 
 # -- Project information -----------------------------------------------------
 
+from pathlib import Path
+
 project = "camphr"
 copyright = "2020, tamuhey"
 author = "tamuhey"
@@ -56,3 +58,9 @@ add_module_names = False
 
 rst_prolog = """
 """
+__dir__ = Path(__file__).parent
+html_theme_options = {
+    "logo": "logoc.png",
+    "github_user": "PKSHATechnology",
+    "github_repo": "agsnlp_camphr",  # TODO
+}

@@ -6,4 +6,4 @@ Pretrained models listed in `Transformers website <https://huggingface.co/models
 
 2. **Transformers models in local directory**
 
-You can also use your local model which is created by :code:`transformers.PretrainedModel.save_pretrained` method, by passing :code:`pretrained=/path/to/your-modles` to cli.
+You can also use local models created by :code:`transformers.PretrainedModel.save_pretrained` method, by passing :code:`pretrained=/path/to/your-modles` in cli.

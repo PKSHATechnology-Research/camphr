@@ -1,18 +1,15 @@
 # Contributing
 
-- 開発にあたり，spacyについて以下のドキュメントを読むことをお勧めします
-    - [Architecture · spaCy API Documentation](https://spacy.io/api)
-    - [Saving and Loading · spaCy Usage Documentation](https://spacy.io/usage/saving-loading)
 
-## setup
+## Contributing to the code base
 
-1. clone
-2. `$ poetry install -E all`
-3. `$ pre-commit install`
-4. `$ poetry run pytest tests`
+### setup
 
-## 構成
+Camphr uses [poetry package manager](https://github.com/python-poetry/poetry), and [pre-commit](https://pre-commit.com/).
 
-- `camphr`: package source
-- `tests`: test files
-- `scripts`: 細々としたスクリプト. packagingに必要なものなど
+```
+$ git clone https://github.com/PKSHATechnology/agsnlp_camphr
+$ poetry install
+$ pre-commit intall
+$ poetry run pytest tests
+```

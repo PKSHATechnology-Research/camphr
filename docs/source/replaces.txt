@@ -1,4 +1,5 @@
-.. |install-camphr| replace:: $ pip install git+https://github.com/PKSHATechnology/agsnlp_camphr/
+.. |install-camphr| replace:: $ pip install git+https://github.com/PKSHATechnology/agsnlp_camphr
+.. |install-camphr-with-knp| replace:: $ pip install "git+https://github.com/PKSHATechnology/agsnlp-camphr#egg=camphr[knp]"
 
 .. |release-page| replace:: release page
 .. _release-page: https://github.com/PKSHATechnology/agsnlp_camphr/releases/latest

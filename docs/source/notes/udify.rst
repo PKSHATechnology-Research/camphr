@@ -41,9 +41,9 @@ Use udify with non-space-delimited languages
 ============================================
 
 You can use Udify by replacing the tokenizer.
-capmhr provides some useful functions for this purpose: :code:`load_udify`:
+camphr provides some useful functions for this purpose: :code:`load_udify`:
 
-    >>> from capmhr.pipelines import load_udify
+    >>> from camphr.pipelines import load_udify
     >>> nlp = load_udify("ja", punct_chars=["。"])
     >>> nlp("日本語も解析可能です")
 

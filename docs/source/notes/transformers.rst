@@ -31,7 +31,7 @@ Create and add :code:`transformers_tokenizer` and :code:`transformers_model` to 
     >>> nlp.add_pipe(nlp.create_pipe("transformers_tokenizer", config=config))
     >>> nlp.add_pipe(nlp.create_pipe("transformers_model", config=config))
 
-Or, you can get :code:`nlp` more easily with :ref:`camphr.load <camphr-load>`
+Or, you can get this :code:`nlp` more easily with :doc:`camphr.load <camphr_load>`
 
     >>> nlp = load(
     >>> """
@@ -45,7 +45,7 @@ Or, you can get :code:`nlp` more easily with :ref:`camphr.load <camphr-load>`
 
 Transformers computes the vector representation of input text:
 
-    >>> doc = nlp("BERT convert text to vector")
+    >>> doc = nlp("BERT converts text to vector")
     >>> doc.tensor
     tensor([[-0.5427, -0.9614, -0.4943,  ...,  2.2654,  0.5592,  0.4276],
         ...
@@ -67,7 +67,7 @@ Transformers computes the vector representation of input text:
 Load local model
 ================
 
-You can use your model stored in local directory:
+You can use models stored in local directory:
 
     >>> nlp = load(
     >>> """
@@ -78,3 +78,7 @@ You can use your model stored in local directory:
     >>>         trf_name_or_path: /path/to/your/model/directory
     >>> """
     >>> )
+
+.. seealso::
+
+    :doc:`finetune_transformers`: For downstream tasks, such as named entity recognition or text classification.

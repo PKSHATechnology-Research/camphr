@@ -29,6 +29,14 @@ def check_mecab() -> bool:
     return True
 
 
+def check_allennlp() -> bool:
+    try:
+        import allennlp  # noqa
+    except ImportError:
+        return False
+    return True
+
+
 checks = {
     "ja_mecab": check_mecab,
     "ja_juman": check_juman,
@@ -55,7 +63,7 @@ def in_ci():
     return os.getenv("CI", "") == "true"
 
 
-def check_serialization(nlp, text: str = "今日は，とてもいい天気だった!"):
+def check_serialization(nlp, text: str = "It is a serialization set. 今日はとてもいい天気だった！"):
     with tempfile.TemporaryDirectory() as d:
         nlp.to_disk(str(d))
         nlp2 = spacy.load(str(d))

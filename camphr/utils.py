@@ -1,5 +1,6 @@
 """The utils module defines util functions used accross sub packages."""
 import bisect
+import distutils.spawn
 import importlib
 import re
 from collections import OrderedDict
@@ -27,6 +28,7 @@ from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 from toolz import curry
+from typing_extensions import Literal
 
 from camphr.types import Pathlike
 from camphr.VERSION import __version__
@@ -260,3 +262,10 @@ def setdefaults(obj: Any, kv: Dict[str, Any]):
     """Set all attribute in kv to object"""
     for k, v in kv.items():
         _setdefault(obj, k, v)
+
+
+def get_juman_command() -> Optional[Literal["juman", "jumanpp"]]:
+    for cmd in ["jumanpp", "juman"]:
+        if distutils.spawn.find_executable(cmd):
+            return cmd  # type: ignore
+    return None

@@ -1,52 +1,20 @@
 <p align="center"><img src="https://github.com/PKSHATechnology/bedore-ner/blob/master/img/logoc.svg" width="200" /></p>
 
-# Camphr - spaCy plugin for Transformers, Japanese [![CircleCI](https://circleci.com/gh/PKSHATechnology/bedore-ner.svg?style=svg&circle-token=d27152116259f09d7e229ee7d5ad5f095989fc7d)](https://circleci.com/gh/PKSHATechnology/bedore-ner)
+# Camphr - spaCy plugin for Transformers, Udify, Elmo, etc.
 
+![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test/badge.svg)
+![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20mecab%20and%20juman/badge.svg)
+![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20package/badge.svg)
+
+Capmhr is a spaCy plugin to easily use [Transformers ](https://huggingface.co/transformers/) ,  [Udify ](https://github.com/Hyperparticle/udify), [ELmo ](https://allennlp.org/elmo), etc.
+
+Check the [documentation ](http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/) for more information
 
 # OSS化にむけレビュアー募集中！
 
 - 勝手にパッチ or Issueください！
-- ドキュメントも作成中です！
+- [document]((http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/))もみてください！(英語あまり自信ない)
 
-# Installation
+# Contributing
 
-```bash
-$ pipenv install
-$ pipenv install --dev # for developer
-```
-
-## Model installation
-
-1. [リリースページ](https://github.com/PKSHATechnology/bedore-ner/releases)からtar.gzをダウンロードします
-2. `pip installl -U ...tar.gz` でOK!
-
-Username, Passwordが聞かれるかもしれません．GitHubのユーザ名と，トークンを入れてください．
-これは裏でbedore-nerレポジトリをcloneしているためです．
-
-### ブラウザ以外でダウンロードしたい場合
-
-GitHub APIを使う必要があります．
-
-```
-$ pip install git+https://github.com/tamuhey/github_asset
-```
-
-としたのち，
-
-```
-github-asset get file_to_download
-```
-
-でダウンロードできます．(GitHubトークンを聞かれるので，入力してください)
-
-## Requirements
-
-- 使う機能によっては， mecab, juman(pp), knpが必要です．
-
-# Usage
-
-[docs/pipelines](./docs/usage/README.md) をみてください．
-
-# Development
-
-see [CONTRIBUTING.md](./CONTRIBUTING.md)
+see [CONTRIBUTING.md ](./CONTRIBUTING.md)

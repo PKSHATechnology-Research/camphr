@@ -29,10 +29,10 @@ _PREDEFINED_CONFS = {"knp": _MODEL_CFG_DIR / "knp.yml"}
 CFG_SRC = Union[str, Dict[str, Any]]
 
 
-def load(cfg_or_name: Union[str, CFG_SRC]) -> Language:
-    if isinstance(cfg_or_name, str) and cfg_or_name in _PREDEFINED_CONFS:
-        cfg_or_name = _PREDEFINED_CONFS[cfg_or_name].read_text()
-    return create_model(cfg_or_name)
+def load(cfg: Union[str, CFG_SRC]) -> Language:
+    if isinstance(cfg, str) and cfg in _PREDEFINED_CONFS:
+        cfg = _PREDEFINED_CONFS[cfg].read_text()
+    return create_model(cfg)
 
 
 __all__ = ["load"]

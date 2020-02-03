@@ -1,3 +1,4 @@
+"""Defines KNP pipelines."""
 import re
 from typing import Callable, Dict, Iterable, List, NamedTuple, Optional, Tuple
 
@@ -7,6 +8,7 @@ from spacy.util import filter_spans
 from toolz import curry
 
 from camphr.consts import JUMAN_LINES
+from camphr.utils import get_juman_command
 
 LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
 Span.set_extension(JUMAN_LINES, default=None)
@@ -100,7 +102,12 @@ class KNP:
     ):
         import pyknp
 
-        self.knp = pyknp.KNP(**knp_kwargs) if knp_kwargs else pyknp.KNP()
+        cmd = get_juman_command()
+        assert cmd
+        knp_kwargs = knp_kwargs or {}
+        knp_kwargs.setdefault("jumancommand", cmd)
+
+        self.knp = pyknp.KNP(**knp_kwargs)
         self.knp_kwargs = knp_kwargs
 
     @classmethod

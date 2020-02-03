@@ -1,0 +1,14 @@
+version: "3"
+services: 
+    mecab:
+        image: tamuhey/mecab:py3.7.6-ipadic-1.0.1
+        volumes: 
+            - .:/app
+        command: >
+            bash -c "cd app && pip install -U pip setuptools poetry && poetry install -E mecab && poetry run pytest"
+    juman:
+        image: tamuhey/knp:py3.7.6-1.0.1
+        volumes: 
+            - .:/app
+        command: >
+            bash -c "cd app && pip install -U pip setuptools poetry && poetry install -E juman && poetry run pytest -x"

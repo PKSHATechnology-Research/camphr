@@ -1,5 +1,3 @@
-bedore-ner-module/
-bedore-nlp-modules/
 data/
 pkgs/
 .git/
@@ -7,3 +5,6 @@ pkgs/
 foo/
 pkgs
 eggs/**/*
+.nox
+.tox
+.outputs

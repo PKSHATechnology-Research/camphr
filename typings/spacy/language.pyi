@@ -15,7 +15,7 @@ from typing import (
     Tuple,
     Type,
     Union,
-    Set
+    Set,
 )
 from spacy import pipeline
 
@@ -51,7 +51,7 @@ class BaseDefaults(object):
     morph_rules: Dict
     lex_attr_getters: Any
     syntax_iterators: Dict
-    resources:Dict
+    resources: Dict
     writing_system: Dict
     single_orth_variants: List
     paired_orth_variants: List
@@ -452,11 +452,7 @@ class component(object):
     """
 
     def __init__(
-        self,
-        name: Optional[Any] = ...,
-        assigns=...,
-        requires=...,
-        retokenizes: bool = ...,
+        self, name: str = ..., assigns=..., requires=..., retokenizes: bool = ...,
     ):
         """Decorate a pipeline component.
 

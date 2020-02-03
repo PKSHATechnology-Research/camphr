@@ -1,5 +1,7 @@
 """Package camphr.piplines defines spacy components."""
 from .elmo import Elmo
+from .pattern_search import PatternSearcher
+from .regex_ruler import MultipleRegexRuler, RegexRuler
 from .transformers import (
     TrfForNamedEntityRecognition,
     TrfForSequenceClassification,
@@ -16,4 +18,7 @@ __all__ = [
     "TrfTokenizer",
     "TrfForSequenceClassification",
     "TrfForNamedEntityRecognition",
+    "PatternSearcher",
+    "MultipleRegexRuler",
+    "RegexRuler",
 ]

@@ -1,3 +1,4 @@
+"""Defines pattern search pipeline based on ahocorasik."""
 from typing import Dict, Generator, Iterable, Optional, Tuple, cast
 
 import ahocorasick
@@ -84,6 +85,10 @@ class PatternSearcher(SerializationMixin):
     def from_words(cls, words: Iterable[str], **cfg) -> "PatternSearcher":
         model = cls.Model(words)
         return cls(model, **cfg)
+
+    @classmethod
+    def from_nlp(cls, *args, **kwargs) -> "PatternSearcher":
+        return cls()
 
     def get_char_spans(self, text: str) -> Generator[Tuple[int, int, str], None, None]:
         self.require_model()
