@@ -1,26 +1,15 @@
-from pathlib import Path
-
 import pytest
 import spacy
-
-import camphr.lang.mecab as mecab
-from camphr.pipelines.elmo import Elmo
 
 pytestmark = pytest.mark.slow
 
 
 @pytest.fixture(scope="module")
 def nlp():
-    _nlp = mecab.Japanese()
-    elmod = Path(__file__).parent / "../../data/elmo"
-    options = elmod / "options.json"
-    weights = elmod / "weights.hdf5"
-    elmo = Elmo.from_elmofiles(options, weights)
-    _nlp.add_pipe(elmo)
-    return _nlp
+    return spacy.load("en_elmo_medium")
 
 
-TEXTS = ["私は文脈ベクトルの元祖です"]
+TEXTS = ["私は文脈ベクトルの元祖です", "ELMo is a deep contextualized word representation"]
 
 
 @pytest.mark.parametrize("text", TEXTS)
