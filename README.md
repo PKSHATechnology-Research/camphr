@@ -10,9 +10,9 @@ Capmhr is a spaCy plugin to easily use [Transformers ](https://huggingface.co/tr
 
 Check the [documentation ](http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/) for more information
 
-# OSS化にむけレビュアー募集中！
+# OSS化にむけレビュアー募集中！ (#204)
 
-- 勝手にパッチ or Issueください！
+- #204
 - [document](http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/)もみてください！(英語あまり自信ない)
 
 # Contributing
