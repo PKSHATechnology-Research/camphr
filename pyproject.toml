@@ -55,6 +55,7 @@ pre-commit = "*"
 toml = "^0.10.0"
 sphinx = "*"
 doc8 = "*"
+mypy = "*"
 
 [tool.poetry.scripts]
 camphr = "camphr.cli.__main__:main"
