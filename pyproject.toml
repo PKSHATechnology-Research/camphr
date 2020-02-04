@@ -36,6 +36,7 @@ hydra-core = "^0.11"
 hydra_colorlog = "*"
 dataclasses = "^0.6"
 toolz = "^0.10.0"
+optuna = "^1.0"
 
 [tool.poetry.extras]
 all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3", "udify"]
@@ -99,7 +100,6 @@ allow-prereleases = true
 ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
-
 
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
