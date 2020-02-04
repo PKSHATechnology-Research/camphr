@@ -1,6 +1,9 @@
 name: test package
 
-on: [push]
+on: 
+  push:
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   build:

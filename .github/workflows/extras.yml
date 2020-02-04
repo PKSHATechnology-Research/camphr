@@ -1,6 +1,9 @@
 name: test extras
 
-on: [push]
+on: 
+  push:
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   build:
