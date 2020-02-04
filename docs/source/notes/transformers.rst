@@ -40,7 +40,7 @@ Or, you can get this :code:`nlp` more easily with :doc:`camphr.load <camphr_load
     >>>     name: en
     >>> pipeline:
     >>>     transformers_model:
-    >>>         trf_name_or_path: xlm-roberta-base # Other than BERT can be used.
+    >>>         trf_name_or_path: xlnet-base-cased # Other than BERT can be used.
     >>> """
     >>> ) # pass config that omegaconf can parse (YAML, Json, Dict...)
 
