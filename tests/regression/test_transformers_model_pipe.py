@@ -18,7 +18,7 @@ def nlp():
     )
 
 
-@pytest.xfail(
+@pytest.mark.xfail(
     reason="Bug of Transformers: https://github.com/huggingface/transformers/issues/2727"
 )
 def test_pipe(nlp):
