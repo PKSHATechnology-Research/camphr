@@ -52,11 +52,7 @@ class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
         x.to(device=self.device)
         with set_grad(grad):
             y = self.model(**x.model_input)
-        return self._get_last_hidden_state(y)
-
-    def _get_last_hidden_state(self, output: Tuple[Any]) -> torch.Tensor:
-        # assumes output[0] is the last hidden state
-        return output[0]
+        return _get_last_hidden_state(y)
 
     def set_annotations(
         self, docs: List[Doc], outputs: torch.Tensor, set_vector: bool = True
@@ -64,6 +60,8 @@ class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
         """Assign the extracted features to the Doc.
 
         Args:
+            docs: List of `spacy.Doc`.
+            outputs: Output from `self.predict`.
             set_vector: If True, attach the vector to doc. This may harms the performance.
         """
         for i, doc in enumerate(docs):
@@ -105,6 +103,11 @@ class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
         # `set_vector = False` because the tensor may not be necessary in updating.
         # The tensor is still available via doc._.transformers_last_hidden_state.
         self.set_annotations(docs, y, set_vector=False)
+
+
+def _get_last_hidden_state(output: Tuple[Any]) -> torch.Tensor:
+    # assumes output[0] is the last hidden state
+    return output[0]
 
 
 def get_doc_vector_via_tensor(doc) -> np.ndarray:

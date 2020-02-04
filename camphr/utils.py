@@ -45,7 +45,7 @@ def zero_pad(a: List[List[int]], pad_value: int = 0) -> List[List[int]]:
 
 
 RE_URL = re.compile(
-    r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
+    r"https?://(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&/=]*)"
 )
 
 
@@ -69,6 +69,8 @@ def get_doc_char_span(
     """Get Span from Doc with char position, similar to doc.char_span.
 
     Args:
+        i: The index of the first character of the span
+        j: The index of the first character after the span
         destructive: If True, tokens in [i,j) will be splitted and make sure to return span.
         kwargs: passed to Doc.char_span
     """

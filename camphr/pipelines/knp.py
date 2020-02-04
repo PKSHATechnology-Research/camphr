@@ -185,7 +185,7 @@ def _extract_knp_ent(doc: Doc) -> List[Span]:
     ents: List[Tuple[str, int, int]] = []
     for token in doc:
         ent_match = re.search(
-            r"\<NE\:(\w+)\:(.*)?\>", token._.get(KNP_USER_KEYS.morph.element).fstring
+            r"<NE:(\w+):(.*)?>", token._.get(KNP_USER_KEYS.morph.element).fstring
         )
         if ent_match:
             ent, loc = ent_match.groups()

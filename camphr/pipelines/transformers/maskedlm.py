@@ -105,7 +105,7 @@ class BertForMaskedLMPreprocessor(Pipe):
         label = np.random.choice(3, target.sum().cpu().item(), p=self.p_dist)
         label = torch.from_numpy(label).to(device=wordpieces.device)
         labels[target] = label
-        return (labels == 1, labels == 2)  # mask index, replace index
+        return labels == 1, labels == 2  # mask index, replace index
 
     def to_disk(self, path: Path, *args, **kwargs):
         # This component has nothing to be saved.

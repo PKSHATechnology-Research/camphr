@@ -57,7 +57,7 @@ class TorchLanguage(Language):
         optimizer: Optimizer,
         verbose: bool = False,
     ):
-        """Update `TorchPipe` models in pipline."""
+        """Update `TorchPipe` models in pipeline."""
         _docs, _golds = self._format_docs_and_golds(docs, golds)
         self._update_pipes(_docs, _golds)
         self._update_params(_docs, optimizer, verbose)

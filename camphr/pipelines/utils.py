@@ -187,7 +187,7 @@ def beamsearch(probs: torch.Tensor, k: int) -> torch.Tensor:
     """Beam search for sequential probabilities.
 
     Args:
-        data: tensor of shape (length, d). requires d > 0. Assumed all items in `probs` in range [0, 1].
+        probs: tensor of shape (length, d). requires d > 0. Assumed all items in `probs` in range [0, 1].
         k: beam width
     Returns: (k, length) tensor
     """

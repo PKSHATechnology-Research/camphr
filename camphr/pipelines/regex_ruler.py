@@ -32,7 +32,6 @@ class MultipleRegexRuler(SerializationMixin):
 
     @property
     def labels(self) -> List[str]:
-        self.require_model
         return list(self.patterns)  # type: ignore
 
     def __call__(self, doc: Doc) -> Doc:

@@ -1,4 +1,4 @@
-"""Package camphr.piplines defines spacy components."""
+"""Package camphr.pipelines defines spacy components."""
 from .elmo import Elmo
 from .pattern_search import PatternSearcher
 from .regex_ruler import MultipleRegexRuler, RegexRuler

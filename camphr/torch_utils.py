@@ -42,7 +42,7 @@ class TorchPipe(Pipe):
 
 @dataclass
 class TensorWrapper:
-    """Pytorch tensor wrapper for efficient handling of part of batch tensors in spacy pipline"""
+    """Pytorch tensor wrapper for efficient handling of part of batch tensors in spacy pipeline"""
 
     batch_tensor: torch.Tensor
     i: int

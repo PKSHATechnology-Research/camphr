@@ -39,7 +39,7 @@ def report_fail(json_serializable_data: Any) -> None:
 
 def convert_fullpath_if_path(text: str) -> str:
     path = os.path.expanduser(text)
-    path = hydra.utils.to_absolute_path(text)
+    path = hydra.utils.to_absolute_path(path)
     if os.path.exists(path):
         return path
     return text
