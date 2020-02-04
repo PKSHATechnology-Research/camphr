@@ -65,6 +65,18 @@ Transformers computes the vector representation of input text:
     >>> doc[0].similarity(doc2[0]) # tokens similarity
     0.4105265140533447
 
+Use :code:`nlp.pipe` to process multiple texts at once:
+
+    >>> texts = ["I am a cat.", "As yet I have no name.", "I have no idea where I was born."]
+    >>> docs = nlp.pipe(texts)
+
+Use for faster processing (CUDA is required):
+
+    >>> import torch
+    >>> nlp.to(torch.device("cuda"))
+    >>> docs = nlp.pipe(texts)
+
+
 Load local model
 ================
 
