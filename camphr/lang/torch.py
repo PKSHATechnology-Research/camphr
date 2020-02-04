@@ -2,7 +2,7 @@
 import itertools
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Union
+from typing import Any, Dict, List, Sequence, Union, Tuple
 
 import srsly
 import torch

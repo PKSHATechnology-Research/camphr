@@ -28,11 +28,7 @@ from typing_extensions import Protocol, Literal
 from spacy.gold import GoldParse
 
 from camphr.pipelines.utils import UserHooksMixin
-<<<<<<< HEAD
 from camphr.torch_utils import TensorWrapper, TorchPipe, set_grad
-=======
-from camphr.torch_utils import TensorWrapper
->>>>>>> origin/master
 
 from .auto import get_trf_config_cls, get_trf_name
 

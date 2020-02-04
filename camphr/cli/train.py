@@ -197,7 +197,6 @@ def _main(cfg: Config) -> None:
     cfg = parse(cfg)
     logger.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
-<<<<<<< HEAD
 
     def objective(trial: optuna.Trial):
         savedir = Path.cwd() / f"models{trial.trial_id}"
@@ -214,16 +213,6 @@ def _main(cfg: Config) -> None:
     study.optimize(objective, n_trials=cfg.train.optuna.ntrials)
     log.info(f"Best trial: {study.best_trial.trial_id}")
     log.info(f"Best score: {study.best_value}")
-=======
-    nlp = cast(TorchLanguage, create_model(cfg.model))
-    logger.info("output dir: {}".format(os.getcwd()))
-    if torch.cuda.is_available():
-        logger.info("CUDA enabled")
-        nlp.to(torch.device("cuda"))
-    savedir = Path.cwd() / "models"
-    savedir.mkdir(exist_ok=True)
-    train(cfg.train, nlp, train_data, val_data, savedir)
->>>>>>> origin/master
 
 
 # Avoid to use decorator for testing

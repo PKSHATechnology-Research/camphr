@@ -116,7 +116,6 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
             return self.labels.index(UNK)
         return -1
 
-<<<<<<< HEAD
     def compute_loss(
         self, docs: List[Doc], golds: List[GoldParse], mode: Literal["train", "eval"]
     ):
@@ -127,17 +126,6 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
                 logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
             )
             add_loss_to_docs(docs, loss)
-=======
-    def update(self, docs: List[Doc], golds: List[GoldParse], **kwargs):  # type: ignore
-        assert isinstance(docs, list)
-        self.require_model()
-        logits = self.model(get_last_hidden_state_from_docs(docs))
-        target = self._create_target_from_docs_golds(docs, golds, logits)
-        loss = F.cross_entropy(
-            logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
-        )
-        add_loss_to_docs(docs, loss)
->>>>>>> origin/master
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor
