@@ -13,7 +13,7 @@ And you can use it as follows:
     <BLANKLINE>
     >>> import torch
     >>> nlp.to(torch.device("cuda"))
-    >>> docs = nlp(texts) # use gpu to process faster (CUDA is required)
+    >>> docs = nlp.pipe(texts) # use gpu to process faster (CUDA is required)
 
 .. seealso::
 
