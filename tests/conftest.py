@@ -11,7 +11,6 @@ from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
 from camphr.models import create_model
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
-from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 
 from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
 
@@ -108,14 +107,11 @@ def trf_model_config(lang, trf_name_or_path, device):
         f"""
     lang:
         name: {lang}
-        torch: true
         optimizer:
             class: torch.optim.SGD
             params:
                 lr: 0.01
     pipeline:
-        {TRANSFORMERS_TOKENIZER}:
-          trf_name_or_path: {trf_name_or_path}
         {TRANSFORMERS_MODEL}:
           trf_name_or_path: {trf_name_or_path}
     """

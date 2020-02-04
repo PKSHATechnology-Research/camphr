@@ -131,7 +131,6 @@ Untitled*.ipynb
 pkgs
 *.tar.gz
 
-foo/
 output/
 .DS_Store
 data/
@@ -144,3 +143,4 @@ fail.json
 outputs/
 /multirun/
 user.yaml
+/.vscode

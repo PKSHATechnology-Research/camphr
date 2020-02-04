@@ -1,7 +1,4 @@
-"""Module trf_ner defines pytorch transformers NER model
-
-Models defined in this modules must be used with `camphr.pipelines.trf_model`'s model in `spacy.Language` pipeline
-"""
+"""Defines transformers NER pipe"""
 from typing import Dict, Iterable, Iterator, List, Sized, cast
 
 import spacy
@@ -9,7 +6,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from overrides import overrides
 from spacy.gold import GoldParse, iob_to_biluo, spans_from_biluo_tags
 from spacy.tokens import Doc
 from typing_extensions import Literal
@@ -45,7 +41,7 @@ NUM_LABELS = "num_labels"
 
 
 class TrfTokenClassifier(TrfModelForTaskBase):
-    """A thin layer for classification task"""
+    """Head layer for classification task"""
 
     def __init__(self, config: transformers.PretrainedConfig):
         super().__init__(config)
@@ -56,7 +52,7 @@ class TrfTokenClassifier(TrfModelForTaskBase):
         self.classifier = nn.Linear(hidden_size, self.num_labels)
         self.loss_fct = nn.CrossEntropyLoss()
 
-    def forward(
+    def forward(  # type:ignore
         self, x: torch.Tensor, mask: torch.Tensor = None, labels=None
     ) -> torch.Tensor:
 
@@ -86,7 +82,6 @@ class TrfForTokenClassificationBase(
         setattr(config, NUM_LABELS, len(cfg[LABELS]))
         return TrfTokenClassifier(config)
 
-    @overrides
     def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
         self.model.eval()
@@ -121,6 +116,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
             return self.labels.index(UNK)
         return -1
 
+<<<<<<< HEAD
     def compute_loss(
         self, docs: List[Doc], golds: List[GoldParse], mode: Literal["train", "eval"]
     ):
@@ -131,6 +127,17 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
                 logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
             )
             add_loss_to_docs(docs, loss)
+=======
+    def update(self, docs: List[Doc], golds: List[GoldParse], **kwargs):  # type: ignore
+        assert isinstance(docs, list)
+        self.require_model()
+        logits = self.model(get_last_hidden_state_from_docs(docs))
+        target = self._create_target_from_docs_golds(docs, golds, logits)
+        loss = F.cross_entropy(
+            logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
+        )
+        add_loss_to_docs(docs, loss)
+>>>>>>> origin/master
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor
@@ -143,8 +150,10 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
             best_tags = get_best_tags(logit, id2label, self.k_beam)
             ents = [best_tags[a[0]] if len(a) else "O" for a in doc._.get(ATTRS.align)]
             biluo_ents = iob_to_biluo(ents)
-            doc.ents = spacy.util.filter_spans(
-                doc.ents + tuple(spans_from_biluo_tags(doc, biluo_ents))
+            doc.ents = tuple(
+                spacy.util.filter_spans(
+                    doc.ents + tuple(spans_from_biluo_tags(doc, biluo_ents))
+                )
             )
         return docs
 
@@ -180,7 +189,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
 
 
 def _convert_goldner(
-    labels: Iterable[int], alignment: List[List[int]]
+    labels: Iterable[str], alignment: List[List[int]]
 ) -> Dict[int, str]:
     new_ner = {}
     prefixmap = {L: I, U: B}
@@ -206,8 +215,8 @@ def _create_target(
         idx_ners = [(i, label2id[ner]) for i, ner in ners.items()]
         if not idx_ners:
             continue
-        idx, ners = zip(*idx_ners)
-        target[i, idx] = target.new_tensor(ners)
+        idx, _ners = zip(*idx_ners)
+        target[i, idx] = target.new_tensor(_ners)
     return target
 
 

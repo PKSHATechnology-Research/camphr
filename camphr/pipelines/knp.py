@@ -1,12 +1,14 @@
+"""Defines KNP pipelines."""
 import re
-from typing import Callable, Dict, List, NamedTuple, Optional, Tuple
+from typing import Callable, Dict, Iterable, List, NamedTuple, Optional, Tuple
 
 import spacy
-from cytoolz import curry
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
+from toolz import curry
 
 from camphr.consts import JUMAN_LINES
+from camphr.utils import get_juman_command
 
 LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
 Span.set_extension(JUMAN_LINES, default=None)
@@ -100,7 +102,12 @@ class KNP:
     ):
         import pyknp
 
-        self.knp = pyknp.KNP(**knp_kwargs) if knp_kwargs else pyknp.KNP()
+        cmd = get_juman_command()
+        assert cmd
+        knp_kwargs = knp_kwargs or {}
+        knp_kwargs.setdefault("jumancommand", cmd)
+
+        self.knp = pyknp.KNP(**knp_kwargs)
         self.knp_kwargs = knp_kwargs
 
     @classmethod
@@ -117,7 +124,8 @@ class KNP:
             assert len(mlist) == len(sent)
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
-        doc.ents = filter_spans(doc.ents + _extract_knp_ent(doc))
+        doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore
+        # TODO: https://stackoverflow.com/questions/59964767/mypy-incompatible-types-in-assignment-for-property-setter
         return doc
 
 
@@ -155,10 +163,10 @@ def get_knp_element_id(elem) -> int:
 def get_knp_parent(type_: str, span: Span) -> Optional[Span]:
     tag_or_bunsetsu = span._.get(getattr(KNP_USER_KEYS, type_).element)
     if not tag_or_bunsetsu:
-        return
+        return None
     p = tag_or_bunsetsu.parent
     if not p:
-        return
+        return None
     spans = span.sent._.get(getattr(KNP_USER_KEYS, type_).spans)
     return spans[get_knp_element_id(p)]
 
@@ -173,24 +181,25 @@ def get_knp_children(type_: str, span: Span) -> List[Span]:
     return [spans[get_knp_element_id(child)] for child in children]
 
 
-def _extract_knp_ent(doc: Doc) -> Tuple[Span]:
-    ents = []
+def _extract_knp_ent(doc: Doc) -> List[Span]:
+    ents: List[Tuple[str, int, int]] = []
     for token in doc:
         ent_match = re.search(
-            r"\<NE\:(\w+)\:(.*)?\>", token._.get(KNP_USER_KEYS.morph.element).fstring
+            r"<NE:(\w+):(.*)?>", token._.get(KNP_USER_KEYS.morph.element).fstring
         )
         if ent_match:
             ent, loc = ent_match.groups()
             iob = LOC2IOB[loc]
             if iob == "B":
-                ents.append([ent, token.i, token.i + 1])
+                ents.append((ent, token.i, token.i + 1))
             else:
-                ents[-1][2] = token.i + 1
-    ents = _create_ents(doc, ents)
-    return tuple(ents)
+                last = ents[-1]
+                ents[-1] = (last[0], last[1], token.i + 1)
+    spacy_ents = _create_ents(doc, ents)
+    return spacy_ents
 
 
-def _create_ents(doc: Doc, ents) -> Doc:
+def _create_ents(doc: Doc, ents: Iterable[Tuple[str, int, int]]) -> List[Span]:
     new_ents = []
     for text, start, end in ents:
         new_ents.append(Span(doc, start, end, label=text))

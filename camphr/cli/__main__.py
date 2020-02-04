@@ -1,7 +1,7 @@
 import importlib
 import sys
 
-from wasabi import msg
+from wasabi import msg  # type: ignore
 
 commands = ["train"]
 MSG_AVAILABLE_COMMANDS = f"Available commands: {', '.join(commands)}"

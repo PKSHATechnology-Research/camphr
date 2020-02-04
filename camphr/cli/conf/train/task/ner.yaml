@@ -1,4 +1,0 @@
-model:
-    pipeline:
-        transformers_ner:
-    ner_label:

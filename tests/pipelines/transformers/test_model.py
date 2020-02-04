@@ -6,7 +6,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 
 from camphr.lang.torch import TorchLanguage
-from camphr.models import NLPConfig, create_model
+from camphr.models import NLPConfig, create_model, load
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL, TrfModel
 from camphr.pipelines.transformers.utils import ATTRS, get_last_hidden_state_from_docs
 from camphr.torch_utils import add_loss_to_docs
@@ -21,8 +21,8 @@ TESTCASES = [
 ]
 
 
-@pytest.fixture
-def nlp(nlp_trf_model):
+@pytest.fixture(params=[True, False])
+def nlp(nlp_trf_model, request, trf_name_or_path):
     return nlp_trf_model
 
 
@@ -111,3 +111,16 @@ def test_freeze_model(trf_testmodel_path, trf_model_config: NLPConfig):
 
 def test_check_serialization(nlp):
     check_serialization(nlp)
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("name", ["bert-base-cased", "xlm-roberta-base"])
+def test_load_transformers(name):
+    cfg = f"""
+    lang:
+        name: en
+    pipeline:
+        transformers_model:
+            trf_name_or_path: {name}
+    """
+    load(cfg)

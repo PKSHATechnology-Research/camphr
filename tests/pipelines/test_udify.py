@@ -1,27 +1,18 @@
 from itertools import zip_longest
-from pathlib import Path
 
 import pytest
 import spacy
+from spacy.language import Language
 from spacy.tests.util import assert_docs_equal
-from spacy.tokens import Doc
 
-import camphr.lang.mecab as mecab
-from camphr.pipelines.udify import Udify
+from camphr.pipelines.udify import load_udify
 
 pytestmark = pytest.mark.slow
 
 
 @pytest.fixture(scope="module")
 def nlp():
-    _nlp = mecab.Japanese()
-    sentencizer = _nlp.create_pipe("sentencizer")
-    sentencizer.punct_chars.add("。")
-    _nlp.add_pipe(sentencizer)
-
-    pipe = Udify.from_archive(Path(__file__).parent / "../../data/udify")
-    _nlp.add_pipe(pipe)
-    return _nlp
+    return load_udify("ja_mecab", "。")
 
 
 TEXTS = [
@@ -31,8 +22,8 @@ TEXTS = [
 
 
 @pytest.mark.parametrize("text,roots", zip(TEXTS, [["店"], ["天気", "晴れる"]]))
-def test_udify(nlp, text, roots):
-    doc: Doc = nlp(text)
+def test_udify(nlp: Language, text, roots):
+    doc = nlp(text)
     assert doc.is_parsed
     for s, root in zip_longest(doc.sents, roots):
         assert s.root.text == root

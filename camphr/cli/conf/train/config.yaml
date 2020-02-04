@@ -1,11 +1,11 @@
 model:
     lang:
         name:
-        torch: true
         optimizer:
             class: transformers.optimization.AdamW
             params:
     pretrained:
+    pipeline:
 train:
     data:
         path:
@@ -13,5 +13,3 @@ train:
         val_size: 0.1
     niter: 10
     nbatch: 16
-defaults:
-    - task: ner

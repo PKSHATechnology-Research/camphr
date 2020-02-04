@@ -26,21 +26,21 @@ fire = "^0.2.1"
 typing-extensions = "*"
 pyahocorasick = "^1.4.0"
 catalogue = "^1.0.0"
-cytoolz = "^0.10.1"
 more-itertools = "*"
-overrides = "*"
 scikit-learn = "^0.22"
 transformers = "^2.3.0"
 torch = "^1.0"
-pytokenizations = "~0.4"
+pytokenizations = ">=0.4.8"
 spacy = "^2.2.3"
 hydra-core = "^0.11"
 hydra_colorlog = "*"
 dataclasses = "^0.6"
+toolz = "^0.10.0"
 
 [tool.poetry.extras]
-all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3",]
-allennlp = [ "allennlp",]
+all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3", "udify"]
+allennlp = ["allennlp"]
+udify = ["allennlp", "udify"]
 juman = [ "Cython", "mojimoji2", "pyknp",]
 mecab = [ "mecab-python3",]
 
@@ -53,6 +53,9 @@ rope = "*"
 hypothesis = "*"
 pre-commit = "*"
 toml = "^0.10.0"
+sphinx = "*"
+doc8 = "*"
+mypy = "*"
 
 [tool.poetry.scripts]
 camphr = "camphr.cli.__main__:main"
@@ -60,6 +63,11 @@ camphr = "camphr.cli.__main__:main"
 [tool.poetry.dependencies.allennlp]
 git = "https://github.com/allenai/allennlp"
 rev = "b8fdc9c988e0fbb73acd73205c4c464f8cf5a9c3"
+optional = true
+
+[tool.poetry.dependencies.udify]
+git = "https://github.com/tamuhey/udify"
+branch = "library"
 optional = true
 
 [tool.poetry.dependencies.Cython]
@@ -92,6 +100,7 @@ ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
 
+
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
 transformers_ner = "camphr.pipelines.transformers:TrfForNamedEntityRecognition.from_nlp"
@@ -99,3 +108,8 @@ transformers_sequece_classifier = "camphr.pipelines.transformers:TrfForSequenceC
 transformers_tokenizer = "camphr.pipelines.transformers:TrfTokenizer.from_nlp"
 juman_sentencizer = "camphr.pipelines.knp:juman_sentencizer_factory"
 knp = "camphr.pipelines.knp:KNP.from_nlp"
+udify = "camphr.pipelines:Udify.from_nlp"
+elmo = "camphr.pipelines:Elmo.from_nlp"
+pattern_searcher = "camphr.pipelines:PatternSearcher"
+multiple_regex_ruler = "camphr.pipelines:MultipleRegexRuler.from_nlp" 
+regex_ruler = "camphr.pipelines:RegexRuler.from_nlp" 

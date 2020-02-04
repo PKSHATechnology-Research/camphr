@@ -1,0 +1,1 @@
+You can easily configure *learning rate*, *batch size*, and other hyperparameters. See :ref:`advance-config` for details.

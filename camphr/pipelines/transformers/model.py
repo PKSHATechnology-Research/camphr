@@ -6,6 +6,7 @@ import numpy as np
 import spacy
 import spacy.language
 import torch
+import transformers
 from spacy.gold import GoldParse
 from spacy.tokens import Doc
 
@@ -30,7 +31,7 @@ TRANSFORMERS_MODEL = "transformers_model"
 
 
 @spacy.component(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
-class TrfModel(TrfAutoMixin, TorchPipe):
+class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
     """Transformers Model component."""
 
     _TRF_NAME = "trf_name"
@@ -47,14 +48,11 @@ class TrfModel(TrfAutoMixin, TorchPipe):
     def _apply_model(self, docs: List[Doc], grad: bool) -> torch.Tensor:
         self.require_model()
         x = TrfTokenizer.get_transformers_input(docs)
+        assert x is not None
         x.to(device=self.device)
         with set_grad(grad):
             y = self.model(**x.model_input)
-        return self._get_last_hidden_state(y)
-
-    def _get_last_hidden_state(self, output: Tuple[Any]) -> torch.Tensor:
-        # assumes output[0] is the last hidden state
-        return output[0]
+        return _get_last_hidden_state(y)
 
     def set_annotations(
         self, docs: List[Doc], outputs: torch.Tensor, set_vector: bool = True
@@ -62,6 +60,8 @@ class TrfModel(TrfAutoMixin, TorchPipe):
         """Assign the extracted features to the Doc.
 
         Args:
+            docs: List of `spacy.Doc`.
+            outputs: Output from `self.predict`.
             set_vector: If True, attach the vector to doc. This may harms the performance.
         """
         for i, doc in enumerate(docs):
@@ -87,7 +87,13 @@ class TrfModel(TrfAutoMixin, TorchPipe):
                 doc.user_span_hooks["similarity"] = get_similarity
                 doc.user_token_hooks["similarity"] = get_similarity
 
-    def update(self, docs: List[Doc], golds: List[GoldParse]):
+    @property
+    def freeze(self) -> bool:
+        if self.cfg.get("freeze"):
+            return True
+        return False
+
+    def update(self, docs: List[Doc], golds: List[GoldParse]):  # type: ignore
         """Simply forward `docs` in training mode."""
         if self.freeze:
             self.model.eval()
@@ -98,11 +104,11 @@ class TrfModel(TrfAutoMixin, TorchPipe):
         # The tensor is still available via doc._.transformers_last_hidden_state.
         self.set_annotations(docs, y, set_vector=False)
 
-    @property
-    def freeze(self) -> bool:
-        if self.cfg.get("freeze"):
-            return True
-        return False
+
+
+def _get_last_hidden_state(output: Tuple[Any]) -> torch.Tensor:
+    # assumes output[0] is the last hidden state
+    return output[0]
 
 
 def get_doc_vector_via_tensor(doc) -> np.ndarray:

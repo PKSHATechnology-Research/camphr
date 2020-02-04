@@ -1,0 +1,30 @@
+version: "3"
+services: 
+    mecab:
+        build:
+            dockerfile: dockerfiles/mecab/Dockerfile
+            context: .
+        command: poetry run pytest tests
+    juman:
+        build:
+            dockerfile: dockerfiles/juman/Dockerfile
+            context: .
+        command: poetry run pytest tests
+    udify:
+        build: 
+            dockerfile: dockerfiles/udify/Dockerfile 
+            context: .
+            args: 
+                - GITHUB_TOKEN=${GITHUB_TOKEN}
+        volumes: 
+            - .:/app
+        command: poetry run pytest tests -k udify
+    elmo:
+        build: 
+            dockerfile: dockerfiles/elmo/Dockerfile 
+            context: .
+            args: 
+                - GITHUB_TOKEN=${GITHUB_TOKEN}
+        volumes: 
+            - .:/app
+        command: poetry run pytest tests -k elmo 

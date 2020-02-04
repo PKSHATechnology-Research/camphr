@@ -1,3 +1,4 @@
+"""Elmo: Deep contextualized word representations (https://allennlp.org/elmo)"""
 import json
 import shutil
 from pathlib import Path
@@ -25,6 +26,21 @@ class Elmo(Pipe):
     def __init__(self, model=None, **cfg):
         self.model = model
         self.cfg = cfg
+
+    @classmethod
+    def from_elmofiles(cls, options_file: Pathlike, weight_file: Pathlike, **cfg):
+        """Construct Elmo with elmo files.
+        
+        Note:
+            Elmo files are distributed in https://allennlp.org/elmo
+        
+        Example:
+            >>> elmo = Elmo.from_elmofiles("./options.json", "./weights.hd5")
+            >>> nlp = spacy.blank("en")
+            >>> nlp.add_pipe(elmo)
+        """
+        model = cls.Model(options_file, weight_file)
+        return cls(model, **cfg)
 
     @classmethod
     def Model(cls, options_file: Pathlike, weight_file: Pathlike, **cfg):

@@ -4,17 +4,18 @@ import os
 import random
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, Type, Union
+from typing import Callable, Dict, Type, Union, cast
 
 import hydra
 import hydra.utils
 import numpy as np
 import torch
 from omegaconf import Config, OmegaConf
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report  # type: ignore
 from spacy.language import Language
 from spacy.scorer import Scorer
 from spacy.util import minibatch
+from torch.optim.optimizer import Optimizer
 
 from camphr.cli.utils import (
     InputData,
@@ -34,7 +35,7 @@ from camphr.utils import (
     resolve_alias,
 )
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 MUST_FIELDS = [
@@ -55,7 +56,11 @@ PATH_FIELDS = [
     "model.pretrained",
 ]
 
-ALIASES = {"train.optimizer": "model.lang.optimizer"}
+ALIASES = {
+    "train.optimizer": "model.lang.optimizer",
+    "data": "train.data",
+    "lang": "model.lang.name",
+}
 
 
 def resolve_path(cfg: Config) -> Config:
@@ -70,9 +75,9 @@ def resolve_path(cfg: Config) -> Config:
 
 
 def parse(cfg: Config):
+    cfg = resolve_alias(ALIASES, cfg)
     check_nonempty(cfg, MUST_FIELDS)
     cfg = resolve_path(cfg)
-    cfg = resolve_alias(ALIASES, cfg)
     cfg.model = correct_model_config(cfg.model)
     return cfg
 
@@ -118,7 +123,7 @@ EVAL_FN_MAP = defaultdict(
 def train_epoch(
     cfg: Config,
     nlp: TorchLanguage,
-    optim: torch.optim.Optimizer,
+    optim: Optimizer,
     train_data: InputData,
     val_data: InputData,
     epoch: int,
@@ -131,27 +136,27 @@ def train_epoch(
         except Exception:
             report_fail(batch)
             raise
-        log.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.data.ndata}")
+        logger.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.data.ndata}")
 
 
 def save_model(nlp: Language, path: Path) -> None:
     nlp.to_disk(path)
-    log.info(f"Saved the model in {str(path.absolute())}")
+    logger.info(f"Saved the model in {str(path.absolute())}")
 
 
 class DummyScheduler:
     @staticmethod
-    def step():
+    def step() -> None:
         ...
 
 
 def load_scheduler(
-    cfg: Config, optimizer: torch.optim.Optimizer
+    cfg: Config, optimizer: Optimizer
 ) -> Union[torch.optim.lr_scheduler.LambdaLR, Type[DummyScheduler]]:
     cls_str = get_by_dotkey(cfg, "scheduler.class")
     if not cls_str:
         return DummyScheduler
-    cls = import_attr(cls_str)
+    cls = cast(Type[torch.optim.lr_scheduler.LambdaLR], import_attr(cls_str))
     params = OmegaConf.to_container(cfg.scheduler.params) or {}
     return cls(optimizer, **params)
 
@@ -173,7 +178,7 @@ def train(
     for i in range(cfg.niter):
         random.shuffle(train_data)
         train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
-        scheduler.step()  # noqa: invalid type annotation in pytorch
+        scheduler.step()  # type: ignore # (https://github.com/pytorch/pytorch/pull/26531)
         scores = eval_fn(cfg, nlp, val_data)
         nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))
@@ -190,8 +195,9 @@ def _main(cfg: Config) -> None:
             cfg, OmegaConf.load(hydra.utils.to_absolute_path(cfg.user_config))
         )
     cfg = parse(cfg)
-    log.info(cfg.pretty())
+    logger.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
+<<<<<<< HEAD
 
     def objective(trial: optuna.Trial):
         savedir = Path.cwd() / f"models{trial.trial_id}"
@@ -208,6 +214,16 @@ def _main(cfg: Config) -> None:
     study.optimize(objective, n_trials=cfg.train.optuna.ntrials)
     log.info(f"Best trial: {study.best_trial.trial_id}")
     log.info(f"Best score: {study.best_value}")
+=======
+    nlp = cast(TorchLanguage, create_model(cfg.model))
+    logger.info("output dir: {}".format(os.getcwd()))
+    if torch.cuda.is_available():
+        logger.info("CUDA enabled")
+        nlp.to(torch.device("cuda"))
+    savedir = Path.cwd() / "models"
+    savedir.mkdir(exist_ok=True)
+    train(cfg.train, nlp, train_data, val_data, savedir)
+>>>>>>> origin/master
 
 
 # Avoid to use decorator for testing

@@ -1,7 +1,7 @@
 import copy
 import warnings
 from itertools import chain
-from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union
+from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union, overload
 
 import numpy as np
 import torch
@@ -30,15 +30,10 @@ UNK = BILUO.UNKNOWN
 
 
 def biluo_type(tag: str) -> str:
-    if tag.startswith("B-"):
-        return B
-    elif tag.startswith("I-"):
-        return I
-    elif tag.startswith("L-"):
-        return L
-    elif tag.startswith("U-"):
-        return U
-    elif tag == "O":
+    for prefix, biluo in [("B-", B), ("I-", I), ("L-", L), ("U-", U)]:
+        if tag.startswith(prefix):
+            return biluo
+    if tag == "O":
         return O
     return UNK
 
@@ -97,10 +92,6 @@ def correct_biluo_tags(tags: List[str]) -> Tuple[List[str], bool]:
 
         type_l, body_l = deconstruct_biluo_label(tagl)
         type_r, body_r = deconstruct_biluo_label(tagr)
-        if type_l == UNK:
-            tags[i] == UNK
-        if type_r == UNK:
-            tags[i + 1] == UNK
 
         # left check
         if type_l in {B, I} and not ((type_r == I or type_r == L) and body_l == body_r):
@@ -136,7 +127,17 @@ def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:
     return filter_spans(list(ents1) + list(ents0))
 
 
+@overload
+def set_heads(doc: Span, heads: List[int]) -> Span:
+    ...
+
+
+@overload
 def set_heads(doc: Doc, heads: List[int]) -> Doc:
+    ...
+
+
+def set_heads(doc, heads):
     """Set heads to doc in UD annotation style.
 
     If fail to set, return doc without doing anything.
@@ -186,7 +187,7 @@ def beamsearch(probs: torch.Tensor, k: int) -> torch.Tensor:
     """Beam search for sequential probabilities.
 
     Args:
-        data: tensor of shape (length, d). requires d > 0. Assumed all items in `probs` in range [0, 1].
+        probs: tensor of shape (length, d). requires d > 0. Assumed all items in `probs` in range [0, 1].
         k: beam width
     Returns: (k, length) tensor
     """
@@ -216,7 +217,7 @@ def flatten_docs_to_sents(docs: Iterable[Doc]) -> List[Span]:
 T = TypeVar("T")
 
 
-def chunk(seq: Sequence[T], nums: Sequence[int]) -> List[List[T]]:
+def chunk(seq: Sequence[T], nums: Sequence[int]) -> List[Sequence[T]]:
     i = 0
     output = []
     for n in nums:

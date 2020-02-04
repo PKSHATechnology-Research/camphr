@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Tuple
+from typing import Any, Iterable, List, Optional, Tuple, cast
 
 import numpy as np
 import spacy
@@ -24,7 +24,7 @@ MASKEDLM_LABEL = "maskedlm_label"
 BERT = "bert"
 
 
-def get_maskedlm_labels(docs: List[Doc]) -> torch.tensor:
+def get_maskedlm_labels(docs: List[Doc]) -> torch.Tensor:
     return docs[0].user_data[MASKEDLM_LABEL]
 
 
@@ -68,7 +68,7 @@ class BertForMaskedLMPreprocessor(Pipe):
         p_remain = 1 - self.p_mask - self.p_replace
         return [p_remain, self.p_mask, self.p_replace]
 
-    @property
+    @property  # type: ignore
     @lru_cache()
     def exclude_ids(self) -> np.ndarray:
         return np.array(self.model.all_special_ids)
@@ -79,9 +79,10 @@ class BertForMaskedLMPreprocessor(Pipe):
     def pipe(self, docs: Iterable[Doc], *args, **kwargs):
         return docs
 
-    def update(self, docs: List[Doc], *args, **kwargs):
+    def update(self, docs: List[Doc], *args, **kwargs):  # type: ignore
         self.require_model()
         inputs = TrfTokenizer.get_transformers_input(docs)
+        assert inputs is not None
         input_ids = inputs.input_ids
         set_maskedlm_labels(docs, input_ids)
 
@@ -93,7 +94,7 @@ class BertForMaskedLMPreprocessor(Pipe):
         masked_input_ids[replace_idx] = torch.randint(
             low=max(self.model.all_special_ids),
             high=self.model.vocab_size,
-            size=((replace_idx).sum().cpu().item(),),
+            size=(cast(int, replace_idx.sum().cpu().item()),),
         )
         inputs.input_ids = masked_input_ids
 
@@ -104,7 +105,7 @@ class BertForMaskedLMPreprocessor(Pipe):
         label = np.random.choice(3, target.sum().cpu().item(), p=self.p_dist)
         label = torch.from_numpy(label).to(device=wordpieces.device)
         labels[target] = label
-        return (labels == 1, labels == 2)  # mask index, replace index
+        return labels == 1, labels == 2  # mask index, replace index
 
     def to_disk(self, path: Path, *args, **kwargs):
         # This component has nothing to be saved.
@@ -130,7 +131,9 @@ class BertForMaskedLM(SerializationMixinForTrfTask, TorchPipe):
         for doc, pred in zip(docs, preds):
             doc.user_data[MASKEDLM_PREDICTION] = torch.max(pred)
 
-    def update(self, docs: List[Doc], golds: Iterable[GoldParse]):
+    def update(  # type: ignore
+        self, docs: List[Doc], golds: Iterable[GoldParse], **kwargs
+    ):
         self.require_model()
         self.model.train()
         x = get_last_hidden_state_from_docs(docs)

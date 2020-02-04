@@ -1,3 +1,4 @@
+"""Defines pattern search pipeline based on ahocorasik."""
 from typing import Dict, Generator, Iterable, Optional, Tuple, cast
 
 import ahocorasick
@@ -67,6 +68,7 @@ class PatternSearcher(SerializationMixin):
         if self.label_type == "custom_label":
             return cast(str, self.custom_label)
         if self.label_type == "custom_label_map":
+            assert self.custom_label_map is not None
             return self.custom_label_map[item]
 
         raise ValueError("Internal Error")
@@ -84,9 +86,13 @@ class PatternSearcher(SerializationMixin):
         model = cls.Model(words)
         return cls(model, **cfg)
 
+    @classmethod
+    def from_nlp(cls, *args, **kwargs) -> "PatternSearcher":
+        return cls()
+
     def get_char_spans(self, text: str) -> Generator[Tuple[int, int, str], None, None]:
         self.require_model()
-        for j, word in self.model.iter(text):
+        for j, word in cast(ahocorasick.Automaton, self.model).iter(text):
             i = j - len(word) + 1
             yield i, j + 1, word
 
@@ -101,5 +107,5 @@ class PatternSearcher(SerializationMixin):
                 spans.append(span)
         [s.text for s in spans]  # TODO: resolve the evaluation bug and remove this line
         ents = filter_spans(doc.ents + tuple(spans))
-        doc.ents = ents
+        doc.ents = tuple(ents)
         return doc

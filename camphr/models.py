@@ -5,13 +5,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union
 
-import cytoolz
 import omegaconf
 import spacy
-from cytoolz import merge
+import toolz
 from omegaconf import OmegaConf
 from spacy.language import Language
+from spacy.pipeline import Pipe
 from spacy.vocab import Vocab
+from toolz import merge
 
 from camphr.lang.torch import TorchLanguage
 from camphr.ner_labels.utils import get_ner_labels
@@ -28,10 +29,10 @@ _PREDEFINED_CONFS = {"knp": _MODEL_CFG_DIR / "knp.yml"}
 CFG_SRC = Union[str, Dict[str, Any]]
 
 
-def load(cfg_or_name: Union[str, CFG_SRC]) -> Language:
-    if isinstance(cfg_or_name, str) and cfg_or_name in _PREDEFINED_CONFS:
-        cfg_or_name = _PREDEFINED_CONFS[cfg_or_name].read_text()
-    return create_model(cfg_or_name)
+def load(cfg: Union[str, CFG_SRC]) -> Language:
+    if isinstance(cfg, str) and cfg in _PREDEFINED_CONFS:
+        cfg = _PREDEFINED_CONFS[cfg].read_text()
+    return create_model(cfg)
 
 
 __all__ = ["load"]
@@ -57,10 +58,8 @@ def create_model(cfg: Union[NLPConfig, Any]) -> Language:
         cfg = OmegaConf.create(cfg)
     cfg = correct_model_config(cfg)
     nlp = create_lang(cfg.lang)
-    for name, config in cfg.pipeline.items():
-        if config:
-            config = OmegaConf.to_container(config)
-        nlp.add_pipe(nlp.create_pipe(name, config=config or dict()))
+    for pipe in create_pipeline(nlp, cfg.pipeline):
+        nlp.add_pipe(pipe)
     if cfg.name and isinstance(cfg.name, str):
         nlp._meta["name"] = cfg.name
     return nlp
@@ -79,6 +78,17 @@ def create_lang(cfg: LangConfig) -> Language:
     return spacy.blank(cfg.name, **kwargs)
 
 
+def create_pipeline(nlp: Language, cfg: omegaconf.DictConfig) -> List[Pipe]:
+    if not isinstance(cfg, omegaconf.DictConfig):
+        cfg = OmegaConf.create(cfg)
+
+    pipes = []
+    for name, pipe_config in cfg.items():
+        pipe_config = OmegaConf.to_container(pipe_config or OmegaConf.create({}))
+        pipes.append(nlp.create_pipe(name, config=pipe_config or dict()))
+    return pipes
+
+
 _ConfigParser = Callable[[NLPConfig], NLPConfig]
 
 
@@ -91,12 +101,12 @@ def correct_model_config(cfg: NLPConfig) -> NLPConfig:
         _correct_trf_pipeline,
         _resolve_label,
     ]
-    return cytoolz.pipe(cfg, *PARSERS)
+    return toolz.pipe(cfg, *PARSERS)
 
 
 # Alias definition.
 # For example, `pretrained` key is converted to `pipeline.transformers_model.trf_name_or_path`.
-# The aliases in config is resolved by `_resolved_alias`
+# The aliases in config is resolved by `resolved_alias`
 ALIASES = {
     "pretrained": f"pipeline.{TRANSFORMERS_MODEL}.trf_name_or_path",
     "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",
@@ -126,11 +136,9 @@ def _assign_pipeline(cfg: NLPConfig) -> NLPConfig:
     while True:
         prev_len = len(pipe_names)
         for k, v in PIPELINE_ALIGNMENT.items():
-            if k in pipe_names:
-                i = pipe_names.index(k)
-                for vv in v:
-                    if vv not in pipe_names:
-                        pipe_names.insert(i, vv)
+            for vv in v:
+                if k in pipe_names and (vv not in pipe_names):
+                    pipe_names.insert(pipe_names.index(k), vv)
         if prev_len == len(pipe_names):
             break
     cfg.pipeline = {k: cfg.pipeline.get(k, {}) for k in pipe_names}
@@ -189,8 +197,7 @@ def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
     if not set(cfg.pipeline.keys()) & set(TRF_PIPES):
         return cfg
     for k, v in cfg.pipeline.items():
-        if k in TRF_PIPES and v[KEY]:
-            VAL = v[KEY]
+        VAL = v[KEY] or VAL
     if not VAL:
         raise ValueError(
             f"Invalid configuration. At least one of transformer's pipe needs `{KEY}`, but the configuration is:\n"

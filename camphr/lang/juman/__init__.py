@@ -1,6 +1,6 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
 from collections import namedtuple
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Type
 
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -8,14 +8,14 @@ from spacy.tokens import Doc, Token
 
 from camphr.consts import JUMAN_LINES, KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
-from camphr.utils import SerializationMixin
+from camphr.utils import SerializationMixin, get_juman_command
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
 )
 
 
-def han_to_zen_normalizer(text):
+def han_to_zen_normalize(text):
     try:
         import mojimoji
     except ImportError:
@@ -40,10 +40,10 @@ class Tokenizer(SerializationMixin):
 
     def __init__(
         self,
-        cls: Language,
+        cls: Type["Defaults"],
         nlp: Optional[Language] = None,
         juman_kwargs: Optional[Dict[str, str]] = None,
-        preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalizer,
+        preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalize,
     ):
         """
 
@@ -52,6 +52,11 @@ class Tokenizer(SerializationMixin):
             preprocessor: applied to text before tokenizing. `mojimoji.han_to_zen` is often used.
         """
         from pyknp import Juman
+
+        juman_kwargs = juman_kwargs or {}
+        default_command = get_juman_command()
+        assert default_command
+        juman_kwargs.setdefault("command", default_command)
 
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         self.tokenizer = Juman(**juman_kwargs) if juman_kwargs else Juman()
@@ -108,7 +113,7 @@ class Tokenizer(SerializationMixin):
 
 
 # for pickling. see https://spacy.io/usage/adding-languages
-class Defaults(Language.Defaults):
+class Defaults(Language.Defaults):  # type: ignore
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
     stop_words = STOP_WORDS
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}

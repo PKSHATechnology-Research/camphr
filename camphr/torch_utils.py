@@ -1,22 +1,20 @@
-"""The module torch_utils defines utilities for pytorch."""
+"""Defines utilities for pytorch."""
 import contextlib
 import operator
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
 
 import torch
-import torch._C
 import torch.nn as nn
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
+from torch._C import is_grad_enabled  # type: ignore
 
 # the type torch.optim.Optimizer uses
 OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]
 
 
 class TorchPipe(Pipe):
-    """Pipe wrapper for pytorch. This provides interface used by `TorchLanguageMixin`"""
-
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
         self.model = model
@@ -44,7 +42,7 @@ class TorchPipe(Pipe):
 
 @dataclass
 class TensorWrapper:
-    """Pytorch tensor Wrapper for efficient handling of part of batch tensors in spacy pipline"""
+    """Pytorch tensor wrapper for efficient handling of part of batch tensors in spacy pipeline"""
 
     batch_tensor: torch.Tensor
     i: int
@@ -75,12 +73,12 @@ TORCH_LOSS = "torch_loss"
 
 
 def get_loss_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
-    losses = (doc.user_data.get(TORCH_LOSS) for doc in docs)
-    losses = [loss for loss in losses if isinstance(loss, torch.Tensor)]
+    _losses = (doc.user_data.get(TORCH_LOSS) for doc in docs)
+    losses = [loss for loss in _losses if isinstance(loss, torch.Tensor)]
     if not losses:
         raise ValueError("loss is not set to docs.")
-    losses = torch.stack(losses)
-    return torch.sum(losses)
+    tlosses = torch.stack(losses)
+    return torch.sum(tlosses)
 
 
 def add_loss_to_docs(docs: List[Doc], loss: torch.Tensor):
@@ -94,7 +92,7 @@ def add_loss_to_docs(docs: List[Doc], loss: torch.Tensor):
 
 @contextlib.contextmanager
 def set_grad(grad: bool) -> Iterator[None]:
-    prev = torch.is_grad_enabled()
+    prev = is_grad_enabled()
     torch.set_grad_enabled(grad)
     yield
     torch.set_grad_enabled(prev)

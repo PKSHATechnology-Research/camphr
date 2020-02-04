@@ -1,4 +1,4 @@
-"""Defines tokenizer for transformers."""
+"""Defines transformers tokenizer pipe."""
 from typing import List, Optional, Sequence, Sized, cast
 
 import spacy
@@ -41,7 +41,7 @@ class TrfTokenizer(TrfAutoMixin, Pipe):
         self.set_transformers_input(docs, inputs)
         self._set_tokens(docs, inputs)
 
-    def update(self, docs: Sequence[Doc], *args, **kwargs):
+    def update(self, docs: Sequence[Doc], *args, **kwargs):  # type: ignore
         y = self.predict(docs)
         self.set_annotations(docs, y)
 
@@ -62,6 +62,7 @@ class TrfTokenizer(TrfAutoMixin, Pipe):
                 """
                 )
             return output
+        return None
 
     def _set_tokens(self, docs: Sequence[Doc], inputs: TransformersInput) -> None:
         for doc, x in zip(docs, inputs):
