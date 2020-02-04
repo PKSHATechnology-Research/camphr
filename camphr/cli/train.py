@@ -201,6 +201,8 @@ def _main(cfg: Config) -> None:
     def objective(trial: optuna.Trial):
         savedir = Path.cwd() / f"models{trial.trial_id}"
         savedir.mkdir(exist_ok=True)
+	if not cfg.model.lang.optimizer.params:
+            cfg.model.lang.optimizer.params = {}
         cfg.model.lang.optimizer.params.lr = trial.suggest_uniform("lr", 1e-7, 1e-1)
         cfg.model.lang.optimizer.params.eps = trial.suggest_uniform("eps", 1e-10, 1e-2)
         nlp = create_model(cfg.model)
