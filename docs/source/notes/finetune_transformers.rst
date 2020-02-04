@@ -70,7 +70,7 @@ Of course, you can also use non-English languages, by changing *model.lang.name*
                    model.pretrained=bert-base-multilingual-cased  \
                    model.lang.name=ja # Japanese
 
-.. |use-cuda| replace:: If CUDA is avaiable, it will be enabled automatically.
+.. |use-cuda| replace:: If CUDA is available, it will be enabled automatically.
 
 :note: |use-cuda|
 
@@ -88,7 +88,7 @@ Of course, you can also use non-English languages, by changing *model.lang.name*
 Named entity recognition
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can also fine-tune Transformers models for `named entity recognition <https://en.wikipedia.org/wiki/Named-entity_recognition>`_ with Camphr's cli:
+You can also fine-tune Transformers models for `named entity recognition <https://en.wikipedia.org/wiki/Named-entity_recognition>`_ with Camphr's CLI:
 
 .. code-block:: console
 
@@ -197,8 +197,8 @@ First, let's see a sample configuration:
 
 As you can see, the configuration is defined in `YAML <https://en.wikipedia.org/wiki/YAML>`_ format.
 
-You can override the values in the config file by issuing a command on the command line.
-For example, in order to replace :code:`model.lang.name` with :code:`ja`, pass :code:`model.lang.name=ja` in cli:
+You can override values in the loaded configuration from the commend line.
+For example, in order to replace :code:`model.lang.name` with :code:`ja`, pass :code:`model.lang.name=ja` in CLI:
 
 .. code-block:: console
 
@@ -214,7 +214,7 @@ Pass yaml
 
 The more items you wish to override, the more tedious it becomes for you to enter them on the command line.
 
-You can use config with yaml file instead of command line options.
+You can rewrite the configuration with yaml file instead of command line options.
 For example, prepare :code:`user.yaml` as follows:
 
 .. code-block:: yaml
@@ -235,11 +235,11 @@ For example, prepare :code:`user.yaml` as follows:
         nbatch: 128
         niter: 30
 
-And pass the yaml to cli as follows:
+And pass the yaml to CLI as follows:
 
 .. code-block:: console
 
-    $ camphr cli user=user.yaml
+    $ camphr train user=user.yaml
 
 .. seealso::
 

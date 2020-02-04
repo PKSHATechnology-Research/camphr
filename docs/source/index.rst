@@ -8,7 +8,7 @@
 Camphr
 ==================================
 
-Capmhr is a spaCy plugin to easily use `Transformers <https://huggingface.co/transformers/>`_ ,  `Udify <https://github.com/Hyperparticle/udify>`_, `ELmo <https://allennlp.org/elmo>`_, etc.
+Camphr is a spaCy plugin to easily use `Transformers <https://huggingface.co/transformers/>`_ ,  `Udify <https://github.com/Hyperparticle/udify>`_, `ELmo <https://allennlp.org/elmo>`_, etc.
 
 Features
 ~~~~~~~~
@@ -34,7 +34,7 @@ Just pip install:
 
     |install-camphr|
 
-Capmhr requires Python3.6 or newer.
+Camphr requires Python3.6 or newer.
 
 Quick tour
 ~~~~~~~~~~

@@ -6,7 +6,7 @@
 ![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20extras/badge.svg)
 ![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20package/badge.svg)
 
-Capmhr is a spaCy plugin to easily use [Transformers ](https://huggingface.co/transformers/) ,  [Udify ](https://github.com/Hyperparticle/udify), [ELmo ](https://allennlp.org/elmo), etc.
+Camphr is a spaCy plugin to easily use [Transformers ](https://huggingface.co/transformers/) ,  [Udify ](https://github.com/Hyperparticle/udify), [ELmo ](https://allennlp.org/elmo), etc.
 
 Check the [documentation ](http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/) for more information
 

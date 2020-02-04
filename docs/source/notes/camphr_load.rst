@@ -5,7 +5,7 @@ Camphr provides top-level function, :code:`camphr.load`:
 
 .. autofunction:: camphr.load
 
-You can pass the model config in format that `omegaconf <https://github.com/omry/omegaconf>`_ can parse, such as yaml or json, for example:
+You can pass the model configuration in format that `omegaconf <https://github.com/omry/omegaconf>`_ can parse, such as yaml or json, for example:
 
     >>> import camphr
     >>> cfg = """
