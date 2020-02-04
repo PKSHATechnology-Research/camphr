@@ -1,9 +1,11 @@
 name: test extras
 
-on: 
+on:
   push:
     paths-ignore:
       - "docs/**"
+    branches:
+      - master
 
 jobs:
   build:
