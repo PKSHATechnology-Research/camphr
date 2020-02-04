@@ -1,16 +1,15 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
 import itertools
-import spacy
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Tuple, Union, cast
+from typing import Any, Dict, List, Sequence, Union
 
 import srsly
 import torch
-import torch.optim as optim
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.language import Language
 from spacy.tokens import Doc
+from torch.optim.optimizer import Optimizer
 
 from camphr.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
 from camphr.utils import get_defaults, get_requirements_line, import_attr
@@ -51,18 +50,21 @@ class TorchLanguage(Language):
         self.optimizer_config = optimizer_config
         super().__init__(vocab, make_doc, max_length, meta=meta, **kwargs)
 
-    def update(
+    def update(  # type: ignore
         self,
-        docs: Sequence[Doc],
-        golds: Sequence[GoldParse],
-        optimizer: optim.Optimizer,
+        docs: Sequence[Union[str, Doc]],
+        golds: Sequence[Union[Dict[str, Any], GoldParse]],
+        optimizer: Optimizer,
         verbose: bool = False,
     ):
-        """Update `TorchPipe` models in pipline."""
-        docs, golds = self._format_docs_and_golds(docs, golds)
+        """Update `TorchPipe` models in pipeline."""
+        _docs, _golds = self._format_docs_and_golds(docs, golds)
+        self._update_pipes(_docs, _golds)
+        self._update_params(_docs, optimizer, verbose)
+
+    def _update_pipes(self, docs: Sequence[Doc], golds: Sequence[GoldParse]) -> None:
         for _, pipe in self.pipeline:
             pipe.update(docs, golds)
-        self._update_params(docs, optimizer, verbose)
 
     def eval_loss(
         self, docs_golds: Sequence[Tuple[Doc, GoldParse]], batch_size: int
@@ -80,7 +82,7 @@ class TorchLanguage(Language):
         return cast(float, get_loss_from_docs(docs).cpu().float().item())
 
     def _update_params(
-        self, docs: Sequence[Doc], optimizer: optim.Optimizer, verbose: bool = False
+        self, docs: Sequence[Doc], optimizer: Optimizer, verbose: bool = False
     ):
         loss = get_loss_from_docs(docs)
         optimizer.zero_grad()
@@ -89,7 +91,7 @@ class TorchLanguage(Language):
         if verbose:
             logger.info(f"Loss: {loss.detach().item()}")
 
-    def resume_training(self, **kwargs) -> optim.Optimizer:
+    def resume_training(self, **kwargs) -> Optimizer:  # type: ignore
         """Gather all torch parameters in each `TorchPipe`s, and create an optimizer.
 
         Args:
@@ -112,9 +114,7 @@ class TorchLanguage(Language):
             self.optimizer_config, dict
         ), f"`self.optimizer_config` must be set."
 
-    def create_optimizer(
-        self: Language, params: OptimizerParameters, **kwargs
-    ) -> optim.Optimizer:
+    def create_optimizer(self, params: OptimizerParameters, **kwargs) -> Optimizer:
         cls = import_attr(self.optimizer_config["class"])
         return cls(params, **self.optimizer_config.get("params", {}))
 
