@@ -134,7 +134,6 @@ pkgs
 output/
 .DS_Store
 data/
-poetry.lock
 
 # for test
 train-data.jsonl
