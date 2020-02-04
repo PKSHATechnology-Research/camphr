@@ -5,6 +5,16 @@ The model can be loaded as follows:
     >>> import spacy
     >>> nlp = spacy.load("./output/2020-01-30/19-31-23/models/0")
 
+And you can use it as follows:
+
+    >>> doc = nlp("Hi, this is fine-tuned model")
+    >>> texts = ["You can process multiple texts at once.", "Use nlp.pipe."]
+    >>> docs = nlp.pipe(texts)
+    <BLANKLINE>
+    >>> import torch
+    >>> nlp.to(torch.device("cuda"))
+    >>> docs = nlp(texts) # use gpu to process faster (CUDA is required)
+
 .. seealso::
 
     `spacy.package <https://spacy.io/api/cli#package>`_ : Create *python model package* to distribute the models.
