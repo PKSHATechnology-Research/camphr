@@ -6,12 +6,12 @@ Fine tuning Transformers
 Overview
 ~~~~~~~~~
 
-Camphr provides a *command line interface* to fine-tune `Transformers <https://github.com/huggingface/transformers>`_' pretrained model for downstream tasks, e.g. *text classification* and *named entity recognition*
+Camphr provides a *command line interface* to fine-tune `Transformers <https://github.com/huggingface/transformers>`_' pretrained models for downstream tasks, e.g. *text classification* and *named entity recognition*
 
 Text classification
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can fine-tune Transformers pretrained models for the text classification task as follows:
+You can fine-tune Transformers pretrained models for text classification tasks as follows:
 
 .. code-block:: console
 
@@ -26,7 +26,7 @@ Let's look at the details.
 ================================================================================
 
 Two files are required for training - :code:`train.jsonl`, :code:`label.json`.
-Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` contains the training data in the following  format as known as `jsonl <http://jsonlines.org/>`_ :
+Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` contains the training data in the following  format known as `jsonl <http://jsonlines.org/>`_ :
 
 .. code-block::
 
@@ -44,7 +44,7 @@ Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` con
 
 .. _choose-transformers:
 
-2. Choose Transformers pretrained model
+2. Choose Transformers pretrained models
 ================================================================================
 
 .. include:: fragments/choose_transformers_models.txt
@@ -61,7 +61,7 @@ The following is the minimal configuration to fine-tune *bert-base-cased* with *
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
-Of course you can also use non-English languages, by changing *model.lang.name*:
+Of course, you can also use non-English languages, by changing *model.lang.name*:
 
 .. code-block:: console
 
@@ -70,7 +70,7 @@ Of course you can also use non-English languages, by changing *model.lang.name*:
                    model.pretrained=bert-base-multilingual-cased  \
                    model.lang.name=ja # Japanese
 
-.. |use-cuda| replace:: If CUDA is avaiable, enabled automatically.
+.. |use-cuda| replace:: If CUDA is avaiable, it will be enabled automatically.
 
 :note: |use-cuda|
 
@@ -80,7 +80,7 @@ Of course you can also use non-English languages, by changing *model.lang.name*:
 
 
 
-4. Use fine-tuned model
+4. Use fine-tuned models
 ================================
 
 .. include:: fragments/use-model.txt
@@ -103,7 +103,7 @@ Let's look at the details.
 ================================================================================
 
 Two files are required for training - :code:`train.jsonl`, :code:`label.json`.
-Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` contains the training data in the following  format as known as `jsonl <http://jsonlines.org/>`_ :
+Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` contains the training data in the following  format known as `jsonl <http://jsonlines.org/>`_ :
 
 .. code-block::
 
@@ -111,7 +111,7 @@ Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` con
     ["Today is January 30th", {"entities": [[9, 21, "DATE"]] }]
      ...
 
-*"entities"* is an array containing arrays that consist :code:`[start_char_pos, end_char_pos, label_type]`.
+*"entities"* is an array containing arrays that consist of :code:`[start_char_pos, end_char_pos, label_type]`.
 
 :code:`label.json` is a json file defining classification labels. For example:
 
@@ -138,7 +138,7 @@ The following is the minimal configuration to fine-tune *bert-base-cased* with *
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
-Of course you can also use *non-English languages*, by changing *model.lang.name*:
+You can also use *non-English languages*, by changing *model.lang.name*:
 
 .. code-block:: console
 
@@ -153,7 +153,7 @@ Of course you can also use *non-English languages*, by changing *model.lang.name
 
 .. include:: fragments/note-output-dir.txt
 
-4. Use fine-tuned model
+4. Use fine-tuned models
 ================================
 
 .. include:: fragments/use-model.txt
@@ -163,9 +163,9 @@ Of course you can also use *non-English languages*, by changing *model.lang.name
 Advanced Configuration
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Camphr uses `Hydra <https://hydra.cc/>`_ as training configuration system, and the configuration can be customized in the Hydra's convention.
+Camphr uses `Hydra <https://hydra.cc/>`_ as a training configuration system, and the configuration can be customized in Hydra's convention.
 
-First, let's see an example configuration:
+First, let's see a sample configuration:
 
 .. code-block:: console
 
@@ -197,8 +197,8 @@ First, let's see an example configuration:
 
 As you can see, the configuration is defined in `YAML <https://en.wikipedia.org/wiki/YAML>`_ format.
 
-You can override values in the loaded config from the commend line.
-For example, to replace :code:`model.lang.name` with :code:`ja`, pass :code:`model.lang.name=ja` in cli:
+You can override the values in the config file by issuing a command on the command line.
+For example, in order to replace :code:`model.lang.name` with :code:`ja`, pass :code:`model.lang.name=ja` in cli:
 
 .. code-block:: console
 
@@ -212,9 +212,9 @@ For example, to replace :code:`model.lang.name` with :code:`ja`, pass :code:`mod
 Pass yaml
 =========
 
-As the number of items to be overwritten increases, it becomes troublesome to enter them in the command line.
+The more items you wish to override, the more tedious it becomes for you to enter them on the command line.
 
-You can overrides config with yaml file instead of command line options.
+You can use config with yaml file instead of command line options.
 For example, prepare :code:`user.yaml` as follows:
 
 .. code-block:: yaml

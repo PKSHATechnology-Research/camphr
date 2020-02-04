@@ -1,8 +1,8 @@
-The folowing models can be used:
+The following models can be used:
 
 1. **Transformers official models**
 
-Pretrained models listed in `Transformers website <https://huggingface.co/models>`_ can be used **without downloading**. The model will be automatically downloaded and cached at the start of the training.
+Pretrained models listed in `Transformers website <https://huggingface.co/models>`_ can be used **without manually downloading **. The model will be automatically downloaded and cached at the start of the training.
 
 2. **Transformers models in local directory**
 
