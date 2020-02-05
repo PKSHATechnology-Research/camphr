@@ -112,7 +112,7 @@ def test_update(nlp: Language, label_type):
 def test_eval_loss(nlp: TorchLanguage, label_type):
     if label_type == "irex":
         pytest.skip("label type mismatch")
-    nlp.eval_loss(TESTCASE_ENE, 2)
+    assert nlp.eval_loss(TESTCASE_ENE, 2) > 0
 
 
 @pytest.fixture(
