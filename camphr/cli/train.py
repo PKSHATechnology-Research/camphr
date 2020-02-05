@@ -168,6 +168,14 @@ def train(
         save_model(nlp, savedir / str(i))
 
 
+def set_seed(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)  # type: ignore
+
+
 def _main(cfg: Config) -> None:
     if cfg.user_config is not None:
         # Override config by user config.
@@ -177,6 +185,8 @@ def _main(cfg: Config) -> None:
             cfg, OmegaConf.load(hydra.utils.to_absolute_path(cfg.user_config))
         )
     cfg = parse(cfg)
+    if cfg.seed:
+        set_seed(cfg.seed)
     logger.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
     nlp = cast(TorchLanguage, create_model(cfg.model))
