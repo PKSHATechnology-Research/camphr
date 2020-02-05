@@ -40,7 +40,7 @@ Or, you can get this :code:`nlp` more easily with :doc:`camphr.load <camphr_load
     >>>     name: en
     >>> pipeline:
     >>>     transformers_model:
-    >>>         trf_name_or_path: xlm-roberta-base # Other than BERT can be used.
+    >>>         trf_name_or_path: xlnet-base-cased # Other than BERT can be used.
     >>> """
     >>> ) # pass config that omegaconf can parse (YAML, Json, Dict...)
 
@@ -64,6 +64,18 @@ Transformers computes the vector representation of input text:
     <BLANKLINE>
     >>> doc[0].similarity(doc2[0]) # tokens similarity
     0.4105265140533447
+
+Use :code:`nlp.pipe` to process multiple texts at once:
+
+    >>> texts = ["I am a cat.", "As yet I have no name.", "I have no idea where I was born."]
+    >>> docs = nlp.pipe(texts)
+
+Use for faster processing (CUDA is required):
+
+    >>> import torch
+    >>> nlp.to(torch.device("cuda"))
+    >>> docs = nlp.pipe(texts)
+
 
 Load local model
 ================

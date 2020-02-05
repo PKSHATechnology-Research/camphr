@@ -305,7 +305,7 @@ class TransformersInput:
         ]
 
     @property
-    def model_input(self):
+    def model_input(self) -> Dict[str, torch.Tensor]:
         output = {k: getattr(self, k) for k in self.tensor_field_names}
         del output["input_len"]
         return output
