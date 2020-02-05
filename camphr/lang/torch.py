@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class TorchLanguage(Language):
     """spacy.Language for pytorch.
 
-    This calss manages all `TorchPipe` components for the sake of training.
+    This class manages all `TorchPipe` components for the sake of training.
 
     Examples:
         >>> nlp = TorchLanguage(Vocab(), meta={"lang": "en"})

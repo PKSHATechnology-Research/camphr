@@ -78,9 +78,12 @@ def get_last_hidden_state_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
     """Get transformers text embedding from docs.
     
     Useful for downstream task pipelines.
+    `last_hidden_state` is set in `camphr.pipelines.transformers.TrfModel.set_annotations`.
     """
     # assumed that the batch tensor of all docs is stored in the extension.
     x: TensorWrapper = next(iter(docs))._.get(ATTRS.last_hidden_state)
+    if x is None:
+        raise ValueError("docs don't have `last_hidden_state`.")
     return x.batch_tensor
 
 
@@ -332,7 +335,7 @@ class TransformersInput:
         ]
 
     @property
-    def model_input(self):
+    def model_input(self) -> Dict[str, torch.Tensor]:
         output = {k: getattr(self, k) for k in self.tensor_field_names}
         del output["input_len"]
         return output
