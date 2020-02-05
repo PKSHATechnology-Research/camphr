@@ -2,13 +2,14 @@
 import itertools
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Union, Tuple
+from typing import Any, Dict, List, Sequence, Union, Tuple, cast
 
 import srsly
 import torch
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.language import Language
 from spacy.tokens import Doc
+from spacy.util import minibatch
 from torch.optim.optimizer import Optimizer
 
 from camphr.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
@@ -69,17 +70,20 @@ class TorchLanguage(Language):
     def eval_loss(
         self, docs_golds: Sequence[Tuple[Doc, GoldParse]], batch_size: int
     ) -> float:
-        docs, golds = zip(*docs_golds)
-        docs, golds = self._format_docs_and_golds(docs, golds)
+        loss = 0
+        for batch in minibatch(docs_golds, size=batch_size):
+            docs, golds = zip(*batch)
+            docs, golds = self._format_docs_and_golds(docs, golds)
 
-        for _, pipe in self.pipeline:
-            if not hasattr(pipe, "pipe"):
-                spacy.language._pipe(docs, pipe, {})
-            elif hasattr(pipe, "eval"):
-                pipe.eval(docs, golds)
-            else:
-                pipe.pipe(docs)
-        return cast(float, get_loss_from_docs(docs).cpu().float().item())
+            for _, pipe in self.pipeline:
+                if not hasattr(pipe, "pipe"):
+                    spacy.language._pipe(docs, pipe, {})
+                elif hasattr(pipe, "eval"):
+                    pipe.eval(docs, golds)
+                else:
+                    docs = list(pipe.pipe(docs))
+            loss += cast(float, get_loss_from_docs(docs).cpu().float().item())
+        return loss
 
     def _update_params(
         self, docs: Sequence[Doc], optimizer: Optimizer, verbose: bool = False

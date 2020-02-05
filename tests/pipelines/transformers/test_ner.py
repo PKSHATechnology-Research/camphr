@@ -1,3 +1,4 @@
+from camphr.lang.torch import TorchLanguage
 import json
 from typing import Dict, List
 
@@ -108,7 +109,10 @@ def test_update(nlp: Language, label_type):
     nlp.update(*zip(*TESTCASE_ENE), optim)
 
 
-# def test_update_long(nlp: Language):
+def test_eval_loss(nlp: TorchLanguage, label_type):
+    if label_type == "irex":
+        pytest.skip("label type mismatch")
+    nlp.eval_loss(TESTCASE_ENE, 2)
 
 
 @pytest.fixture(

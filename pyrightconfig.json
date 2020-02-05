@@ -1,3 +1,5 @@
 {
-    "reportMissingTypeStubs": true
+    "reportMissingTypeStubs": true,
+    "venvPath": "/home/ubuntu/.cache/pypoetry/virtualenvs/",
+    "venv": "camphr--VUSlTVX-py3.6"
 }
