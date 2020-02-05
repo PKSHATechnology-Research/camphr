@@ -197,17 +197,18 @@ def _main(cfg: Config) -> None:
     cfg = parse(cfg)
     logger.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
+    assert cfg.train.optuna.objective
+    if not cfg.model.lang.optimizer.params:
+        cfg.model.lang.optimizer.params = {}
 
     def objective(trial: optuna.Trial):
         savedir = Path.cwd() / f"models{trial.trial_id}"
         savedir.mkdir(exist_ok=True)
-	if not cfg.model.lang.optimizer.params:
-            cfg.model.lang.optimizer.params = {}
         cfg.model.lang.optimizer.params.lr = trial.suggest_uniform("lr", 1e-7, 1e-1)
         cfg.model.lang.optimizer.params.eps = trial.suggest_uniform("eps", 1e-10, 1e-2)
         nlp = create_model(cfg.model)
         if torch.cuda.is_available():
-            log.info("CUDA enabled")
+            logger.info("CUDA enabled")
             nlp.to(torch.device("cuda"))
         return train(cfg.train, nlp, train_data, val_data, savedir)
 
