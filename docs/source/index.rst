@@ -107,7 +107,7 @@ Quick tour
             0.9083941 ,  0.44577932], dtype=float32)
 
 
-See the tutorials below for details and other pipelines
+See the tutorials below for more details.
 
 Tutorials
 ~~~~~~~~~

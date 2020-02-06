@@ -1,11 +1,11 @@
-Load model with YAML or JSON
+Load models with YAML or JSON
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Camphr provides top-level function, :code:`camphr.load`:
+Camphr provides a top-level function, :code:`camphr.load`:
 
 .. autofunction:: camphr.load
 
-You can pass the model configuration in format that `omegaconf <https://github.com/omry/omegaconf>`_ can parse, such as yaml or json, for example:
+You can pass the model configuration in a format that `omegaconf <https://github.com/omry/omegaconf>`_ can parse, such as yaml and json, for example:
 
     >>> import camphr
     >>> cfg = """
@@ -23,7 +23,7 @@ You can pass the model configuration in format that `omegaconf <https://github.c
 
 "transformers_tokenizer" is automatically added because it is required to use "transformers_model".
 
-Or you can pass *python dict* to :code:`camphr.load`:
+You can also pass *python dict* to :code:`camphr.load`:
 
     >>> import camphr
     >>> cfg = {
