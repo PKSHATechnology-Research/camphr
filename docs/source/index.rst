@@ -8,14 +8,15 @@
 Camphr
 ==================================
 
-Camphr is a spaCy plugin to easily use `Transformers <https://huggingface.co/transformers/>`_ ,  `Udify <https://github.com/Hyperparticle/udify>`_, `ELmo <https://allennlp.org/elmo>`_, etc.
+Camphr is a Natural Language Processing library that helps you to painlessly combine wide variety of methods from state-of-the-art to conventional. 
+You can use `Transformers <https://huggingface.co/transformers/>`_ ,  `Udify <https://github.com/Hyperparticle/udify>`_, `ELmo <https://allennlp.org/elmo>`_, etc. on `spaCy <https://github.com/explosion/spaCy>`_.
 
 Features
 ~~~~~~~~
 
+* A `spaCy <https://github.com/explosion/spaCy>`_ plugin.
+
 * `Transformers <https://huggingface.co/transformers/>`_ with `spaCy <https://spacy.io/>`_ - :doc:`Fine tuning <notes/finetune_transformers>`, :doc:`Embedding vector <notes/transformers>`
-
-
 
 * `Udify <https://github.com/Hyperparticle/udify>`_ - BERT based multitask model in 75 languages
 
