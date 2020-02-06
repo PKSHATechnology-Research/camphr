@@ -60,6 +60,7 @@ You can create Elmo pipe with weight and option files distributed in `AllenNLP's
 1. Download :code:`weights.hd5` and :code:`options.json` in the `website <https://allennlp.org/elmo>`_
 2. Run the below:
 
+    >>> from camphr.pipelines.elmo import Elmo
     >>> elmo = Elmo.from_elmofiles("/path/to/options.json", "/path/to/weights.hd5")
     >>> nlp = spacy.blank("en") # choose one of spaCy's languages you like
     >>> nlp.add_pipe(elmo)
