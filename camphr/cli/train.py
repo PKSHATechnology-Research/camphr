@@ -183,7 +183,32 @@ def train(
         nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))
     score = scores[cfg.optuna.objective]
+    if cfg.optuna.objective != "loss":
+        score = -score
     return score
+
+
+def create_nlp(cfg):
+    nlp = create_model(cfg.model)
+    if torch.cuda.is_available():
+        logger.info("CUDA enabled")
+        nlp.to(torch.device("cuda"))
+    return nlp
+
+
+def train_with_optuna(cfg, train_data, val_data):
+    def objective(trial: optuna.Trial):
+        savedir = Path.cwd() / f"models{trial.trial_id}"
+        savedir.mkdir(exist_ok=True)
+        cfg.model.lang.optimizer.params.lr = trial.suggest_uniform("lr", 1e-7, 1e-1)
+        cfg.model.lang.optimizer.params.eps = trial.suggest_uniform("eps", 1e-10, 1e-2)
+        nlp = create_model(cfg)
+        return train(cfg.train, nlp, train_data, val_data, savedir)
+
+    study = optuna.create_study(study_name="camphr", storage="sqlite:///optuna.db")
+    study.optimize(objective, n_trials=cfg.train.optuna.ntrials)
+    logger.info(f"Best trial: {study.best_trial.trial_id}")
+    logger.info(f"Best score: {study.best_value}")
 
 
 def _main(cfg: Config) -> None:
@@ -197,25 +222,15 @@ def _main(cfg: Config) -> None:
     cfg = parse(cfg)
     logger.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
-    assert cfg.train.optuna.objective
     if not cfg.model.lang.optimizer.params:
         cfg.model.lang.optimizer.params = {}
-
-    def objective(trial: optuna.Trial):
-        savedir = Path.cwd() / f"models{trial.trial_id}"
-        savedir.mkdir(exist_ok=True)
-        cfg.model.lang.optimizer.params.lr = trial.suggest_uniform("lr", 1e-7, 1e-1)
-        cfg.model.lang.optimizer.params.eps = trial.suggest_uniform("eps", 1e-10, 1e-2)
-        nlp = create_model(cfg.model)
-        if torch.cuda.is_available():
-            logger.info("CUDA enabled")
-            nlp.to(torch.device("cuda"))
-        return train(cfg.train, nlp, train_data, val_data, savedir)
-
-    study = optuna.create_study(study_name="capmhr", storage="sqlite:///optuna.db")
-    study.optimize(objective, n_trials=cfg.train.optuna.ntrials)
-    log.info(f"Best trial: {study.best_trial.trial_id}")
-    log.info(f"Best score: {study.best_value}")
+    if cfg.train.optuna:
+        train_with_optuna(cfg, train_data, val_data)
+    else:
+        nlp = create_nlp(cfg)
+        savedir = Path.cwd() / "models"
+        savedir.mkdir()
+        train(cfg.train, nlp, train_data, val_data, savedir)
 
 
 # Avoid to use decorator for testing
