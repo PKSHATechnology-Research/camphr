@@ -2,12 +2,15 @@
 import itertools
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Union, Tuple, cast
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union, cast
 
+import spacy
 import srsly
 import torch
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.language import Language
+from spacy.pipeline.pipes import Pipe
+from spacy.scorer import Scorer
 from spacy.tokens import Doc
 from spacy.util import minibatch
 from torch.optim.optimizer import Optimizer
@@ -67,24 +70,6 @@ class TorchLanguage(Language):
         for _, pipe in self.pipeline:
             pipe.update(docs, golds)
 
-    def eval_loss(
-        self, docs_golds: Sequence[Tuple[Doc, GoldParse]], batch_size: int
-    ) -> float:
-        loss = 0
-        for batch in minibatch(docs_golds, size=batch_size):
-            docs, golds = zip(*batch)
-            docs, golds = self._format_docs_and_golds(docs, golds)
-
-            for _, pipe in self.pipeline:
-                if not hasattr(pipe, "pipe"):
-                    spacy.language._pipe(docs, pipe, {})
-                elif hasattr(pipe, "eval"):
-                    pipe.eval(docs, golds)
-                else:
-                    docs = list(pipe.pipe(docs))
-            loss += cast(float, get_loss_from_docs(docs).cpu().float().item())
-        return loss
-
     def _update_params(
         self, docs: Sequence[Doc], optimizer: Optimizer, verbose: bool = False
     ):
@@ -94,6 +79,39 @@ class TorchLanguage(Language):
         optimizer.step()
         if verbose:
             logger.info(f"Loss: {loss.detach().item()}")
+
+    def evaluate(  # type: ignore
+        self,
+        docs_golds: Sequence[Tuple[Union[str, Doc], Union[Dict[str, Any], GoldParse]]],
+        batch_size: int = 16,
+        scorer: Optional[Scorer] = None,
+    ) -> Dict[str, Any]:
+        """Overrided to compute loss"""
+        if scorer is None:
+            scorer = Scorer(pipeline=self.pipeline)
+        loss = 0.0
+        for batch in minibatch(docs_golds, size=batch_size):
+            docs, golds = zip(*batch)
+            docs, golds = self._format_docs_and_golds(docs, golds)  # type: ignore
+            for _, pipe in self.pipeline:
+                self._eval_pipe(pipe, docs, golds)
+            loss += cast(float, get_loss_from_docs(docs).cpu().float().item())
+            for doc, gold in zip(docs, golds):
+                scorer.score(doc, gold)
+        scores = scorer.scores
+        scores["loss"] = loss
+        return scores
+
+    def _eval_pipe(
+        self, pipe: Pipe, docs: Sequence[Doc], golds: Sequence[GoldParse]
+    ) -> Sequence[Doc]:
+        if not hasattr(pipe, "pipe"):
+            docs = spacy.language._pipe(docs, pipe, {})
+        elif hasattr(pipe, "eval"):
+            pipe.eval(docs, golds)  # type: ignore
+        else:
+            docs = list(pipe.pipe(docs))  # type: ignore
+        return docs
 
     def resume_training(self, **kwargs) -> Optimizer:  # type: ignore
         """Gather all torch parameters in each `TorchPipe`s, and create an optimizer.

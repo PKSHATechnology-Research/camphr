@@ -1,6 +1,4 @@
 import logging
-import optuna
-import os
 import random
 from collections import defaultdict
 from pathlib import Path
@@ -9,6 +7,7 @@ from typing import Callable, Dict, Type, Union, cast
 import hydra
 import hydra.utils
 import numpy as np
+import optuna
 import torch
 from omegaconf import Config, OmegaConf
 from sklearn.metrics import classification_report  # type: ignore
@@ -106,11 +105,11 @@ def evaluate(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
 
 def eval_loss(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Dict[str, float]:
     try:
-        loss = nlp.eval_loss(val_data, batch_size=cfg.nbatch * 2)
+        scores = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
     except Exception:
         report_fail(val_data)
         raise
-    return {"loss": loss}
+    return {"loss": scores["loss"]}
 
 
 EvalFn = Callable[[Config, Language, InputData], Dict]
@@ -177,12 +176,12 @@ def train(
     scores = None
     for i in range(cfg.niter):
         random.shuffle(train_data)
-        train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
+        train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)  # type: ignore
         scheduler.step()  # type: ignore # (https://github.com/pytorch/pytorch/pull/26531)
         scores = eval_fn(cfg, nlp, val_data)
         nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))
-    score = scores[cfg.optuna.objective]
+    score = scores[cfg.optuna.objective]  # type: ignore
     if cfg.optuna.objective != "loss":
         score = -score
     return score
@@ -202,7 +201,7 @@ def train_with_optuna(cfg, train_data, val_data):
         savedir.mkdir(exist_ok=True)
         cfg.model.lang.optimizer.params.lr = trial.suggest_uniform("lr", 1e-7, 1e-1)
         cfg.model.lang.optimizer.params.eps = trial.suggest_uniform("eps", 1e-10, 1e-2)
-        nlp = create_model(cfg)
+        nlp = cast(TorchLanguage, create_model(cfg))
         return train(cfg.train, nlp, train_data, val_data, savedir)
 
     study = optuna.create_study(study_name="camphr", storage="sqlite:///optuna.db")

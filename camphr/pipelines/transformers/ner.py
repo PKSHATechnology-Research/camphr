@@ -1,5 +1,5 @@
 """Defines transformers NER pipe"""
-from typing import Dict, Iterable, Iterator, List, Sized, cast
+from typing import Dict, Iterable, Iterator, List, Sequence, Sized, cast
 
 import spacy
 import torch
@@ -8,7 +8,6 @@ import torch.nn.functional as F
 import transformers
 from spacy.gold import GoldParse, iob_to_biluo, spans_from_biluo_tags
 from spacy.tokens import Doc
-from typing_extensions import Literal
 
 from camphr.pipelines.utils import (
     UNK,
@@ -22,13 +21,13 @@ from camphr.pipelines.utils import (
     correct_bio_tags,
     deconstruct_biluo_label,
 )
-from camphr.torch_utils import TorchPipe, add_loss_to_docs, set_grad
+from camphr.torch_utils import TorchPipe, add_loss_to_docs
 
 from .auto import get_trf_config_cls
 from .utils import (
     ATTRS,
-    ComputeLossMixin,
     LABELS,
+    EstimatorMixin,
     FromNLPMixinForTrfTask,
     LabelsMixin,
     SerializationMixinForTrfTask,
@@ -62,7 +61,7 @@ class TrfTokenClassifier(TrfModelForTaskBase):
 
 
 class TrfForTokenClassificationBase(
-    ComputeLossMixin,
+    EstimatorMixin[torch.Tensor],
     LabelsMixin,
     FromNLPMixinForTrfTask,
     UserHooksMixin,
@@ -82,13 +81,10 @@ class TrfForTokenClassificationBase(
         setattr(config, NUM_LABELS, len(cfg[LABELS]))
         return TrfTokenClassifier(config)
 
-    def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
+    def proc_model(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
-        self.model.eval()
-        with torch.no_grad():
-            x = get_last_hidden_state_from_docs(docs)
-            logits = self.model(x)
-        return logits
+        x = get_last_hidden_state_from_docs(docs)
+        return self.model(x)
 
     @staticmethod
     def install_extensions():
@@ -117,15 +113,13 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         return -1
 
     def compute_loss(
-        self, docs: List[Doc], golds: List[GoldParse], mode: Literal["train", "eval"]
-    ):
-        with self.switch(mode):
-            logits = self.model(get_last_hidden_state_from_docs(docs))
-            target = self._create_target_from_docs_golds(docs, golds, logits)
-            loss = F.cross_entropy(
-                logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
-            )
-            add_loss_to_docs(docs, loss)
+        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
+    ) -> None:
+        target = self._create_target_from_docs_golds(docs, golds, outputs)
+        loss = F.cross_entropy(
+            outputs.transpose(1, 2), target, ignore_index=self.ignore_label_index
+        )
+        add_loss_to_docs(docs, loss)
 
     def set_annotations(
         self, docs: Iterable[Doc], logits: torch.Tensor
@@ -146,7 +140,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         return docs
 
     def _create_target_from_docs_golds(
-        self, docs: List[Doc], golds: List[GoldParse], logits: torch.Tensor
+        self, docs: Sequence[Doc], golds: Sequence[GoldParse], logits: torch.Tensor
     ) -> torch.Tensor:
         all_aligns = (doc._.get(ATTRS.align) for doc in docs)
         new_ners = (

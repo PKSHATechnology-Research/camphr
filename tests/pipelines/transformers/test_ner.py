@@ -1,4 +1,3 @@
-from camphr.lang.torch import TorchLanguage
 import json
 from typing import Dict, List
 
@@ -109,12 +108,6 @@ def test_update(nlp: Language, label_type):
     nlp.update(*zip(*TESTCASE_ENE), optim)
 
 
-def test_eval_loss(nlp: TorchLanguage, label_type):
-    if label_type == "irex":
-        pytest.skip("label type mismatch")
-    assert nlp.eval_loss(TESTCASE_ENE, 2) > 0
-
-
 @pytest.fixture(
     scope="module",
     params=["ner/ner-ene.json", "ner/ner-irex.json", "ner/ner-ene2.json"],
@@ -147,7 +140,8 @@ def test_example_batch(nlp: Language, example_gold):
 
 
 def test_example_batch_eval(nlp: Language, example_gold):
-    nlp.evaluate(example_gold)
+    score = nlp.evaluate(example_gold)
+    assert score["loss"]
 
 
 def test_serialization(nlp):
