@@ -43,7 +43,7 @@ class MultipleRegexRuler(SerializationMixin):
     def _proc(self, doc: Doc, pattern: str, label: str) -> Doc:
         spans = self.get_spans(doc, pattern, label or self._DEFAULT_LABEL)
         doc.ents = filter_spans(tuple(spans) + doc.ents)  # type: ignore
-        # TODO: https://stackoverflow.com/questions/59964767/mypy-incompatible-types-in-assignment-for-property-setter
+        # TODO: https://github.com/python/mypy/issues/3004
         if self.merge:
             merge_spans(doc, spans)
         return doc

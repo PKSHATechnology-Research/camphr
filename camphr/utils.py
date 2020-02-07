@@ -76,12 +76,8 @@ def get_doc_char_span(
     """
     span = doc.char_span(i, j, **kwargs)
     if not span and destructive:
-        try:
-            destruct_token(doc, i, j)
-            span = doc.char_span(i, j, **kwargs)
-        except AssertionError:
-            # TODO: https://github.com/explosion/spaCy/issues/4604
-            pass
+        destruct_token(doc, i, j)
+        span = doc.char_span(i, j, **kwargs)
     return span
 
 
