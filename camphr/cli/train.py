@@ -1,4 +1,5 @@
 import logging
+import os
 import random
 from collections import defaultdict
 from pathlib import Path
@@ -7,7 +8,6 @@ from typing import Callable, Dict, Type, Union, cast
 import hydra
 import hydra.utils
 import numpy as np
-import optuna
 import torch
 from omegaconf import Config, OmegaConf
 from sklearn.metrics import classification_report  # type: ignore
@@ -103,20 +103,9 @@ def evaluate(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
     return scorer.scores
 
 
-def eval_loss(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Dict[str, float]:
-    try:
-        scores = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
-    except Exception:
-        report_fail(val_data)
-        raise
-    return {"loss": scores["loss"]}
-
-
 EvalFn = Callable[[Config, Language, InputData], Dict]
 
-EVAL_FN_MAP = defaultdict(
-    lambda: evaluate, {"textcat": evaluate_textcat, "loss": eval_loss}
-)
+EVAL_FN_MAP = defaultdict(lambda: evaluate, {"textcat": evaluate_textcat})
 
 
 def train_epoch(
@@ -155,8 +144,6 @@ def load_scheduler(
     cls_str = get_by_dotkey(cfg, "scheduler.class")
     if not cls_str:
         return DummyScheduler
-    else:
-        logger.info(f"Scheduler enabled: {cls_str}")
     cls = cast(Type[torch.optim.lr_scheduler.LambdaLR], import_attr(cls_str))
     params = OmegaConf.to_container(cfg.scheduler.params) or {}
     return cls(optimizer, **params)
@@ -168,48 +155,17 @@ def train(
     train_data: InputData,
     val_data: InputData,
     savedir: Path,
-) -> float:
-    socorer_key = cfg.task
-    if cfg.optuna and cfg.optuna.objective:
-        socorer_key = cfg.optuna.objective
-    eval_fn = EVAL_FN_MAP[socorer_key]
+) -> None:
+    eval_fn = EVAL_FN_MAP[cfg.task]
     optim = nlp.resume_training()
     scheduler = load_scheduler(cfg, optim)
-    scores = None
     for i in range(cfg.niter):
         random.shuffle(train_data)
-        train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)  # type: ignore
+        train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
         scheduler.step()  # type: ignore # (https://github.com/pytorch/pytorch/pull/26531)
         scores = eval_fn(cfg, nlp, val_data)
         nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
         save_model(nlp, savedir / str(i))
-    score = scores[cfg.optuna.objective]  # type: ignore
-    if cfg.optuna.objective != "loss":
-        score = -score
-    return score
-
-
-def create_nlp(cfg):
-    nlp = create_model(cfg.model)
-    if torch.cuda.is_available():
-        logger.info("CUDA enabled")
-        nlp.to(torch.device("cuda"))
-    return nlp
-
-
-def train_with_optuna(cfg, train_data, val_data):
-    def objective(trial: optuna.Trial):
-        savedir = Path.cwd() / f"models{trial.trial_id}"
-        savedir.mkdir(exist_ok=True)
-        cfg.model.lang.optimizer.params.lr = trial.suggest_uniform("lr", 1e-7, 1e-1)
-        cfg.model.lang.optimizer.params.eps = trial.suggest_uniform("eps", 1e-10, 1e-2)
-        nlp = cast(TorchLanguage, create_model(cfg))
-        return train(cfg.train, nlp, train_data, val_data, savedir)
-
-    study = optuna.create_study(study_name="camphr", storage="sqlite:///optuna.db")
-    study.optimize(objective, n_trials=cfg.train.optuna.ntrials)
-    logger.info(f"Best trial: {study.best_trial.trial_id}")
-    logger.info(f"Best score: {study.best_value}")
 
 
 def set_seed(seed: int):
@@ -233,15 +189,14 @@ def _main(cfg: Config) -> None:
         set_seed(cfg.seed)
     logger.info(cfg.pretty())
     train_data, val_data = create_data(cfg.train.data)
-    if not cfg.model.lang.optimizer.params:
-        cfg.model.lang.optimizer.params = {}
-    if cfg.train.optuna:
-        train_with_optuna(cfg, train_data, val_data)
-    else:
-        nlp = create_nlp(cfg)
-        savedir = Path.cwd() / "models"
-        savedir.mkdir()
-        train(cfg.train, nlp, train_data, val_data, savedir)
+    nlp = cast(TorchLanguage, create_model(cfg.model))
+    logger.info("output dir: {}".format(os.getcwd()))
+    if torch.cuda.is_available():
+        logger.info("CUDA enabled")
+        nlp.to(torch.device("cuda"))
+    savedir = Path.cwd() / "models"
+    savedir.mkdir(exist_ok=True)
+    train(cfg.train, nlp, train_data, val_data, savedir)
 
 
 # Avoid to use decorator for testing
