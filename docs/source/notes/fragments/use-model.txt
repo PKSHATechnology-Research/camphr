@@ -15,6 +15,13 @@ And you can use it as follows:
     >>> nlp.to(torch.device("cuda"))
     >>> docs = nlp.pipe(texts) # use gpu to process faster (CUDA is required)
 
+To create python package, use :code:`spacy package` CLI:
+
+.. code-block::
+
+    $ mkdir packages
+    $ spacy package ./output/2020-01-30/19-31-23/models/0 ./packages
+
 .. seealso::
 
     `spacy.package <https://spacy.io/api/cli#package>`_ : Create *python model package* to distribute the models.
