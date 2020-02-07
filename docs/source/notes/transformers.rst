@@ -6,15 +6,15 @@ Transformers
 Overview
 ~~~~~~~~~
 
-Camphr provides `Transformers <https://github.com/huggingface/transformers>`_ as a spaCy pipeline.
-You can use the transformers output with spaCy interface, or :doc:`finetune it for downstream tasks <finetune_transformers>`.
+Camphr provides `Transformers <https://github.com/huggingface/transformers>`_ as spaCy pipelines.
+You can use the transformers outputs with spaCy interface and :doc:`finetune them for downstream tasks <finetune_transformers>`.
 
-In this section, we explain how to use Transformers model as *text embedding layer*.
+In this section, we will explain how to use Transformers models as *text embedding layers*.
 See :doc:`finetune_transformers` for fine-tuning transformers models.
 
 
-Install
-~~~~~~~
+Installation
+~~~~~~~~~~~~
 
 .. parsed-literal::
 
@@ -31,7 +31,7 @@ Create and add :code:`transformers_tokenizer` and :code:`transformers_model` to 
     >>> nlp.add_pipe(nlp.create_pipe("transformers_tokenizer", config=config))
     >>> nlp.add_pipe(nlp.create_pipe("transformers_model", config=config))
 
-Or, you can get this :code:`nlp` more easily with :doc:`camphr.load <camphr_load>`
+You can also get this :code:`nlp` more easily with :doc:`camphr.load <camphr_load>`
 
     >>> import camphr
     >>> nlp = camphr.load(
@@ -44,7 +44,7 @@ Or, you can get this :code:`nlp` more easily with :doc:`camphr.load <camphr_load
     >>> """
     >>> ) # pass config that omegaconf can parse (YAML, Json, Dict...)
 
-Transformers computes the vector representation of input text:
+Transformers computes the vector representation of an input text:
 
     >>> doc = nlp("BERT converts text to vector")
     >>> doc.tensor
@@ -70,17 +70,17 @@ Use :code:`nlp.pipe` to process multiple texts at once:
     >>> texts = ["I am a cat.", "As yet I have no name.", "I have no idea where I was born."]
     >>> docs = nlp.pipe(texts)
 
-Use for faster processing (CUDA is required):
+Use :code:`nlp.to` for faster processing (CUDA is required):
 
     >>> import torch
     >>> nlp.to(torch.device("cuda"))
     >>> docs = nlp.pipe(texts)
 
 
-Load local model
-================
+Load local models
+=================
 
-You can use models stored in local directory:
+You can also use models stored in local directories:
 
     >>> nlp = load(
     >>> """

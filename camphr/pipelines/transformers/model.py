@@ -66,15 +66,15 @@ class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
         """
         for i, doc in enumerate(docs):
             length = len(doc._.get(ATTRS.tokens))
-            # Instead of assigning tensor directory, assign `TensorWrapper`
-            # so that trailing pipe can handle batch tensor efficiently.
+            # Instead of assigning a tensor directly, assign `TensorWrapper`
+            # so that trailing pipes can handle batch tensors efficiently.
             doc._.set(ATTRS.last_hidden_state, TensorWrapper(outputs, i, length))
 
             if set_vector:
                 lh: torch.Tensor = doc._.get(ATTRS.last_hidden_state).get()
                 doc_tensor = lh.new_zeros((len(doc), lh.shape[-1]))
                 # TODO: Inefficient
-                # TODO: Store the functionality into user_hooks after https://github.com/explosion/spaCy/issues/4439 was released
+                # TODO: Store the functionality into user_hooks after https://github.com/explosion/spaCy/issues/4439 has been released
                 for i, a in enumerate(doc._.get(ATTRS.align)):
                     if self.max_length > 0:
                         a = [aa for aa in a if aa < len(lh)]

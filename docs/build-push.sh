@@ -1,3 +1,4 @@
+#!/bin/bash
 rm -rf build
 poetry run make html
 aws s3 rm --recursive s3://camphr-doc

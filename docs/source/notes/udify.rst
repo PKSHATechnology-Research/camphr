@@ -8,8 +8,8 @@ Overview
 
 `Udify <https://arxiv.org/abs/1904.02099>`_ is a *BERT based, multilingual multi-task model* capable of predicting **universal part-of-speech**, **morphological features**, **lemmas**, and **dependency trees** simultaneously for **75 languages**.
 
-Install
-~~~~~~~
+Installation
+~~~~~~~~~~~~
 
 1. Download the model from |release-page|_
 
@@ -19,7 +19,7 @@ Install
 
     $ pip install \ |udify-tar|\
 
-All parameters and dependencies is installed now.
+All parameters and dependencies are installed now.
 
 Usage
 ~~~~~
@@ -31,7 +31,7 @@ Usage
 
     .. image:: udify_dep_en.png
 
-You can use :code:`nlp` for space delimited languages:
+Now you can use :code:`nlp` for space-delimited languages such as English and German:
 
     >>> nlp("Deutsch kann so wie es ist analysiert werden")
 
@@ -40,8 +40,8 @@ You can use :code:`nlp` for space delimited languages:
 Use udify with non-space-delimited languages
 ============================================
 
-You can use Udify by replacing the tokenizer.
-camphr provides some useful functions for this purpose: :code:`load_udify`:
+Switching the tokenizer allows you to use Udify for non-space-delimited languages such as Japanese.
+Camphr offers a useful function for this purpose: :code:`load_udify`:
 
     >>> from camphr.pipelines import load_udify
     >>> nlp = load_udify("ja", punct_chars=["。"])

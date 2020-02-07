@@ -8,7 +8,7 @@ Camphrは，knpの解析結果をspaCyで扱うための機能を提供してい
 
 :note: KNP is a Japanese language analysis model, and can be used only in Japanese. Therefore, this page is written in Japanese.
 
-Install
+Installation
 ------------
 
 `このページに従い <http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP>`_, 事前にjumanppとknpをインストールしてください．

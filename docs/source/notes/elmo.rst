@@ -9,8 +9,8 @@ Overview
 `Elmo <https://allennlp.org/elmo>`_ is a deep contextualized word representation.
 You can get contextualized **emmbedding vector** with Elmo pipeline.
 
-Install
-~~~~~~~
+Installation
+~~~~~~~~~~~~
 
 1. Download the model from |release-page|_
 
@@ -20,7 +20,7 @@ Install
 
     $ pip install \ |elmo-tar|\
 
-All parameters and dependencies is installed now.
+All parameters and dependencies are installed now.
 
 Usage
 ~~~~~
@@ -37,12 +37,12 @@ Elmo vector
     >>> doc[0].vector
     array([-1.8180828 ,  0.4473899 , -0.13872834, ...,  0.3815268 ,
             0.9083941 ,  0.44577932], dtype=float32)
-    
+
 
 Similarity of tokens
 ========================
 
-Because Elmo is a contextualized vector, each token's vectors are different even if they are same word.
+Because Elmo is a contextualized vector, each token has a different vector even if they are the same words.
 
     >>> bank0 = nlp("One can deposit money at the bank")[-1]
     >>> bank1 = nlp("The river bank was not clean")[2]
@@ -55,11 +55,12 @@ Because Elmo is a contextualized vector, each token's vectors are different even
 Non-English Models
 ==================
 
-You can create Elmo pipe with weight and option files distributed in `AllenNLP's website <https://allennlp.org/elmo>`_
+You can create an Elmo pipe with weight and option files distributed in `AllenNLP's website <https://allennlp.org/elmo>`_
 
 1. Download :code:`weights.hd5` and :code:`options.json` in the `website <https://allennlp.org/elmo>`_
 2. Run the below:
 
+    >>> from camphr.pipelines.elmo import Elmo
     >>> elmo = Elmo.from_elmofiles("/path/to/options.json", "/path/to/weights.hd5")
     >>> nlp = spacy.blank("en") # choose one of spaCy's languages you like
     >>> nlp.add_pipe(elmo)
