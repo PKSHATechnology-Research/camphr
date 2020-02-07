@@ -31,7 +31,6 @@ from toolz import curry
 from typing_extensions import Literal
 
 from camphr.types import Pathlike
-from camphr.VERSION import __version__
 
 
 def zero_pad(a: List[List[int]], pad_value: int = 0) -> List[List[int]]:
