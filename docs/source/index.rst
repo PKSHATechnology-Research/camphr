@@ -8,7 +8,7 @@
 Camphr
 ==================================
 
-Camphr is a *Natural Language Processing* library that helps in seamless integration for a wide variety of techniques from state-of-the-art to conventional ones
+Camphr is a *Natural Language Processing* library that helps in seamless integration for a wide variety of techniques from state-of-the-art to conventional ones.
 You can use `Transformers <https://huggingface.co/transformers/>`_ ,  `Udify <https://github.com/Hyperparticle/udify>`_, `ELmo <https://allennlp.org/elmo>`_, etc. on `spaCy <https://github.com/explosion/spaCy>`_.
 
 Features
