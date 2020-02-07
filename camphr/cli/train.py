@@ -155,6 +155,8 @@ def load_scheduler(
     cls_str = get_by_dotkey(cfg, "scheduler.class")
     if not cls_str:
         return DummyScheduler
+    else:
+        logger.info(f"Scheduler enabled: {cls_str}")
     cls = cast(Type[torch.optim.lr_scheduler.LambdaLR], import_attr(cls_str))
     params = OmegaConf.to_container(cfg.scheduler.params) or {}
     return cls(optimizer, **params)
