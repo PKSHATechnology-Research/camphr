@@ -43,7 +43,6 @@ allennlp = ["allennlp"]
 udify = ["allennlp", "udify"]
 juman = [ "Cython", "mojimoji2", "pyknp",]
 mecab = [ "mecab-python3" ]
-optuna = ["optuna"]
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
@@ -100,10 +99,6 @@ allow-prereleases = true
 ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
-
-[tool.poetry.dependencies.optuna]
-version = "^1.0"
-optional = true
 
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
