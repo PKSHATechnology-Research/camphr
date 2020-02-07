@@ -174,16 +174,6 @@ First, let's see a sample configuration:
     model:
         lang:
             name: en
-            optimizer:
-            class: transformers.optimization.AdamW
-            params:
-                eps: 1.0e-08
-                lr: 2.0e-05
-            scheduler:
-            class: transformers.optimization.get_linear_schedule_with_warmup
-            params:
-                num_training_steps: 10
-                num_warmup_steps: 10
         ner_label: ~/irex.json
         pipeline: null
         pretrained: bert-base-cased
@@ -194,6 +184,16 @@ First, let's see a sample configuration:
             val_size: 0.1
         nbatch: 16
         niter: 10
+        optimizer:
+            class: transformers.optimization.AdamW
+            params:
+                eps: 1.0e-08
+                lr: 2.0e-05
+        scheduler:
+            class: transformers.optimization.get_linear_schedule_with_warmup
+            params:
+                num_training_steps: 7
+                num_warmup_steps: 3
 
 As you can see, the configuration is defined in `YAML <https://en.wikipedia.org/wiki/YAML>`_ format.
 
@@ -222,7 +222,7 @@ For example, prepare :code:`user.yaml` as follows:
     model:
         lang:
             name: ja
-            optimizer:
+        optimizer:
             class: transformers.optimization.AdamW
             params:
                 eps: 1.0e-05

@@ -1,16 +1,6 @@
 model:
     lang:
         name: en
-        optimizer:
-            class: transformers.optimization.AdamW
-            params:
-                lr: 2e-5
-                eps: 1e-8
-        scheduler:
-            class: transformers.optimization.get_linear_schedule_with_warmup
-            params:
-                num_warmup_steps: 10
-                num_training_steps: 10
     pretrained: bert-base-cased
     ner_label: ~/irex.json
 train:
@@ -20,3 +10,13 @@ train:
         val_size: 0.1
     niter: 10
     nbatch: 16
+    optimizer:
+        class: transformers.optimization.AdamW
+        params:
+            lr: 2e-5
+            eps: 1e-8
+    scheduler:
+        class: transformers.optimization.get_linear_schedule_with_warmup
+        params:
+            num_warmup_steps: 10
+            num_training_steps: 10
