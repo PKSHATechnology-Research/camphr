@@ -34,4 +34,3 @@ class Span:
         vector_norm: Any = None,
         kb_id: int = 0,
     ): ...
-

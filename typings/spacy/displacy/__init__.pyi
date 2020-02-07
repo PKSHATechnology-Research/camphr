@@ -16,9 +16,18 @@ spaCy's built in visualization suite for dependencies and named entities.
 DOCS: https://spacy.io/api/top-level#displacy
 USAGE: https://spacy.io/usage/visualizers
 """
-_html = {  }
+_html = {}
 RENDER_WRAPPER = None
-def render(docs, style=..., page: bool = ..., minify: bool = ..., jupyter: Optional[Any] = ..., options=..., manual: bool = ...):
+
+def render(
+    docs,
+    style=...,
+    page: bool = ...,
+    minify: bool = ...,
+    jupyter: Optional[Any] = ...,
+    options=...,
+    manual: bool = ...,
+):
     """Render displaCy visualisation.
 
     docs (list or Doc): Document(s) to visualise.
@@ -35,7 +44,16 @@ def render(docs, style=..., page: bool = ..., minify: bool = ..., jupyter: Optio
     """
     ...
 
-def serve(docs, style=..., page: bool = ..., minify: bool = ..., options=..., manual: bool = ..., port=..., host=...):
+def serve(
+    docs,
+    style=...,
+    page: bool = ...,
+    minify: bool = ...,
+    options=...,
+    manual: bool = ...,
+    port=...,
+    host=...,
+):
     """Serve displaCy visualisation.
 
     docs (list or Doc): Document(s) to visualise.
@@ -52,9 +70,7 @@ def serve(docs, style=..., page: bool = ..., minify: bool = ..., options=..., ma
     """
     ...
 
-def app(environ, start_response):
-    ...
-
+def app(environ, start_response): ...
 def parse_deps(orig_doc, options=...):
     """Generate dependency parse in {'words': [], 'arcs': []} format.
 
@@ -84,6 +100,4 @@ def set_render_wrapper(func):
     """
     ...
 
-def get_doc_settings(doc):
-    ...
-
+def get_doc_settings(doc): ...

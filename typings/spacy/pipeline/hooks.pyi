@@ -57,4 +57,3 @@ class SimilarityHook(Pipe):
         pipeline (list): The pipeline the model is part of.
         """
         ...
-

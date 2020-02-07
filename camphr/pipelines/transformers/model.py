@@ -105,7 +105,6 @@ class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
         self.set_annotations(docs, y, set_vector=False)
 
 
-
 def _get_last_hidden_state(output: Tuple[Any]) -> torch.Tensor:
     # assumes output[0] is the last hidden state
     return output[0]

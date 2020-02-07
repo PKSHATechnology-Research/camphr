@@ -143,4 +143,3 @@ class EntityRuler(object):
         DOCS: https://spacy.io/api/entityruler#to_disk
         """
         ...
-

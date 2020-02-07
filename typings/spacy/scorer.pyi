@@ -8,49 +8,37 @@ class PRFScore(object):
     """
     A precision / recall / F score
     """
+
     def __init__(self):
         self.tp = ...
         self.fp = ...
         self.fn = ...
-    
-    def score_set(self, cand, gold):
-        ...
-    
+    def score_set(self, cand, gold): ...
     @property
-    def precision(self):
-        ...
-    
+    def precision(self): ...
     @property
-    def recall(self):
-        ...
-    
+    def recall(self): ...
     @property
-    def fscore(self):
-        ...
-    
-
+    def fscore(self): ...
 
 class ROCAUCScore(object):
     """
     An AUC ROC score.
     """
+
     def __init__(self):
         self.golds = ...
         self.cands = ...
         self.saved_score = ...
         self.saved_score_at_len = ...
-    
-    def score_set(self, cand, gold):
-        ...
-    
+    def score_set(self, cand, gold): ...
     @property
     def score(self):
         self.saved_score_at_len = ...
-    
-
 
 class Scorer(object):
     """Compute evaluation scores."""
+
     def __init__(self, eval_punct: bool = ..., pipeline: Optional[Any] = ...):
         """Initialize the Scorer.
 
@@ -73,56 +61,46 @@ class Scorer(object):
         self.textcat_per_cat = ...
         self.textcat_positive_label = ...
         self.textcat_multilabel = ...
-    
     @property
     def tags_acc(self):
         """RETURNS (float): Part-of-speech tag accuracy (fine grained tags,
             i.e. `Token.tag`).
         """
         ...
-    
     @property
     def token_acc(self):
         """RETURNS (float): Tokenization accuracy."""
         ...
-    
     @property
     def uas(self):
         """RETURNS (float): Unlabelled dependency score."""
         ...
-    
     @property
     def las(self):
         """RETURNS (float): Labelled dependency score."""
         ...
-    
     @property
     def las_per_type(self):
         """RETURNS (dict): Scores per dependency label.
         """
         ...
-    
     @property
     def ents_p(self):
         """RETURNS (float): Named entity accuracy (precision)."""
         ...
-    
     @property
     def ents_r(self):
         """RETURNS (float): Named entity accuracy (recall)."""
         ...
-    
     @property
     def ents_f(self):
         """RETURNS (float): Named entity accuracy (F-score)."""
         ...
-    
     @property
     def ents_per_type(self):
         """RETURNS (dict): Scores per entity label.
         """
         ...
-    
     @property
     def textcat_score(self):
         """RETURNS (float): f-score on positive label for binary exclusive,
@@ -130,20 +108,17 @@ class Scorer(object):
         macro-averaged AUC ROC score for multilabel (-1 if undefined)
         """
         ...
-    
     @property
     def textcats_per_cat(self):
         """RETURNS (dict): Scores per textcat label.
         """
         ...
-    
     @property
     def scores(self):
         """RETURNS (dict): All scores with keys `uas`, `las`, `ents_p`,
             `ents_r`, `ents_f`, `tags_acc`, `token_acc`, and `textcat_score`.
         """
         ...
-    
     def score(self, doc, gold, verbose: bool = ..., punct_labels=...):
         """Update the evaluation scores from a single Doc / GoldParse pair.
 
@@ -157,8 +132,6 @@ class Scorer(object):
         DOCS: https://spacy.io/api/scorer#score
         """
         ...
-    
-
 
 def _roc_auc_score(y_true, y_score):
     """Compute Area Under the Receiver Operating Characteristic Curve (ROC AUC)
@@ -312,4 +285,3 @@ def _auc(x, y):
     auc : float
     """
     ...
-

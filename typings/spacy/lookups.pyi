@@ -6,6 +6,7 @@ from collections import OrderedDict
 from typing import Any, Optional
 
 UNSET = object()
+
 class Lookups(object):
     """Container for large lookup tables and dictionaries, e.g. lemmatization
     data or tokenizer exception lists. Lookups are available via vocab.lookups,
@@ -13,6 +14,7 @@ class Lookups(object):
     in the tokenizer and lemmatizer), as well as within the pipeline components
     via doc.vocab.lookups.
     """
+
     def __init__(self):
         """Initialize the Lookups object.
 
@@ -21,7 +23,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#init
         """
         ...
-    
     def __contains__(self, name):
         """Check if the lookups contain a table of a given name. Delegates to
         Lookups.has_table.
@@ -30,16 +31,13 @@ class Lookups(object):
         RETURNS (bool): Whether a table of that name is in the lookups.
         """
         ...
-    
     def __len__(self):
         """RETURNS (int): The number of tables in the lookups."""
         ...
-    
     @property
     def tables(self):
         """RETURNS (list): Names of all tables in the lookups."""
         ...
-    
     def add_table(self, name, data=...):
         """Add a new table to the lookups. Raises an error if the table exists.
 
@@ -50,7 +48,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#add_table
         """
         ...
-    
     def get_table(self, name, default=...):
         """Get a table. Raises an error if the table doesn't exist and no
         default value is provided.
@@ -62,7 +59,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#get_table
         """
         ...
-    
     def remove_table(self, name):
         """Remove a table. Raises an error if the table doesn't exist.
 
@@ -72,7 +68,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#remove_table
         """
         ...
-    
     def has_table(self, name):
         """Check if the lookups contain a table of a given name.
 
@@ -82,7 +77,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#has_table
         """
         ...
-    
     def to_bytes(self, **kwargs):
         """Serialize the lookups to a bytestring.
 
@@ -91,7 +85,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#to_bytes
         """
         ...
-    
     def from_bytes(self, bytes_data, **kwargs):
         """Load the lookups from a bytestring.
 
@@ -101,7 +94,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#from_bytes
         """
         ...
-    
     def to_disk(self, path, **kwargs):
         """Save the lookups to a directory as lookups.bin. Expects a path to a
         directory, which will be created if it doesn't exist.
@@ -111,7 +103,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#to_disk
         """
         ...
-    
     def from_disk(self, path, **kwargs):
         """Load lookups from a directory containing a lookups.bin. Will skip
         loading if the file doesn't exist.
@@ -122,8 +113,6 @@ class Lookups(object):
         DOCS: https://spacy.io/api/lookups#from_disk
         """
         ...
-    
-
 
 class Table(OrderedDict):
     """A table in the lookups. Subclass of builtin dict that implements a
@@ -131,6 +120,7 @@ class Table(OrderedDict):
 
     Includes a Bloom filter to speed up missed lookups.
     """
+
     @classmethod
     def from_dict(cls, data, name: Optional[Any] = ...):
         """Initialize a new table from a dict.
@@ -142,7 +132,6 @@ class Table(OrderedDict):
         DOCS: https://spacy.io/api/lookups#table.from_dict
         """
         ...
-    
     def __init__(self, name: Optional[Any] = ..., data: Optional[Any] = ...):
         """Initialize a new table.
 
@@ -155,7 +144,6 @@ class Table(OrderedDict):
         self.name = ...
         self.default_size = ...
         self.bloom = ...
-    
     def __setitem__(self, key, value):
         """Set new key/value pair. String keys will be hashed.
 
@@ -163,7 +151,6 @@ class Table(OrderedDict):
         value: The value to set.
         """
         ...
-    
     def set(self, key, value):
         """Set new key/value pair. String keys will be hashed.
         Same as table[key] = value.
@@ -172,7 +159,6 @@ class Table(OrderedDict):
         value: The value to set.
         """
         ...
-    
     def __getitem__(self, key):
         """Get the value for a given key. String keys will be hashed.
 
@@ -180,7 +166,6 @@ class Table(OrderedDict):
         RETURNS: The value.
         """
         ...
-    
     def get(self, key, default: Optional[Any] = ...):
         """Get the value for a given key. String keys will be hashed.
 
@@ -189,7 +174,6 @@ class Table(OrderedDict):
         RETURNS: The value.
         """
         ...
-    
     def __contains__(self, key):
         """Check whether a key is in the table. String keys will be hashed.
 
@@ -197,7 +181,6 @@ class Table(OrderedDict):
         RETURNS (bool): Whether the key is in the table.
         """
         ...
-    
     def to_bytes(self):
         """Serialize table to a bytestring.
 
@@ -206,7 +189,6 @@ class Table(OrderedDict):
         DOCS: https://spacy.io/api/lookups#table.to_bytes
         """
         ...
-    
     def from_bytes(self, bytes_data):
         """Load a table from a bytestring.
 
@@ -217,6 +199,3 @@ class Table(OrderedDict):
         """
         self.name = ...
         self.bloom = ...
-    
-
-

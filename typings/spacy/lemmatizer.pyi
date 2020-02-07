@@ -11,10 +11,9 @@ class Lemmatizer(object):
 
     DOCS: https://spacy.io/api/lemmatizer
     """
+
     @classmethod
-    def load(cls, *args, **kwargs):
-        ...
-    
+    def load(cls, *args, **kwargs): ...
     def __init__(self, lookups, *args, **kwargs):
         """Initialize a Lemmatizer.
 
@@ -23,7 +22,6 @@ class Lemmatizer(object):
         RETURNS (Lemmatizer): The newly constructed object.
         """
         self.lookups = ...
-    
     def __call__(self, string, univ_pos, morphology: Optional[Any] = ...):
         """Lemmatize a string.
 
@@ -34,7 +32,6 @@ class Lemmatizer(object):
         RETURNS (list): The available lemmas for the string.
         """
         ...
-    
     def is_base_form(self, univ_pos, morphology: Optional[Any] = ...):
         """
         Check whether we're dealing with an uninflected paradigm, so we can
@@ -45,31 +42,14 @@ class Lemmatizer(object):
             Universal Dependencies scheme.
         """
         ...
-    
-    def noun(self, string, morphology: Optional[Any] = ...):
-        ...
-    
-    def verb(self, string, morphology: Optional[Any] = ...):
-        ...
-    
-    def adj(self, string, morphology: Optional[Any] = ...):
-        ...
-    
-    def det(self, string, morphology: Optional[Any] = ...):
-        ...
-    
-    def pron(self, string, morphology: Optional[Any] = ...):
-        ...
-    
-    def adp(self, string, morphology: Optional[Any] = ...):
-        ...
-    
-    def num(self, string, morphology: Optional[Any] = ...):
-        ...
-    
-    def punct(self, string, morphology: Optional[Any] = ...):
-        ...
-    
+    def noun(self, string, morphology: Optional[Any] = ...): ...
+    def verb(self, string, morphology: Optional[Any] = ...): ...
+    def adj(self, string, morphology: Optional[Any] = ...): ...
+    def det(self, string, morphology: Optional[Any] = ...): ...
+    def pron(self, string, morphology: Optional[Any] = ...): ...
+    def adp(self, string, morphology: Optional[Any] = ...): ...
+    def num(self, string, morphology: Optional[Any] = ...): ...
+    def punct(self, string, morphology: Optional[Any] = ...): ...
     def lookup(self, string, orth: Optional[Any] = ...):
         """Look up a lemma in the table, if available. If no lemma is found,
         the original string is returned.
@@ -81,9 +61,4 @@ class Lemmatizer(object):
             original string.
         """
         ...
-    
-    def lemmatize(self, string, index, exceptions, rules):
-        ...
-    
-
-
+    def lemmatize(self, string, index, exceptions, rules): ...

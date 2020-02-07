@@ -33,6 +33,7 @@ class DocBin(object):
     A notable downside to this format is that you can't easily extract just one
     document from the DocBin.
     """
+
     def __init__(self, attrs: Optional[Any] = ..., store_user_data: bool = ...):
         """Create a DocBin object to hold serialized annotations.
 
@@ -49,11 +50,9 @@ class DocBin(object):
         self.user_data = ...
         self.strings = ...
         self.store_user_data = ...
-    
     def __len__(self):
         """RETURNS: The number of Doc objects added to the DocBin."""
         ...
-    
     def add(self, doc):
         """Add a Doc's annotations to the DocBin for serialization.
 
@@ -62,7 +61,6 @@ class DocBin(object):
         DOCS: https://spacy.io/api/docbin#add
         """
         ...
-    
     def get_docs(self, vocab):
         """Recover Doc objects from the annotations, using the given vocab.
 
@@ -72,7 +70,6 @@ class DocBin(object):
         DOCS: https://spacy.io/api/docbin#get_docs
         """
         ...
-    
     def merge(self, other):
         """Extend the annotations of this DocBin with the annotations from
         another. Will raise an error if the pre-defined attrs of the two
@@ -83,7 +80,6 @@ class DocBin(object):
         DOCS: https://spacy.io/api/docbin#merge
         """
         ...
-    
     def to_bytes(self):
         """Serialize the DocBin's annotations to a bytestring.
 
@@ -92,7 +88,6 @@ class DocBin(object):
         DOCS: https://spacy.io/api/docbin#to_bytes
         """
         ...
-    
     def from_bytes(self, bytes_data):
         """Deserialize the DocBin's annotations from a bytestring.
 
@@ -105,17 +100,10 @@ class DocBin(object):
         self.strings = ...
         self.tokens = ...
         self.spaces = ...
-    
 
-
-def merge_bins(bins):
-    ...
-
-def pickle_bin(doc_bin):
-    ...
-
-def unpickle_bin(byte_string):
-    ...
+def merge_bins(bins): ...
+def pickle_bin(doc_bin): ...
+def unpickle_bin(byte_string): ...
 
 Binder = DocBin
 __all__ = ["DocBin"]
