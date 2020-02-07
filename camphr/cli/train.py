@@ -156,6 +156,8 @@ def load_scheduler(
     cls_str = get_by_dotkey(cfg, "scheduler.class")
     if not cls_str:
         return DummyScheduler
+    else:
+        logger.info(f"Scheduler enabled: {cls_str}")
     cls = cast(Type[torch.optim.lr_scheduler.LambdaLR], import_attr(cls_str))
     params = OmegaConf.to_container(cfg.scheduler.params) or {}
     return cls(optimizer, **params)
@@ -202,7 +204,7 @@ def train_with_optuna(cfg, train_data, val_data):
         savedir.mkdir(exist_ok=True)
         cfg.model.lang.optimizer.params.lr = trial.suggest_uniform("lr", 1e-7, 1e-1)
         cfg.model.lang.optimizer.params.eps = trial.suggest_uniform("eps", 1e-10, 1e-2)
-        nlp = create_model(cfg)
+        nlp = create_nlp(cfg)
         return train(cfg.train, nlp, train_data, val_data, savedir)
 
     study = optuna.create_study(study_name="camphr", storage="sqlite:///optuna.db")
