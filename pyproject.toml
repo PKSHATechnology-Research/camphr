@@ -39,9 +39,9 @@ toolz = "^0.10.0"
 
 [tool.poetry.extras]
 all = [ "unofficial-allennlp-nightly", "Cython", "mojimoji2", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
-allennlp = [ "allennlp",]
-udify = [ "allennlp", "udify",]
-juman = [ "Cython", "mojimoji2", "pyknp",]
+allennlp = [ "unofficial-allennlp-nightly",]
+udify = [ "unofficial-allennlp-nightly", "unofficial-udify",]
+juman = [ "Cython", "mojimoji2", "unofficial-pyknp",]
 mecab = [ "mecab-python3",]
 
 [tool.poetry.dev-dependencies]
