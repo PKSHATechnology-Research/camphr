@@ -11,6 +11,6 @@ You can use [Transformers](https://huggingface.co/transformers/) ,  [Udify](http
 
 Check the [documentation](http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/) for more information
 
-# Contributing
+# License
 
-see [CONTRIBUTING.md](./CONTRIBUTING.md)
+Camphr is licensed under [Apache 2.0](./LICENSE).
