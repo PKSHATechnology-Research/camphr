@@ -24,7 +24,7 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install -U setuptools
-        pip install .
         pip install flake8 pytest hypothesis toml
+        pip install camphr
     - run: pytest
       working-directory: tests
