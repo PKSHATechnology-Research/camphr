@@ -2,7 +2,7 @@ download: download_udify download_elmo # from bedore-rannd account
 
 UDIFY_PATH := en_udify-0.5
 ELMO_PATH := en_elmo_medium-0.5
-REPO := PKSHATechnology/agsnlp_camphr
+REPO := PKSHATechnology-Research/camphr_models
 
 download_udify:
 	mkdir -p data && \
