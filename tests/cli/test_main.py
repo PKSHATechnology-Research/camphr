@@ -4,7 +4,7 @@ import sys
 import pytest
 
 
-@pytest.mark.parametrize("cmd,err", [(["train", "--help"], False), ([], True)])
+@pytest.mark.parametrize("cmd,err", [(["train", "--help"], False), ([], False)])
 def test_cmd(cmd, err):
     res = subprocess.run(
         [sys.executable, "-m", "camphr.cli.__main__"] + cmd,
