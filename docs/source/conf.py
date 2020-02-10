@@ -66,6 +66,6 @@ rst_prolog = """
 __dir__ = Path(__file__).parent
 html_theme_options = {
     "logo": "logoc.png",
-    "github_user": "PKSHATechnology",
-    "github_repo": "agsnlp_camphr",  # TODO
+    "github_user": "PKSHATechnology-Research",
+    "github_repo": "camphr",
 }

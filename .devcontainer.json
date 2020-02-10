@@ -12,5 +12,5 @@
 	],
 	// for remote-container development
 	"workspaceFolder": "/workspace",
-	"workspaceMount": "src=/home/ubuntu/bedore-ner,dst=/workspace,type=bind"
+	"workspaceMount": "src=/home/ubuntu/camphr,dst=/workspace,type=bind"
 }

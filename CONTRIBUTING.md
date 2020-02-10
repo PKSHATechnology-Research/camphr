@@ -8,7 +8,7 @@
 Camphr uses [poetry package manager](https://github.com/python-poetry/poetry), and [pre-commit](https://pre-commit.com/).
 
 ```bash
-$ git clone https://github.com/PKSHATechnology/agsnlp_camphr
+$ git clone https://github.com/PKSHATechnology-Research/camphr
 $ poetry install
 $ pre-commit intall
 $ poetry run pytest tests

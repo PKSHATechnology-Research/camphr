@@ -11,7 +11,7 @@ Overview
 Installation
 ~~~~~~~~~~~~
 
-1. Download the model from |release-page|_
+1. Download the model from |model-page|_
 
 2. Install with pip:
 
