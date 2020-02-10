@@ -8,7 +8,7 @@ tag = true
 commit = true
 
 [tool.poetry]
-version = "0.5.0.dev4"
+version = "0.5.1"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spacy plugin"
@@ -38,9 +38,9 @@ dataclasses = "^0.6"
 toolz = "^0.10.0"
 
 [tool.poetry.extras]
-all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3", "udify"]
-allennlp = ["allennlp"]
-udify = ["allennlp", "udify"]
+all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3", "udify",]
+allennlp = [ "allennlp",]
+udify = [ "allennlp", "udify",]
 juman = [ "Cython", "mojimoji2", "pyknp",]
 mecab = [ "mecab-python3",]
 
@@ -100,7 +100,6 @@ ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
 
-
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
 transformers_ner = "camphr.pipelines.transformers:TrfForNamedEntityRecognition.from_nlp"
@@ -111,5 +110,5 @@ knp = "camphr.pipelines.knp:KNP.from_nlp"
 udify = "camphr.pipelines:Udify.from_nlp"
 elmo = "camphr.pipelines:Elmo.from_nlp"
 pattern_searcher = "camphr.pipelines:PatternSearcher"
-multiple_regex_ruler = "camphr.pipelines:MultipleRegexRuler.from_nlp" 
-regex_ruler = "camphr.pipelines:RegexRuler.from_nlp" 
+multiple_regex_ruler = "camphr.pipelines:MultipleRegexRuler.from_nlp"
+regex_ruler = "camphr.pipelines:RegexRuler.from_nlp"
