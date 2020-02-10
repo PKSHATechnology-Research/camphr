@@ -17,7 +17,11 @@
 
 # -- Project information -----------------------------------------------------
 
+import sys
 from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.absolute() / ".." / ".."))
+
 
 project = "camphr"
 copyright = "2020, tamuhey"
