@@ -7,10 +7,16 @@ commands = ["train"]
 MSG_AVAILABLE_COMMANDS = f"Available commands: {', '.join(commands)}"
 
 
+def help(exits: int = 0):
+    msg.info("usage: camphr <command>", MSG_AVAILABLE_COMMANDS, exits=exits)
+
+
 def main():
     if len(sys.argv) == 1:
-        msg.info("usage: camphr <command>", MSG_AVAILABLE_COMMANDS, exits=1)
+        help(1)
     cmd = sys.argv.pop(1)
+    if cmd == "--help":
+        help(0)
     if cmd not in commands:
         msg.fail(f"unknown command {cmd}.", MSG_AVAILABLE_COMMANDS, exits=1)
     else:
