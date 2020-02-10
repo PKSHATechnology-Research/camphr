@@ -28,4 +28,3 @@ jobs:
     - run: pip install camphr
     - run: pytest
       working-directory: tests
-    - run: camphr --help
