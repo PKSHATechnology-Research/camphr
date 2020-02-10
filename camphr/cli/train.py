@@ -3,7 +3,7 @@ import os
 import random
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Dict, Type, Union, cast
+from typing import Callable, Dict, Tuple, Type, Union, cast
 
 import hydra
 import hydra.utils
@@ -12,7 +12,6 @@ import torch
 from omegaconf import Config, OmegaConf
 from sklearn.metrics import classification_report  # type: ignore
 from spacy.language import Language
-from spacy.scorer import Scorer
 from spacy.util import minibatch
 from torch.optim.optimizer import Optimizer
 
@@ -81,9 +80,9 @@ def parse(cfg: Config):
     return cfg
 
 
-def evaluate_textcat(cfg: Config, nlp: Language, val_data) -> Dict:
+def evaluate_textcat(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
     # TODO: https://github.com/explosion/spaCy/pull/4664
-    texts, golds = zip(*val_data)
+    texts, golds = cast(Tuple[Tuple[str], Dict], zip(*val_data))
     try:
         y = np.array(list(map(lambda x: goldcat_to_label(x["cats"]), golds)))
         docs = list(nlp.pipe(texts, batch_size=cfg.nbatch * 2))
@@ -94,18 +93,20 @@ def evaluate_textcat(cfg: Config, nlp: Language, val_data) -> Dict:
     return classification_report(y, preds, output_dict=True)
 
 
-def evaluate(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
+def evaluate(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Dict:
     try:
-        scorer: Scorer = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
+        scores = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
     except Exception:
         report_fail(val_data)
         raise
-    return scorer.scores
+    return scores
 
 
-EvalFn = Callable[[Config, Language, InputData], Dict]
+EvalFn = Callable[[Config, Union[TorchLanguage, Language], InputData], Dict]
 
-EVAL_FN_MAP = defaultdict(lambda: evaluate, {"textcat": evaluate_textcat})
+EVAL_FN_MAP = defaultdict(  # type: ignore
+    lambda: evaluate, {"textcat": evaluate_textcat}  # type: ignore
+)
 
 
 def train_epoch(

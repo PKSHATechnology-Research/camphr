@@ -41,21 +41,9 @@ def default_config() -> Config:
             train:
                 data:
                     path: {DATA_DIR / "test_ner_irex_ja.jsonl"}
+                niter: 1
             """,
-        ),
-        (
-            "batch failure",
-            f"""
-            model:
-                lang:
-                    name: ja
-                ner_label: {DATA_DIR/"irex.json"}
-                pretrained: bert-base-japanese
-            train:
-                data:
-                    path: {DATA_DIR / "test_ner_irex_ja.jsonl"}
-            """,
-        ),
+        )
     ]
 )
 def config(request, default_config):
@@ -65,7 +53,6 @@ def config(request, default_config):
     return _config
 
 
-@pytest.mark.slow
 def test_main(config, chdir):
     _main(config)
 
