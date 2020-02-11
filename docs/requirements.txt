@@ -1,2 +1,9 @@
 omegaconf
 spacy
+toolz
+torch
+more-itertools
+typing_extensions
+pyahocorasick
+transformers
+pytokenizations
