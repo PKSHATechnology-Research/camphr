@@ -1,5 +1,6 @@
 omegaconf
 spacy
+sphinx>=2.2
 # toolz
 # torch
 # more-itertools
