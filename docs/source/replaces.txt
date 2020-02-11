@@ -1,5 +1,5 @@
 .. |install-camphr| replace:: $ pip install camphr
-.. |install-camphr-with-knp| replace:: $ pip install camphr[knp]
+.. |install-camphr-with-knp| replace:: $ pip install camphr[juman]
 
 .. |model-page| replace:: release page
 .. _model-page: https://github.com/PKSHATechnology-Research/camphr_models/releases/latest
