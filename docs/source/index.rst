@@ -16,7 +16,7 @@ You can use `Transformers <https://huggingface.co/transformers/>`_ ,  `Udify <ht
 Features
 ~~~~~~~~
 
-* A spaCy_ plugin.
+* A spaCy_ plugin - Easily integration for a wide variety of methods
 
 * `Transformers <https://huggingface.co/transformers/>`_ with spaCy_ - :doc:`Fine tuning <notes/finetune_transformers>`, :doc:`Embedding vector <notes/transformers>`
 
