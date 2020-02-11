@@ -25,7 +25,7 @@ Usage
 ~~~~~
 
     >>> import spacy
-    >>> nlp = spacy.load("udify")
+    >>> nlp = spacy.load("en_udify")
     >>> doc = nlp("Udify is a BERT based dependency parser")
     >>> spacy.displacy.render(doc)
 
@@ -33,7 +33,8 @@ Usage
 
 Now you can use :code:`nlp` for space-delimited languages such as English and German:
 
-    >>> nlp("Deutsch kann so wie es ist analysiert werden")
+    >>> doc = nlp("Deutsch kann so wie es ist analysiert werden")
+    >>> spacy.displacy.render(doc)
 
     .. image:: udify_dep_de.png
 
@@ -45,7 +46,8 @@ Camphr offers a useful function for this purpose: :code:`load_udify`:
 
     >>> from camphr.pipelines import load_udify
     >>> nlp = load_udify("ja", punct_chars=["。"])
-    >>> nlp("日本語も解析可能です")
+    >>> doc = nlp("日本語も解析可能です")
+    >>> spacy.displacy.render(doc)
 
     .. image:: udify_dep_ja.png
 
