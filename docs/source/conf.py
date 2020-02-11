@@ -71,3 +71,5 @@ html_theme_options = {
     "github_type": "star",
     "github_count": "true",
 }
+
+trim_doctest_flags = True
