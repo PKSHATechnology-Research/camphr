@@ -3,6 +3,7 @@
 # Camphr - spaCy plugin for Transformers, Udify, Elmo, etc.
 
 [![Documentation Status](https://readthedocs.org/projects/camphr/badge/?version=latest)](https://camphr.readthedocs.io/en/latest/?badge=latest)
+[![Gitter](https://badges.gitter.im/camphr/community.svg)](https://gitter.im/camphr/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![](https://github.com/PKSHATechnology-Research/camphr/workflows/test/badge.svg)
 ![](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20extras/badge.svg)
 ![](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20package/badge.svg)
