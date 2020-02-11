@@ -16,9 +16,9 @@ You can fine-tune Transformers pretrained models for text classification tasks a
 .. code-block:: console
 
     $ camphr train train.data.path="./train.jsonl" \
-                   textcat_label="./label.json" \
-                   pretrained=bert-base-cased  \
-                   lang=en
+                   model.textcat_label="./label.json" \
+                   model.pretrained=bert-base-cased  \
+                   model.lang=en
 
 Let's look at the details.
 
@@ -30,8 +30,8 @@ Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` con
 
 .. code-block:: python
 
-    ["Each line contains json array", {"cats": {"POSITIVE": 0.1, "NEGATIVE": 0.9} ]
-    ["Each array contains text and gold label", {"cats": {"POSITIVE": 1.0, "NEGATIVE": 0.0} ]
+    ["Each line contains json array", {"cats": {"POSITIVE": 0.1, "NEGATIVE": 0.9}}]
+    ["Each array contains text and gold label", {"cats": {"POSITIVE": 1.0, "NEGATIVE": 0.0}}]
      ...
 
 :code:`label.json` is a json file defining classification labels. For example:
