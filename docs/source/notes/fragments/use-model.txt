@@ -17,7 +17,7 @@ And you can use it as follows:
 
 To create python package, use :code:`spacy package` CLI:
 
-.. code-block::
+.. code-block:: console
 
     $ mkdir packages
     $ spacy package ./output/2020-01-30/19-31-23/models/0 ./packages

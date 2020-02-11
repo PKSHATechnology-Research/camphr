@@ -68,4 +68,8 @@ html_theme_options = {
     "logo": "logoc.png",
     "github_user": "PKSHATechnology-Research",
     "github_repo": "camphr",
+    "github_type": "star",
+    "github_count": "true",
 }
+
+trim_doctest_flags = True

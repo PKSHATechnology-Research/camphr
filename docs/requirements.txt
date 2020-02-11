@@ -1,2 +1,10 @@
 omegaconf
 spacy
+sphinx>=2.2
+# toolz
+# torch
+# more-itertools
+# typing_extensions
+# pyahocorasick
+# transformers
+# pytokenizations
