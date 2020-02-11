@@ -8,7 +8,7 @@ tag = true
 commit = true
 
 [tool.poetry]
-version = "0.5.1"
+version = "0.5.2"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
@@ -16,7 +16,7 @@ readme = "README.md"
 license = "Apache-2.0"
 homepage = ""
 repository = "https://github.com/PKSHATechnology-Research/camphr"
-keywords = ["spaCy", "nlp", "natural language processing", "transformers", "udify"]
+keywords = [ "spaCy", "nlp", "natural language processing", "transformers", "udify",]
 
 [tool.isort]
 skip = ".venv/**/*.py"
