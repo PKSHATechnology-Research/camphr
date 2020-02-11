@@ -50,10 +50,3 @@ Camphr offers a useful function for this purpose: :code:`load_udify`:
     .. image:: udify_dep_ja.png
 
 .. note:: To use Udify with Japanese, |require-mecab|
-
-API References
-~~~~~~~~~~~~~~
-
-.. autofunction:: camphr.pipelines.udify.load_udify
-.. autofunction:: camphr.pipelines.udify.load_udify_pipes
-.. autoclass:: camphr.pipelines.udify.Udify
