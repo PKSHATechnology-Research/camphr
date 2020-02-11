@@ -14,17 +14,13 @@ services:
         build: 
             dockerfile: dockerfiles/udify/Dockerfile 
             context: .
-            args: 
-                - GITHUB_TOKEN=${GITHUB_TOKEN}
         volumes: 
             - .:/app
-        command: poetry run pytest tests -k udify
+        command: pytest tests -k udify
     elmo:
         build: 
             dockerfile: dockerfiles/elmo/Dockerfile 
             context: .
-            args: 
-                - GITHUB_TOKEN=${GITHUB_TOKEN}
         volumes: 
             - .:/app
-        command: poetry run pytest tests -k elmo 
+        command: pytest tests -k elmo 
