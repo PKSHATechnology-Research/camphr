@@ -8,3 +8,5 @@ eggs/**/*
 .nox
 .tox
 .outputs
+.venv
+**/*/.venv
