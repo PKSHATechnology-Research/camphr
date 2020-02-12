@@ -12,7 +12,8 @@ Camphr is a *Natural Language Processing* library that helps in seamless integra
 You can use [Transformers](https://huggingface.co/transformers/) ,  [Udify](https://github.com/Hyperparticle/udify), [ELmo](https://allennlp.org/elmo), etc. on [spaCy](https://github.com/explosion/spaCy).
 
 Check the [documentation](https://camphr.readthedocs.io/en/latest/) for more information.
-(日本語紹介: https://qiita.com/tamurahey/items/53a1902625ccaac1bb2f)
+
+(For Japanese: https://qiita.com/tamurahey/items/53a1902625ccaac1bb2f)
 
 # License
 
