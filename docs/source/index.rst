@@ -74,7 +74,7 @@ Quick tour
 :doc:`Fine-tune Transformers for NER and text classification <notes/finetune_transformers>`
 -------------------------------------------------------------------------------------------
 
-Camphr provides training CLI built on `Hydra<https://github.com/facebookresearch/hydra>`_:
+Camphr provides training CLI built on `Hydra <https://github.com/facebookresearch/hydra>`_:
 
 .. code-block:: console
 
