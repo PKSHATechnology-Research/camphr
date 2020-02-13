@@ -35,8 +35,13 @@ class AllennlpPipe(Pipe):
     ):
         """Construct from `allnlp.Archive`'s file."""
         # Uses lazy import because allennlp is an extra requirements.
-        from allennlp.data import DatasetReader
-        from allennlp.models.archival import load_archive
+        try:
+            from allennlp.data import DatasetReader
+            from allennlp.models.archival import load_archive
+        except ImportError:
+            raise ImportError(
+                "Requires unofficial-allennlp-nightly.\nInstall it with `pip install unofficial-allennlp-nightly`."
+            )
 
         archive = load_archive(str(archive_path))
         config = archive.config

@@ -82,7 +82,12 @@ class Udify(AllennlpPipe):
 
     def set_annotations(self, docs: Iterable[Doc], outputs: Dict):
         """Set udify's output, which is calculated in self.predict, to docs"""
-        from udify.models.udify_model import OUTPUTS as UdifyOUTPUTS  # type: ignore
+        try:
+            from udify.models.udify_model import OUTPUTS as UdifyOUTPUTS  # type: ignore
+        except ImportError:
+            raise ImportError(
+                "Requires unofficial-udify. Install it with `pip install unofficial-udify`."
+            )
 
         for sent, output in zip(flatten_docs_to_sents(docs), outputs):
             words = output[UdifyOUTPUTS.words]
