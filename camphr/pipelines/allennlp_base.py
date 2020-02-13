@@ -11,6 +11,8 @@ from spacy.tokens import Doc
 from camphr.pipelines.utils import flatten_docs_to_sents
 from camphr.types import Pathlike
 
+from ..errors import Errors
+
 VALIDATION = "validation"
 VALIDATION_DATASET_READER = "validation_dataset_reader"
 DATASET_READER = "dataset_reader"
@@ -39,9 +41,7 @@ class AllennlpPipe(Pipe):
             from allennlp.data import DatasetReader
             from allennlp.models.archival import load_archive
         except ImportError:
-            raise ImportError(
-                "Requires unofficial-allennlp-nightly.\nInstall it with `pip install unofficial-allennlp-nightly`."
-            )
+            Errors.E0("unofficial-allennlp-nightly")
 
         archive = load_archive(str(archive_path))
         config = archive.config

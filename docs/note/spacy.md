@@ -1,6 +1,6 @@
 # Camphr: spaCy plugin for Transformers, Udify, KNP
 
-Hi, I'm [Yohei Tamura](https://github.com/tamuhey), a software engineer at PKSHA Technology. I recently published a spaCy plugin called [Camphr](https://github.com/PKSHATechnology-Research/camphr/), which helps in seamless integration for a wide variety of techniques from state-of-the-art to conventional ones. You can use [Transformers](https://huggingface.co/transformers/) ,  [Udify](https://github.com/Hyperparticle/udify), [ELmo](https://allennlp.org/elmo), etc. on [spaCy](https://github.com/explosion/spaCy).
+Hi, I'm [Yohei Tamura](https://github.com/tamuhey), a software engineer at PKSHA Technology. I recently published a spaCy plugin called [Camphr](https://github.com/PKSHATechnology-Research/camphr/), which helps in seamless integration for a wide variety of NLP techniques from state-of-the-art to conventional ones. You can use [Transformers](https://huggingface.co/transformers/) ,  [Udify](https://github.com/Hyperparticle/udify), [ELmo](https://allennlp.org/elmo), etc. on [spaCy](https://github.com/explosion/spaCy).
 
 This post introduce the features and simple usage of Camphr.
 
@@ -104,8 +104,6 @@ array([[-0.5427, -0.9614, -0.4943,  ...,  2.2654,  0.5592,  0.4276],
 
 >>> doc[0].vector # token vector
 array([-5.42725086e-01, -9.61372316e-01, -4.94263291e-01,  4.83379781e-01,
-   -1.52603614e+00, -1.25056303e+00,  6.28554821e-01,  2.57751465e-01,
-    3.44272882e-01, -3.19559097e-01, -6.80006146e-01,  1.15556490e+00,
     ... ]
 
 >>> doc2 = nlp("Doc simlarity can be computed based on doc.tensor")
@@ -140,10 +138,10 @@ Camphr provides a CLI to fine-tune Transformers’ pretrained models for downstr
 You can fine-tune Transformers pretrained models for text classification tasks as follows:
 
 ```console
-$ camphr train train.data.path="./train.jsonl" \
-               model.textcat_label="./label.json" \
-               model.pretrained=bert-base-cased  \
-               model.lang=en
+$ camphr train train.data.path="./train.jsonl" \    # training data
+               model.textcat_label="./label.json" \ # label definition
+               model.pretrained=bert-base-cased  \  # pretrained model name or path
+               model.lang=en # spacy language
 ```
 
 `train.jsonl` is a file containing training data in jsonl format:
@@ -159,3 +157,68 @@ $ camphr train train.data.path="./train.jsonl" \
 ```json
 ["POSITIVE", "NEGATIVE"]
 ```
+
+All logs and model parameters are saved in "./outputs" directory, thanks to [Hydra](https://github.com/facebookresearch/hydra)'s functionality.
+You can use trained model as follows:
+
+```python
+>>> import spacy
+>>> nlp = spacy.load("./output/2020-01-30/19-31-23/models/0")
+>>> doc = nlp("Hi, this is fine-tuned model")
+>>> doc.cats
+{"POSITIVE": 0.812342, "NEGATIVE": 0.187658}
+```
+
+To create python package, use [spacy package](https://spacy.io/api/cli#package) CLI:
+
+```console
+$ mkdir packages
+$ spacy package ./output/2020-01-30/19-31-23/models/0 ./packages
+```
+
+You can configure training or fine-tune for other tasks. See [the documentation](https://camphr.readthedocs.io/en/latest/notes/finetune_transformers.html) for details.
+
+### Elmo: deep contextualized word representation
+
+[Elmo](https://allennlp.org/elmo) is a deep contextualized word representation published by [Allen Institute for AI](https://allenai.org/).
+Camphr enables you to use Elmo with spaCy.
+
+First, install the model as follows:
+Because the model parameters are downloaded, it may take few minutes.
+
+```console
+$ pip install https://github.com/PKSHATechnology-Research/camphr_models/releases/download/0.5/en_elmo_medium-0.5.tar.gz
+```
+
+That's all for the installation. Then use it as follows:
+
+```python
+>>> import spacy
+>>> nlp = spacy.load("en_elmo_medium")
+>>> doc = nlp("One can deposit money at the bank")
+>>> doc.tensor
+array([[-1.8180828e+00,  4.4738990e-01, -1.3872834e-01, ...,
+>>> doc[0].vector # token vector
+array([-1.8180828 ,  0.4473899 , -0.13872834, ...
+```
+
+Because Elmo is a contextualized vector, each token has a different vector even if they are the same words.
+
+```
+>>> bank0 = nlp("One can deposit money at the bank")[-1]
+>>> bank1 = nlp("The river bank was not clean")[2]
+>>> bank2 = nlp("I withdrew cash from the bank")[-1]
+>>> print(bank0, bank1, bank2)
+bank bank bank
+>>> print(bank0.similarity(bank1), bank0.similarity(bank2))
+0.8428435921669006 0.9716585278511047
+```
+
+If you want to use other Elmo models (e.g. non-English models), please refer to the [official documentation](https://camphr.readthedocs.io/en/latest/notes/elmo.html)
+
+### Conclusion
+
+In this article, I introduced how to use Transformers, Udify, Elmo with spaCy. spaCy makes it easy to combine different approches with unified interface.
+
+Camphr is still in its infancy. We will continue to make it possible to handle various NLP methods on spaCy.
+If you are interested in our work, please check out our [GitHub repository](https://github.com/PKSHATechnology-Research/camphr/)
