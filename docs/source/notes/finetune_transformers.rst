@@ -15,8 +15,8 @@ You can fine-tune Transformers pretrained models for text classification tasks a
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   model.textcat_label="./label.json" \
+    $ camphr train train.data.path=./train.jsonl \
+                   model.textcat_label=./label.json  \
                    model.pretrained=bert-base-cased  \
                    model.lang=en
 
