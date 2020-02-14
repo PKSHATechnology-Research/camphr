@@ -18,7 +18,7 @@ Check the [documentation](https://camphr.readthedocs.io/en/latest/) for more inf
 # Features
 
 - A [spaCy](https://github.com/explosion/spaCy) plugin - Easily integration for a wide variety of methods
-- [Transformers](https://huggingface.co/transformers/) with spaCy - Fine tuning with [Hydra](https://hydra.cc/), Embedding vector
+- [Transformers](https://huggingface.co/transformers/) with spaCy - Fine-tuning pretrained model configured by [Hydra](https://hydra.cc/). Embedding vector
 - [Udify](https://github.com/Hyperparticle/udify) - BERT based multitask model in 75 languages
 - [Elmo](https://allennlp.org/elmo) - Deep contextualized word representations
 - Rule base matching with Aho-Corasick, Regex
