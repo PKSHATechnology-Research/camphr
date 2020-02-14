@@ -15,6 +15,15 @@ Check the [documentation](https://camphr.readthedocs.io/en/latest/) for more inf
 
 (For Japanese: https://qiita.com/tamurahey/items/53a1902625ccaac1bb2f)
 
+# Features
+
+- A [spaCy](https://github.com/explosion/spaCy) plugin - Easily integration for a wide variety of methods
+- [Transformers](https://huggingface.co/transformers/) with spaCy - Fine tuning with [Hydra](https://hydra.cc/), Embedding vector
+- [Udify](https://github.com/Hyperparticle/udify) - BERT based multitask model in 75 languages
+- [Elmo](https://allennlp.org/elmo) - Deep contextualized word representations
+- Rule base matching with Aho-Corasick, Regex
+- (for Japanese) KNP
+
 # License
 
 Camphr is licensed under [Apache 2.0](./LICENSE).
