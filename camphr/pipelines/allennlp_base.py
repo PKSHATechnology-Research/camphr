@@ -41,7 +41,7 @@ class AllennlpPipe(Pipe):
             from allennlp.data import DatasetReader
             from allennlp.models.archival import load_archive
         except ImportError:
-            Errors.E0("unofficial-allennlp-nightly")
+            Errors.E0(package="unofficial-allennlp-nightly")
 
         archive = load_archive(str(archive_path))
         config = archive.config

@@ -16,11 +16,11 @@ services:
             context: .
         volumes: 
             - .:/app
-        command: pytest tests -k udify
+        command: pytest tests -k udify --runslow -rs
     elmo:
         build: 
             dockerfile: dockerfiles/elmo/Dockerfile 
             context: .
         volumes: 
             - .:/app
-        command: pytest tests -k elmo 
+        command: pytest tests -k elmo --runslow -rs
