@@ -111,7 +111,7 @@ class _TrfSavePathGetter:
 class SerializationMixinForTrfTask(_TrfSavePathGetter):
     """Mixin for transoformers pipeline
 
-    Constraints: `TorchPipe`
+    Bounds: `TorchPipe`
     """
 
     _MODEL_PTH = "model.pth"
@@ -151,7 +151,7 @@ class SerializationMixinForTrfTask(_TrfSavePathGetter):
 class FromNLPMixinForTrfTask:
     """Mixin for transformers task pipeline.
 
-    Constraints: `TorchPipe`
+    Bounds: `TorchPipe`
     """
 
     @classmethod
@@ -182,8 +182,8 @@ class LabelsMixin:
     """Mixin for pipes which has labels.
 
 
-    Constraints: `Pipe`
-    Optional constraints:
+    Bounds: `Pipe`
+    Optional Bounds:
         - `UserHooksMixin`: to use `def convert_label`
     """
 
@@ -296,6 +296,10 @@ class EstimatorMixin(Generic[T]):
 
     At a minimum, you should implement the below methods that raises `NotImplementedError`.
     See `ner.TrfForNamedEntityRecognition` for example usage.
+
+    Bounds:
+        - attributes: `set_annotations`, `model`, `require_model`
+        - `model` is subclass of `torch.nn.Module`
     """
 
     def proc_model(self, docs: Iterable[Doc]) -> T:
