@@ -1,0 +1,26 @@
+name: foo
+
+on: 
+  push:
+    paths-ignore:
+      - "docs/**"
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7]
+        os: [ubuntu-latest, macos-latest]
+        extras: [udify, elmo, none]
+    steps:
+    - name: Only for none
+      run: echo "fooo"
+      if: ${{ matrix.extras }} == "none"
+
+    - name: Only for not none
+      run: echo "barrr"
+      if: ${{ matrix.extras }} != "none"
