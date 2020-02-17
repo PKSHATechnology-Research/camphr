@@ -61,7 +61,6 @@ jobs:
     - name: Run pytest for extras
       run: poetry run pytest --runslow -rs -k ${{ matrix.extras }}
       if: matrix.extras != 'none'
-    - run: poetry run pytest
 
   publish:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
