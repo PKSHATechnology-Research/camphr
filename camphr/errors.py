@@ -17,9 +17,7 @@ class E:
         self.exception_cls = exception_cls
 
     def __call__(self, *args, **kwargs):
-        raise self.exception_cls(
-            self.msg.format(*args, **kwargs), self.warning_cls, stacklevel=3
-        )
+        raise self.exception_cls(self.msg.format(*args, **kwargs))
 
 
 class Warnings:

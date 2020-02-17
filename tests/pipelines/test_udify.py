@@ -14,12 +14,12 @@ def nlp():
 
 
 TEXTS = [
-    "Challenges in natural language processing frequently involve speech recognition."
-    "Who are you. I am Udify."
+    "Challenges in natural language processing frequently involve speech recognition.",
+    "Who are you. I am Udify.",
 ]
 
 
-@pytest.mark.parametrize("text,roots", zip(TEXTS, [["involve"], ["are", "am"]]))
+@pytest.mark.parametrize("text,roots", zip(TEXTS, [["involve"], ["Who", "am"]]))
 def test_udify(nlp: Language, text, roots):
     doc = nlp(text)
     assert doc.is_parsed
