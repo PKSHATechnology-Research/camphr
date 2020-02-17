@@ -41,13 +41,15 @@ jobs:
       if: steps.cache.outputs.cache-hit != true
 
     - name: Install udify
-      run: poetry run python scripts/download_model.py en_udify
-      run: poetry install -E udify
+      run: |
+        poetry run python scripts/download_model.py en_udify
+        poetry install -E udify
       if: steps.cache.outputs.cache-hit != true && ${{ matrix.extras }} == "udify"
 
     - name: Install elmo
-      run: poetry run python scripts/download_model.py en_elmo_medium
-      run: poetry install -E elmo
+      run: |
+        poetry run python scripts/download_model.py en_elmo_medium
+        poetry install -E elmo
       if: steps.cache.outputs.cache-hit != true && ${{ matrix.extras }} == "elmo"
 
     - run: poetry run mypy camphr
