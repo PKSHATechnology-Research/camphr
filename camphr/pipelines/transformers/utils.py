@@ -285,6 +285,19 @@ T = TypeVar("T")
 
 
 class EstimatorMixin(Generic[T]):
+    """Mixin for downstream pipelines.
+
+    This mixin provides functionalities common to `train`, `eval`, and `predict`.
+    The followings is assumed:
+
+        1. `train` computes loss under `train` mode.
+        2. `eval` computes loss under `eval` mode and sets annotation.
+        3. `predict` doesn't compute loss and sets annotation.
+
+    At a minimum, you should implement the below methods that raises `NotImplementedError`.
+    See `ner.TrfForNamedEntityRecognition` for example usage.
+    """
+
     def proc_model(self, docs: Iterable[Doc]) -> T:
         raise NotImplementedError
 
