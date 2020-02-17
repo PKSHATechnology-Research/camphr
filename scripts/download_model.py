@@ -31,7 +31,9 @@ def download_model(name: str, version: Optional[str], directory: Optional[Path] 
         model = models[0]
     assert model, (name, version)
 
-    subprocess.call([sys.executable, "-m", "pip", "install", model["download_url"]])
+    subprocess.call(
+        [sys.executable, "-m", "pip", "install", model["download_url"], "--no-deps"]
+    )
 
 
 def main():
