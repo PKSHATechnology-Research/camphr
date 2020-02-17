@@ -50,15 +50,7 @@ class TrfSequenceClassifier(TrfModelForTaskBase):
         return logits
 
 
-TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequence_classifier"
-
-
-@spacy.component(
-    TRANSFORMERS_SEQ_CLASSIFIER,
-    requires=[f"doc._.{ATTRS.last_hidden_state}"],
-    assigns=["doc.cats"],
-)
-class TrfForSequenceClassification(
+class TrfForSequenceClassificationBase(
     EstimatorMixin[torch.Tensor],
     LabelsMixin,
     FromNLPMixinForTrfTask,
@@ -72,6 +64,15 @@ class TrfForSequenceClassification(
     """
 
     model_cls = TrfSequenceClassifier
+
+    def set_annotations(self, docs: Iterable[Doc], logits: torch.Tensor):
+        probs = torch.softmax(logits, 1)
+        for doc, prob in zip(docs, cast(Iterable, probs)):
+            doc.cats = self.get_cats_from_prob(prob)
+
+    def get_cats_from_prob(self, prob: torch.Tensor) -> Dict[str, float]:
+        assert len(prob.shape) == 1
+        return dict(zip(self.labels, prob.tolist()))
 
     @classmethod
     def Model(cls, trf_name_or_path: str, **cfg) -> TrfSequenceClassifier:
@@ -87,14 +88,17 @@ class TrfForSequenceClassification(
         assert len(logits.shape) == 2  # (len(docs), num_class)
         return logits
 
-    def set_annotations(self, docs: Iterable[Doc], logits: torch.Tensor):
-        probs = torch.softmax(logits, 1)
-        for doc, prob in zip(docs, cast(Iterable, probs)):
-            doc.cats = self.get_cats_from_prob(prob)
 
-    def get_cats_from_prob(self, prob: torch.Tensor) -> Dict[str, float]:
-        assert len(prob.shape) == 1
-        return dict(zip(self.labels, prob.tolist()))
+TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequence_classifier"
+
+
+@spacy.component(
+    TRANSFORMERS_SEQ_CLASSIFIER,
+    requires=[f"doc._.{ATTRS.last_hidden_state}"],
+    assigns=["doc.cats"],
+)
+class TrfForSequenceClassification(TrfForSequenceClassificationBase):
+    """Sequence classification task (e.g. sentiment analysis)."""
 
     def golds_to_tensor(self, golds: Iterable[GoldParse]) -> torch.Tensor:
         labels = (goldcat_to_label(gold.cats) for gold in golds)
@@ -111,6 +115,32 @@ class TrfForSequenceClassification(
         weight = self.label_weights.to(device=self.device)  # type: ignore
 
         loss = F.cross_entropy(outputs, targets, weight=weight)
+        add_loss_to_docs(docs, loss)
+
+
+TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER = "transformers_multilabel_sequence_classifier"
+
+
+@spacy.component(
+    TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
+    requires=[f"doc._.{ATTRS.last_hidden_state}"],
+    assigns=["doc.cats"],
+)
+class TrfForMultiLabelSequenceClassification(TrfForSequenceClassificationBase):
+    """Multi labels sequence classification task (e.g. sentiment analysis)."""
+
+    def golds_to_tensor(self, golds: Iterable[GoldParse]) -> torch.Tensor:
+        targets = [[gold.cats[label] for label in self.labels] for gold in golds]
+        return torch.tensor(targets, device=self.device)
+
+    def compute_loss(
+        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
+    ) -> None:
+        self.require_model()
+        get_last_hidden_state_from_docs(docs)
+        targets = self.golds_to_tensor(golds)
+
+        loss = F.binary_cross_entropy_with_logits(outputs, targets)
         add_loss_to_docs(docs, loss)
 
 
