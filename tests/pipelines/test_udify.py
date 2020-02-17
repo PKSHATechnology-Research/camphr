@@ -5,23 +5,21 @@ import spacy
 from spacy.language import Language
 from spacy.tests.util import assert_docs_equal
 
-from camphr.pipelines.udify import load_udify
-
 pytestmark = pytest.mark.slow
 
 
 @pytest.fixture(scope="module")
 def nlp():
-    return load_udify("ja_mecab", "。")
+    return spacy.load("en_udify")
 
 
 TEXTS = [
-    "駅から遠く、お酒を楽しむには不便なリッチなのが最大のネックですが、ドライバーを一人連れてでも行きたいお店です",
-    "今日はいい天気だった。明日は晴れるかな",
+    "Challenges in natural language processing frequently involve speech recognition."
+    "Who are you. I am Udify."
 ]
 
 
-@pytest.mark.parametrize("text,roots", zip(TEXTS, [["店"], ["天気", "晴れる"]]))
+@pytest.mark.parametrize("text,roots", zip(TEXTS, [["involve"], ["are", "am"]]))
 def test_udify(nlp: Language, text, roots):
     doc = nlp(text)
     assert doc.is_parsed
