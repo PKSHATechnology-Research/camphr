@@ -143,3 +143,4 @@ outputs/
 /multirun/
 user.yaml
 /.vscode
+pyrightconfig.json

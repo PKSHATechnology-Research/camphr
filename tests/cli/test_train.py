@@ -7,7 +7,7 @@ from camphr.cli.train import _main, set_seed
 from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 
-from ..utils import BERT_DIR, XLNET_DIR
+from ..utils import BERT_DIR, XLNET_DIR, check_mecab
 
 DATA_DIR = Path(__file__).parent / "fixtures"
 
@@ -43,11 +43,14 @@ def default_config() -> Config:
                     path: {DATA_DIR / "test_ner_irex_ja.jsonl"}
                 niter: 1
             """,
+            not check_mecab(),
         )
     ]
 )
 def config(request, default_config):
-    ident, diff = request.param
+    ident, diff, skip = request.param
+    if skip:
+        pytest.skip()
     diff = OmegaConf.create(diff)
     _config = OmegaConf.merge(default_config, diff)
     return _config
