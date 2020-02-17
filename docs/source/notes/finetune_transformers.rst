@@ -85,6 +85,84 @@ Of course, you can also use non-English languages, by changing *model.lang.name*
 
 .. include:: fragments/use-model.txt
 
+Multilabel Text classification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Camphr enables you to fine-tune transformers pretrained model for multi-labels textcat tasks:
+
+.. code-block:: console
+
+    $ camphr train train.data.path=./train.jsonl \
+                   model.multitextcat_label=./label.json  \
+                   model.pretrained=bert-base-cased  \
+                   model.lang=en
+
+Let's look at the details.
+
+1. Prepare training data
+================================================================================
+
+Two files are required for training - :code:`train.jsonl`, :code:`label.json`.
+Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` contains the training data in the following  format known as `jsonl <http://jsonlines.org/>`_ :
+
+.. code-block:: python
+
+    ["Each line contains json array", {"cats": {"A": 0.1, "B": 0.8, "C": 0.8}}]
+    ["Each array contains text and gold label", {"cats": {"A": 0.1, "B": 0.9, "C": 0.8}}]
+     ...
+    
+Because the task is multi-labels, the total score on each labels doesn't have to be 1.
+
+:code:`label.json` is a json file defining classification labels. For example:
+
+.. code-block:: json
+
+    ["A", "B", "C"]
+
+
+.. _choose-transformers:
+
+2. Choose Transformers pretrained models
+================================================================================
+
+.. include:: fragments/choose_transformers_models.txt
+
+3. Configure and Start fine-tuning
+==============================================================
+
+The following is the minimal configuration to fine-tune *bert-base-cased* with *English* tokenizer.
+
+.. code-block:: console
+
+    $ camphr train train.data.path="./train.jsonl" \
+                   model.multitextcat_label="./label.json" \
+                   model.pretrained=bert-base-cased  \
+                   model.lang.name=en
+
+Of course, you can also use non-English languages, by changing *model.lang.name*:
+
+.. code-block:: console
+
+    $ camphr train train.data.path="./train.jsonl" \
+                   model.multitextcat_label="./label.json" \
+                   model.pretrained=bert-base-multilingual-cased  \
+                   model.lang.name=ja # Japanese
+
+.. |use-cuda| replace:: If CUDA is available, it will be enabled automatically.
+
+:note: |use-cuda|
+
+.. include:: fragments/note-output-dir.txt
+
+.. include:: fragments/to-advance-config.txt
+
+
+
+4. Use fine-tuned models
+================================
+
+.. include:: fragments/use-model.txt
+
 Named entity recognition
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
