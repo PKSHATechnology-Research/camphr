@@ -115,12 +115,17 @@ ALIASES = {
     "pretrained": f"pipeline.{TRANSFORMERS_MODEL}.trf_name_or_path",
     "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",
     "textcat_label": f"pipeline.{TRANSFORMERS_SEQ_CLASSIFIER}.labels",
+    "multitextcat_label": f"pipeline.{TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER}.labels",
     "optimizer": f"lang.optimizer",
 }
 
 
 TRF_BASES = [TRANSFORMERS_TOKENIZER, TRANSFORMERS_MODEL]
-TRF_TASKS = [TRANSFORMERS_SEQ_CLASSIFIER, TRANSFORMERS_NER]
+TRF_TASKS = [
+    TRANSFORMERS_SEQ_CLASSIFIER,
+    TRANSFORMERS_NER,
+    TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
+]
 TRF_PIPES = TRF_BASES + TRF_TASKS
 
 
