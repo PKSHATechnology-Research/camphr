@@ -46,7 +46,6 @@ toolz = "^0.10.0"
 all = [ "unofficial-allennlp-nightly", "Cython", "mojimoji2", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
 allennlp = [ "unofficial-allennlp-nightly",]
 udify = [ "unofficial-allennlp-nightly", "unofficial-udify",]
-elmo = [ "unofficial-allennlp-nightly",]
 juman = [ "Cython", "mojimoji2", "unofficial-pyknp",]
 mecab = [ "mecab-python3",]
 
