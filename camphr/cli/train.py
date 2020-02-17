@@ -75,6 +75,7 @@ def resolve_path(cfg: Config) -> Config:
 
 
 def parse(cfg: Config):
+    assert isinstance(cfg, Config), cfg
     cfg = resolve_alias(ALIASES, cfg)
     check_nonempty(cfg, MUST_FIELDS)
     cfg = resolve_path(cfg)

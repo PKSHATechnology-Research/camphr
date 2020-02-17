@@ -18,7 +18,7 @@ You can fine-tune Transformers pretrained models for text classification tasks a
     $ camphr train train.data.path=./train.jsonl \
                    model.textcat_label=./label.json  \
                    model.pretrained=bert-base-cased  \
-                   model.lang=en
+                   model.lang.name=en
 
 Let's look at the details.
 
@@ -95,7 +95,7 @@ Camphr enables you to fine-tune transformers pretrained model for multi-labels t
     $ camphr train train.data.path=./train.jsonl \
                    model.multitextcat_label=./label.json  \
                    model.pretrained=bert-base-cased  \
-                   model.lang=en
+                   model.lang.name=en
 
 Let's look at the details.
 

@@ -1,3 +1,6 @@
+import json
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -44,7 +47,22 @@ def default_config() -> Config:
                 niter: 1
             """,
             not check_mecab(),
-        )
+        ),
+        (
+            "foo",
+            f"""
+            model:
+                lang:
+                    name: en
+                pretrained: {BERT_DIR}
+                multitextcat_label: {DATA_DIR/"multi-textcat"/"label.json"}
+            train:
+                data:
+                    path: {DATA_DIR / "multi-textcat"/ "train.jsonl"}
+                niter: 1
+            """,
+            not check_mecab(),
+        ),
     ]
 )
 def config(request, default_config):
@@ -58,6 +76,16 @@ def config(request, default_config):
 
 def test_main(config, chdir):
     _main(config)
+
+
+def test_cli(config: Config, chdir):
+    cfgpath = Path("user.yaml")
+    cfgpath.write_text(json.dumps(OmegaConf.to_container(config)))
+    res = subprocess.run(
+        [sys.executable, "-m", "camphr.cli", "train", f"user_config={cfgpath}"],
+        stderr=subprocess.PIPE,
+    )
+    assert res.returncode == 0, res.stderr.decode()
 
 
 def test_seed(chdir, default_config):
