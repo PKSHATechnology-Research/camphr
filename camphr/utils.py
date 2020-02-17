@@ -31,6 +31,7 @@ from toolz import curry
 from typing_extensions import Literal
 
 from camphr.types import Pathlike
+from camphr.VERSION import __version__
 
 
 def zero_pad(a: List[List[int]], pad_value: int = 0) -> List[List[int]]:
@@ -119,8 +120,7 @@ def import_attr(import_path: str) -> Any:
 
 
 def get_requirements_line():
-    # TODO: modify after release
-    return f"camphr @ git+https://github.com/PKSHATechnology/bedore-ner@v0.5"
+    return f'camphr=="^{__version__}"'
 
 
 def get_defaults(lang: str) -> Type[BaseDefaults]:

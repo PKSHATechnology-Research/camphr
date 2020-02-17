@@ -10,6 +10,7 @@ from spacy.tokens import Doc
 
 from camphr.types import Pathlike
 
+from ..errors import Errors
 from .allennlp_base import VALIDATION, AllennlpPipe
 from .utils import flatten_docs_to_sents, set_heads
 
@@ -65,7 +66,10 @@ def load_udify(
 class Udify(AllennlpPipe):
     @staticmethod
     def import_udify():
-        from allennlp.common.util import import_submodules  # type: ignore
+        try:
+            from allennlp.common.util import import_submodules  # type: ignore
+        except ImportError:
+            Errors.E0("unofficial-allennlp-nightly")
 
         import_submodules("udify")
 
@@ -82,7 +86,10 @@ class Udify(AllennlpPipe):
 
     def set_annotations(self, docs: Iterable[Doc], outputs: Dict):
         """Set udify's output, which is calculated in self.predict, to docs"""
-        from udify.models.udify_model import OUTPUTS as UdifyOUTPUTS  # type: ignore
+        try:
+            from udify.models.udify_model import OUTPUTS as UdifyOUTPUTS  # type: ignore
+        except ImportError:
+            Errors.E0("unofficial-udify")
 
         for sent, output in zip(flatten_docs_to_sents(docs), outputs):
             words = output[UdifyOUTPUTS.words]

@@ -1,21 +1,29 @@
-<p align="center"><img src="https://github.com/PKSHATechnology/bedore-ner/blob/master/img/logoc.svg" width="200" /></p>
+<p align="center"><img src="https://github.com/PKSHATechnology-Research/camphr/blob/master/img/logoc.svg" width="200" /></p>
 
 # Camphr - spaCy plugin for Transformers, Udify, Elmo, etc.
 
-![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test/badge.svg)
-![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20extras/badge.svg)
-![](https://github.com/PKSHATechnology/agsnlp_camphr/workflows/test%20package/badge.svg)
+[![Documentation Status](https://readthedocs.org/projects/camphr/badge/?version=latest)](https://camphr.readthedocs.io/en/latest/?badge=latest)
+[![Gitter](https://badges.gitter.im/camphr/community.svg)](https://gitter.im/camphr/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![](https://github.com/PKSHATechnology-Research/camphr/workflows/test/badge.svg)
+![](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20extras/badge.svg)
+![](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20package/badge.svg)
 
 Camphr is a *Natural Language Processing* library that helps in seamless integration for a wide variety of techniques from state-of-the-art to conventional ones.
-Camphr is a spaCy plugin to easily use [Transformers ](https://huggingface.co/transformers/) ,  [Udify ](https://github.com/Hyperparticle/udify), [ELmo ](https://allennlp.org/elmo), etc.
+You can use [Transformers](https://huggingface.co/transformers/) ,  [Udify](https://github.com/Hyperparticle/udify), [ELmo](https://allennlp.org/elmo), etc. on [spaCy](https://github.com/explosion/spaCy).
 
-Check the [documentation ](http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/) for more information
+Check the [documentation](https://camphr.readthedocs.io/en/latest/) for more information.
 
-# OSS化にむけレビュアー募集中！
+(For Japanese: https://qiita.com/tamurahey/items/53a1902625ccaac1bb2f)
 
-- https://github.com/PKSHATechnology/agsnlp_camphr/pull/204
-- [document](http://camphr-doc.s3-website.ap-northeast-1.amazonaws.com/)もみてください！(英語あまり自信ない)
+# Features
 
-# Contributing
+- A [spaCy](https://github.com/explosion/spaCy) plugin - Easily integration for a wide variety of methods
+- [Transformers](https://huggingface.co/transformers/) with spaCy - Fine-tuning pretrained model configured by [Hydra](https://hydra.cc/). Embedding vector
+- [Udify](https://github.com/Hyperparticle/udify) - BERT based multitask model in 75 languages
+- [Elmo](https://allennlp.org/elmo) - Deep contextualized word representations
+- Rule base matching with Aho-Corasick, Regex
+- (for Japanese) KNP
 
-see [CONTRIBUTING.md ](./CONTRIBUTING.md)
+# License
+
+Camphr is licensed under [Apache 2.0](./LICENSE).

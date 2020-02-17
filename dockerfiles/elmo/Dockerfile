@@ -1,9 +1,6 @@
 FROM python:3.7.6
 
-ARG GITHUB_TOKEN
-
 COPY . /app
 WORKDIR /app
-RUN pip install -U poetry github_asset
-RUN make download_elmo
-RUN poetry install -E allennlp
+RUN python scripts/download_model.py en_elmo_medium
+RUN pip install pytest hypothesis toml

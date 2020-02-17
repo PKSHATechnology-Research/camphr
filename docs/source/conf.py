@@ -17,11 +17,16 @@
 
 # -- Project information -----------------------------------------------------
 
+import sys
 from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.absolute() / ".." / ".."))
+
 
 project = "camphr"
 copyright = "2020, tamuhey"
 author = "tamuhey"
+master_doc = "index"
 
 
 # -- General configuration ---------------------------------------------------
@@ -29,7 +34,7 @@ author = "tamuhey"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.napoleon", "sphinx.ext.autodoc", "sphinxcontrib.spelling"]
+extensions = ["sphinx.ext.napoleon", "sphinx.ext.autodoc", "sphinx.ext.doctest"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -61,6 +66,10 @@ rst_prolog = """
 __dir__ = Path(__file__).parent
 html_theme_options = {
     "logo": "logoc.png",
-    "github_user": "PKSHATechnology",
-    "github_repo": "agsnlp_camphr",  # TODO
+    "github_user": "PKSHATechnology-Research",
+    "github_repo": "camphr",
+    "github_type": "star",
+    "github_count": "true",
 }
+
+trim_doctest_flags = True

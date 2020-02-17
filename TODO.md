@@ -1,7 +1,0 @@
-- [ ] pypi
-- [ ] ライセンスファイル
-- [ ] modelのmetaを書き換える
-    - [ ] requirements
-    - [ ] license
-- [ ] grep TODO で TODOを潰す
-- [ ] repoの名前を変更する

@@ -8,10 +8,15 @@ tag = true
 commit = true
 
 [tool.poetry]
-version = "0.5.0.dev4"
+version = "0.5.2"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
-description = "spacy plugin"
+description = "spaCy plugin for Transformers, Udify, Elmo, etc."
+readme = "README.md"
+license = "Apache-2.0"
+homepage = ""
+repository = "https://github.com/PKSHATechnology-Research/camphr"
+keywords = [ "spaCy", "nlp", "natural language processing", "transformers", "udify",]
 
 [tool.isort]
 skip = ".venv/**/*.py"
@@ -38,18 +43,17 @@ dataclasses = "^0.6"
 toolz = "^0.10.0"
 
 [tool.poetry.extras]
-all = [ "allennlp", "Cython", "mojimoji2", "pyknp", "mecab-python3", "udify"]
-allennlp = ["allennlp"]
-udify = ["allennlp", "udify"]
-juman = [ "Cython", "mojimoji2", "pyknp",]
-mecab = [ "mecab-python3" ]
+all = [ "unofficial-allennlp-nightly", "Cython", "mojimoji2", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
+allennlp = [ "unofficial-allennlp-nightly",]
+udify = [ "unofficial-allennlp-nightly", "unofficial-udify",]
+juman = [ "Cython", "mojimoji2", "unofficial-pyknp",]
+mecab = [ "mecab-python3",]
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
 pytest = "<5.3.3"
 flake8 = "*"
 pyyaml = "*"
-rope = "*"
 hypothesis = "*"
 pre-commit = "*"
 toml = "^0.10.0"
@@ -60,14 +64,13 @@ mypy = "*"
 [tool.poetry.scripts]
 camphr = "camphr.cli.__main__:main"
 
-[tool.poetry.dependencies.allennlp]
-git = "https://github.com/allenai/allennlp"
-rev = "b8fdc9c988e0fbb73acd73205c4c464f8cf5a9c3"
+[tool.poetry.dependencies.unofficial-allennlp-nightly]
+version = "0.9.1.dev0"
 optional = true
+allow-prereleases = true
 
-[tool.poetry.dependencies.udify]
-git = "https://github.com/tamuhey/udify"
-branch = "library"
+[tool.poetry.dependencies.unofficial-udify]
+version = "0.1.3"
 optional = true
 
 [tool.poetry.dependencies.Cython]
@@ -78,9 +81,8 @@ optional = true
 version = "*"
 optional = true
 
-[tool.poetry.dependencies.pyknp]
-git = "https://github.com/ku-nlp/pyknp"
-branch = "master"
+[tool.poetry.dependencies.unofficial-pyknp]
+version = "*"
 optional = true
 
 [tool.poetry.dependencies.mecab-python3]
@@ -110,5 +112,5 @@ knp = "camphr.pipelines.knp:KNP.from_nlp"
 udify = "camphr.pipelines:Udify.from_nlp"
 elmo = "camphr.pipelines:Elmo.from_nlp"
 pattern_searcher = "camphr.pipelines:PatternSearcher"
-multiple_regex_ruler = "camphr.pipelines:MultipleRegexRuler.from_nlp" 
-regex_ruler = "camphr.pipelines:RegexRuler.from_nlp" 
+multiple_regex_ruler = "camphr.pipelines:MultipleRegexRuler.from_nlp"
+regex_ruler = "camphr.pipelines:RegexRuler.from_nlp"

@@ -15,10 +15,10 @@ You can fine-tune Transformers pretrained models for text classification tasks a
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   textcat_label="./label.json" \
-                   pretrained=bert-base-cased  \
-                   lang=en
+    $ camphr train train.data.path=./train.jsonl \
+                   model.textcat_label=./label.json  \
+                   model.pretrained=bert-base-cased  \
+                   model.lang=en
 
 Let's look at the details.
 
@@ -28,10 +28,10 @@ Let's look at the details.
 Two files are required for training - :code:`train.jsonl`, :code:`label.json`.
 Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` contains the training data in the following  format known as `jsonl <http://jsonlines.org/>`_ :
 
-.. code-block::
+.. code-block:: python
 
-    ["Each line contains json array", {"cats": {"POSITIVE": 0.1, "NEGATIVE": 0.9} ]
-    ["Each array contains text and gold label", {"cats": {"POSITIVE": 1.0, "NEGATIVE": 0.0} ]
+    ["Each line contains json array", {"cats": {"POSITIVE": 0.1, "NEGATIVE": 0.9}}]
+    ["Each array contains text and gold label", {"cats": {"POSITIVE": 1.0, "NEGATIVE": 0.0}}]
      ...
 
 :code:`label.json` is a json file defining classification labels. For example:
@@ -105,7 +105,7 @@ Let's look at the details.
 Two files are required for training - :code:`train.jsonl`, :code:`label.json`.
 Like `spacy <https://spacy.io/usage/training#textcat>`_, :code:`train.jsonl` contains the training data in the following  format known as `jsonl <http://jsonlines.org/>`_ :
 
-.. code-block::
+.. code-block:: python
 
     ["I live in Japan.", {"entities": [[10, 15, "LOCATION"]] }]
     ["Today is January 30th", {"entities": [[9, 21, "DATE"]] }]

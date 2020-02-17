@@ -50,7 +50,7 @@ class TrfSequenceClassifier(TrfModelForTaskBase):
         return logits
 
 
-TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequece_classifier"
+TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequence_classifier"
 
 
 @spacy.component(
