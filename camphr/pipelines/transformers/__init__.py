@@ -1,3 +1,4 @@
+# flake8: noqa
 from .maskedlm import (
     BertForMaskedLM,
     BertForMaskedLMPreprocessor,
@@ -6,16 +7,8 @@ from .maskedlm import (
 )
 from .model import TrfModel
 from .ner import TrfForNamedEntityRecognition
-from .seq_classification import TrfForSequenceClassification
+from .seq_classification import (
+    TrfForMultiLabelSequenceClassification,
+    TrfForSequenceClassification,
+)
 from .tokenizer import TrfTokenizer
-
-__all__ = [
-    "TrfModel",
-    "TrfTokenizer",
-    "BertForMaskedLMPreprocessor",
-    "BertForMaskedLM",
-    "TrfForNamedEntityRecognition",
-    "TrfForSequenceClassification",
-    "add_maskedlm_pipe",
-    "remove_maskedlm_pipe",
-]

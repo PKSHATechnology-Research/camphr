@@ -18,7 +18,10 @@ from camphr.lang.torch import TorchLanguage
 from camphr.ner_labels.utils import get_ner_labels
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
-from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
+from camphr.pipelines.transformers.seq_classification import (
+    TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
+    TRANSFORMERS_SEQ_CLASSIFIER,
+)
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.pipelines.transformers.utils import LABELS
 from camphr.utils import get_labels, resolve_alias
@@ -128,6 +131,7 @@ PIPELINE_ALIGNMENT = {
     TRANSFORMERS_MODEL: [TRANSFORMERS_TOKENIZER],
     TRANSFORMERS_NER: [TRANSFORMERS_MODEL],
     TRANSFORMERS_SEQ_CLASSIFIER: [TRANSFORMERS_MODEL],
+    TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER: [TRANSFORMERS_MODEL],
 }
 
 
