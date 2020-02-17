@@ -57,8 +57,8 @@ jobs:
 
     - name: Run pytest
       run: poetry run pytest
-      if: ${{ matrix.extras }} == "none"
+      if:  matrix.extras == "none"
 
     - name: Run pytest for extras
       run: poetry run pytest --runslow -rs -k ${{ matrix.extras }}
-      if: ${{ matrix.extras }} != none
+      if: matrix.extras != "none"
