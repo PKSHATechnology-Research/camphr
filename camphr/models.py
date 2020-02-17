@@ -62,6 +62,7 @@ def create_model(cfg: Union[NLPConfig, Any]) -> Language:
         nlp.add_pipe(pipe)
     if cfg.name and isinstance(cfg.name, str):
         nlp._meta["name"] = cfg.name
+    nlp._meta["config"] = OmegaConf.to_container(cfg.lang)
     return nlp
 
 

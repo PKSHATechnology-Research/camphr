@@ -1,5 +1,5 @@
 """Defines transformers NER pipe"""
-from typing import Dict, Iterable, Iterator, List, Sized, cast
+from typing import Dict, Iterable, Iterator, List, Sequence, Sized, cast
 
 import spacy
 import torch
@@ -27,6 +27,7 @@ from .auto import get_trf_config_cls
 from .utils import (
     ATTRS,
     LABELS,
+    EstimatorMixin,
     FromNLPMixinForTrfTask,
     LabelsMixin,
     SerializationMixinForTrfTask,
@@ -60,6 +61,7 @@ class TrfTokenClassifier(TrfModelForTaskBase):
 
 
 class TrfForTokenClassificationBase(
+    EstimatorMixin[torch.Tensor],
     LabelsMixin,
     FromNLPMixinForTrfTask,
     UserHooksMixin,
@@ -79,13 +81,10 @@ class TrfForTokenClassificationBase(
         setattr(config, NUM_LABELS, len(cfg[LABELS]))
         return TrfTokenClassifier(config)
 
-    def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
+    def proc_model(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
-        self.model.eval()
-        with torch.no_grad():
-            x = get_last_hidden_state_from_docs(docs)
-            logits = self.model(x)
-        return logits
+        x = get_last_hidden_state_from_docs(docs)
+        return self.model(x)
 
     @staticmethod
     def install_extensions():
@@ -113,13 +112,12 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
             return self.labels.index(UNK)
         return -1
 
-    def update(self, docs: List[Doc], golds: List[GoldParse], **kwargs):  # type: ignore
-        assert isinstance(docs, list)
-        self.require_model()
-        logits = self.model(get_last_hidden_state_from_docs(docs))
-        target = self._create_target_from_docs_golds(docs, golds, logits)
+    def compute_loss(
+        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
+    ) -> None:
+        target = self._create_target_from_docs_golds(docs, golds, outputs)
         loss = F.cross_entropy(
-            logits.transpose(1, 2), target, ignore_index=self.ignore_label_index
+            outputs.transpose(1, 2), target, ignore_index=self.ignore_label_index
         )
         add_loss_to_docs(docs, loss)
 
@@ -142,7 +140,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         return docs
 
     def _create_target_from_docs_golds(
-        self, docs: List[Doc], golds: List[GoldParse], logits: torch.Tensor
+        self, docs: Sequence[Doc], golds: Sequence[GoldParse], logits: torch.Tensor
     ) -> torch.Tensor:
         all_aligns = (doc._.get(ATTRS.align) for doc in docs)
         new_ners = (

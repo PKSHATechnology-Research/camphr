@@ -1,6 +1,6 @@
 """Defines transformers sequence classification pipe"""
 import operator
-from typing import Any, Dict, Iterable, List, Optional, Tuple, cast
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, cast
 
 import spacy
 import torch
@@ -17,6 +17,7 @@ from camphr.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
 from .auto import get_trf_config_cls
 from .utils import (
     ATTRS,
+    EstimatorMixin,
     FromNLPMixinForTrfTask,
     LabelsMixin,
     SerializationMixinForTrfTask,
@@ -58,6 +59,7 @@ TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequence_classifier"
     assigns=["doc.cats"],
 )
 class TrfForSequenceClassification(
+    EstimatorMixin[torch.Tensor],
     LabelsMixin,
     FromNLPMixinForTrfTask,
     UserHooksMixin,
@@ -78,12 +80,10 @@ class TrfForSequenceClassification(
             setattr(config, NUM_SEQUENCE_LABELS, len(cfg[LABELS]))
         return TrfSequenceClassifier(config)
 
-    def predict(self, docs: Iterable[Doc]) -> torch.Tensor:
+    def proc_model(self, docs: Iterable[Doc]) -> torch.Tensor:
         self.require_model()
-        self.model.eval()
-        with torch.no_grad():
-            x = get_last_hidden_state_from_docs(docs)
-            logits = self.model(x)
+        x = get_last_hidden_state_from_docs(docs)
+        logits = self.model(x)
         assert len(logits.shape) == 2  # (len(docs), num_class)
         return logits
 
@@ -102,19 +102,15 @@ class TrfForSequenceClassification(
         targets = [self.label2id[label] for label in labels]
         return torch.tensor(targets, device=self.device)
 
-    def update(  # type: ignore
-        self, docs: List[Doc], golds: Iterable[GoldParse], **kwargs
-    ):
-        assert isinstance(docs, list)
+    def compute_loss(
+        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
+    ) -> None:
         self.require_model()
-        self.model.train()
-
-        x = get_last_hidden_state_from_docs(docs)
-        logits = self.model(x)
+        get_last_hidden_state_from_docs(docs)
         targets = self.golds_to_tensor(golds)
         weight = self.label_weights.to(device=self.device)  # type: ignore
 
-        loss = F.cross_entropy(logits, targets, weight=weight)
+        loss = F.cross_entropy(outputs, targets, weight=weight)
         add_loss_to_docs(docs, loss)
 
 

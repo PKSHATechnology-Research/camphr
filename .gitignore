@@ -140,5 +140,7 @@ train-data.jsonl
 val-data.jsonl
 fail.json
 outputs/
-
+/multirun/
+user.yaml
 /.vscode
+pyrightconfig.json

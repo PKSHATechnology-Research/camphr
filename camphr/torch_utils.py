@@ -2,7 +2,7 @@
 import contextlib
 import operator
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Union, cast
+from typing import Any, Dict, Iterable, Iterator, Optional, Sequence, Union, cast
 
 import torch
 import torch.nn as nn
@@ -81,7 +81,7 @@ def get_loss_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
     return torch.sum(tlosses)
 
 
-def add_loss_to_docs(docs: List[Doc], loss: torch.Tensor):
+def add_loss_to_docs(docs: Sequence[Doc], loss: torch.Tensor):
     """Add loss to docs' existing loss. """
     doc = docs[0]
     if TORCH_LOSS in doc.user_data:

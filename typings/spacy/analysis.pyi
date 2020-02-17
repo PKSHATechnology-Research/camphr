@@ -45,9 +45,7 @@ def validate_attrs(values):
     """
     ...
 
-def _get_feature_for_attr(pipeline, attr, feature):
-    ...
-
+def _get_feature_for_attr(pipeline, attr, feature): ...
 def get_assigns_for_attr(pipeline, attr):
     """Get all pipeline components that assign an attr, e.g. "doc.tensor".
 
@@ -77,4 +75,3 @@ def print_summary(nlp, pretty: bool = ..., no_print: bool = ...):
     RETURNS (dict): A dict with "overview" and "problems".
     """
     ...
-

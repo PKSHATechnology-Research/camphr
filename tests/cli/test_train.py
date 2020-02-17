@@ -7,7 +7,7 @@ from camphr.cli.train import _main, set_seed
 from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 
-from ..utils import BERT_DIR, XLNET_DIR
+from ..utils import BERT_DIR, XLNET_DIR, check_mecab
 
 DATA_DIR = Path(__file__).parent / "fixtures"
 
@@ -41,31 +41,21 @@ def default_config() -> Config:
             train:
                 data:
                     path: {DATA_DIR / "test_ner_irex_ja.jsonl"}
+                niter: 1
             """,
-        ),
-        (
-            "batch failure",
-            f"""
-            model:
-                lang:
-                    name: ja
-                ner_label: {DATA_DIR/"irex.json"}
-                pretrained: bert-base-japanese
-            train:
-                data:
-                    path: {DATA_DIR / "test_ner_irex_ja.jsonl"}
-            """,
-        ),
+            not check_mecab(),
+        )
     ]
 )
 def config(request, default_config):
-    ident, diff = request.param
+    ident, diff, skip = request.param
+    if skip:
+        pytest.skip()
     diff = OmegaConf.create(diff)
     _config = OmegaConf.merge(default_config, diff)
     return _config
 
 
-@pytest.mark.slow
 def test_main(config, chdir):
     _main(config)
 

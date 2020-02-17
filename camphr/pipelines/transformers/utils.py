@@ -1,6 +1,7 @@
 """Defines utility functions, classes, mixins for transformers pipelines."""
 import dataclasses
 import pickle
+from contextlib import contextmanager
 from pathlib import Path
 from typing import (
     Any,
@@ -10,6 +11,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Sequence,
     Sized,
     Type,
     TypeVar,
@@ -19,14 +21,15 @@ from typing import (
 import torch
 import torch.nn as nn
 import transformers
+from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from tokenizations import get_alignments
-from typing_extensions import Protocol
+from typing_extensions import Literal, Protocol
 
 from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TensorWrapper
+from camphr.torch_utils import TensorWrapper, set_grad
 
 from .auto import get_trf_config_cls, get_trf_name
 
@@ -108,7 +111,7 @@ class _TrfSavePathGetter:
 class SerializationMixinForTrfTask(_TrfSavePathGetter):
     """Mixin for transoformers pipeline
 
-    Constraints: `TorchPipe`
+    Bounds: `TorchPipe`
     """
 
     _MODEL_PTH = "model.pth"
@@ -148,7 +151,7 @@ class SerializationMixinForTrfTask(_TrfSavePathGetter):
 class FromNLPMixinForTrfTask:
     """Mixin for transformers task pipeline.
 
-    Constraints: `TorchPipe`
+    Bounds: `TorchPipe`
     """
 
     @classmethod
@@ -179,8 +182,8 @@ class LabelsMixin:
     """Mixin for pipes which has labels.
 
 
-    Constraints: `Pipe`
-    Optional constraints:
+    Bounds: `Pipe`
+    Optional Bounds:
         - `UserHooksMixin`: to use `def convert_label`
     """
 
@@ -229,10 +232,10 @@ class TrfObj(Protocol):
         ...
 
 
-T = TypeVar("T", bound=TrfObj)
+T_TrfObj = TypeVar("T_TrfObj", bound=TrfObj)
 
 
-class TrfAutoMixin(_TrfSavePathGetter, Generic[T]):
+class TrfAutoMixin(_TrfSavePathGetter, Generic[T_TrfObj]):
     """Mixin for transformers' `AutoModel` and `AutoTokenizer`
 
     Required to be combined with `TorchPipe`
@@ -240,8 +243,8 @@ class TrfAutoMixin(_TrfSavePathGetter, Generic[T]):
 
     _MODEL_PTH = "model.pth"
     _CFG_PKL = "cfg.pkl"
-    _MODEL_CLS_GETTER: Callable[[str], Type[T]]
-    model: T
+    _MODEL_CLS_GETTER: Callable[[str], Type[T_TrfObj]]
+    model: T_TrfObj
 
     @classmethod
     def Model(cls, trf_name_or_path: str, **cfg):
@@ -276,6 +279,63 @@ class TrfAutoMixin(_TrfSavePathGetter, Generic[T]):
             self.cfg = pickle.load(f)
         self.model = self.Model(str(self._trf_path(path)))
         return self
+
+
+T = TypeVar("T")
+
+
+class EstimatorMixin(Generic[T]):
+    """Mixin for downstream pipelines.
+
+    This mixin provides functionalities common to `train`, `eval`, and `predict`.
+    The followings is assumed:
+
+        1. `train` computes loss under `train` mode.
+        2. `eval` computes loss under `eval` mode and sets annotation.
+        3. `predict` doesn't compute loss and sets annotation.
+
+    At a minimum, you should implement the below methods that raises `NotImplementedError`.
+    See `ner.TrfForNamedEntityRecognition` for example usage.
+
+    Bounds:
+        - attributes: `set_annotations`, `model`, `require_model`
+        - `model` is subclass of `torch.nn.Module`
+    """
+
+    def proc_model(self, docs: Iterable[Doc]) -> T:
+        raise NotImplementedError
+
+    def compute_loss(
+        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: T
+    ) -> None:
+        raise NotImplementedError
+
+    def update(self, docs: Sequence[Doc], golds: Sequence[GoldParse], **kwargs) -> None:
+        with self.switch("train"):
+            outputs = self.proc_model(docs)
+            self.compute_loss(docs, golds, outputs)
+
+    def eval(self, docs: List[Doc], golds: List[GoldParse]) -> None:
+        with self.switch("eval"):
+            outputs = self.proc_model(docs)
+            self.compute_loss(docs, golds, outputs)
+            self.set_annotations(docs, outputs)  # type: ignore
+
+    def predict(self, docs: List[Doc]) -> T:
+        with self.switch("eval"):
+            return self.proc_model(docs)
+
+    @contextmanager
+    def switch(self, mode: Literal["train", "eval"]):
+        self.require_model()  # type: ignore
+        if mode == "train":
+            self.model.train()  # type: ignore
+            grad = True
+        else:
+            self.model.eval()  # type: ignore
+            grad = False
+        with set_grad(grad):
+            yield
 
 
 @dataclasses.dataclass

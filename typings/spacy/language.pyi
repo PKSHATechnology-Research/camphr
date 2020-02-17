@@ -452,7 +452,7 @@ class component(object):
     """
 
     def __init__(
-        self, name: str = ..., assigns=..., requires=..., retokenizes: bool = ...,
+        self, name: str = ..., assigns=..., requires=..., retokenizes: bool = ...
     ):
         """Decorate a pipeline component.
 
@@ -509,4 +509,3 @@ class _Sender:
 
         Data is sent to the workers after every chunk_size calls."""
         ...
-
