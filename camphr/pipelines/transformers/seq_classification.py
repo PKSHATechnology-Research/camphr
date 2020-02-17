@@ -110,7 +110,6 @@ class TrfForSequenceClassification(TrfForSequenceClassificationBase):
         self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
     ) -> None:
         self.require_model()
-        get_last_hidden_state_from_docs(docs)
         targets = self.golds_to_tensor(golds)
         weight = self.label_weights.to(device=self.device)  # type: ignore
 
@@ -129,17 +128,13 @@ TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER = "transformers_multilabel_sequence_class
 class TrfForMultiLabelSequenceClassification(TrfForSequenceClassificationBase):
     """Multi labels sequence classification task (e.g. sentiment analysis)."""
 
-    def golds_to_tensor(self, golds: Iterable[GoldParse]) -> torch.Tensor:
-        targets = [[gold.cats[label] for label in self.labels] for gold in golds]
-        return torch.tensor(targets, device=self.device)
-
     def compute_loss(
         self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
     ) -> None:
         self.require_model()
-        get_last_hidden_state_from_docs(docs)
-        targets = self.golds_to_tensor(golds)
-
+        targets = outputs.new_tensor(
+            [[gold.cats[label] for label in self.labels] for gold in golds]
+        )
         loss = F.binary_cross_entropy_with_logits(outputs, targets)
         add_loss_to_docs(docs, loss)
 

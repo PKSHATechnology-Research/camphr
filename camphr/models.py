@@ -234,4 +234,7 @@ def _resolve_label(cfg: NLPConfig) -> NLPConfig:
     seq = cfg.pipeline[TRANSFORMERS_SEQ_CLASSIFIER]
     if seq:
         seq[LABELS] = get_labels(seq[LABELS])
+    multiseq = cfg.pipeline[TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER]
+    if multiseq:
+        multiseq[LABELS] = get_labels(multiseq[LABELS])
     return cfg

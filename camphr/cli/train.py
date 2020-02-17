@@ -52,6 +52,7 @@ MUST_FIELDS = [
 PATH_FIELDS = [
     "model.ner_label",
     "model.textcat_label",
+    "model.multitextcat_label",
     "train.data.path",
     "model.pretrained",
 ]

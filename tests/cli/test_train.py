@@ -19,7 +19,9 @@ DATA_DIR = Path(__file__).parent / "fixtures"
 def default_config() -> Config:
     return OmegaConf.load(
         str(
-            Path(__file__).parent.parent.parent
+            Path(__file__).parent
+            / ".."
+            / ".."
             / "camphr"
             / "cli"
             / "conf"
@@ -49,7 +51,7 @@ def default_config() -> Config:
             not check_mecab(),
         ),
         (
-            "foo",
+            "multitext",
             f"""
             model:
                 lang:
@@ -61,7 +63,7 @@ def default_config() -> Config:
                     path: {DATA_DIR / "multi-textcat"/ "train.jsonl"}
                 niter: 1
             """,
-            not check_mecab(),
+            False,
         ),
     ]
 )
