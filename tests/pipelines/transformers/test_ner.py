@@ -18,7 +18,7 @@ from camphr.pipelines.transformers.ner import (
 )
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 
-from ...utils import BERT_DIR, DATA_DIR, check_mecab, check_serialization
+from ...utils import BERT_JA_DIR, DATA_DIR, check_mecab, check_serialization
 
 label_types = ["ene", "irex"]
 
@@ -176,7 +176,7 @@ def test_kbeam_config(labels):
         {TRANSFORMERS_NER}:
             k_beam: 111
             labels: {labels}
-    pretrained: {BERT_DIR}
+    pretrained: {BERT_JA_DIR}
     """
     )
     ner = nlp.get_pipe(TRANSFORMERS_NER)

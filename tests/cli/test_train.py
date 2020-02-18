@@ -10,7 +10,7 @@ from camphr.cli.train import _main, set_seed
 from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 
-from ..utils import BERT_DIR, XLNET_DIR, check_mecab
+from ..utils import BERT_DIR, BERT_JA_DIR, XLNET_DIR, check_mecab
 
 DATA_DIR = Path(__file__).parent / "fixtures"
 
@@ -41,7 +41,7 @@ def default_config() -> Config:
                     name: ja
                 pipeline:
                     {TRANSFORMERS_NER}:
-                        trf_name_or_path: {BERT_DIR}
+                        trf_name_or_path: {BERT_JA_DIR}
                         labels: {DATA_DIR/"irex.json"}
             train:
                 data:
@@ -71,7 +71,6 @@ def config(request, default_config):
     ident, diff, skip = request.param
     if skip:
         pytest.skip()
-    assert not skip
     diff = OmegaConf.create(diff)
     _config = OmegaConf.merge(default_config, diff)
     return _config
