@@ -1,6 +1,6 @@
 """Defines transformers sequence classification pipe"""
 import operator
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, cast
+from typing import Any, Iterable, List, Optional, Sequence, Tuple, cast
 
 import spacy
 import torch
@@ -65,15 +65,6 @@ class TrfForSequenceClassificationBase(
 
     model_cls = TrfSequenceClassifier
 
-    def set_annotations(self, docs: Iterable[Doc], logits: torch.Tensor):
-        probs = torch.softmax(logits, 1)
-        for doc, prob in zip(docs, cast(Iterable, probs)):
-            doc.cats = self.get_cats_from_prob(prob)
-
-    def get_cats_from_prob(self, prob: torch.Tensor) -> Dict[str, float]:
-        assert len(prob.shape) == 1
-        return dict(zip(self.labels, prob.tolist()))
-
     @classmethod
     def Model(cls, trf_name_or_path: str, **cfg) -> TrfSequenceClassifier:
         config = get_trf_config_cls(trf_name_or_path).from_pretrained(trf_name_or_path)
@@ -87,6 +78,10 @@ class TrfForSequenceClassificationBase(
         logits = self.model(x)
         assert len(logits.shape) == 2  # (len(docs), num_class)
         return logits
+
+    def set_cats_to_docs(self, docs: Iterable[Doc], probs: torch.Tensor):
+        for doc, prob in zip(docs, cast(Iterable, probs)):
+            doc.cats = dict(zip(self.labels, prob.tolist()))
 
 
 TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequence_classifier"
@@ -116,6 +111,10 @@ class TrfForSequenceClassification(TrfForSequenceClassificationBase):
         loss = F.cross_entropy(outputs, targets, weight=weight)
         add_loss_to_docs(docs, loss)
 
+    def set_annotations(self, docs: Iterable[Doc], logits: torch.Tensor):
+        probs = torch.softmax(logits, 1)
+        self.set_cats_to_docs(docs, probs)
+
 
 TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER = "transformers_multilabel_sequence_classifier"
 
@@ -137,6 +136,10 @@ class TrfForMultiLabelSequenceClassification(TrfForSequenceClassificationBase):
         )
         loss = F.binary_cross_entropy_with_logits(outputs, targets)
         add_loss_to_docs(docs, loss)
+
+    def set_annotations(self, docs: Iterable[Doc], logits: torch.Tensor):
+        probs = torch.sigmoid(logits)
+        self.set_cats_to_docs(docs, probs)
 
 
 def _top_label(doc: Doc) -> Optional[str]:

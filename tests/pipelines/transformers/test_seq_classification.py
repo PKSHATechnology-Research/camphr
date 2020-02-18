@@ -64,10 +64,14 @@ def docs_golds(labels, texts):
     return res
 
 
-def test_call(nlp, texts, labels):
+def test_call(nlp, texts, labels, textcat_type):
     for text in texts:
         doc = nlp(text)
         assert set(labels) == set(doc.cats)
+        if textcat_type == "single":
+            assert abs(sum(doc.cats.values()) - 1.0) < 1e-5
+        elif textcat_type == "multiple":
+            assert abs(sum(doc.cats.values()) - 1.0) > 1e-5
 
 
 def test_underscore(nlp, texts, labels):
