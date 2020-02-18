@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 from omegaconf import Config, OmegaConf
 
+from camphr import __version__
 from camphr.cli.train import _main, set_seed
 from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
@@ -63,7 +64,7 @@ def default_config() -> Config:
                     path: {DATA_DIR / "multi-textcat"/ "train.jsonl"}
                 niter: 1
             """,
-            False,
+            (__version__ <= "0.5.3"),
         ),
     ]
 )
