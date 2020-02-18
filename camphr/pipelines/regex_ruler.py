@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Pattern, Union
 
 import spacy
 from spacy.tokens import Doc, Span
@@ -17,15 +17,13 @@ class MultipleRegexRuler(SerializationMixin):
 
     def __init__(
         self,
-        patterns: Optional[Dict[str, str]] = None,
+        patterns: Optional[Dict[str, Union[Pattern, str]]] = None,
         destructive: bool = False,
         merge: bool = False,
-        regex_flag: int = 0,
     ):
         self.patterns = patterns or {}
         self.destructive = destructive
         self.merge = merge
-        self.regex_flag = regex_flag
 
     def require_model(self):
         assert self.patterns
@@ -40,7 +38,7 @@ class MultipleRegexRuler(SerializationMixin):
             doc = self._proc(doc, pattern, label)
         return doc
 
-    def _proc(self, doc: Doc, pattern: str, label: str) -> Doc:
+    def _proc(self, doc: Doc, pattern: Union[Pattern, str], label: str) -> Doc:
         spans = self.get_spans(doc, pattern, label or self._DEFAULT_LABEL)
         doc.ents = filter_spans(tuple(spans) + doc.ents)  # type: ignore
         # TODO: https://github.com/python/mypy/issues/3004
@@ -48,7 +46,9 @@ class MultipleRegexRuler(SerializationMixin):
             merge_spans(doc, spans)
         return doc
 
-    def get_spans(self, doc: Doc, pattern: str, label: str) -> List[Span]:
+    def get_spans(
+        self, doc: Doc, pattern: Union[Pattern, str], label: str
+    ) -> List[Span]:
         spans_ij = [m.span() for m in re.finditer(pattern, doc.text)]
         return get_doc_char_spans_list(
             doc, spans_ij, destructive=self.destructive, label=label
@@ -65,7 +65,7 @@ class MultipleRegexRuler(SerializationMixin):
 class RegexRuler(MultipleRegexRuler):
     def __init__(
         self,
-        pattern: str = "",
+        pattern: Union[Pattern, str] = "",
         label: str = "",
         destructive: bool = False,
         merge: bool = False,

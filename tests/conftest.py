@@ -37,8 +37,9 @@ def pytest_collection_modifyitems(config, items):
 
 @pytest.fixture(scope="session")
 def mecab_tokenizer():
-    if check_mecab():
-        return Mecab.Defaults.create_tokenizer(dicdir="/usr/local/lib/mecab/dic/ipadic")
+    if not check_mecab():
+        pytest.skip("mecab is required")
+    return Mecab.Defaults.create_tokenizer(dicdir="/usr/local/lib/mecab/dic/ipadic")
 
 
 @pytest.fixture(scope="session", params=[True, False])
