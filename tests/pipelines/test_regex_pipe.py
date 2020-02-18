@@ -1,3 +1,4 @@
+import re
 from itertools import zip_longest
 
 import pytest
@@ -9,11 +10,6 @@ from camphr.pipelines.regex_ruler import MultipleRegexRuler, RegexRuler
 
 from ..utils import check_mecab, check_serialization
 
-pytestmark = pytest.mark.skipif(
-    not check_mecab(), reason="mecab is not always necessary"
-)
-
-
 TESTCASES = [
     (
         "16日はいい天気だった",
@@ -23,8 +19,15 @@ TESTCASES = [
 ]
 
 
+@pytest.fixture(params=[True, False])
+def do_compile(request):
+    return request.param
+
+
 @pytest.mark.parametrize("text,patterns,expected", TESTCASES)
-def test_multiple_regex_ruler(mecab_tokenizer, text, patterns, expected):
+def test_multiple_regex_ruler(mecab_tokenizer, text, patterns, expected, do_compile):
+    if do_compile:
+        patterns = {k: re.compile(v) for k, v in patterns.items()}
     doc: Doc = mecab_tokenizer(text)
     ruler = MultipleRegexRuler(patterns)
     doc = ruler(doc)
