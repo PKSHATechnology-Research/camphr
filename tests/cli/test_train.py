@@ -81,7 +81,7 @@ def test_main(config, chdir):
 
 
 def test_cli(config: Config, chdir):
-    cfgpath = Path("user.yaml")
+    cfgpath = Path("user.yaml").absolute()
     cfgpath.write_text(json.dumps(OmegaConf.to_container(config)))
     res = subprocess.run(
         [sys.executable, "-m", "camphr.cli", "train", f"user_config={cfgpath}"],
