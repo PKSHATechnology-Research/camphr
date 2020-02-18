@@ -69,7 +69,7 @@ class Udify(AllennlpPipe):
         try:
             from allennlp.common.util import import_submodules  # type: ignore
         except ImportError:
-            Errors.E0("unofficial-allennlp-nightly")
+            Errors.E0(package="unofficial-allennlp-nightly")
 
         import_submodules("udify")
 
@@ -89,7 +89,7 @@ class Udify(AllennlpPipe):
         try:
             from udify.models.udify_model import OUTPUTS as UdifyOUTPUTS  # type: ignore
         except ImportError:
-            Errors.E0("unofficial-udify")
+            Errors.E0(package="unofficial-udify")
 
         for sent, output in zip(flatten_docs_to_sents(docs), outputs):
             words = output[UdifyOUTPUTS.words]
