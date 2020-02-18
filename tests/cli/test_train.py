@@ -71,6 +71,7 @@ def config(request, default_config):
     ident, diff, skip = request.param
     if skip:
         pytest.skip()
+    assert not skip
     diff = OmegaConf.create(diff)
     _config = OmegaConf.merge(default_config, diff)
     return _config
