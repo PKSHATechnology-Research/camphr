@@ -15,8 +15,9 @@ You can fine-tune Transformers pretrained models for text classification tasks a
 
 .. code-block:: console
 
-    $ camphr train train.data.path=./train.jsonl \
-                   model.textcat_label=./label.json  \
+    $ camphr train model.task=textcat \
+                   train.data.path=./train.jsonl \
+                   model.labels=./label.json  \
                    model.pretrained=bert-base-cased  \
                    model.lang=en
 
@@ -56,8 +57,9 @@ The following is the minimal configuration to fine-tune *bert-base-cased* with *
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   model.textcat_label="./label.json" \
+    $ camphr train model.task=textcat \
+                   train.data.path="./train.jsonl" \
+                   model.labels="./label.json" \
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
@@ -65,8 +67,9 @@ Of course, you can also use non-English languages, by changing *model.lang.name*
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   model.textcat_label="./label.json" \
+    $ camphr train model.task=textcat \
+                   train.data.path="./train.jsonl" \
+                   model.labels="./label.json" \
                    model.pretrained=bert-base-multilingual-cased  \
                    model.lang.name=ja # Japanese
 
@@ -92,8 +95,9 @@ You can also fine-tune Transformers models for `named entity recognition <https:
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   model.ner_label="./label.json" \
+    $ camphr train model.task=ner \
+                   train.data.path="./train.jsonl" \
+                   model.labels="./label.json" \
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
@@ -133,8 +137,9 @@ The following is the minimal configuration to fine-tune *bert-base-cased* with *
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   model.ner_label="./label.json" \
+    $ camphr train model.task=ner \
+                   train.data.path="./train.jsonl" \
+                   model.labels="./label.json" \
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
@@ -142,8 +147,9 @@ You can also use *non-English languages*, by changing *model.lang.name*:
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   model.ner_label="./label.json" \
+    $ camphr train model.task=ner \
+                   train.data.path="./train.jsonl" \
+                   model.label="./label.json" \
                    model.pretrained=bert-base-multilingual-cased  \
                    model.lang.name=ja # Japanese
 
