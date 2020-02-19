@@ -29,15 +29,14 @@ def default_config() -> Config:
 @pytest.fixture(
     params=[
         (
-            "foo",
+            "ner",
             f"""
             model:
                 lang:
                     name: ja
-                pipeline:
-                    {TRANSFORMERS_NER}:
-                        trf_name_or_path: {BERT_DIR}
-                        labels: {DATA_DIR/"irex.json"}
+                task: ner
+                pretrained: {BERT_DIR}
+                labels: {DATA_DIR/"irex.json"}
             train:
                 data:
                     path: {DATA_DIR / "test_ner_irex_ja.jsonl"}

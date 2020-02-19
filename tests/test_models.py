@@ -8,15 +8,19 @@ from camphr.models import (
     ALIASES,
     PIPELINE_ALIGNMENT,
     LangConfig,
+    _add_required_pipes,
     _align_pipeline,
-    _assign_pipeline,
     correct_model_config,
     create_lang,
+    create_model,
 )
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.utils import resolve_alias
+
+from .utils import BERT_DIR
 
 
 @pytest.mark.parametrize(
@@ -191,7 +195,7 @@ def inject_dummy():
 )
 def test_assign_and_align_pipeline(yml, modified, inject_dummy):
     config = OmegaConf.create(yml)
-    config = _assign_pipeline(config)
+    config = _add_required_pipes(config)
     config = _align_pipeline(config)
     assert config.pipeline == OmegaConf.create(modified).pipeline
 
@@ -231,7 +235,37 @@ def test_assign_and_align_pipeline(yml, modified, inject_dummy):
 def test_align_pipeline_and_alias(yml, modified):
     config = OmegaConf.create(yml)
     config = resolve_alias(ALIASES, config)
-    config = _assign_pipeline(config)
+    config = _add_required_pipes(config)
     config = _align_pipeline(config)
     modified = OmegaConf.create(modified)
     assert list(config.pipeline) == list(modified.pipeline)
+
+
+@pytest.mark.parametrize(
+    "yml,pipe",
+    [
+        (
+            f"""
+    lang:
+        name: en
+    task: textcat
+    labels: ["a", "b", "c"]
+    pretrained: {BERT_DIR}
+    """,
+            TRANSFORMERS_SEQ_CLASSIFIER,
+        ),
+        (
+            f"""
+    lang:
+        name: en
+    task: ner
+    labels: ["a", "b", "c"]
+    pretrained: {BERT_DIR}
+    """,
+            TRANSFORMERS_NER,
+        ),
+    ],
+)
+def test_add_pipes_parser(yml, pipe):
+    nlp = create_model(yml)
+    assert nlp.get_pipe(pipe)
