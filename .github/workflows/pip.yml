@@ -1,7 +1,8 @@
 name: test package installation
 
 on: 
-  schedule: "0 0 * * *"
+  schedule: 
+    - cron: "0 0 * * *"
 
 jobs:
   build:
