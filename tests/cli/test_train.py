@@ -57,7 +57,7 @@ def default_config() -> Config:
                 lang:
                     name: en
                 pretrained: {BERT_DIR}
-                task: multlabel_textcat
+                task: multilabel_textcat
                 labels: {DATA_DIR/"multi-textcat"/"label.json"}
             train:
                 data:

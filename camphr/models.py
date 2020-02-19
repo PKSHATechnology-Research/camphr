@@ -158,6 +158,10 @@ def _add_pipes(cfg: NLPConfig) -> NLPConfig:
         cfg.pipeline[TASK2PIPE[cfg.task]] = OmegaConf.merge(
             OmegaConf.create({"labels": cfg.labels}), prev
         )
+    else:
+        assert (
+            not cfg.labels
+        ), f'One of ["textcat", "ner", "multilabel_textcat"] pipeline is required.'
     return cfg
 
 
