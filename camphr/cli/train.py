@@ -45,6 +45,8 @@ MUST_FIELDS = [
         "model.pipeline.transformers_ner.labels",
         "model.pipeline.transformers_seq_classification.labels",
         "model.pipeline.transformers_multilabel_seq_classification.labels",
+        "model.labels",
+        "model.task",
     ],
     "model.lang.name",
 ]
