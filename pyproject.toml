@@ -41,6 +41,7 @@ hydra-core = "^0.11"
 hydra_colorlog = "*"
 dataclasses = "^0.6"
 toolz = "^0.10.0"
+sentencepiece = "<=0.1.3"
 
 [tool.poetry.extras]
 all = [ "unofficial-allennlp-nightly", "Cython", "mojimoji2", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
