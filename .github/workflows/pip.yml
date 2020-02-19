@@ -1,9 +1,7 @@
 name: test package installation
 
 on: 
-  push:
-    paths-ignore:
-      - "docs/**"
+  schedule: "0 0 * * *"
 
 jobs:
   build:
