@@ -1,13 +1,14 @@
 import json
 import subprocess
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 
 import pytest
 from omegaconf import Config, OmegaConf
 
 from camphr import __version__
-from camphr.cli.train import _main, set_seed
+from camphr.cli.train import _main, set_seed, validate_data
 from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 
@@ -114,3 +115,36 @@ def test_seed(chdir, default_config):
     set_seed(cfg.seed)
     second = get_model_value(cfg)
     assert first == second
+
+
+@contextmanager
+def does_not_raise():
+    yield
+
+
+@pytest.mark.parametrize(
+    "cfg,data,raises",
+    [
+        (
+            """
+    model:
+        pipeline:
+            textcat:
+    """,
+            [("foo", {"cats": {"FOO": 1.0, "BAR": 0.0}})],
+            does_not_raise(),
+        ),
+        (
+            """
+    model:
+        pipeline:
+            textcat:
+    """,
+            [("foo", {"cats": {"FOO": 1.0, "BAR": 0.3}})],
+            pytest.raises(AssertionError),
+        ),
+    ],
+)
+def test_validate_data(cfg, data, raises):
+    with raises:
+        validate_data(OmegaConf.create(cfg), data)

@@ -184,7 +184,7 @@ def set_seed(seed: int):
 
 
 def validate_data(cfg: Config, data: InputData, n_check=100):
-    if cfg.model.pipeline["textcat"]:
+    if "textcat" in cfg.model.pipeline:
         data = random.sample(data, min(n_check, len(data)))
         for text, gold in data:
             assert "cats" in gold, "`cats` key is required in gold label"
