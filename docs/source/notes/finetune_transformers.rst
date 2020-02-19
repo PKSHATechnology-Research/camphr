@@ -95,8 +95,9 @@ Camphr enables you to fine-tune transformers pretrained model for multi-labels t
 
 .. code-block:: console
 
-    $ camphr train train.data.path=./train.jsonl \
-                   model.multitextcat_label=./label.json  \
+    $ camphr train task=multilabel_textcat \
+                   train.data.path=./train.jsonl \
+                   model.labels=./label.json  \
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
@@ -137,8 +138,9 @@ The following is the minimal configuration to fine-tune *bert-base-cased* with *
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   model.multitextcat_label="./label.json" \
+    $ camphr train task=multilabel_textcat \
+                   train.data.path="./train.jsonl" \
+                   model.labels="./label.json" \
                    model.pretrained=bert-base-cased  \
                    model.lang.name=en
 
@@ -146,8 +148,9 @@ Of course, you can also use non-English languages, by changing *model.lang.name*
 
 .. code-block:: console
 
-    $ camphr train train.data.path="./train.jsonl" \
-                   model.multitextcat_label="./label.json" \
+    $ camphr train task=multilabel_textcat \
+                   train.data.path="./train.jsonl" \
+                   model.labels="./label.json" \
                    model.pretrained=bert-base-multilingual-cased  \
                    model.lang.name=ja # Japanese
 

@@ -143,11 +143,15 @@ PIPELINE_ALIGNMENT = {
     TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER: [TRANSFORMERS_MODEL],
 }
 
-TASK2PIPE = {"textcat": f"{TRANSFORMERS_SEQ_CLASSIFIER}", "ner": f"{TRANSFORMERS_NER}"}
+TASK2PIPE = {
+    "textcat": f"{TRANSFORMERS_SEQ_CLASSIFIER}",
+    "ner": f"{TRANSFORMERS_NER}",
+    "multilabel_textcat": f"{TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER}",
+}
 
 
 def _add_pipes(cfg: NLPConfig) -> NLPConfig:
-    if cfg.task in {"textcat", "ner"}:
+    if cfg.task in {"textcat", "ner", "multilabel_textcat"}:
         assert cfg.labels, "`cfg.labels` required"
         cfg.pipeline = cfg.pipeline or OmegaConf.create({})
         prev = cfg.pipeline[TASK2PIPE[cfg.task]] or OmegaConf.create({})
