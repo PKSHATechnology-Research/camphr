@@ -13,12 +13,16 @@ from spacy.language import Language
 from spacy.pipeline import Pipe
 from spacy.vocab import Vocab
 from toolz import merge
+from typing_extensions import Literal
 
 from camphr.lang.torch import TorchLanguage
 from camphr.ner_labels.utils import get_ner_labels
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
-from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
+from camphr.pipelines.transformers.seq_classification import (
+    TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
+    TRANSFORMERS_SEQ_CLASSIFIER,
+)
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.pipelines.transformers.utils import LABELS
 from camphr.utils import get_labels, resolve_alias
@@ -51,6 +55,8 @@ class NLPConfig(omegaconf.Config):
     name: str
     lang: LangConfig
     pipeline: omegaconf.DictConfig
+    task: Optional[Literal["ner", "textcat", "multilabel_textcat"]]
+    labels: Optional[str]
 
 
 def create_model(cfg: Union[NLPConfig, Any]) -> Language:
@@ -97,7 +103,8 @@ def correct_model_config(cfg: NLPConfig) -> NLPConfig:
     """Parse config. Complement missing informations, resolve aliases, etc."""
     PARSERS: List[_ConfigParser] = [
         resolve_alias(ALIASES),
-        _assign_pipeline,
+        _add_pipes,
+        _add_required_pipes,
         _align_pipeline,
         _correct_trf_pipeline,
         _resolve_label,
@@ -112,12 +119,17 @@ ALIASES = {
     "pretrained": f"pipeline.{TRANSFORMERS_MODEL}.trf_name_or_path",
     "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",
     "textcat_label": f"pipeline.{TRANSFORMERS_SEQ_CLASSIFIER}.labels",
+    "multitextcat_label": f"pipeline.{TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER}.labels",
     "optimizer": f"lang.optimizer",
 }
 
 
 TRF_BASES = [TRANSFORMERS_TOKENIZER, TRANSFORMERS_MODEL]
-TRF_TASKS = [TRANSFORMERS_SEQ_CLASSIFIER, TRANSFORMERS_NER]
+TRF_TASKS = [
+    TRANSFORMERS_SEQ_CLASSIFIER,
+    TRANSFORMERS_NER,
+    TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
+]
 TRF_PIPES = TRF_BASES + TRF_TASKS
 
 
@@ -128,10 +140,32 @@ PIPELINE_ALIGNMENT = {
     TRANSFORMERS_MODEL: [TRANSFORMERS_TOKENIZER],
     TRANSFORMERS_NER: [TRANSFORMERS_MODEL],
     TRANSFORMERS_SEQ_CLASSIFIER: [TRANSFORMERS_MODEL],
+    TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER: [TRANSFORMERS_MODEL],
+}
+
+TASK2PIPE = {
+    "textcat": f"{TRANSFORMERS_SEQ_CLASSIFIER}",
+    "ner": f"{TRANSFORMERS_NER}",
+    "multilabel_textcat": f"{TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER}",
 }
 
 
-def _assign_pipeline(cfg: NLPConfig) -> NLPConfig:
+def _add_pipes(cfg: NLPConfig) -> NLPConfig:
+    if cfg.task in {"textcat", "ner", "multilabel_textcat"}:
+        assert cfg.labels, "`cfg.labels` required"
+        cfg.pipeline = cfg.pipeline or OmegaConf.create({})
+        prev = cfg.pipeline[TASK2PIPE[cfg.task]] or OmegaConf.create({})
+        cfg.pipeline[TASK2PIPE[cfg.task]] = OmegaConf.merge(
+            OmegaConf.create({"labels": cfg.labels}), prev
+        )
+    else:
+        assert (
+            not cfg.labels
+        ), f'One of ["textcat", "ner", "multilabel_textcat"] pipeline is required.'
+    return cfg
+
+
+def _add_required_pipes(cfg: NLPConfig) -> NLPConfig:
     """assign required pipes defined in  `PIPELINE_ALIGNMENT`"""
     pipe_names = list(cfg.pipeline.keys())
     while True:
@@ -225,4 +259,7 @@ def _resolve_label(cfg: NLPConfig) -> NLPConfig:
     seq = cfg.pipeline[TRANSFORMERS_SEQ_CLASSIFIER]
     if seq:
         seq[LABELS] = get_labels(seq[LABELS])
+    multiseq = cfg.pipeline[TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER]
+    if multiseq:
+        multiseq[LABELS] = get_labels(multiseq[LABELS])
     return cfg

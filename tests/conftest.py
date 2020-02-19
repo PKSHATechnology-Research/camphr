@@ -86,7 +86,7 @@ ALL_LANGS = ["ja_mecab", "ja_juman"]
 @pytest.fixture(scope="session", params=ALL_LANGS)
 def lang(request):
     if not check_lang(request.param):
-        pytest.skip()
+        pytest.skip(f"No requirements for {request.param}")
     return request.param
 
 

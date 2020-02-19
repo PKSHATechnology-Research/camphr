@@ -146,6 +146,7 @@ def get_by_dotkey(d: dict, dotkey: str) -> Any:
     keys = dotkey.split(".")
     cur = d
     for key in keys:
+        assert hasattr(cur, "get"), f"Try to load '{dotkey}' from `{d}`, but not found."
         cur = cur.get(key, None)
         if cur is None:
             return None

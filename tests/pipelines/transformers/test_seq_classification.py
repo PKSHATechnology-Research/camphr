@@ -4,14 +4,13 @@ import pytest
 from spacy.language import Language
 
 from camphr.models import create_model
-from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.seq_classification import (
     TOP_LABEL,
     TOPK_LABELS,
+    TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
     TRANSFORMERS_SEQ_CLASSIFIER,
     TrfForSequenceClassification,
 )
-from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.torch_utils import get_loss_from_docs
 from tests.utils import check_serialization
 
@@ -21,8 +20,13 @@ def labels():
     return ["one", "two", "three"]
 
 
+@pytest.fixture(scope="module", params=["single", "multiple"])
+def textcat_type(request):
+    return request.param
+
+
 @pytest.fixture(scope="module")
-def nlp(trf_name_or_path, labels, lang, device):
+def nlp(trf_name_or_path, labels, lang, device, textcat_type):
     config = f"""
     lang:
         name: {lang}
@@ -32,40 +36,50 @@ def nlp(trf_name_or_path, labels, lang, device):
             params:
                 lr: 0.01
     pipeline:
-        {TRANSFORMERS_TOKENIZER}:
-            trf_name_or_path: {trf_name_or_path}
-        {TRANSFORMERS_MODEL}:
-            trf_name_or_path: {trf_name_or_path}
-        {TRANSFORMERS_SEQ_CLASSIFIER}:
+        {TRANSFORMERS_SEQ_CLASSIFIER if textcat_type == "single" else TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER}:
             trf_name_or_path: {trf_name_or_path}
             labels: {labels}
     """
     return create_model(config)
 
 
-TEXTS = ["トランスフォーマーズを使ってテキスト分類をします", "うまくclassificationできるかな?"]
+@pytest.fixture(scope="module")
+def texts(lang: str):
+    if lang.startswith("ja"):
+        return ["トランスフォーマーズを使ってテキスト分類をします", "うまくclassificationできるかな?"]
+    elif lang == "en":
+        return [
+            "A test text for transformers' sequence classification",
+            "What exact kind of architecture of neural networks do I need for a sequence binary/multiclass classification?",
+        ]
 
 
 @pytest.fixture(scope="module")
-def docs_golds(labels):
+def docs_golds(labels, texts):
     res = []
-    for text in TEXTS:
-        res.append((text, {"cats": {random.choice(labels): 1}}))
+    for text in texts:
+        random.shuffle(labels)
+        cats = {l: random.uniform(0.0, 1.0) for l in labels}
+        res.append((text, {"cats": cats}))
     return res
 
 
-@pytest.mark.parametrize("text", TEXTS)
-def test_call(nlp, text, labels):
-    doc = nlp(text)
-    assert set(labels) == set(doc.cats)
+def test_call(nlp, texts, labels, textcat_type):
+    for text in texts:
+        doc = nlp(text)
+        assert set(labels) == set(doc.cats)
+        if textcat_type == "single":
+            assert abs(sum(doc.cats.values()) - 1.0) < 1e-5
+        elif textcat_type == "multiple":
+            assert abs(sum(doc.cats.values()) - 1.0) > 1e-5
 
 
-@pytest.mark.parametrize("text", TEXTS)
-def test_ext(nlp, text, labels):
-    doc = nlp(text)
-    assert doc._.get(TOP_LABEL)
-    k = 2
-    assert len(doc._.get(TOPK_LABELS)(k)) == k
+def test_underscore(nlp, texts, labels):
+    for text in texts:
+        doc = nlp(text)
+        assert doc._.get(TOP_LABEL)
+        k = 2
+        assert len(doc._.get(TOPK_LABELS)(k)) == k
 
 
 def test_update(nlp, labels, docs_golds):

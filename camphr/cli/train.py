@@ -41,8 +41,12 @@ MUST_FIELDS = [
     [
         "model.ner_label",
         "model.textcat_label",
+        "model.multitextcat_label",
         "model.pipeline.transformers_ner.labels",
         "model.pipeline.transformers_seq_classification.labels",
+        "model.pipeline.transformers_multilabel_seq_classification.labels",
+        "model.labels",
+        "model.task",
     ],
     "model.lang.name",
 ]
@@ -50,6 +54,8 @@ MUST_FIELDS = [
 PATH_FIELDS = [
     "model.ner_label",
     "model.textcat_label",
+    "model.multitextcat_label",
+    "model.labels",
     "train.data.path",
     "model.pretrained",
 ]
@@ -73,6 +79,7 @@ def resolve_path(cfg: Config) -> Config:
 
 
 def parse(cfg: Config):
+    assert isinstance(cfg, Config), cfg
     cfg = resolve_alias(ALIASES, cfg)
     check_nonempty(cfg, MUST_FIELDS)
     cfg = resolve_path(cfg)
@@ -177,6 +184,16 @@ def set_seed(seed: int):
         torch.cuda.manual_seed_all(seed)  # type: ignore
 
 
+def validate_data(cfg: Config, data: InputData, n_check=100):
+    if "textcat" in cfg.model.pipeline:
+        data = random.sample(data, min(n_check, len(data)))
+        for text, gold in data:
+            assert "cats" in gold, "`cats` key is required in gold label"
+            assert (
+                abs(sum(gold["cats"].values()) - 1) < 1e-2
+            ), "Sum of gold.cats must equal 1. for text classification task."
+
+
 def _main(cfg: Config) -> None:
     if cfg.user_config is not None:
         # Override config by user config.
@@ -189,8 +206,9 @@ def _main(cfg: Config) -> None:
     if cfg.seed:
         set_seed(cfg.seed)
     logger.info(cfg.pretty())
-    train_data, val_data = create_data(cfg.train.data)
     nlp = cast(TorchLanguage, create_model(cfg.model))
+    train_data, val_data = create_data(cfg.train.data)
+    validate_data(cfg, train_data)
     logger.info("output dir: {}".format(os.getcwd()))
     if torch.cuda.is_available():
         logger.info("CUDA enabled")

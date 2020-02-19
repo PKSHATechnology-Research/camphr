@@ -9,7 +9,7 @@ from camphr.models import create_model
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer
 from camphr.pipelines.transformers.utils import ATTRS
 
-from ...utils import BERT_DIR, XLNET_DIR
+from ...utils import BERT_JA_DIR, XLNET_DIR
 
 
 @pytest.fixture(scope="session")
@@ -21,7 +21,7 @@ def trf_tokenizer(trf_name_or_path):
     "model_name,tokens,spaces,trf_tokens,align",
     [
         (
-            str(BERT_DIR),
+            str(BERT_JA_DIR),
             ["EXILE", "の", "ATSUSHI"],
             [False, False, False],
             ["[CLS]", "EXILE", "の", "ATS", "##US", "##HI", "[SEP]"],
