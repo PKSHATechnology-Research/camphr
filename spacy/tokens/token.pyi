@@ -15,6 +15,7 @@ class Token:
     i: int
     head: Token
     idx: int
+    is_sent_start: bool
     @classmethod
     def set_extension(cls, name: str, **kwargs) -> None: ...
     def __len__(self) -> int: ...

@@ -24,6 +24,7 @@ class Doc:
     text: str
     is_parsed: bool
     is_tagged: bool
+    is_sentenced: bool
     sents: Iterator[tokens.Span]
     user_data: Dict[str, Any]
     tensor: Any
