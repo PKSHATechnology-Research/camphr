@@ -120,7 +120,7 @@ def import_attr(import_path: str) -> Any:
 
 
 def get_requirements_line():
-    return f'camphr=="^{__version__}"'
+    return f"camphr>={__version__}"
 
 
 def get_defaults(lang: str) -> Type[BaseDefaults]:
