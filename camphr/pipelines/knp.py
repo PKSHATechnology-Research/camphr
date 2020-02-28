@@ -8,7 +8,7 @@ from spacy.util import filter_spans
 from toolz import curry
 
 from camphr.consts import JUMAN_LINES
-from camphr.utils import get_juman_command
+from camphr.utils import JumanMixin, get_juman_command, han_to_zen_normalize
 
 LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
 Span.set_extension(JUMAN_LINES, default=None)
@@ -42,6 +42,27 @@ KNP_USER_KEYS = KnpUserKeys(
         for comp in KnpUserKeys._fields
     ]
 )
+
+
+@spacy.component("juman_pipe")
+class JumanPipe(JumanMixin):
+    def __init__(self, juman_kwargs: Optional[Dict] = None, *args, **kwargs):
+        juman_kwargs = juman_kwargs or {}
+        default_command = get_juman_command()
+        assert default_command
+        juman_kwargs.setdefault("command", default_command)
+
+        self.reset_tokenizer()
+        self.juman_kwargs = juman_kwargs
+        self.preprocessor = han_to_zen_normalize
+
+    @classmethod
+    def from_nlp(cls, *args, **kwargs):
+        return cls()
+
+    def __call__(self, doc: Doc) -> Doc:
+        doc.user_data[JUMAN_LINES] = self._juman_string(doc.text)
+        return doc
 
 
 def _take_juman_lines(n: int, juman_lines: List[str]) -> Tuple[List[str], List[str]]:
@@ -131,7 +152,7 @@ class KNP:
 
 @curry
 def get_knp_span(type_: str, span: Span) -> List[Span]:
-    """Get knp tag or bunsetsu list"""
+    """Get knp tag or bunsetsu list as Spacy Span object"""
     assert type_ != MORPH
 
     knp_list = span.sent._.get(getattr(KNP_USER_KEYS, type_).list_)

@@ -268,3 +268,31 @@ def get_juman_command() -> Optional[Literal["juman", "jumanpp"]]:
         if distutils.spawn.find_executable(cmd):
             return cmd  # type: ignore
     return None
+
+
+def han_to_zen_normalize(text):
+    """Normalizer for juman and knp"""
+    try:
+        import mojimoji
+    except ImportError:
+        raise ValueError("juman or knp Language requires mojimoji.")
+    return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
+
+
+class JumanMixin:
+    """Mixin for juman command"""
+
+    def reset_tokenizer(self):
+        from pyknp import Juman
+
+        juman_kwargs = getattr(self, "juman_kwargs", {})
+        self.tokenizer = Juman(**juman_kwargs)
+
+    def _juman_string(self, text: str) -> str:
+        try:
+            lines = self.tokenizer.juman_lines(text)
+        except BrokenPipeError:
+            # Juman is sometimes broken due to its subprocess management.
+            self.reset_tokenizer()
+            lines = self.tokenizer.juman_lines(text)
+        return lines

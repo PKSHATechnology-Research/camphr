@@ -8,22 +8,19 @@ from spacy.tokens import Doc, Token
 
 from camphr.consts import JUMAN_LINES, KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
-from camphr.utils import SerializationMixin, get_juman_command
+from camphr.utils import (
+    JumanMixin,
+    SerializationMixin,
+    get_juman_command,
+    han_to_zen_normalize,
+)
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
 )
 
 
-def han_to_zen_normalize(text):
-    try:
-        import mojimoji
-    except ImportError:
-        raise ValueError("juman or knp Language requires mojimoji.")
-    return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
-
-
-class Tokenizer(SerializationMixin):
+class Tokenizer(JumanMixin, SerializationMixin):
     """Juman tokenizer
 
     Note:
@@ -51,22 +48,15 @@ class Tokenizer(SerializationMixin):
             juman_kwargs: passed to `pyknp.Juman.__init__`
             preprocessor: applied to text before tokenizing. `mojimoji.han_to_zen` is often used.
         """
-        from pyknp import Juman
-
         juman_kwargs = juman_kwargs or {}
         default_command = get_juman_command()
         assert default_command
         juman_kwargs.setdefault("command", default_command)
 
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
-        self.tokenizer = Juman(**juman_kwargs) if juman_kwargs else Juman()
+        self.reset_tokenizer()
         self.juman_kwargs = juman_kwargs
         self.preprocessor = preprocessor
-
-    def reset_tokenizer(self):
-        from pyknp import Juman
-
-        self.tokenizer = Juman(**self.juman_kwargs) if self.juman_kwargs else Juman()
 
     def __call__(self, text: str) -> Doc:
         """Make doc from text. Juman's `fstring` is stored in `Token._.fstring`"""
@@ -77,15 +67,6 @@ class Tokenizer(SerializationMixin):
         doc = self._dtokens_to_doc(dtokens)
         doc.user_data[JUMAN_LINES] = juman_lines
         return doc
-
-    def _juman_string(self, text: str) -> str:
-        try:
-            lines = self.tokenizer.juman_lines(text)
-        except BrokenPipeError:
-            # Juman is sometimes broken due to its subprocess management.
-            self.reset_tokenizer()
-            lines = self.tokenizer.juman_lines(text)
-        return lines
 
     def _dtokens_to_doc(self, dtokens: List[ShortUnitWord]) -> Doc:
         words = [x.surface for x in dtokens]
