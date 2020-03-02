@@ -14,7 +14,7 @@ from camphr.utils import SerializationMixin, get_juman_command
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
 )
-_REPLACE_STRINGS = {"\t": "　", "\r": "", "（": "(", "）": ")"}
+_REPLACE_STRINGS = {"\t": "　", "\r": "", "（": "(", "）": ")", "\n": "　"}
 
 
 def han_to_zen_normalize(text):
