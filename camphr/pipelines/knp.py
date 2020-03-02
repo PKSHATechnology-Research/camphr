@@ -1,6 +1,6 @@
 """Defines KNP pipelines."""
 import re
-from typing import Callable, Dict, Iterable, List, NamedTuple, Optional, Tuple
+from typing import Callable, Dict, Iterable, Iterator, List, NamedTuple, Optional, Tuple
 
 import spacy
 from spacy.tokens import Doc, Span, Token
@@ -86,6 +86,10 @@ class KNP:
             K.tag.list_,
         ]:
             Span.set_extension(k, default=None, force=True)
+        for k in ["bunsetsu", "morph", "tag"]:
+            Doc.set_extension(
+                getattr(K, k).list_, getter=get_all_knp_list_from_sents(k)
+            )
         for k in [BUNSETSU, TAG]:
             Span.set_extension(getattr(KNP_USER_KEYS, k).spans, getter=get_knp_span(k))
             Span.set_extension(
@@ -157,6 +161,13 @@ def get_knp_element_id(elem) -> int:
         if isinstance(elem, cls):
             return getattr(elem, attr)
     raise ValueError(type(elem))
+
+
+@curry
+def get_all_knp_list_from_sents(type_: str, doc: Doc) -> Iterator[Span]:
+    for sent in doc.sents:
+        key = getattr(KNP_USER_KEYS, type_)
+        yield from sent._.get(key.list_)
 
 
 @curry

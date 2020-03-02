@@ -131,12 +131,13 @@ def _split_text_for_juman(text: str) -> Iterator[str]:
         if sep in text:
             i = text.index(sep)
             head, tail = text[: i + 1], text[i + 1 :]
-            yield from _split_text_for_juman(head)
-            yield from _split_text_for_juman(tail)
-            return
+            if len(head) < n:
+                yield from _split_text_for_juman(head)
+                yield from _split_text_for_juman(tail)
+                return
     # If any separator is not found in text, split roughly
     yield text[:n]
-    yield from text[n:]
+    yield from _split_text_for_juman(text[n:])
 
 
 # for pickling. see https://spacy.io/usage/adding-languages
