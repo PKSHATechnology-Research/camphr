@@ -1,6 +1,7 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
+import itertools
 from collections import namedtuple
-from typing import Any, Callable, Dict, List, Optional, Type
+from typing import Any, Callable, Dict, Iterator, List, Optional, Type
 
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -80,7 +81,12 @@ class Tokenizer(SerializationMixin):
 
     def _juman_string(self, text: str) -> str:
         try:
-            lines = self.tokenizer.juman_lines(text)
+            texts = _split_text_for_juman(text)
+            lines: str = "".join(
+                itertools.chain.from_iterable(
+                    self.tokenizer.juman_lines(text) for text in texts
+                )
+            )
         except BrokenPipeError:
             # Juman is sometimes broken due to its subprocess management.
             self.reset_tokenizer()
@@ -110,6 +116,27 @@ class Tokenizer(SerializationMixin):
             lemma = m.genkei or surface
             words.append(ShortUnitWord(surface, lemma, pos, m.fstring, False))
         return words
+
+
+_SEPS = ["。", ".", "．"]
+
+
+def _split_text_for_juman(text: str) -> Iterator[str]:
+    """Juman denies long text (maybe >4096 bytes) so split text"""
+    n = 1000
+    if len(text) < n:
+        yield text
+        return
+    for sep in _SEPS:
+        if sep in text:
+            i = text.index(sep)
+            head, tail = text[: i + 1], text[i + 1 :]
+            yield from _split_text_for_juman(head)
+            yield from _split_text_for_juman(tail)
+            return
+    # If any separator is not found in text, split roughly
+    yield text[:n]
+    yield from text[n:]
 
 
 # for pickling. see https://spacy.io/usage/adding-languages
