@@ -24,3 +24,12 @@ jobs:
         pip install --upgrade pip
         pip install -U setuptools
     - run: pip install camphr
+    - name: test camphr train cli for NER
+      run: |
+        camphr train model.lang.name=en model.task=ner model.pretrained=../../fixtures/bert-test/ model.labels=irex.json train.data.path=test_ner_irex_ja.jsonl
+      working-directory: tests/cli/fixtures
+
+    - name: test camphr train cli for Multi Textcat
+      run: |
+        camphr train model.lang.name=en model.task=multilabel_textcat model.pretrained=../../../fixtures/bert-test/ model.labels=label.json train.data.path=train.jsonl
+      working-directory: tests/cli/fixtures/multi-textcat
