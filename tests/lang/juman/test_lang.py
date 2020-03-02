@@ -6,6 +6,12 @@ from hypothesis import strategies as st
 
 from camphr.lang.juman import _SEPS, Japanese, _split_text_for_juman
 
+from ...utils import check_juman
+
+pytestmark = pytest.mark.skipif(
+    not check_juman(), reason="juman is not always necessary"
+)
+
 
 @pytest.fixture(scope="session")
 def nlp():
