@@ -89,3 +89,7 @@ def test_knp_children_getter(
         children = [span._.get(KNP_USER_KEYS.tag.children) for span in spans]
         children = [[cc.text for cc in c] for c in children]
         assert children == children_texts
+
+
+def test_long_sentence(nlp: Language):
+    nlp("一" * 10000)
