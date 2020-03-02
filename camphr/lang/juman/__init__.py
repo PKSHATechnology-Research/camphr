@@ -14,6 +14,7 @@ from camphr.utils import SerializationMixin, get_juman_command
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
 )
+_REPLACE_STRINGS = {"\t": "　", "\r": "", "（": "(", "）": ")"}
 
 
 def han_to_zen_normalize(text):
@@ -21,7 +22,10 @@ def han_to_zen_normalize(text):
         import mojimoji
     except ImportError:
         raise ValueError("juman or knp Language requires mojimoji.")
-    return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
+    text = mojimoji.han_to_zen(text)
+    for k, v in _REPLACE_STRINGS.items():
+        text = text.replace(k, v)
+    return text
 
 
 class Tokenizer(SerializationMixin):
@@ -151,7 +155,7 @@ class Defaults(Language.Defaults):  # type: ignore
         cls,
         nlp=None,
         juman_kwargs: Optional[Dict[str, Any]] = None,
-        preprocessor: Optional[Callable[[str], str]] = None,
+        preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalize,
     ):
         return Tokenizer(cls, nlp, juman_kwargs=juman_kwargs, preprocessor=preprocessor)
 

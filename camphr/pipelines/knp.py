@@ -125,7 +125,19 @@ class KNP:
             tlist = blist.tag_list()
             for l, comp in zip([blist, mlist, tlist], ["bunsetsu", "morph", "tag"]):
                 sent._.set(getattr(KNP_USER_KEYS, comp).list_, l)
-            assert len(mlist) == len(sent)
+            if len(mlist) != len(sent):
+                t, m = None, None
+                for t, m in zip(sent, mlist):
+                    if t.text != m.midasi:
+                        break
+                raise ValueError(
+                    f"""Internal error occured
+            Sentence: {sent.text}
+            mlist : {[m.midasi for m in mlist]}
+            tokens: {[t.text for t in sent]}
+            diff  : {m.midasi}, {t.text}
+            """
+                )
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
         doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore

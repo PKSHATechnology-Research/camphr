@@ -89,3 +89,8 @@ def test_knp_children_getter(
         children = [span._.get(KNP_USER_KEYS.tag.children) for span in spans]
         children = [[cc.text for cc in c] for c in children]
         assert children == children_texts
+
+
+@pytest.mark.parametrize("text", ["（※"])
+def test_call(nlp: Language, text: str):
+    nlp(text)
