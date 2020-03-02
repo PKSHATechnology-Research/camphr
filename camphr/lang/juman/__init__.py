@@ -1,6 +1,7 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
+import itertools
 from collections import namedtuple
-from typing import Any, Callable, Dict, List, Optional, Type
+from typing import Any, Callable, Dict, Iterator, List, Optional, Type
 
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -13,6 +14,7 @@ from camphr.utils import SerializationMixin, get_juman_command
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
 )
+_REPLACE_STRINGS = {"\t": "　", "\r": "", "（": "(", "）": ")", "\n": "　"}
 
 
 def han_to_zen_normalize(text):
@@ -20,7 +22,10 @@ def han_to_zen_normalize(text):
         import mojimoji
     except ImportError:
         raise ValueError("juman or knp Language requires mojimoji.")
-    return mojimoji.han_to_zen(text.replace("\t", " ").replace("\r", ""))
+    text = mojimoji.han_to_zen(text)
+    for k, v in _REPLACE_STRINGS.items():
+        text = text.replace(k, v)
+    return text
 
 
 class Tokenizer(SerializationMixin):
@@ -80,7 +85,12 @@ class Tokenizer(SerializationMixin):
 
     def _juman_string(self, text: str) -> str:
         try:
-            lines = self.tokenizer.juman_lines(text)
+            texts = _split_text_for_juman(text)
+            lines: str = "".join(
+                itertools.chain.from_iterable(
+                    self.tokenizer.juman_lines(text) for text in texts
+                )
+            )
         except BrokenPipeError:
             # Juman is sometimes broken due to its subprocess management.
             self.reset_tokenizer()
@@ -112,6 +122,28 @@ class Tokenizer(SerializationMixin):
         return words
 
 
+_SEPS = ["。", ".", "．"]
+
+
+def _split_text_for_juman(text: str) -> Iterator[str]:
+    """Juman denies long text (maybe >4096 bytes) so split text"""
+    n = 1000
+    if len(text) < n:
+        yield text
+        return
+    for sep in _SEPS:
+        if sep in text:
+            i = text.index(sep)
+            head, tail = text[: i + 1], text[i + 1 :]
+            if len(head) < n:
+                yield from _split_text_for_juman(head)
+                yield from _split_text_for_juman(tail)
+                return
+    # If any separator is not found in text, split roughly
+    yield text[:n]
+    yield from _split_text_for_juman(text[n:])
+
+
 # for pickling. see https://spacy.io/usage/adding-languages
 class Defaults(Language.Defaults):  # type: ignore
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
@@ -123,7 +155,7 @@ class Defaults(Language.Defaults):  # type: ignore
         cls,
         nlp=None,
         juman_kwargs: Optional[Dict[str, Any]] = None,
-        preprocessor: Optional[Callable[[str], str]] = None,
+        preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalize,
     ):
         return Tokenizer(cls, nlp, juman_kwargs=juman_kwargs, preprocessor=preprocessor)
 
