@@ -40,7 +40,7 @@ def default_config() -> Config:
             f"""
             model:
                 lang:
-                    name: ja
+                    name: ja_mecab
                 task: ner
                 pretrained: {BERT_JA_DIR}
                 labels: {DATA_DIR/"irex.json"}
