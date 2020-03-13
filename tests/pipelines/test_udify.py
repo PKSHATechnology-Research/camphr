@@ -28,7 +28,11 @@ def test_udify(nlp: Language, text):
 def test_serialization(nlp, tmpdir):
     docs = [nlp(text) for text in TEXTS]
     nlp.to_disk(str(tmpdir))
-    nlp = spacy.load(str(tmpdir))
-    docs2 = [nlp(text) for text in TEXTS]
+    nlp2 = spacy.load(str(tmpdir))
+    docs2 = [nlp2(text) for text in TEXTS]
     for doc1, doc2 in zip(docs, docs2):
+        if spacy.__version__ == "2.2.4":
+            # this version of spacy has a bug in `assert_docs_equal`.
+            # see https://github.com/explosion/spaCy/issues/5144
+            return
         assert_docs_equal(doc1, doc2)
