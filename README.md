@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/PKSHATechnology-Research/camphr/blob/master/img/logoc.svg" width="200" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/PKSHATechnology-Research/camphr/master/img/logoc.svg?sanitize=true" width="200" /></p>
 
 # Camphr - spaCy plugin for Transformers, Udify, Elmo, etc.
 
