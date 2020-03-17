@@ -34,7 +34,7 @@ $ poetry run python scripts/download_model.py en_elmo_medium
 
 ### Test MeCab, KNP (Japanese pipeline)
 
-For testing MeCab or KNP, you should install `mecab` or `knp` in your system respectively.
+For testing MeCab or KNP, you need to install `mecab` or `knp` in your system respectively.
 After that, put the following command:
 
 ```bash
