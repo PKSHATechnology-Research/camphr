@@ -1,9 +1,9 @@
-Fine-tuned models are stored in "./output/DATE/TIME/models/${i}" directories.
+Fine-tuned models are stored in "./outputs/DATE/TIME/models/${i}" directories.
 :code:`${i}` is the number of the training steps (e.g. :code:`0` for the first training loop).
 The model can be loaded as follows:
 
     >>> import spacy
-    >>> nlp = spacy.load("./output/2020-01-30/19-31-23/models/0")
+    >>> nlp = spacy.load("./outputs/2020-01-30/19-31-23/models/0")
 
 And you can use it as follows:
 
@@ -20,7 +20,7 @@ To create python package, use :code:`spacy package` CLI:
 .. code-block:: console
 
     $ mkdir packages
-    $ spacy package ./output/2020-01-30/19-31-23/models/0 ./packages
+    $ spacy package ./outputs/2020-01-30/19-31-23/models/0 ./packages
 
 .. seealso::
 
