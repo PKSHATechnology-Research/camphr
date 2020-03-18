@@ -85,7 +85,7 @@ Camphr provides training CLI built on `Hydra <https://github.com/facebookresearc
 
 
     >>> import spacy
-    >>> nlp = spacy("./output/2020-01-30/19-31-23/models/0")
+    >>> nlp = spacy("./outputs/2020-01-30/19-31-23/models/0")
     >>> doc = nlp("Fine-tune Transformers and use it as a spaCy pipeline")
     >>> print(doc.ents)
     [Transformers, spaCy]

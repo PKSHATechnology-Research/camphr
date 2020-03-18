@@ -163,7 +163,7 @@ You can use trained model as follows:
 
 ```python
 >>> import spacy
->>> nlp = spacy.load("./output/2020-01-30/19-31-23/models/0")
+>>> nlp = spacy.load("./outputs/2020-01-30/19-31-23/models/0")
 >>> doc = nlp("Hi, this is fine-tuned model")
 >>> doc.cats
 {"POSITIVE": 0.812342, "NEGATIVE": 0.187658}
@@ -173,7 +173,7 @@ To create python package, use [spacy package](https://spacy.io/api/cli#package) 
 
 ```console
 $ mkdir packages
-$ spacy package ./output/2020-01-30/19-31-23/models/0 ./packages
+$ spacy package ./outputs/2020-01-30/19-31-23/models/0 ./packages
 ```
 
 You can configure training or fine-tune for other tasks. See [the documentation](https://camphr.readthedocs.io/en/latest/notes/finetune_transformers.html) for details.

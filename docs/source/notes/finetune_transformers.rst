@@ -309,11 +309,6 @@ For example, prepare :code:`user.yaml` as follows:
     model:
         lang:
             name: ja
-        optimizer:
-            class: transformers.optimization.AdamW
-            params:
-                eps: 1.0e-05
-                lr: 1.0e-03
     train:
         data:
             ndata: -1
@@ -321,6 +316,11 @@ For example, prepare :code:`user.yaml` as follows:
             val_size: 0.1
         nbatch: 128
         niter: 30
+        optimizer:
+            class: transformers.optimization.AdamW
+            params:
+                eps: 1.0e-05
+                lr: 1.0e-03
 
 And pass the yaml to CLI as follows:
 

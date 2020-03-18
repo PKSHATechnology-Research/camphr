@@ -1,1 +1,1 @@
-The trained models, logs and data are stored in "./output/YYYY-mm-dd/HH-MM-SS/", thanks to `Hydra <https://hydra.cc/>`_'s functionality.  See `Hydra's documentation <https://hydra.cc/docs/intro>`_ to customize the directory location or logging.
+The trained models, logs and data are stored in "./outputs/YYYY-mm-dd/HH-MM-SS/", thanks to `Hydra <https://hydra.cc/>`_'s functionality.  See `Hydra's documentation <https://hydra.cc/docs/intro>`_ to customize the directory location or logging.
