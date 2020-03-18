@@ -316,7 +316,7 @@ For example, prepare :code:`user.yaml` as follows:
             val_size: 0.1
         nbatch: 128
         niter: 30
-		optimizer:
+        optimizer:
             class: transformers.optimization.AdamW
             params:
                 eps: 1.0e-05
