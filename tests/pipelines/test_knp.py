@@ -1,3 +1,4 @@
+import itertools
 from typing import List, Tuple
 
 import pytest
@@ -5,7 +6,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 
 from camphr.models import load
-from camphr.pipelines.knp import KNP_USER_KEYS
+from camphr.pipelines.knp import BUNSETSU, KNP_USER_KEYS, TAG
 
 from ..utils import check_knp
 
@@ -94,3 +95,15 @@ def test_knp_children_getter(
 @pytest.mark.parametrize("text", ["（※"])
 def test_call(nlp: Language, text: str):
     nlp(text)
+
+
+def test_knp_doc_getter(nlp: Language):
+    text = "太郎がリンゴとみかんを食べた。二郎は何も食べなかったので腹が減った"
+    doc = nlp(text)
+    for obj in [TAG, BUNSETSU]:
+        for feature in ["list_", "spans"]:
+            key = getattr(KNP_USER_KEYS, obj)
+            key = getattr(key, feature)
+            assert list(doc._.get(key)) == list(
+                itertools.chain.from_iterable(sent._.get(key) for sent in doc.sents)
+            )
