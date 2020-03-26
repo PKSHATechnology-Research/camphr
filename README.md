@@ -5,7 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/camphr/badge/?version=latest)](https://camphr.readthedocs.io/en/latest/?badge=latest)
 [![Gitter](https://badges.gitter.im/camphr/community.svg)](https://gitter.im/camphr/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![PyPI version](https://badge.fury.io/py/camphr.svg)](https://badge.fury.io/py/camphr)
-![](https://github.com/PKSHATechnology-Research/camphr/workflows/test/badge.svg)
+![test and publish](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20and%20publish/badge.svg)
 ![](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20extras/badge.svg)
 ![](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20package/badge.svg)
 ![daily-test](https://github.com/PKSHATechnology-Research/camphr/workflows/daily-test/badge.svg)
