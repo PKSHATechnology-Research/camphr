@@ -1,11 +1,22 @@
 """Defines KNP pipelines."""
 import re
-from typing import Callable, Dict, Iterable, Iterator, List, NamedTuple, Optional, Tuple
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    NamedTuple,
+    Optional,
+    Tuple,
+)
 
 import spacy
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 from toolz import curry
+from typing_extensions import Literal
 
 from camphr.consts import JUMAN_LINES
 from camphr.utils import get_juman_command
@@ -18,6 +29,7 @@ SKIP_TOKENS = {"@"}
 TAG = "tag"
 BUNSETSU = "bunsetsu"
 MORPH = "morph"
+L_KNP_OBJ = Literal["tag", "bunsetsu", "morph"]
 
 
 class KnpUserKeyType(NamedTuple):
@@ -87,9 +99,11 @@ class KNP:
         ]:
             Span.set_extension(k, default=None, force=True)
         for k in ["bunsetsu", "morph", "tag"]:
-            Doc.set_extension(
-                getattr(K, k).list_, getter=get_all_knp_list_from_sents(k)
-            )
+            for feature in ["spans", "list_"]:
+                key = getattr(getattr(K, k), feature)
+                Doc.set_extension(
+                    key, getter=get_all_knp_features_from_sents(k, feature)
+                )
         for k in [BUNSETSU, TAG]:
             Span.set_extension(getattr(KNP_USER_KEYS, k).spans, getter=get_knp_span(k))
             Span.set_extension(
@@ -176,14 +190,17 @@ def get_knp_element_id(elem) -> int:
 
 
 @curry
-def get_all_knp_list_from_sents(type_: str, doc: Doc) -> Iterator[Span]:
+def get_all_knp_features_from_sents(
+    knp_obj: L_KNP_OBJ, feature: str, doc: Doc
+) -> Iterator[Any]:
+    """Helper for spacy.doc extension to get knp features from spans and concatenate them."""
     for sent in doc.sents:
-        key = getattr(KNP_USER_KEYS, type_)
-        yield from sent._.get(key.list_)
+        key = getattr(KNP_USER_KEYS, knp_obj)
+        yield from sent._.get(getattr(key, feature))
 
 
 @curry
-def get_knp_parent(type_: str, span: Span) -> Optional[Span]:
+def get_knp_parent(type_: L_KNP_OBJ, span: Span) -> Optional[Span]:
     tag_or_bunsetsu = span._.get(getattr(KNP_USER_KEYS, type_).element)
     if not tag_or_bunsetsu:
         return None
@@ -195,7 +212,7 @@ def get_knp_parent(type_: str, span: Span) -> Optional[Span]:
 
 
 @curry
-def get_knp_children(type_: str, span: Span) -> List[Span]:
+def get_knp_children(type_: L_KNP_OBJ, span: Span) -> List[Span]:
     tag_or_bunsetsu = span._.get(getattr(KNP_USER_KEYS, type_).element)
     if not tag_or_bunsetsu:
         return []
