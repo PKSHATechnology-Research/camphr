@@ -11,8 +11,9 @@ jobs:
     - name: Git commit and push
       run: |
         echo "foo" > foo
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
         git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-        git pull github ${GITHUB_REF} --ff-only
         git add .
         git commit -m "Update native model"
         git push github HEAD:${GITHUB_REF}
