@@ -13,6 +13,7 @@ class Token:
     _: Underscore
     vector: Any
     i: int
+    j: int
     head: Token
     idx: int
     is_sent_start: bool
