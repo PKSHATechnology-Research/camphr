@@ -33,9 +33,9 @@ L_KNP_OBJ = Literal["tag", "bunsetsu", "morph"]
 
 
 class KnpUserKeyType(NamedTuple):
-    element: str
-    spans: str
-    list_: str
+    element: str  # pyknp.Bunsetsu, Tag, Morpheme
+    spans: str  # span list containing Bunsetsu, Tag, Morpheme correspondings.
+    list_: str  # list containing knp elements
     parent: str
     children: str
 
@@ -54,6 +54,28 @@ KNP_USER_KEYS = KnpUserKeys(
         for comp in KnpUserKeys._fields
     ]
 )
+
+
+def _install_extensions():
+    K = KNP_USER_KEYS
+    Token.set_extension(K.morph.element, default=None, force=True)
+    for k in ["bunsetsu", "morph", "tag"]:
+        for feature in ["element", "list_"]:
+            key = getattr(getattr(K, k), feature)
+            Span.set_extension(key, default=None, force=True)
+    for k in ["bunsetsu", "morph", "tag"]:
+        for feature in ["spans", "list_"]:
+            key = getattr(getattr(K, k), feature)
+            Doc.set_extension(key, getter=get_all_knp_features_from_sents(k, feature))
+    for k in [BUNSETSU, TAG]:
+        Span.set_extension(getattr(KNP_USER_KEYS, k).spans, getter=get_knp_span(k))
+        Span.set_extension(getattr(KNP_USER_KEYS, k).parent, getter=get_knp_parent(k))
+        Span.set_extension(
+            getattr(KNP_USER_KEYS, k).children, getter=get_knp_children(k)
+        )
+
+
+_install_extensions()
 
 
 def _take_juman_lines(n: int, juman_lines: List[str]) -> Tuple[List[str], List[str]]:
@@ -86,33 +108,6 @@ def juman_sentencizer_factory(*args, **kwargs):
 
 @spacy.component("knp", assigns=["doc.ents"])
 class KNP:
-    @staticmethod
-    def install_extensions():
-        K = KNP_USER_KEYS
-        Token.set_extension(K.morph.element, default=None, force=True)
-        for k in [
-            K.bunsetsu.element,
-            K.tag.element,
-            K.bunsetsu.list_,
-            K.morph.list_,
-            K.tag.list_,
-        ]:
-            Span.set_extension(k, default=None, force=True)
-        for k in ["bunsetsu", "morph", "tag"]:
-            for feature in ["spans", "list_"]:
-                key = getattr(getattr(K, k), feature)
-                Doc.set_extension(
-                    key, getter=get_all_knp_features_from_sents(k, feature)
-                )
-        for k in [BUNSETSU, TAG]:
-            Span.set_extension(getattr(KNP_USER_KEYS, k).spans, getter=get_knp_span(k))
-            Span.set_extension(
-                getattr(KNP_USER_KEYS, k).parent, getter=get_knp_parent(k)
-            )
-            Span.set_extension(
-                getattr(KNP_USER_KEYS, k).children, getter=get_knp_children(k)
-            )
-
     def __init__(
         self,
         knp_kwargs: Optional[Dict[str, str]] = None,
@@ -155,6 +150,7 @@ class KNP:
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
         doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore
+        doc.noun_chunks_iterator = _knp_noun_chunker_core  # type: ignore
         # TODO: https://github.com/python/mypy/issues/3004
         return doc
 
@@ -191,11 +187,11 @@ def get_knp_element_id(elem) -> int:
 
 @curry
 def get_all_knp_features_from_sents(
-    knp_obj: L_KNP_OBJ, feature: str, doc: Doc
+    type_: L_KNP_OBJ, feature: str, doc: Doc
 ) -> Iterator[Any]:
     """Helper for spacy.doc extension to get knp features from spans and concatenate them."""
     for sent in doc.sents:
-        key = getattr(KNP_USER_KEYS, knp_obj)
+        key = getattr(KNP_USER_KEYS, type_)
         yield from sent._.get(getattr(key, feature))
 
 
@@ -239,11 +235,61 @@ def _extract_knp_ent(doc: Doc) -> List[Span]:
     return spacy_ents
 
 
+def _knp_noun_chunker_core(doc: Doc) -> Iterator[Tuple[int, int, str]]:
+    seen = [False for _ in range(len(doc))]
+    for tag in reversed(doc._.get(KNP_USER_KEYS.tag.list_)):
+        if tag.features.get("体言"):
+            taglist = _traverse_children(tag)
+            i, j = _get_span(taglist)
+            if i in seen:
+                # It is sufficient to check if the start has already been seen
+                # because we are traversing the tags from the end of the doc.
+                continue
+            for k in range(i, j):
+                seen[k] = True
+            last = _extract_content(taglist[-1])  # drop some aux tokens
+            yield taglist[0].start_char, last.end_char, "NP"
+
+
+def _is_content(token: Token) -> bool:
+    return "<内容語>" in token._.get(KNP_USER_KEYS.morph.element).fstring
+
+
+def _extract_content(tag: Span) -> Span:
+    start = None
+    end = None
+    for token in tag:
+        if _is_content(token):
+            if start is None:
+                start = token.i
+            end = token.j
+        else:
+            break
+    assert start is not None and end is not None
+    return Span(tag.doc, start, end)
+
+
+def _traverse_children(tag: Span) -> List[Span]:
+    """
+    
+    Args:
+        tag: pyknp.Tag | pyknp.Bunsetsu
+    """
+    result = []
+    for c in tag._.get(KNP_USER_KEYS.tag.children):
+        result.extend(_traverse_children(c))
+    result.append(tag)
+    return result
+
+
+def _get_span(taglist: List[Span]) -> Tuple[int, int]:
+    i = taglist[0].start
+    j = taglist[-1].end
+    return i, j
+
+
 def _create_ents(doc: Doc, ents: Iterable[Tuple[str, int, int]]) -> List[Span]:
     new_ents = []
     for text, start, end in ents:
         new_ents.append(Span(doc, start, end, label=text))
     return filter_spans(doc.ents + tuple(new_ents))
-
-
-KNP.install_extensions()
