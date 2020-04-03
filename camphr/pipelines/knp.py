@@ -129,7 +129,6 @@ class KNP:
                 token._.set(KNP_USER_KEYS.morph.element, m)
         doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore
         doc.noun_chunks_iterator = _knp_noun_chunker_core  # type: ignore
-        doc.is_parsed = True
         # TODO: https://github.com/python/mypy/issues/3004
         return doc
 
