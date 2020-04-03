@@ -8,7 +8,7 @@ from spacy.tokens import Doc
 from camphr.models import load
 from camphr.pipelines.knp import BUNSETSU, KNP_USER_KEYS, TAG
 
-from ..utils import check_knp
+from ...utils import check_knp
 
 pytestmark = pytest.mark.skipif(not check_knp(), reason="knp is not always necessary")
 
@@ -111,17 +111,3 @@ def test_knp_doc_getter(nlp: Language):
             assert list(doc._.get(key)) == list(
                 itertools.chain.from_iterable(sent._.get(key) for sent in doc.sents)
             )
-
-
-@pytest.mark.parametrize(
-    "text,chunks",
-    [
-        (
-            "菅義偉官房長官は3日の記者会見で、安倍晋三首相が表明した全世帯への布マスク配布に関し、2世帯住宅など一つの住所に複数世帯が生活している場合は、追加配布を検討する考えを示した。",
-            [""],
-        )
-    ],
-)
-def test_noun_chunker(nlp: Language, text: str, chunks: List[str]):
-    doc = nlp(text)
-    assert [s.text for s in doc.noun_chunks] == chunks

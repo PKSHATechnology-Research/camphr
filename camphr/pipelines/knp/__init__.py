@@ -1,16 +1,6 @@
 """Defines KNP pipelines."""
 import re
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    Iterator,
-    List,
-    NamedTuple,
-    Optional,
-    Tuple,
-)
+from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Tuple
 
 import spacy
 from spacy.tokens import Doc, Span, Token
@@ -21,6 +11,9 @@ from typing_extensions import Literal
 from camphr.consts import JUMAN_LINES
 from camphr.utils import get_juman_command
 
+from .consts import KNP_USER_KEYS
+from .noun_chunker import knp_noun_chunker
+
 LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
 Span.set_extension(JUMAN_LINES, default=None)
 SKIP_TOKENS = {"@"}
@@ -30,30 +23,6 @@ TAG = "tag"
 BUNSETSU = "bunsetsu"
 MORPH = "morph"
 L_KNP_OBJ = Literal["tag", "bunsetsu", "morph"]
-
-
-class KnpUserKeyType(NamedTuple):
-    element: str  # pyknp.Bunsetsu, Tag, Morpheme
-    spans: str  # span list containing Bunsetsu, Tag, Morpheme correspondings.
-    list_: str  # list containing knp elements
-    parent: str
-    children: str
-
-
-class KnpUserKeys(NamedTuple):
-    tag: KnpUserKeyType
-    bunsetsu: KnpUserKeyType
-    morph: KnpUserKeyType
-
-
-KNP_USER_KEYS = KnpUserKeys(
-    *[
-        KnpUserKeyType(
-            *["knp_" + comp + f"_{type_}" for type_ in KnpUserKeyType._fields]
-        )
-        for comp in KnpUserKeys._fields
-    ]
-)
 
 
 def _take_juman_lines(n: int, juman_lines: List[str]) -> Tuple[List[str], List[str]]:
@@ -128,7 +97,7 @@ class KNP:
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
         doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore
-        doc.noun_chunks_iterator = _knp_noun_chunker_core  # type: ignore
+        doc.noun_chunks_iterator = knp_noun_chunker  # type: ignore
         # TODO: https://github.com/python/mypy/issues/3004
         return doc
 
@@ -212,59 +181,6 @@ def _extract_knp_ent(doc: Doc) -> List[Span]:
                 ents[-1] = (last[0], last[1], token.i + 1)
     spacy_ents = _create_ents(doc, ents)
     return spacy_ents
-
-
-def _knp_noun_chunker_core(doc: Doc) -> Iterator[Tuple[int, int, str]]:
-    seen = [False for _ in range(len(doc))]
-    for tag in reversed(list(doc._.get(KNP_USER_KEYS.tag.spans))):
-        if tag.features.get("体言"):
-            taglist = _traverse_children(tag)
-            i, j = _get_span(taglist)
-            if i in seen:
-                # It is sufficient to check if the start has already been seen
-                # because we are traversing the tags from the end of the doc.
-                continue
-            for k in range(i, j):
-                seen[k] = True
-            last = _extract_content(taglist[-1])  # drop some aux tokens
-            yield taglist[0].start_char, last.end_char, "NP"
-
-
-def _is_content(token: Token) -> bool:
-    return "<内容語>" in token._.get(KNP_USER_KEYS.morph.element).fstring
-
-
-def _extract_content(tag: Span) -> Span:
-    start = None
-    end = None
-    for token in tag:
-        if _is_content(token):
-            if start is None:
-                start = token.i
-            end = token.j
-        else:
-            break
-    assert start is not None and end is not None
-    return Span(tag.doc, start, end)
-
-
-def _traverse_children(tag: Span) -> List[Span]:
-    """
-    
-    Args:
-        tag: pyknp.Tag | pyknp.Bunsetsu
-    """
-    result = []
-    for c in tag._.get(KNP_USER_KEYS.tag.children):
-        result.extend(_traverse_children(c))
-    result.append(tag)
-    return result
-
-
-def _get_span(taglist: List[Span]) -> Tuple[int, int]:
-    i = taglist[0].start
-    j = taglist[-1].end
-    return i, j
 
 
 def _create_ents(doc: Doc, ents: Iterable[Tuple[str, int, int]]) -> List[Span]:
