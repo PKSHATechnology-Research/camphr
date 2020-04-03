@@ -1,4 +1,4 @@
-FROM tamuhey/mecab:py3.7.6-ipadic-1.0.1
+FROM docker.pkg.github.com/tamuhey/dockerfiles/mecab:ci-build
 COPY . /app
 WORKDIR /app
 RUN pip install -U poetry && poetry install -E mecab
