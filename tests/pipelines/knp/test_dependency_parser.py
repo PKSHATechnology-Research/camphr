@@ -4,6 +4,10 @@ import pytest
 
 from camphr.models import load
 
+from ...utils import check_knp
+
+pytestmark = pytest.mark.skipif(not check_knp(), reason="knp is not always necessary")
+
 
 @pytest.fixture
 def nlp():
