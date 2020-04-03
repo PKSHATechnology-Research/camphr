@@ -34,6 +34,7 @@ class Doc:
     _: Underscore
     cats: Dict[str, Any]
     vector: Any
+    noun_chunks_iterator: Callable[[Doc], Tuple[int, int, str]]
     def __init__(
         self,
         vocab: Vocab,
