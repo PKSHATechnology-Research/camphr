@@ -1,0 +1,18 @@
+name: test-ci
+
+on: 
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Git commit and push
+      run: |
+        echo "foo" > foo
+        git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+        git pull github ${GITHUB_REF} --ff-only
+        git add .
+        git commit -m "Update native model"
+        git push github HEAD:${GITHUB_REF}
