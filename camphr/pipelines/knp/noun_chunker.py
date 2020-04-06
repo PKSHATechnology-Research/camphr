@@ -1,11 +1,60 @@
-from typing import Iterable, List, Tuple
+import collections
+from typing import DefaultDict, Iterable, List, Tuple
 
+import spacy
 from spacy.tokens import Doc, Span, Token
 
 from .consts import KNP_USER_KEYS
 
+KNP_PARALLEL_NOUN_CHUNKS = "KNP_PARALLEL_NOUN_CHUNKS"
+
+
+def _install_extensions():
+    Doc.set_extension(KNP_PARALLEL_NOUN_CHUNKS, default=None)
+
+
+_install_extensions()
+
 
 def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
+    ret = []
+    for taglist in _extract_noun_phrases(doc):
+        last = _extract_content(taglist[-1])
+        ret.append((taglist[0].start, last.end, "NP"))
+    return ret
+
+
+@spacy.component(
+    "knp_parallel_noun_chunker",
+    requires=(f"span._.{KNP_USER_KEYS.tag.element}",),
+    assigns=(f"doc._.{KNP_PARALLEL_NOUN_CHUNKS}",),
+)
+def knp_parallel_noun_chunker(doc: Doc) -> Doc:
+    noun_phrases = list(_extract_noun_phrases(doc))
+    last2idx = {taglist[-1]: i for i, taglist in enumerate(noun_phrases)}
+    para_depends: DefaultDict[int, List[Span]] = collections.defaultdict(list)
+    for taglist in noun_phrases:
+        last = taglist[-1]
+        if last._.get(KNP_USER_KEYS.tag.element).dpndtype == "P":
+            parent = last2idx[last._.get(KNP_USER_KEYS.tag.parent)]
+            para_depends[parent].append(_spans_to_span_without_last_aux(taglist, "NP"))
+    for parent in para_depends:
+        para_depends[parent].append(
+            _spans_to_span_without_last_aux(noun_phrases[parent], "NP")
+        )
+    doc._.set(KNP_PARALLEL_NOUN_CHUNKS, list(para_depends.values()))
+    return doc
+
+
+def _spans_to_span_without_last_aux(spans: List[Span], label: str) -> Span:
+    return _spans_to_span(spans[:-1] + [_extract_content(spans[1])], label)
+
+
+def _spans_to_span(spans: List[Span], label: str) -> Span:
+    return Span(spans[0].doc, spans[0].start, spans[-1].end, label=label)
+
+
+def _extract_noun_phrases(doc: Doc) -> Iterable[List[Span]]:
     seen = [False for _ in range(len(doc))]
     ret = []
     for tag in reversed(list(doc._.get(KNP_USER_KEYS.tag.spans))):
@@ -18,8 +67,7 @@ def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
                 continue
             for k in range(i, j):
                 seen[k] = True
-            last = _extract_content(taglist[-1])  # drop some aux tokens
-            ret.append((taglist[0].start, last.end, "NP"))
+            ret.append(taglist)
     return reversed(ret)
 
 
