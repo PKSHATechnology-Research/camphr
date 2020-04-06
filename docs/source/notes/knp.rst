@@ -93,6 +93,7 @@ NERの解析結果は，:code:`doc.ents` に格納されています.
 
 .. code:: python3
 
+    >>> nlp.add_pipe(nlp.create_pipe("knp_parallel_noun_chunker"))
     >>> doc = nlp("金の斧と銀の斧と銅の斧で攻撃する")
     >>> list(doc._.knp_parallel_noun_chunks)
     [[金の斧, 銀の斧, 銅の斧]]
