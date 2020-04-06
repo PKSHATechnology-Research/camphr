@@ -41,15 +41,18 @@ def _extract_content(tag: Span) -> Span:
     return Span(tag.doc, start, end)
 
 
-def _traverse_children(tag: Span) -> List[Span]:
-    """
+def _traverse_children(tag: Span, _is_head: bool = True) -> List[Span]:
+    """Traverse children except for `para` dependency.
     
     Args:
-        tag: pyknp.Tag | pyknp.Bunsetsu
+        tag: tag to be traversed
+        _is_head: internally used parameter. Should not be changed outside this function.
     """
+    if not _is_head and tag._.get(KNP_USER_KEYS.tag.element).dpndtype == "P":
+        return []
     result = []
     for c in tag._.get(KNP_USER_KEYS.tag.children):
-        result.extend(_traverse_children(c))
+        result.extend(_traverse_children(c, False))
     result.append(tag)
     return result
 
