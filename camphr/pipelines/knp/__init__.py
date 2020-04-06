@@ -1,16 +1,6 @@
 """Defines KNP pipelines."""
 import re
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    Iterator,
-    List,
-    NamedTuple,
-    Optional,
-    Tuple,
-)
+from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Tuple
 
 import spacy
 from spacy.tokens import Doc, Span, Token
@@ -21,6 +11,9 @@ from typing_extensions import Literal
 from camphr.consts import JUMAN_LINES
 from camphr.utils import get_juman_command
 
+from .consts import KNP_USER_KEYS
+from .noun_chunker import knp_noun_chunker
+
 LOC2IOB = {"B": "B", "I": "I", "E": "I", "S": "B"}
 Span.set_extension(JUMAN_LINES, default=None)
 SKIP_TOKENS = {"@"}
@@ -30,30 +23,6 @@ TAG = "tag"
 BUNSETSU = "bunsetsu"
 MORPH = "morph"
 L_KNP_OBJ = Literal["tag", "bunsetsu", "morph"]
-
-
-class KnpUserKeyType(NamedTuple):
-    element: str
-    spans: str
-    list_: str
-    parent: str
-    children: str
-
-
-class KnpUserKeys(NamedTuple):
-    tag: KnpUserKeyType
-    bunsetsu: KnpUserKeyType
-    morph: KnpUserKeyType
-
-
-KNP_USER_KEYS = KnpUserKeys(
-    *[
-        KnpUserKeyType(
-            *["knp_" + comp + f"_{type_}" for type_ in KnpUserKeyType._fields]
-        )
-        for comp in KnpUserKeys._fields
-    ]
-)
 
 
 def _take_juman_lines(n: int, juman_lines: List[str]) -> Tuple[List[str], List[str]]:
@@ -86,33 +55,6 @@ def juman_sentencizer_factory(*args, **kwargs):
 
 @spacy.component("knp", assigns=["doc.ents"])
 class KNP:
-    @staticmethod
-    def install_extensions():
-        K = KNP_USER_KEYS
-        Token.set_extension(K.morph.element, default=None, force=True)
-        for k in [
-            K.bunsetsu.element,
-            K.tag.element,
-            K.bunsetsu.list_,
-            K.morph.list_,
-            K.tag.list_,
-        ]:
-            Span.set_extension(k, default=None, force=True)
-        for k in ["bunsetsu", "morph", "tag"]:
-            for feature in ["spans", "list_"]:
-                key = getattr(getattr(K, k), feature)
-                Doc.set_extension(
-                    key, getter=get_all_knp_features_from_sents(k, feature)
-                )
-        for k in [BUNSETSU, TAG]:
-            Span.set_extension(getattr(KNP_USER_KEYS, k).spans, getter=get_knp_span(k))
-            Span.set_extension(
-                getattr(KNP_USER_KEYS, k).parent, getter=get_knp_parent(k)
-            )
-            Span.set_extension(
-                getattr(KNP_USER_KEYS, k).children, getter=get_knp_children(k)
-            )
-
     def __init__(
         self,
         knp_kwargs: Optional[Dict[str, str]] = None,
@@ -155,6 +97,7 @@ class KNP:
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
         doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore
+        doc.noun_chunks_iterator = knp_noun_chunker  # type: ignore
         # TODO: https://github.com/python/mypy/issues/3004
         return doc
 
@@ -164,7 +107,8 @@ def get_knp_span(type_: str, span: Span) -> List[Span]:
     """Get knp tag or bunsetsu list"""
     assert type_ != MORPH
 
-    knp_list = span.sent._.get(getattr(KNP_USER_KEYS, type_).list_)
+    # TODO: span._ => span.sent._
+    knp_list = span._.get(getattr(KNP_USER_KEYS, type_).list_)
     if not knp_list:
         return []
 
@@ -191,11 +135,11 @@ def get_knp_element_id(elem) -> int:
 
 @curry
 def get_all_knp_features_from_sents(
-    knp_obj: L_KNP_OBJ, feature: str, doc: Doc
+    type_: L_KNP_OBJ, feature: str, doc: Doc
 ) -> Iterator[Any]:
     """Helper for spacy.doc extension to get knp features from spans and concatenate them."""
     for sent in doc.sents:
-        key = getattr(KNP_USER_KEYS, knp_obj)
+        key = getattr(KNP_USER_KEYS, type_)
         yield from sent._.get(getattr(key, feature))
 
 
@@ -246,4 +190,23 @@ def _create_ents(doc: Doc, ents: Iterable[Tuple[str, int, int]]) -> List[Span]:
     return filter_spans(doc.ents + tuple(new_ents))
 
 
-KNP.install_extensions()
+def _install_extensions():
+    K = KNP_USER_KEYS
+    Token.set_extension(K.morph.element, default=None, force=True)
+    for k in ["bunsetsu", "morph", "tag"]:
+        for feature in ["element", "list_"]:
+            key = getattr(getattr(K, k), feature)
+            Span.set_extension(key, default=None, force=True)
+    for k in ["bunsetsu", "morph", "tag"]:
+        for feature in ["spans", "list_"]:
+            key = getattr(getattr(K, k), feature)
+            Doc.set_extension(key, getter=get_all_knp_features_from_sents(k, feature))
+    for k in [BUNSETSU, TAG]:
+        Span.set_extension(getattr(KNP_USER_KEYS, k).spans, getter=get_knp_span(k))
+        Span.set_extension(getattr(KNP_USER_KEYS, k).parent, getter=get_knp_parent(k))
+        Span.set_extension(
+            getattr(KNP_USER_KEYS, k).children, getter=get_knp_children(k)
+        )
+
+
+_install_extensions()

@@ -8,7 +8,7 @@ from spacy.tokens import Doc
 from camphr.models import load
 from camphr.pipelines.knp import BUNSETSU, KNP_USER_KEYS, TAG
 
-from ..utils import check_knp
+from ...utils import check_knp
 
 pytestmark = pytest.mark.skipif(not check_knp(), reason="knp is not always necessary")
 
@@ -41,13 +41,17 @@ def test_knp_span_getter(nlp: Language, text: str):
         assert all(
             [
                 b.midasi == s.text
-                for b, s in zip(blist, sent._.get(KNP_USER_KEYS.bunsetsu.spans))
+                for b, s in itertools.zip_longest(
+                    blist, sent._.get(KNP_USER_KEYS.bunsetsu.spans)
+                )
             ]
         )
         assert all(
             [
                 t.midasi == s.text
-                for t, s in zip(blist.tag_list(), sent._.get(KNP_USER_KEYS.tag.spans))
+                for t, s in itertools.zip_longest(
+                    blist.tag_list(), sent._.get(KNP_USER_KEYS.tag.spans)
+                )
             ]
         )
 

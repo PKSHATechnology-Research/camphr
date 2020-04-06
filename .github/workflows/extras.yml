@@ -16,6 +16,8 @@ jobs:
         extras: [mecab, juman]
     steps:
     - uses: actions/checkout@v1
+    - name: Log into registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
     - run: docker-compose up --exit-code-from ${{ matrix.extras }} ${{ matrix.extras }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
