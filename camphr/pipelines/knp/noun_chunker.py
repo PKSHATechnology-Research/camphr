@@ -5,7 +5,7 @@ from spacy.tokens import Doc, Span, Token
 
 from .consts import KNP_USER_KEYS
 
-KNP_PARALLEL_NOUN_CHUNKS = "KNP_PARALLEL_NOUN_CHUNKS"
+KNP_PARALLEL_NOUN_CHUNKS = "knp_parallel_noun_chunks"
 
 
 def _install_extensions():
@@ -46,6 +46,10 @@ def knp_parallel_noun_chunker(doc: Doc) -> Doc:
         list([list(reversed(v)) for v in para_depends.values() if len(v) > 1]),
     )
     return doc
+
+
+def knp_parallel_noun_chunker_factory(*args, **kwargs):
+    return knp_parallel_noun_chunker
 
 
 def _spans_to_span_without_last_aux(spans: List[Span], label: str) -> Span:

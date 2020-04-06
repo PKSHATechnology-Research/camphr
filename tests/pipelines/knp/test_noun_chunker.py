@@ -4,10 +4,6 @@ import pytest
 from spacy.language import Language
 
 from camphr.models import load
-from camphr.pipelines.knp.noun_chunker import (
-    KNP_PARALLEL_NOUN_CHUNKS,
-    knp_parallel_noun_chunker,
-)
 
 from ...utils import check_knp
 
@@ -16,7 +12,9 @@ pytestmark = pytest.mark.skipif(not check_knp(), reason="knp is not always neces
 
 @pytest.fixture
 def nlp():
-    return load("knp")
+    _nlp = load("knp")
+    _nlp.add_pipe(_nlp.create_pipe("knp_parallel_noun_chunker"))
+    return _nlp
 
 
 @pytest.mark.parametrize(
@@ -53,7 +51,6 @@ def test_noun_chunker(nlp: Language, text: str, chunks: List[str], name):
 )
 def test_para_noun_chunker(nlp: Language, text: str, chunks: List[str], name):
     doc = nlp(text)
-    doc = knp_parallel_noun_chunker(doc)
     assert [
-        [span.text for span in spans] for spans in doc._.get(KNP_PARALLEL_NOUN_CHUNKS)
+        [span.text for span in spans] for spans in doc._.get("knp_parallel_noun_chunks")
     ] == chunks
