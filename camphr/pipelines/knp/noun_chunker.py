@@ -23,12 +23,7 @@ def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
     return ret
 
 
-@spacy.component(
-    "knp_parallel_noun_chunker",
-    requires=(f"span._.{KNP_USER_KEYS.tag.element}",),
-    assigns=(f"doc._.{KNP_PARALLEL_NOUN_CHUNKS}",),
-)
-def knp_parallel_noun_chunker(doc: Doc) -> Doc:
+def get_parallel_noun_chunks(doc: Doc) -> List[List[Span]]:
     noun_phrases = list(_extract_noun_phrases(doc))
     last2idx = {taglist[-1]: i for i, taglist in enumerate(noun_phrases)}
     para_depends = {
@@ -41,10 +36,16 @@ def knp_parallel_noun_chunker(doc: Doc) -> Doc:
             parent = last2idx[last._.get(KNP_USER_KEYS.tag.parent)]
             para_depends[parent].extend(para_depends[i])
             del para_depends[i]
-    doc._.set(
-        KNP_PARALLEL_NOUN_CHUNKS,
-        list([list(reversed(v)) for v in para_depends.values() if len(v) > 1]),
-    )
+    return list([list(reversed(v)) for v in para_depends.values() if len(v) > 1])
+
+
+@spacy.component(
+    "knp_parallel_noun_chunker",
+    requires=(f"span._.{KNP_USER_KEYS.tag.element}",),
+    assigns=(f"doc._.{KNP_PARALLEL_NOUN_CHUNKS}",),
+)
+def knp_parallel_noun_chunker(doc: Doc) -> Doc:
+    doc._.set(KNP_PARALLEL_NOUN_CHUNKS, get_parallel_noun_chunks(doc))
     return doc
 
 
