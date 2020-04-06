@@ -48,3 +48,12 @@ jobs:
     - name: Run pytest for extras
       run: poetry run pytest --runslow -rs -k ${{ matrix.extras }}
       if: matrix.extras != 'none'
+    - name: Git commit and push
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+        git add .
+        git commit -m "Update dependencies"
+        git push github HEAD:${GITHUB_REF}
+
