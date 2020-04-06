@@ -48,6 +48,7 @@ def test_noun_chunker(nlp: Language, text: str, chunks: List[str], name):
         (0, "金の斧と銀の斧を持つ", [["金の斧", "銀の斧"]]),
         (0, "金の斧と銀の斧と銅の斧で攻撃する", [["金の斧", "銀の斧", "銅の斧"]]),
         (0, "金の斧と銀の斧と銅の斧を持って，飢えと寒さで死んでいた", [["金の斧", "銀の斧", "銅の斧"], ["飢え", "寒さ"]]),
+        (0, "金の斧と銀の斧の職人と，銅の斧の職人", [["金の斧と銀の斧の職人", "銅の斧の職人"]]),
     ],
 )
 def test_para_noun_chunker(nlp: Language, text: str, chunks: List[str], name):
