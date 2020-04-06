@@ -1,8 +1,18 @@
 from typing import Iterable, List, Optional, Tuple
 
+import spacy
 from spacy.tokens import Doc, Span, Token
 
 from .consts import KNP_USER_KEYS
+
+KNP_PARALLEL_NOUN_CHUNKS = "knp_parallel_noun_chunks"
+
+
+def _install_extensions():
+    Doc.set_extension(KNP_PARALLEL_NOUN_CHUNKS, default=None)
+
+
+_install_extensions()
 
 
 def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
@@ -13,8 +23,37 @@ def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
     return ret
 
 
+@spacy.component(
+    "knp_parallel_noun_chunker",
+    requires=(f"span._.{KNP_USER_KEYS.tag.element}",),
+    assigns=(f"doc._.{KNP_PARALLEL_NOUN_CHUNKS}",),
+)
+def knp_parallel_noun_chunker(doc: Doc) -> Doc:
+    noun_phrases = list(_extract_noun_phrases(doc))
+    last2idx = {taglist[-1]: i for i, taglist in enumerate(noun_phrases)}
+    para_depends = {
+        i: [_spans_to_span_without_last_aux(noun_phrases[i], "NP")]
+        for i in range(len(noun_phrases))
+    }
+    for i, taglist in enumerate(noun_phrases):
+        last = taglist[-1]
+        if last._.get(KNP_USER_KEYS.tag.element).dpndtype == "P":
+            parent = last2idx[last._.get(KNP_USER_KEYS.tag.parent)]
+            para_depends[parent].extend(para_depends[i])
+            del para_depends[i]
+    doc._.set(
+        KNP_PARALLEL_NOUN_CHUNKS,
+        list([list(reversed(v)) for v in para_depends.values() if len(v) > 1]),
+    )
+    return doc
+
+
+def knp_parallel_noun_chunker_factory(*args, **kwargs):
+    return knp_parallel_noun_chunker
+
+
 def _spans_to_span_without_last_aux(spans: List[Span], label: str) -> Span:
-    return _spans_to_span(spans[:-1] + [_extract_content(spans[1])], label)
+    return _spans_to_span(spans[:-1] + [_extract_content(spans[-1])], label)
 
 
 def _spans_to_span(spans: List[Span], label: str) -> Span:
