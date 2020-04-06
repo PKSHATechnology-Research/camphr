@@ -6,6 +6,22 @@ from .consts import KNP_USER_KEYS
 
 
 def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
+    ret = []
+    for taglist in _extract_noun_phrases(doc):
+        last = _extract_content(taglist[-1])
+        ret.append((taglist[0].start, last.end, "NP"))
+    return ret
+
+
+def _spans_to_span_without_last_aux(spans: List[Span], label: str) -> Span:
+    return _spans_to_span(spans[:-1] + [_extract_content(spans[1])], label)
+
+
+def _spans_to_span(spans: List[Span], label: str) -> Span:
+    return Span(spans[0].doc, spans[0].start, spans[-1].end, label=label)
+
+
+def _extract_noun_phrases(doc: Doc) -> Iterable[List[Span]]:
     seen = [False for _ in range(len(doc))]
     ret = []
     for tag in reversed(list(doc._.get(KNP_USER_KEYS.tag.spans))):
@@ -18,8 +34,7 @@ def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
                 continue
             for k in range(i, j):
                 seen[k] = True
-            last = _extract_content(taglist[-1])  # drop some aux tokens
-            ret.append((taglist[0].start, last.end, "NP"))
+            ret.append(taglist)
     return reversed(ret)
 
 
