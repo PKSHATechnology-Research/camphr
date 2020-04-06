@@ -1,19 +1,8 @@
-import collections
-from typing import DefaultDict, Iterable, List, Tuple
+from typing import Iterable, List, Tuple
 
-import spacy
 from spacy.tokens import Doc, Span, Token
 
 from .consts import KNP_USER_KEYS
-
-KNP_PARALLEL_NOUN_CHUNKS = "KNP_PARALLEL_NOUN_CHUNKS"
-
-
-def _install_extensions():
-    Doc.set_extension(KNP_PARALLEL_NOUN_CHUNKS, default=None)
-
-
-_install_extensions()
 
 
 def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
@@ -22,28 +11,6 @@ def knp_noun_chunker(doc: Doc) -> Iterable[Tuple[int, int, str]]:
         last = _extract_content(taglist[-1])
         ret.append((taglist[0].start, last.end, "NP"))
     return ret
-
-
-@spacy.component(
-    "knp_parallel_noun_chunker",
-    requires=(f"span._.{KNP_USER_KEYS.tag.element}",),
-    assigns=(f"doc._.{KNP_PARALLEL_NOUN_CHUNKS}",),
-)
-def knp_parallel_noun_chunker(doc: Doc) -> Doc:
-    noun_phrases = list(_extract_noun_phrases(doc))
-    last2idx = {taglist[-1]: i for i, taglist in enumerate(noun_phrases)}
-    para_depends: DefaultDict[int, List[Span]] = collections.defaultdict(list)
-    for taglist in noun_phrases:
-        last = taglist[-1]
-        if last._.get(KNP_USER_KEYS.tag.element).dpndtype == "P":
-            parent = last2idx[last._.get(KNP_USER_KEYS.tag.parent)]
-            para_depends[parent].append(_spans_to_span_without_last_aux(taglist, "NP"))
-    for parent in para_depends:
-        para_depends[parent].append(
-            _spans_to_span_without_last_aux(noun_phrases[parent], "NP")
-        )
-    doc._.set(KNP_PARALLEL_NOUN_CHUNKS, list(para_depends.values()))
-    return doc
 
 
 def _spans_to_span_without_last_aux(spans: List[Span], label: str) -> Span:
