@@ -239,7 +239,7 @@ def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
             + cfg.pipeline.pretty()
         )
     for k, v in cfg.pipeline.items():
-        if k in TRF_PIPES and KEY not in v:
+        if k in TRF_PIPES and not v.get(KEY, None):
             v[KEY] = VAL
     return cfg
 
