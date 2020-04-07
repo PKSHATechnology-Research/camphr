@@ -326,7 +326,7 @@ And pass the yaml to CLI as follows:
 
 .. code-block:: console
 
-    $ camphr train user=user.yaml
+    $ camphr train user_config=user.yaml
 
 .. seealso::
 
