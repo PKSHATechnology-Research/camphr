@@ -49,6 +49,7 @@ jobs:
       run: poetry run pytest --runslow -rs -k ${{ matrix.extras }}
       if: matrix.extras != 'none'
     - name: Git commit and push
+      if:  matrix.extras == 'none' && matrix.python-version == 3.7 && matrix.os == 'ubuntu-latest'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
