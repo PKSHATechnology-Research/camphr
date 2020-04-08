@@ -3,11 +3,11 @@ requires = [ "poetry>=1.0.0",]
 build-backend = "poetry.masonry.api"
 
 [tool.versionup]
-files = "camphr/VERSION.py"
+files = [ "camphr/VERSION.py",]
 commit = true
 
 [tool.poetry]
-version = "0.5.15.dev0"
+version = "0.5.15"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
