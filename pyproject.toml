@@ -2,9 +2,8 @@
 requires = [ "poetry>=1.0.0",]
 build-backend = "poetry.masonry.api"
 
-[versionup]
+[tool.versionup]
 files = "camphr/VERSION.py"
-tag = true
 commit = true
 
 [tool.poetry]
