@@ -47,5 +47,5 @@ $ poetry install -E juman
 
 ## Publish pypi package
 
-Publishing a package to pypi is automatically done by pushing git tags to this repository.
-See [CI](.github/workflows/main.yml) for details.
+Publishing a package to pypi is automatically done by specific git commit to this repository.
+See `.github/workflows/fire_release.yml` for details.
