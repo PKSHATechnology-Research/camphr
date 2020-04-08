@@ -111,3 +111,18 @@ def test_knp_doc_getter(nlp: Language):
             assert list(doc._.get(key)) == list(
                 itertools.chain.from_iterable(sent._.get(key) for sent in doc.sents)
             )
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "偽造パスポートでパラグアイに入国したとして逮捕された、サッカー元ブラジル代表ＦＷロナウジーニョ氏（４０）の保釈が７日に認められた。",
+        "約３８ヘクタールに大型遊具や動物とのふれあい広場などがあり、首都圏でも人気の千葉県船橋市の「ふなばしアンデルセン公園」は８日から全面休園した。",
+    ],
+)
+def test_tag_or_bunsetsu_from_token(nlp: Language, text: str):
+    doc = nlp(text)
+    for k in ["tag", "bunsetsu"]:
+        for span in doc._.get(getattr(KNP_USER_KEYS, k).spans):
+            for token in span:
+                assert token._.get(getattr(KNP_USER_KEYS.morph, k)) == span

@@ -7,6 +7,8 @@ class KnpUserKeyType(NamedTuple):
     list_: str  # list containing knp elements
     parent: str
     children: str
+    tag: str
+    bunsetsu: str
 
 
 class KnpUserKeys(NamedTuple):

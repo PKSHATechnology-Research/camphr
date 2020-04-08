@@ -103,6 +103,16 @@ class KNP:
 
 
 @curry
+def token_to_knp_span(type_: str, token: Token) -> Span:
+    """Returns the knp span containing the token."""
+    assert type_ != MORPH
+    for tag_or_bunsetsu in token.doc._.get(getattr(KNP_USER_KEYS, type_).spans):
+        if token.i < tag_or_bunsetsu.end:
+            return tag_or_bunsetsu
+    raise ValueError("internal error")
+
+
+@curry
 def get_knp_span(type_: str, span: Span) -> List[Span]:
     """Get knp tag or bunsetsu list"""
     assert type_ != MORPH
@@ -193,6 +203,8 @@ def _create_ents(doc: Doc, ents: Iterable[Tuple[str, int, int]]) -> List[Span]:
 def _install_extensions():
     K = KNP_USER_KEYS
     Token.set_extension(K.morph.element, default=None, force=True)
+    for k in ["bunsetsu", "tag"]:
+        Token.set_extension(getattr(K.morph, k), getter=token_to_knp_span(k))
     for k in ["bunsetsu", "morph", "tag"]:
         for feature in ["element", "list_"]:
             key = getattr(getattr(K, k), feature)
