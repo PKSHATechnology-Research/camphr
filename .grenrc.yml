@@ -1,0 +1,5 @@
+---
+  dataSource: "commits"
+  prefix: ""
+  includeMessages: "merges"
+  changelogFilename: "CHANGELOG.md"
