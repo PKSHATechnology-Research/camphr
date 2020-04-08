@@ -8,7 +8,7 @@ tag = true
 commit = true
 
 [tool.poetry]
-version = "0.5.13"
+version = "0.5.14"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
