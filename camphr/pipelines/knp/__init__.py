@@ -53,7 +53,7 @@ def juman_sentencizer_factory(*args, **kwargs):
     return juman_sentencizer
 
 
-@spacy.component("knp", assigns=["doc.ents"])
+@spacy.component("knp", assigns=["doc.ents", "doc._.knp_tag_parent"])
 class KNP:
     def __init__(
         self,
