@@ -1,7 +1,7 @@
 .. include:: ../replaces.txt
 
 KNP
-===
+====
 
 `KNP <http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP>`_ は日本語の格解析モデルです．
 Camphrは，knpの解析結果をspaCyで扱うための機能を提供しています．
