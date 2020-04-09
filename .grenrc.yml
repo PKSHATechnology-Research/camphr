@@ -1,5 +1,6 @@
 ---
-  dataSource: "commits"
+  dataSource: "prs"
   prefix: ""
-  includeMessages: "merges"
+  onlyMilestones: false
+  groupBy: false
   changelogFilename: "CHANGELOG.md"

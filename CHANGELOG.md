@@ -1,7 +1,12 @@
 # Changelog
 
-## 0.5.15 (08/04/2020)
+## 0.5.16 (09/04/2020)
+- [**enhancement**] add `functools.lru_cache` to knp extensions. [#39](https://github.com/PKSHATechnology-Research/camphr/pull/39)
 
+---
+
+## 0.5.15 (08/04/2020)
+*No changelog for this release.*
 
 ---
 
@@ -11,7 +16,10 @@
 ---
 
 ## 0.5.14 (08/04/2020)
-
+- [**enhancement**] tag and bunsetsu can be directly got from token [#38](https://github.com/PKSHATechnology-Research/camphr/pull/38)
+- [**enhancement**] Feature/knp para noun chunks [#37](https://github.com/PKSHATechnology-Research/camphr/pull/37)
+- [**bug**] fix noun chunker for para phrase [#36](https://github.com/PKSHATechnology-Research/camphr/pull/36)
+- [**enhancement**][**refactor**] Refactor/knp noun chunker [#35](https://github.com/PKSHATechnology-Research/camphr/pull/35)
 
 ---
 
