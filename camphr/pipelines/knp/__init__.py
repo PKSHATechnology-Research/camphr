@@ -1,4 +1,5 @@
 """Defines KNP pipelines."""
+import functools
 import re
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Tuple
 
@@ -103,6 +104,7 @@ class KNP:
 
 
 @curry
+@functools.lru_cache()
 def token_to_knp_span(type_: str, token: Token) -> Span:
     """Returns the knp span containing the token."""
     assert type_ != MORPH
@@ -113,6 +115,7 @@ def token_to_knp_span(type_: str, token: Token) -> Span:
 
 
 @curry
+@functools.lru_cache()
 def get_knp_span(type_: str, span: Span) -> List[Span]:
     """Get knp tag or bunsetsu list"""
     assert type_ != MORPH
@@ -134,6 +137,7 @@ def get_knp_span(type_: str, span: Span) -> List[Span]:
     return res
 
 
+@functools.lru_cache()
 def get_knp_element_id(elem) -> int:
     from pyknp import Morpheme, Bunsetsu, Tag
 
@@ -154,6 +158,7 @@ def get_all_knp_features_from_sents(
 
 
 @curry
+@functools.lru_cache()
 def get_knp_parent(type_: L_KNP_OBJ, span: Span) -> Optional[Span]:
     tag_or_bunsetsu = span._.get(getattr(KNP_USER_KEYS, type_).element)
     if not tag_or_bunsetsu:
@@ -166,6 +171,7 @@ def get_knp_parent(type_: L_KNP_OBJ, span: Span) -> Optional[Span]:
 
 
 @curry
+@functools.lru_cache()
 def get_knp_children(type_: L_KNP_OBJ, span: Span) -> List[Span]:
     tag_or_bunsetsu = span._.get(getattr(KNP_USER_KEYS, type_).element)
     if not tag_or_bunsetsu:
