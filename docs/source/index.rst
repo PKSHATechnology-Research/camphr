@@ -145,6 +145,7 @@ Tutorials
    notes/finetune_transformers
    notes/udify
    notes/elmo
+   notes/sentencepiece
    notes/rule_base_match
    notes/camphr_load
    notes/knp
