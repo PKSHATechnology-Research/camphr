@@ -25,35 +25,37 @@ TESTCASES = [(TEXTS[0], [("今日", "DATE"), ("山田太郎", "PERSON"), ("富�
 @pytest.mark.parametrize("text,ents", TESTCASES)
 def test_knp_entity_extractor(nlp: Language, text: str, ents: Tuple[str]):
     doc: Doc = nlp(text)
-    assert len(doc.ents) == len(ents)
-    for s, expected_ent in zip(doc.ents, ents):
-        assert s.text == expected_ent[0]
-        assert s.label_ == expected_ent[1]
+    for _ in range(2):  # loop 2 times to validate cache
+        assert len(doc.ents) == len(ents)
+        for s, expected_ent in zip(doc.ents, ents):
+            assert s.text == expected_ent[0]
+            assert s.label_ == expected_ent[1]
 
 
 @pytest.mark.parametrize("text", TEXTS)
 def test_knp_span_getter(nlp: Language, text: str):
     doc: Doc = nlp(text)
-    for sent in doc.sents:
-        blist = sent._.get(KNP_USER_KEYS.bunsetsu.list_)
-        text = "".join(b.midasi for b in blist)
-        assert text == sent.text
-        assert all(
-            [
-                b.midasi == s.text
-                for b, s in itertools.zip_longest(
-                    blist, sent._.get(KNP_USER_KEYS.bunsetsu.spans)
-                )
-            ]
-        )
-        assert all(
-            [
-                t.midasi == s.text
-                for t, s in itertools.zip_longest(
-                    blist.tag_list(), sent._.get(KNP_USER_KEYS.tag.spans)
-                )
-            ]
-        )
+    for _ in range(2):  # loop 2 times to validate cache
+        for sent in doc.sents:
+            blist = sent._.get(KNP_USER_KEYS.bunsetsu.list_)
+            text = "".join(b.midasi for b in blist)
+            assert text == sent.text
+            assert all(
+                [
+                    b.midasi == s.text
+                    for b, s in itertools.zip_longest(
+                        blist, sent._.get(KNP_USER_KEYS.bunsetsu.spans)
+                    )
+                ]
+            )
+            assert all(
+                [
+                    t.midasi == s.text
+                    for t, s in itertools.zip_longest(
+                        blist.tag_list(), sent._.get(KNP_USER_KEYS.tag.spans)
+                    )
+                ]
+            )
 
 
 @pytest.mark.parametrize(
@@ -67,10 +69,11 @@ def test_knp_span_getter(nlp: Language, text: str):
 )
 def test_knp_parent_getter(nlp: Language, text: str, parents: List[List[str]]):
     doc: Doc = nlp(text)
-    for sent, pl in zip(doc.sents, parents):
-        spans = sent._.get(KNP_USER_KEYS.tag.spans)
-        ps = [span._.get(KNP_USER_KEYS.tag.parent) for span in spans]
-        assert [s.text if s else "" for s in ps] == [p for p in pl]
+    for _ in range(2):  # loop 2 times to validate cache
+        for sent, pl in zip(doc.sents, parents):
+            spans = sent._.get(KNP_USER_KEYS.tag.spans)
+            ps = [span._.get(KNP_USER_KEYS.tag.parent) for span in spans]
+            assert [s.text if s else "" for s in ps] == [p for p in pl]
 
 
 @pytest.mark.parametrize(
@@ -89,11 +92,12 @@ def test_knp_children_getter(
     nlp: Language, text: str, children_list: List[List[List[str]]]
 ):
     doc: Doc = nlp(text)
-    for sent, children_texts in zip(doc.sents, children_list):
-        spans = sent._.get(KNP_USER_KEYS.tag.spans)
-        children = [span._.get(KNP_USER_KEYS.tag.children) for span in spans]
-        children = [[cc.text for cc in c] for c in children]
-        assert children == children_texts
+    for _ in range(2):  # loop 2 times to validate cache
+        for sent, children_texts in zip(doc.sents, children_list):
+            spans = sent._.get(KNP_USER_KEYS.tag.spans)
+            children = [span._.get(KNP_USER_KEYS.tag.children) for span in spans]
+            children = [[cc.text for cc in c] for c in children]
+            assert children == children_texts
 
 
 @pytest.mark.parametrize("text", ["（※"])
@@ -122,7 +126,8 @@ def test_knp_doc_getter(nlp: Language):
 )
 def test_tag_or_bunsetsu_from_token(nlp: Language, text: str):
     doc = nlp(text)
-    for k in ["tag", "bunsetsu"]:
-        for span in doc._.get(getattr(KNP_USER_KEYS, k).spans):
-            for token in span:
-                assert token._.get(getattr(KNP_USER_KEYS.morph, k)) == span
+    for _ in range(2):  # loop 2 times to validate cache
+        for k in ["tag", "bunsetsu"]:
+            for span in doc._.get(getattr(KNP_USER_KEYS, k).spans):
+                for token in span:
+                    assert token._.get(getattr(KNP_USER_KEYS.morph, k)) == span
