@@ -40,6 +40,32 @@ Usage
 
     >>> doc = nlp("太郎はリンゴとみかんを食べながら富士山へ行った。")
 
+形態素は:code:`Token`に対応します．
+
+.. code:: python3
+
+    >>> list(doc)
+    [太郎, は, リンゴ, と, みかん, を, 食べ, ながら, 富士, 山, へ, 行った, 。]
+
+基本句や文節に対応する:code:`Span`は，以下のようにして取ることができます．
+
+.. code:: python3
+
+    >>> list(doc._.knp_tag_spans) # 基本句
+    [太郎は, リンゴと, みかんを, 食べながら, 富士, 山へ, 行った。]
+
+    >>> list(doc._.knp_bunsetsu_spans) # 文節
+    [太郎は, リンゴと, みかんを, 食べながら, 富士山へ, 行った。]
+
+また，:code:`Token`から，それが含まれる文節や基本句の:code:`Span`を取得することができます.
+
+    >>> token = doc[8]
+    >>> print(token)
+    富士
+    >>> print(token._.knp_morph_tag) # 基本句
+    富士
+    >>> print(token._.knp_morph_bunsetsu) # 文節
+    富士山へ
 
 係り受け関係
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,6 +126,7 @@ NERの解析結果は，:code:`doc.ents` に格納されています.
     >>> doc = nlp("金の斧と銀の斧の職人と銅の斧の職人")
     >>> list(doc._.knp_parallel_noun_chunks)
     [[金の斧と銀の斧の職人, 銅の斧の職人]]
+
 
 pyknp オブジェクトの取得
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
