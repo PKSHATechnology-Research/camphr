@@ -55,6 +55,6 @@ jobs:
         git config --local user.name "GitHub Action"
         git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
         git add .
-        git commit -m "Update dependencies"
-        git push github HEAD:${GITHUB_REF}
+        git commit -m "Update dependencies" || true
+        git push github HEAD:${GITHUB_REF} || true
 
