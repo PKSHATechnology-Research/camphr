@@ -7,7 +7,7 @@ You can use Sentencepiece as you would use `en` or other languages.
 Usage
 -----
 
-Pass your trained `spiece.model` file path to `spacy.blank`, as follows:
+Pass your trained :code:`spiece.model` file path to :code:`spacy.blank`, as follows:
 
 .. code:: python3
 
