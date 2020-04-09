@@ -1,30 +1,21 @@
 import os
 import shutil
-from itertools import chain
 from pathlib import Path
-from typing import Callable, List, Optional, Type, Union
+from typing import Optional, Type
 
 import sentencepiece as spm
 from spacy.language import Language
-from spacy.tokens import Doc, Span, Token
+from spacy.tokens import Doc
 
 
 class EXTS:
     """For spacy.Underscore"""
 
     pieces_ = "spm_pieces_"
-    pieces = "spm_pieces"
-    alignment = "spm_alignment"
 
 
 def install_extensions():
-    for text, attr in zip((True, False), (EXTS.pieces_, EXTS.pieces)):
-        Doc.set_extension(attr, default=None, force=True)
-        Span.set_extension(attr, getter=make_token_span_spiece_getter(text))
-        Token.set_extension(attr, getter=make_token_span_spiece_getter(text))
-    Doc.set_extension(EXTS.alignment, default=None, force=True)
-    Span.set_extension(EXTS.alignment, getter=get_span_align)
-    Token.set_extension(EXTS.alignment, getter=get_token_align)
+    Doc.set_extension(EXTS.pieces_, default=None, force=True)
 
 
 class Tokenizer:
@@ -48,21 +39,13 @@ class Tokenizer:
             for token, next_token in zip(_tokens, _tokens[1:])
             if token != self.SPACE_CHAR
         ] + [False]
-        tokens = []
-        alignment = []
-        buf: List[int] = []
-        for i, token in enumerate(_tokens):
-            if token != self.SPACE_CHAR:
-                tokens.append(token.lstrip(self.SPACE_CHAR))
-                alignment.append(buf + [i])
-                buf = []
-            else:
-                buf = [i]
-
+        tokens = [
+            token.lstrip(self.SPACE_CHAR)
+            for token in _tokens
+            if token != self.SPACE_CHAR
+        ]
         doc = Doc(self.vocab, tokens, spaces)
-        doc._.set(EXTS.alignment, alignment)
         doc._.set(EXTS.pieces_, _tokens)
-        doc._.set(EXTS.pieces, self.tokenizer.encode_as_ids(text))
         return doc
 
     def load_spm_tokenizer(self):
@@ -91,28 +74,6 @@ class Tokenizer:
 
     def from_disk(self, path: Path, **kwargs):
         self.model_path = str((path / self.SPIECE_MODEL).absolute())
-
-
-def get_token_align(token: Token) -> List[int]:
-    return token.doc._.get(EXTS.alignment)[token.i]
-
-
-def get_span_align(span: Span) -> List[List[int]]:
-    return [token._.get(EXTS.alignment) for token in span]
-
-
-def make_token_span_spiece_getter(text: bool) -> Callable:
-    def getter(token: Union[Token, Span]) -> Union[List[str], List[int]]:
-        align = token._.get(EXTS.alignment)
-        if isinstance(token, Span):
-            align = chain.from_iterable(align)
-        if text:
-            doc_spiece = token.doc._.get(EXTS.pieces_)
-        else:
-            doc_spiece = token.doc._.get(EXTS.pieces)
-        return [doc_spiece[i] for i in align]
-
-    return getter
 
 
 class Defaults(Language.Defaults):  # type: ignore
