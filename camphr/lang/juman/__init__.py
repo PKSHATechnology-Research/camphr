@@ -8,9 +8,10 @@ from spacy.language import Language
 from spacy.tokens import Doc, Token
 
 from camphr.consts import JUMAN_LINES, KEY_FSTRING
-from .tag_map import TAG_MAP
 from camphr.lang.stop_words import STOP_WORDS
 from camphr.utils import SerializationMixin, get_juman_command
+
+from .tag_map import TAG_MAP
 
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
@@ -103,8 +104,8 @@ class Tokenizer(SerializationMixin):
         spaces = [x.space for x in dtokens]
         doc = Doc(self.vocab, words=words, spaces=spaces)
         for token, dtoken in zip(doc, dtokens):
-            token.lemma_ = dtoken.lemma
             token.tag_ = dtoken.pos
+            token.lemma_ = dtoken.lemma
             token._.set(self.key_fstring, dtoken.fstring)
         doc.is_tagged = True
         return doc

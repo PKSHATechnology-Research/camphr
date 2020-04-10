@@ -11,7 +11,6 @@ import toolz
 from omegaconf import OmegaConf
 from spacy.language import Language
 from spacy.pipeline import Pipe
-from spacy.vocab import Vocab
 from toolz import merge
 from typing_extensions import Literal
 
@@ -81,7 +80,7 @@ def create_lang(cfg: LangConfig) -> Language:
     )
     if cfg.torch:
         kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})
-        return TorchLanguage(Vocab(), optimizer_config=cfg.optimizer, **kwargs)
+        return TorchLanguage(True, optimizer_config=cfg.optimizer, **kwargs)
     return spacy.blank(cfg.name, **kwargs)
 
 
