@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.17 (09/04/2020)
+- [**enhancement**] Revert sentencepiece lang from v0.4 [#40](https://github.com/PKSHATechnology-Research/camphr/pull/40)
+
+---
+
 ## 0.5.16 (09/04/2020)
 - [**enhancement**] add `functools.lru_cache` to knp extensions. [#39](https://github.com/PKSHATechnology-Research/camphr/pull/39)
 
