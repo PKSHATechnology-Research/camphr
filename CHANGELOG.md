@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.18 (11/04/2020)
+- [**enhancement**] juman TAG_MAP tentative support [#41](https://github.com/PKSHATechnology-Research/camphr/pull/41)
+- [**bug**] Fix misuse `Vocab()` in Language instantiation [#42](https://github.com/PKSHATechnology-Research/camphr/pull/42)
+
+---
+
 ## 0.5.17 (09/04/2020)
 - [**enhancement**] Revert sentencepiece lang from v0.4 [#40](https://github.com/PKSHATechnology-Research/camphr/pull/40)
 
