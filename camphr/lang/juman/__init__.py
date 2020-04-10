@@ -8,6 +8,7 @@ from spacy.language import Language
 from spacy.tokens import Doc, Token
 
 from camphr.consts import JUMAN_LINES, KEY_FSTRING
+from .tag_map import TAG_MAP
 from camphr.lang.stop_words import STOP_WORDS
 from camphr.utils import SerializationMixin, get_juman_command
 
@@ -147,6 +148,7 @@ def _split_text_for_juman(text: str) -> Iterator[str]:
 # for pickling. see https://spacy.io/usage/adding-languages
 class Defaults(Language.Defaults):  # type: ignore
     lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
+    tag_map = TAG_MAP
     stop_words = STOP_WORDS
     writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
 
