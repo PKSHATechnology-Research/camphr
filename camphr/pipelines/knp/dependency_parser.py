@@ -43,26 +43,23 @@ def knp_dependency_parser_head(tag: Token) -> str:
         except (AttributeError, KeyError):
             pass
         return dep
-    dep = "dep"
     try:
         f = tag._.knp_morph_tag._.knp_tag_element.features
         k = f["係"] if f["係"] != "未格" else f["解析格"] + "格"
-        x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj"}
-        if k in x:
-            dep = x[k]
-        elif k == "ノ格":
-            if tag.head.pos in [VERB, ADJ]:  # type: ignore
-                dep = "nsubj"
-            elif tag.pos in [DET, PRON]:  # type: ignore
-                tag.pos = DET  # type: ignore
-                dep = "det"
-            else:
-                dep = "nmod"
-        else:
-            dep = "obl"
     except (AttributeError, KeyError):
-        pass
-    return dep
+        return "dep"
+    x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj"}
+    if k in x:
+        return x[k]
+    elif k != "ノ格":
+        return "obl"
+    if tag.head.pos in [VERB, ADJ]:  # type: ignore
+        return "nsubj"
+    elif tag.pos in [DET, PRON]:  # type: ignore
+        tag.pos = DET  # type: ignore
+        return "det"
+    else:
+        return "nmod"
 
 
 def knp_dependency_parser_func(tag: Token) -> str:
@@ -81,4 +78,3 @@ def knp_dependency_parser_func(tag: Token) -> str:
         return "punct"
     else:
         return "clf" if tag.head.pos == NUM else "flat"  # type: ignore
-
