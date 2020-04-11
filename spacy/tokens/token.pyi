@@ -9,6 +9,7 @@ class Token:
     tag: int
     lemma_: str
     pos_: str
+    pos: int
     doc: Doc
     _: Underscore
     vector: Any
