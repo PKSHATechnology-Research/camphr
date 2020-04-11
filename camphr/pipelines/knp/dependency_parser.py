@@ -2,7 +2,7 @@
 from typing import Iterable, Optional
 
 import spacy
-from spacy.tokens import Doc, Span
+from spacy.tokens import Doc, Span, Token
 from spacy.symbols import ADJ, ADP, ADV, AUX, CCONJ, DET, NOUN, NUM, PRON, PART, PUNCT, VERB  # type: ignore
 
 from camphr.pipelines.knp import KNP_USER_KEYS
@@ -15,13 +15,13 @@ def knp_dependency_parser(doc: Doc) -> Doc:
         parent: Optional[Span] = tag._.get(KNP_USER_KEYS.tag.parent)
         if parent is not None:
             tag[0].head = parent[0]
-            tag[0].dep_ = knp_dependency_parser_head(tag[0], parent[0])
+            tag[0].dep_ = knp_dependency_parser_head(tag[0])
         else:
             tag[0].head = tag[0]
             tag[0].dep_ = "ROOT"
         for c in tag[1:]:
             c.head = tag[0]
-            c.dep_ = knp_dependency_parser_func(c, tag[0])
+            c.dep_ = knp_dependency_parser_func(c)
     doc.is_parsed = True
     return doc
 
@@ -30,7 +30,7 @@ def knp_dependency_parser_factory(*args, **kwargs):
     return knp_dependency_parser
 
 
-def knp_dependency_parser_head(tag: Token, parent: Token) -> str:
+def knp_dependency_parser_head(tag: Token) -> str:
     x = {ADV: "advmod", CCONJ: "advmod", DET: "det"}
     if tag.pos in x:  # type: ignore
         return x[tag.pos]  # type: ignore
@@ -51,7 +51,7 @@ def knp_dependency_parser_head(tag: Token, parent: Token) -> str:
         if k in x:
             dep = x[k]
         elif k == "ノ格":
-            if parent.pos in [VERB, ADJ]:  # type: ignore
+            if tag.head.pos in [VERB, ADJ]:  # type: ignore
                 dep = "nsubj"
             elif tag.pos in [DET, PRON]:  # type: ignore
                 tag.pos = DET  # type: ignore
@@ -65,14 +65,14 @@ def knp_dependency_parser_head(tag: Token, parent: Token) -> str:
     return dep
 
 
-def knp_dependency_parser_func(tag: Token, parent: Token) -> str:
+def knp_dependency_parser_func(tag: Token) -> str:
     if tag.pos == AUX:  # type: ignore
-        return "aux" if parent.pos in [VERB, ADJ] else "cop"  # type: ignore
+        return "aux" if tag.head.pos in [VERB, ADJ] else "cop"  # type: ignore
     elif tag.pos == ADP:  # type: ignore
-        return "mark" if parent.pos in [VERB, ADJ] else "case"  # type: ignore
+        return "mark" if tag.head.pos in [VERB, ADJ] else "case"  # type: ignore
     elif tag.pos == VERB:  # type: ignore
-        if parent.pos == NOUN:  # type: ignore
-            parent.pos = VERB  # type: ignore
+        if tag.head.pos == NOUN:  # type: ignore
+            tag.head.pos = VERB  # type: ignore
         tag.pos = AUX  # type: ignore
         return "aux"
     elif tag.pos == PART:  # type: ignore
@@ -80,4 +80,5 @@ def knp_dependency_parser_func(tag: Token, parent: Token) -> str:
     elif tag.pos == PUNCT:  # type: ignore
         return "punct"
     else:
-        return "clf" if parent.pos == NUM else "flat"  # type: ignore
+        return "clf" if tag.head.pos == NUM else "flat"  # type: ignore
+
