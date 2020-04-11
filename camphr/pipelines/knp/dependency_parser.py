@@ -3,6 +3,7 @@ from typing import Iterable, Optional
 
 import spacy
 from spacy.tokens import Doc, Span
+from spacy.symbols import ADJ, ADP, ADV, AUX, CCONJ, DET, NOUN, NUM, PRON, PROPN, PART, PUNCT, VERB  # type: ignore
 
 from camphr.pipelines.knp import KNP_USER_KEYS
 
@@ -14,10 +15,66 @@ def knp_dependency_parser(doc: Doc) -> Doc:
         parent: Optional[Span] = tag._.get(KNP_USER_KEYS.tag.parent)
         if parent is not None:
             tag[0].head = parent[0]
+            if tag[0].pos in [ADV, CCONJ]:
+                tag[0].dep_ = "advmod"
+            elif tag[0].pos in [VERB, ADJ]:
+                tag[0].dep_ = "advcl"
+                try:
+                    f=tag[0]._.knp_morph_tag._.knp_tag_element.features
+                    if f["係"] == "連格":
+                        tag[0].dep_ = "acl"
+                except:
+                    pass
+            elif tag[0].pos == DET:
+                tag[0].dep_ = "det"
+            else:
+                tag[0].dep_ = "dep"
+                try:
+                    f=tag[0]._.knp_morph_tag._.knp_tag_element.features
+                    if f["係"] == "未格":
+                        k = f["解析格"] + "格"
+                    else:
+                        k = f["係"]
+                    if k == "隣":
+                        tag[0].dep_ = "nmod"
+                    elif k == "文節内":
+                        tag[0].dep_ = "compound"
+                    elif k == "ノ格":
+                        if parent[0].pos in [VERB, ADJ]:
+                            tag[0].dep_ = "nsubj"
+                        elif tag[0].pos in [DET, PRON]:
+                            tag[0].pos = DET
+                            tag[0].dep_ = "det"
+                        else:
+                            tag[0].dep_ = "nmod"
+                    elif k == "ガ格":
+                        tag[0].dep_ = "nsubj"
+                    elif k == "ヲ格":
+                        tag[0].dep_ = "obj"
+                    else:
+                        tag[0].dep_ = "obl"
+                except:
+                    pass
         else:
             tag[0].head = tag[0]
-        for p, c in zip(tag, tag[1:]):
-            c.head = p
+            tag[0].dep_ = "ROOT"
+        for c in tag[1:]:
+            c.head = tag[0]
+            if c.pos == AUX:
+                c.dep_ = "aux" if tag[0].pos in [VERB, ADJ] else "cop"
+            elif c.pos == ADP:
+                c.dep_ = "mark" if tag[0].pos in [VERB, ADJ] else "case"
+            elif c.pos == VERB:
+                if tag[0].pos == NOUN:
+                    tag[0].pos = VERB
+                c.pos = AUX
+                c.dep_ = "aux"
+            elif c.pos == PART:
+                c.dep_ = "mark"
+            elif c.pos == PUNCT:
+                c.dep_ = "punct"
+            else:
+                c.dep_ = "clf" if tag[0].pos == NUM else "flat"
     doc.is_parsed = True
     return doc
 
