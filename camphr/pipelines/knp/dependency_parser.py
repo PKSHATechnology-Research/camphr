@@ -66,18 +66,19 @@ def knp_dependency_parser_noun(tag: Token) -> str:
 
 
 def knp_dependency_parser_func(tag: Token) -> str:
-    if tag.pos == AUX:  # type: ignore
-        return "aux" if tag.head.pos in [VERB, ADJ] else "cop"  # type: ignore
-    elif tag.pos == ADP:  # type: ignore
-        return "mark" if tag.head.pos in [VERB, ADJ] else "case"  # type: ignore
-    elif tag.pos == VERB:  # type: ignore
-        if tag.head.pos == NOUN:  # type: ignore
+    p, pp = tag.pos, tag.head.pos  # type: ignore
+    if p == AUX:
+        return "aux" if pp in [VERB, ADJ] else "cop"
+    elif p == ADP:
+        return "mark" if pp in [VERB, ADJ] else "case"
+    elif p in [VERB, ADJ]:
+        if pp == NOUN:
             tag.head.pos = VERB  # type: ignore
         tag.pos = AUX  # type: ignore
         return "aux"
-    elif tag.pos == PART:  # type: ignore
+    elif p == PART:
         return "mark"
-    elif tag.pos == PUNCT:  # type: ignore
+    elif p == PUNCT:
         return "punct"
     else:
-        return "clf" if tag.head.pos == NUM else "flat"  # type: ignore
+        return "clf" if pp == NUM else "flat"
