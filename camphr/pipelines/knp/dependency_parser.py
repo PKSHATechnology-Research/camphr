@@ -39,14 +39,18 @@ def knp_dependency_parser_head(tag: Token) -> str:
             f = tag._.knp_morph_tag._.knp_tag_element.features
             if f["係"] == "連格":
                 return "acl"
+            return "advcl"
         except (AttributeError, KeyError):
-            pass
-        return "advcl"
+            return "advcl"
     try:
-        f = tag._.knp_morph_tag._.knp_tag_element.features
-        k = f["係"] if f["係"] != "未格" else f["解析格"] + "格"
+        return knp_dependency_parser_noun(tag)
     except (AttributeError, KeyError):
         return "dep"
+
+
+def knp_dependency_parser_noun(tag: Token) -> str:
+    f = tag._.knp_morph_tag._.knp_tag_element.features
+    k = f["係"] if f["係"] != "未格" else f["解析格"] + "格"
     x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj"}
     if k in x:
         return x[k]
