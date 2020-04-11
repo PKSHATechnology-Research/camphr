@@ -35,14 +35,13 @@ def knp_dependency_parser_head(tag: Token) -> str:
     if tag.pos in x:  # type: ignore
         return x[tag.pos]  # type: ignore
     elif tag.pos in [VERB, ADJ]:  # type: ignore
-        dep = "advcl"
         try:
             f = tag._.knp_morph_tag._.knp_tag_element.features
             if f["係"] == "連格":
-                dep = "acl"
+                return "acl"
         except (AttributeError, KeyError):
             pass
-        return dep
+        return "advcl"
     try:
         f = tag._.knp_morph_tag._.knp_tag_element.features
         k = f["係"] if f["係"] != "未格" else f["解析格"] + "格"
