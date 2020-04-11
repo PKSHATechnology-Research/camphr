@@ -67,14 +67,14 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             elif c.pos == VERB:  # type: ignore
                 if tag[0].pos == NOUN:  # type: ignore
                     tag[0].pos = VERB  # type: ignore
-                c.pos = AUX  # type.ignore
+                c.pos = AUX  # type: ignore
                 c.dep_ = "aux"
             elif c.pos == PART:  # type: ignore
                 c.dep_ = "mark"
             elif c.pos == PUNCT:  # type: ignore
                 c.dep_ = "punct"
             else:
-                c.dep_ = "clf" if tag[0].pos == NUM else "flat"
+                c.dep_ = "clf" if tag[0].pos == NUM else "flat"  # type: ignore
     doc.is_parsed = True
     return doc
 
