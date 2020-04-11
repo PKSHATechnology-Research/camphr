@@ -20,17 +20,17 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             elif tag[0].pos in [VERB, ADJ]:  # type: ignore
                 tag[0].dep_ = "advcl"
                 try:
-                    f=tag[0]._.knp_morph_tag._.knp_tag_element.features
+                    f = tag[0]._.knp_morph_tag._.knp_tag_element.features
                     if f["係"] == "連格":
                         tag[0].dep_ = "acl"
-                except:
+                except (AttributeError, KeyError):
                     pass
             elif tag[0].pos == DET:  # type: ignore
                 tag[0].dep_ = "det"
             else:
                 tag[0].dep_ = "dep"
                 try:
-                    f=tag[0]._.knp_morph_tag._.knp_tag_element.features
+                    f = tag[0]._.knp_morph_tag._.knp_tag_element.features
                     if f["係"] == "未格":
                         k = f["解析格"] + "格"
                     else:
@@ -53,7 +53,7 @@ def knp_dependency_parser(doc: Doc) -> Doc:
                         tag[0].dep_ = "obj"
                     else:
                         tag[0].dep_ = "obl"
-                except:
+                except (AttributeError, KeyError):
                     pass
         else:
             tag[0].head = tag[0]
