@@ -17,7 +17,7 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             tag[0].head = parent[0]
             x = {ADV: "advmod", CCONJ: "advmod", DET: "det"}
             if tag[0].pos in x:  # type: ignore
-                tag[0].dep_ = x[tag[0].pos]
+                tag[0].dep_ = x[tag[0].pos]  # type: ignore
             elif tag[0].pos in [VERB, ADJ]:  # type: ignore
                 tag[0].dep_ = "advcl"
                 try:
