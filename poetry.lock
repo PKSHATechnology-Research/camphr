@@ -1126,7 +1126,7 @@ description = "Python documentation generator"
 name = "sphinx"
 optional = false
 python-versions = ">=3.5"
-version = "3.0.0"
+version = "3.0.1"
 
 [package.dependencies]
 Jinja2 = ">=2.3"
@@ -2331,8 +2331,8 @@ spacy = [
     {file = "spacy-2.2.4.tar.gz", hash = "sha256:f0f3a67c5841e6e35d62c98f40ebb3d132587d3aba4f4dccac5056c4e90ff5b9"},
 ]
 sphinx = [
-    {file = "Sphinx-3.0.0-py3-none-any.whl", hash = "sha256:b63a0c879c4ff9a4dffcb05217fa55672ce07abdeb81e33c73303a563f8d8901"},
-    {file = "Sphinx-3.0.0.tar.gz", hash = "sha256:6a099e6faffdc3ceba99ca8c2d09982d43022245e409249375edf111caf79ed3"},
+    {file = "Sphinx-3.0.1-py3-none-any.whl", hash = "sha256:8411878f4768ec2a8896b844d68070204f9354a831b37937989c2e559d29dffc"},
+    {file = "Sphinx-3.0.1.tar.gz", hash = "sha256:50972d83b78990fd61d0d3fe8620814cae53db29443e92c13661bc43dff46ec8"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.2.tar.gz", hash = "sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58"},
