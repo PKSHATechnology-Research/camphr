@@ -3,7 +3,7 @@ from typing import Iterable, Optional
 
 import spacy
 from spacy.tokens import Doc, Span
-from spacy.symbols import ADJ, ADP, ADV, AUX, CCONJ, DET, NOUN, NUM, PRON, PROPN, PART, PUNCT, VERB  # type: ignore
+from spacy.symbols import ADJ, ADP, ADV, AUX, CCONJ, DET, NOUN, NUM, PRON, PART, PUNCT, VERB  # type: ignore
 
 from camphr.pipelines.knp import KNP_USER_KEYS
 
@@ -15,8 +15,9 @@ def knp_dependency_parser(doc: Doc) -> Doc:
         parent: Optional[Span] = tag._.get(KNP_USER_KEYS.tag.parent)
         if parent is not None:
             tag[0].head = parent[0]
-            if tag[0].pos in [ADV, CCONJ]:  # type: ignore
-                tag[0].dep_ = "advmod"
+            x = {ADV: "advmod", CCONJ: "advmod", DET: "det"}
+            if tag[0].pos in x:  # type: ignore
+                tag[0].dep_ = x[tag[0].pos]
             elif tag[0].pos in [VERB, ADJ]:  # type: ignore
                 tag[0].dep_ = "advcl"
                 try:
@@ -25,20 +26,14 @@ def knp_dependency_parser(doc: Doc) -> Doc:
                         tag[0].dep_ = "acl"
                 except (AttributeError, KeyError):
                     pass
-            elif tag[0].pos == DET:  # type: ignore
-                tag[0].dep_ = "det"
             else:
                 tag[0].dep_ = "dep"
                 try:
                     f = tag[0]._.knp_morph_tag._.knp_tag_element.features
-                    if f["係"] == "未格":
-                        k = f["解析格"] + "格"
-                    else:
-                        k = f["係"]
-                    if k == "隣":
-                        tag[0].dep_ = "nmod"
-                    elif k == "文節内":
-                        tag[0].dep_ = "compound"
+                    k = f["係"] if f["係"] != "未格" else f["解析格"] + "格"
+                    x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj"}
+                    if k in x:
+                        tag[0].dep_ = x[k]
                     elif k == "ノ格":
                         if parent[0].pos in [VERB, ADJ]:  # type: ignore
                             tag[0].dep_ = "nsubj"
@@ -47,10 +42,6 @@ def knp_dependency_parser(doc: Doc) -> Doc:
                             tag[0].dep_ = "det"
                         else:
                             tag[0].dep_ = "nmod"
-                    elif k == "ガ格":
-                        tag[0].dep_ = "nsubj"
-                    elif k == "ヲ格":
-                        tag[0].dep_ = "obj"
                     else:
                         tag[0].dep_ = "obl"
                 except (AttributeError, KeyError):
