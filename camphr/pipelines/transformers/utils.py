@@ -11,6 +11,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    Optional,
     Sequence,
     Sized,
     Type,
@@ -344,6 +345,8 @@ class TransformersInput:
     token_type_ids: torch.Tensor
     attention_mask: torch.Tensor
     input_len: torch.LongTensor
+    overflowing_tokens: Optional[torch.LongTensor] = None
+    num_truncated_tokens: int = 0
 
     def __iter__(self) -> Iterator["TransformersInput"]:
         for i in range(len(cast(Sized, self.input_ids))):
