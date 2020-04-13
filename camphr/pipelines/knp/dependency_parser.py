@@ -24,6 +24,7 @@ from camphr.pipelines.knp import KNP_USER_KEYS
 @spacy.component("knp_dependency_parser", requires=("doc._.knp_tag_parent",))
 def knp_dependency_parser(doc: Doc) -> Doc:
     tag_spans: Iterable[Span] = doc._.get(KNP_USER_KEYS.tag.spans)
+    s = []
     for tag in tag_spans:
         parent: Optional[Span] = tag._.get(KNP_USER_KEYS.tag.parent)
         if parent is not None:
@@ -35,6 +36,19 @@ def knp_dependency_parser(doc: Doc) -> Doc:
         for c in tag[1:]:
             c.head = tag[0]
             c.dep_ = _get_child_dep(c)
+        s.append(tag[0])
+    for t in s:
+        while t.dep_ == "conj" and t.i < t.head.i:
+            h = t.head
+            t.head = h.head
+            t.dep_ = h.dep_
+            if t.dep_ == "ROOT":
+                t.head = t
+            for u in s:
+                if u.i < t.i and u.head == h:
+                    u.head = t
+            h.head = t
+            h.dep_ = "conj"
     doc.is_parsed = True
     return doc
 
@@ -62,15 +76,20 @@ def _get_dep_noun(tag: Token) -> str:
     x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj", "ガ２格": "dislocated"}
     if k in x:
         return x[k]
-    elif k != "ノ格":
-        return "obl"
-    if tag.head.pos in {VERB, ADJ}:
-        return "nsubj"
-    elif tag.pos in {DET, PRON}:
-        tag.pos = DET
-        return "det"
-    else:
-        return "nmod"
+    elif k == "ノ格":
+        if tag.head.pos in {VERB, ADJ}:
+            return "nsubj"
+        elif tag.pos in {DET, PRON}:
+            tag.pos = DET
+            return "det"
+        else:
+            return "nmod"
+    elif "並列タイプ" in f:
+        if tag.head.pos in {VERB, ADJ}:
+            return "obl"
+        else:
+            return "conj"
+    return "obl"
 
 
 def _get_child_dep(tag: Token) -> str:
