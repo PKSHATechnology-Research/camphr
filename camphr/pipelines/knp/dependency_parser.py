@@ -42,12 +42,10 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             h = t.head
             t.head = h.head
             t.dep_ = h.dep_
-            if t.dep_ == "ROOT":
-                t.head = t
-            for u in s:
-                if u.i < t.i and u.head == h:
-                    u.head = t
-            h.head = t
+            x = [h, t] if t.dep_ == "ROOT" else [h]
+            x += [u for u in s if u.head == h and u.i < t.i]
+            for u in x:
+                u.head = t
             h.dep_ = "conj"
     doc.is_parsed = True
     return doc
