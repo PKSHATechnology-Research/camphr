@@ -80,6 +80,8 @@ def _get_dep_noun(tag: Token) -> str:
         elif tag.pos in {DET, PRON}:
             tag.pos = DET
             return "det"
+        elif tag.pos == NUM:
+            return "nummod"
         else:
             return "nmod"
     elif "並列タイプ" in f:
