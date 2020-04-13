@@ -10,8 +10,7 @@ on:
 
 jobs:
   test:
-    # if: contains(github.event.head_commit.message, '[skip ci]') == false
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -19,6 +18,9 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
     - uses: actions/checkout@v2
+    - name: Skip CI
+      run: |
+        [[ $(git log -1 --pretty=%B) != *"[skip ci]"* ]] || exit 78
     - name: Checkout submodules
       shell: bash
       run: |
