@@ -3,15 +3,15 @@ name: heavy test
 on: 
   push:
     paths:
-      - '**/udify.py'
-  # pull_request:
-  #   paths:
-  #     - '**udify**'
-  #     - '**elmo**'
+      - '**/*udify.py'
+  pull_request:
+    paths:
+      - '**/*udify.py'
+      - '**/*elmo.py'
 
 jobs:
   test:
-    # if: contains(github.event.head_commit.message, '[skip ci]') == false
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
