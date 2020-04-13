@@ -56,10 +56,10 @@ def _get_dep(tag: Token) -> str:
 
 def _get_dep_noun(tag: Token) -> str:
     f: Dict[str, Any] = tag._.knp_morph_tag._.knp_tag_element.features
-    if "係" not in f and "解析格" not in f:
+    if "係" not in f:
         return "dep"
-    k = f["係"] if f["係"] != "未格" else f["解析格"] + "格"
-    x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj"}
+    k = f["係"] if f["係"] != "未格" or "解析格" not in f else f["解析格"] + "格"
+    x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj", "ガ２格": "dislocated"}
     if k in x:
         return x[k]
     elif k != "ノ格":
