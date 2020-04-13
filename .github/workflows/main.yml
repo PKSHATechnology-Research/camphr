@@ -16,7 +16,6 @@ jobs:
       matrix:
         python-version: [3.6, 3.7]
         os: [ubuntu-latest, macos-latest]
-        extras: [udify, elmo, none]
     steps:
     - uses: actions/checkout@v2
     - name: Checkout submodules
@@ -37,7 +36,7 @@ jobs:
       id: cache
       with:
         path: ~/.virtualenvs
-        key: poetry-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.extras }}-${{ hashFiles('poetry.lock') }}
+        key: poetry-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
     - name: Set Poetry config
       run: |
         poetry config virtualenvs.in-project false
@@ -47,27 +46,10 @@ jobs:
       run: poetry install
       if: steps.cache.outputs.cache-hit != true
 
-    - name: Install udify
-      run: |
-        poetry run python scripts/download_model.py en_udify
-        poetry install -E udify
-      if: steps.cache.outputs.cache-hit != true && matrix.extras == 'udify'
-
-    - name: Install elmo
-      run: |
-        poetry run python scripts/download_model.py en_elmo_medium
-        poetry install -E allennlp
-      if: steps.cache.outputs.cache-hit != true && matrix.extras == 'elmo'
-
     - run: poetry run mypy camphr
     - run: poetry run flake8
     - name: Run pytest
       run: poetry run pytest
-      if:  matrix.extras == 'none'
-
-    - name: Run pytest for extras
-      run: poetry run pytest --runslow -rs -k ${{ matrix.extras }}
-      if: matrix.extras != 'none'
 
   publish:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
