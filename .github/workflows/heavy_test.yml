@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '**/*udify.py'
+      - '**/*elmo.py'
   pull_request:
     paths:
       - '**/*udify.py'
