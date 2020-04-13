@@ -1,3 +1,8 @@
+dev:
+	watchmedo shell-command --patterns='*.rst;source/conf.py' --ignore-pattern=_build/* --recursive --command='make html' &
+	cd build/html && python -m http.server 5000
+	
+
 # Minimal makefile for Sphinx documentation
 #
 
