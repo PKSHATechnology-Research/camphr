@@ -1,5 +1,4 @@
 """Udify: '75 Languages, 1 Model: Parsing Universal Dependencies Universally' (https://arxiv.org/abs/1904.02099)
-
 """
 from typing import Dict, Iterable, Optional, Tuple
 

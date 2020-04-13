@@ -3,12 +3,12 @@ name: heavy test
 on: 
   push:
     paths:
-      - "./**/*udify*"
-      - "./**/*elmo*"
+      - '**udify**'
+      - '**elmo**'
   pull_request:
     paths:
-      - "./**/*udify*"
-      - "./**/*elmo*"
+      - '**udify**'
+      - '**elmo**'
 
 jobs:
   test:
