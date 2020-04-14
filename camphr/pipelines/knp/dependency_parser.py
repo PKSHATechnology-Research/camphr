@@ -107,6 +107,8 @@ def _modify_head_flat(heads: List[Token]) -> List[Token]:
         if not t.tag_.startswith("接頭辞"):
             continue
         x = [u for u in t.rights]  # type: ignore
+        if len(x) == 0:
+            continue
         h = x[0]
         if t.pos == NOUN and h.dep_ == "flat":
             d = "compound"
