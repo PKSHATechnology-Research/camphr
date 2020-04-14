@@ -1,5 +1,5 @@
 """Convert KNP dependency parsing result to spacy format."""
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, List
 
 import spacy
 from spacy.symbols import (
@@ -24,6 +24,7 @@ from camphr.pipelines.knp import KNP_USER_KEYS
 @spacy.component("knp_dependency_parser", requires=("doc._.knp_tag_parent",))
 def knp_dependency_parser(doc: Doc) -> Doc:
     tag_spans: Iterable[Span] = doc._.get(KNP_USER_KEYS.tag.spans)
+    s = []
     for tag in tag_spans:
         parent: Optional[Span] = tag._.get(KNP_USER_KEYS.tag.parent)
         if parent is not None:
@@ -35,6 +36,9 @@ def knp_dependency_parser(doc: Doc) -> Doc:
         for c in tag[1:]:
             c.head = tag[0]
             c.dep_ = _get_child_dep(c)
+        s.append(tag[0])
+    s = _modify_head_flat(s)
+    s = _modify_head_conj(s)
     doc.is_parsed = True
     return doc
 
@@ -56,21 +60,26 @@ def _get_dep(tag: Token) -> str:
 
 def _get_dep_noun(tag: Token) -> str:
     f: Dict[str, Any] = tag._.knp_morph_tag._.knp_tag_element.features
-    if "係" not in f and "解析格" not in f:
+    if "係" not in f:
         return "dep"
-    k = f["係"] if f["係"] != "未格" else f["解析格"] + "格"
-    x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj"}
+    k = f["係"] if f["係"] != "未格" or "解析格" not in f else f["解析格"] + "格"
+    x = {"隣": "nmod", "文節内": "compound", "ガ格": "nsubj", "ヲ格": "obj", "ガ２格": "dislocated"}
     if k in x:
         return x[k]
-    elif k != "ノ格":
-        return "obl"
-    if tag.head.pos in {VERB, ADJ}:
-        return "nsubj"
-    elif tag.pos in {DET, PRON}:
-        tag.pos = DET
-        return "det"
-    else:
-        return "nmod"
+    elif k == "ノ格":
+        if tag.head.pos in {VERB, ADJ}:
+            return "nsubj"
+        elif tag.pos in {DET, PRON}:
+            tag.pos = DET
+            return "det"
+        else:
+            return "nummod" if tag.pos == NUM else "nmod"
+    elif "並列タイプ" in f:
+        if tag.head.pos in {VERB, ADJ}:
+            return "obl"
+        else:
+            return "conj"
+    return "obl"
 
 
 def _get_child_dep(tag: Token) -> str:
@@ -90,3 +99,46 @@ def _get_child_dep(tag: Token) -> str:
         return "punct"
     else:
         return "clf" if pp == NUM else "flat"
+
+
+def _modify_head_flat(heads: List[Token]) -> List[Token]:
+    s = [t for t in heads]
+    for i, t in enumerate(s):
+        if not t.tag_.startswith("接頭辞"):
+            continue
+        x = [u for u in t.rights]  # type: ignore
+        if len(x) == 0:
+            continue
+        h = x[0]
+        if t.pos == NOUN and h.dep_ == "flat":
+            d = "compound"
+        elif t.pos == ADV and h.dep_ == "aux":
+            d = "advmod"
+            h.pos = VERB
+        else:
+            continue
+        h.head = t.head
+        h.dep_ = t.dep_
+        x = x[1:]
+        x += [t, h] if h.dep_ == "ROOT" else [t]
+        x += [u for u in s if u.head == t]
+        for u in x:
+            u.head = h
+        t.dep_ = d
+        s[i] = h
+    return s
+
+
+def _modify_head_conj(heads: List[Token]) -> List[Token]:
+    s = [t for t in heads]
+    for t in s:
+        while t.dep_ == "conj" and t.i < t.head.i:
+            h = t.head
+            t.head = h.head
+            t.dep_ = h.dep_
+            x = [h, t] if t.dep_ == "ROOT" else [h]
+            x += [u for u in s if u.head == h and u.i < t.i]
+            for u in x:
+                u.head = t
+            h.dep_ = "conj"
+    return s
