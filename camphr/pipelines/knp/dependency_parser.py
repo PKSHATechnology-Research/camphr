@@ -37,7 +37,7 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             c.head = tag[0]
             c.dep_ = _get_child_dep(c)
         s.append(tag[0])
-    for i,t in enumerate(s):
+    for i, t in enumerate(s):
         if t.tag_.startswith("接頭辞"):
             x = [u for u in t.rights]  # type: ignore
             h = x[0]
@@ -100,10 +100,8 @@ def _get_dep_noun(tag: Token) -> str:
         elif tag.pos in {DET, PRON}:
             tag.pos = DET
             return "det"
-        elif tag.pos == NUM:
-            return "nummod"
         else:
-            return "nmod"
+            return "nummod" if tag.pos == NUM else "nmod"
     elif "並列タイプ" in f:
         if tag.head.pos in {VERB, ADJ}:
             return "obl"
