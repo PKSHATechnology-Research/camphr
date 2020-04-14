@@ -1,5 +1,5 @@
 """Convert KNP dependency parsing result to spacy format."""
-from typing import Any, Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional, List
 
 import spacy
 from spacy.symbols import (
@@ -20,7 +20,6 @@ from spacy.tokens import Doc, Span, Token
 
 from camphr.pipelines.knp import KNP_USER_KEYS
 
-
 @spacy.component("knp_dependency_parser", requires=("doc._.knp_tag_parent",))
 def knp_dependency_parser(doc: Doc) -> Doc:
     tag_spans: Iterable[Span] = doc._.get(KNP_USER_KEYS.tag.spans)
@@ -37,35 +36,8 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             c.head = tag[0]
             c.dep_ = _get_child_dep(c)
         s.append(tag[0])
-    for i, t in [(i, t) for i, t in enumerate(s) if t.tag_.startswith("接頭辞")]:
-        x = [u for u in t.rights]  # type: ignore
-        h = x[0]
-        if t.pos == NOUN and h.dep_ == "flat":
-            d = "compound"
-        elif t.pos == ADV and h.dep_ == "aux":
-            d = "advmod"
-            h.pos = VERB
-        else:
-            continue
-        h.head = t.head
-        h.dep_ = t.dep_
-        x = x[1:]
-        x += [t, h] if h.dep_ == "ROOT" else [t]
-        x += [u for u in s if u.head == t]
-        for u in x:
-            u.head = h
-        t.dep_ = d
-        s[i] = h
-    for t in s:
-        while t.dep_ == "conj" and t.i < t.head.i:
-            h = t.head
-            t.head = h.head
-            t.dep_ = h.dep_
-            x = [h, t] if t.dep_ == "ROOT" else [h]
-            x += [u for u in s if u.head == h and u.i < t.i]
-            for u in x:
-                u.head = t
-            h.dep_ = "conj"
+    s = _modify_head_flat(s)
+    s = _modify_head_conj(s)
     doc.is_parsed = True
     return doc
 
@@ -126,3 +98,44 @@ def _get_child_dep(tag: Token) -> str:
         return "punct"
     else:
         return "clf" if pp == NUM else "flat"
+
+
+def _modify_head_flat(heads: List[Token]) -> List[Token]:
+    s = [t for t in heads]
+    for i, t in enumerate(s):
+        if not t.tag_.startswith("接頭辞"):
+            continue
+        x = [u for u in t.rights]  # type: ignore
+        h = x[0]
+        if t.pos == NOUN and h.dep_ == "flat":
+            d = "compound"
+        elif t.pos == ADV and h.dep_ == "aux":
+            d = "advmod"
+            h.pos = VERB
+        else:
+            continue
+        h.head = t.head
+        h.dep_ = t.dep_
+        x = x[1:]
+        x += [t, h] if h.dep_ == "ROOT" else [t]
+        x += [u for u in s if u.head == t]
+        for u in x:
+            u.head = h
+        t.dep_ = d
+        s[i] = h
+    return s
+
+
+def _modify_head_conj(heads: List[Token]) -> List[Token]:
+    s = [t for t in heads]
+    for t in s:
+        while t.dep_ == "conj" and t.i < t.head.i:
+            h = t.head
+            t.head = h.head
+            t.dep_ = h.dep_
+            x = [h, t] if t.dep_ == "ROOT" else [h]
+            x += [u for u in s if u.head == h and u.i < t.i]
+            for u in x:
+                u.head = t
+            h.dep_ = "conj"
+    return s
