@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Iterator
 from spacy.tokens.doc import Doc
 from spacy.tokens.underscore import Underscore
 
@@ -18,6 +18,11 @@ class Token:
     head: Token
     idx: int
     is_sent_start: bool
+    rights: Iterator["Token"]
+    lefts: Iterator["Token"]
+    ancestors: Iterator["Token"]
+    children: Iterator["Token"]
+    subtree: Iterator["Token"]
     @classmethod
     def set_extension(cls, name: str, **kwargs) -> None: ...
     def __len__(self) -> int: ...
