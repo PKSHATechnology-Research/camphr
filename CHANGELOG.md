@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.19 (13/04/2020)
+- [**enhancement**] update transformers dependency [#46](https://github.com/PKSHATechnology-Research/camphr/pull/46)
+- [**CI**] Skip slow ci if unnecessary [#45](https://github.com/PKSHATechnology-Research/camphr/pull/45)
+- [**enhancement**] Refactor/knp dependency parser [#44](https://github.com/PKSHATechnology-Research/camphr/pull/44)
+- [**enhancement**] Tentative dependencies for KNP [#43](https://github.com/PKSHATechnology-Research/camphr/pull/43)
+
+Thanks for contributing, @KoichiYasuoka!
+---
+
 ## 0.5.18 (10/04/2020)
 - [**enhancement**] juman TAG_MAP tentative support [#41](https://github.com/PKSHATechnology-Research/camphr/pull/41)
 - [**bug**] Fix misuse `Vocab()` in Language instantiation [#42](https://github.com/PKSHATechnology-Research/camphr/pull/42)
