@@ -37,6 +37,26 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             c.head = tag[0]
             c.dep_ = _get_child_dep(c)
         s.append(tag[0])
+    for i,t in enumerate(s):
+        if t.tag_.startswith("接頭辞"):
+            x = [u for u in t.rights]
+            h = x[0]
+            if t.pos == NOUN and h.dep_ == "flat":
+                d = "compound"
+            elif t.pos == ADV and h.dep_ == "aux":
+                d = "advmod"
+                h.pos = VERB
+            else:
+                continue
+            h.head = t.head
+            h.dep_ = t.dep_
+            x = x[1:]
+            x += [t, h] if h.dep_ == "ROOT" else [t]
+            x += [u for u in s if u.head == t]
+            for u in x:
+                u.head = h
+            t.dep_ = d
+            s[i] = h
     for t in s:
         while t.dep_ == "conj" and t.i < t.head.i:
             h = t.head
