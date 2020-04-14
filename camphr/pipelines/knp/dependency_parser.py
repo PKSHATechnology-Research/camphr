@@ -37,9 +37,7 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             c.head = tag[0]
             c.dep_ = _get_child_dep(c)
         s.append(tag[0])
-    for i, t in enumerate(s):
-        if not t.tag_.startswith("接頭辞"):
-            continue
+    for i, t in [(i, t) for i, t in enumerate(s) if t.tag_.startswith("接頭辞")]:
         x = [u for u in t.rights]  # type: ignore
         h = x[0]
         if t.pos == NOUN and h.dep_ == "flat":
