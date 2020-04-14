@@ -26,3 +26,11 @@ def test_dependency_deps(nlp, text, deps):
     doc = nlp(text)
     for token, depi in itertools.zip_longest(doc, deps):
         assert token.dep_ == depi
+
+
+@pytest.mark.parametrize("text,heads,deps", [("象は鼻が長い", [4, 0, 4, 2, 4], ["dislocated", "case", "nsubj", "case", "ROOT"])])
+def test_dependency_parse_deps_1(nlp, text, heads, deps):
+    doc = nlp(text)
+    for token, headi, depi in itertools.zip_longest(doc, heads, deps):
+        assert token.head.i == headi
+        assert token.dep_ == depi
