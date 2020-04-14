@@ -20,6 +20,7 @@ from spacy.tokens import Doc, Span, Token
 
 from camphr.pipelines.knp import KNP_USER_KEYS
 
+
 @spacy.component("knp_dependency_parser", requires=("doc._.knp_tag_parent",))
 def knp_dependency_parser(doc: Doc) -> Doc:
     tag_spans: Iterable[Span] = doc._.get(KNP_USER_KEYS.tag.spans)
