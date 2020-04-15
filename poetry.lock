@@ -381,7 +381,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.8.3"
+version = "5.8.4"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -1027,7 +1027,7 @@ description = "SacreMoses"
 name = "sacremoses"
 optional = false
 python-versions = "*"
-version = "0.0.40"
+version = "0.0.41"
 
 [package.dependencies]
 click = "*"
@@ -1810,8 +1810,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.8.3-py3-none-any.whl", hash = "sha256:6e0470a1a7edd990c975429b7451ababd5425136eea72808a719e6d538bba463"},
-    {file = "hypothesis-5.8.3.tar.gz", hash = "sha256:039b6100163f649cbc5ecc338fd4e238cc88f84b2a460ff42d0ea9ac69b6a412"},
+    {file = "hypothesis-5.8.4-py3-none-any.whl", hash = "sha256:4c17562ee4c7fb9dc6a66954f65b92f5f46be34b8f09ef23f34e59ae57edf348"},
+    {file = "hypothesis-5.8.4.tar.gz", hash = "sha256:cd417a7d0db0f5ff3f3aece2c8a0fc666bd1467267222e297cab61e8a6551bff"},
 ]
 identify = [
     {file = "identify-1.4.14-py2.py3-none-any.whl", hash = "sha256:2bb8760d97d8df4408f4e805883dad26a2d076f04be92a10a3e43f09c6060742"},
@@ -2245,7 +2245,7 @@ s3transfer = [
     {file = "s3transfer-0.2.1.tar.gz", hash = "sha256:6efc926738a3cd576c2a79725fed9afde92378aa5c6a957e3af010cb019fac9d"},
 ]
 sacremoses = [
-    {file = "sacremoses-0.0.40.tar.gz", hash = "sha256:3ef1f7fe4c07c3c5e42c88a4a2db97df8f20ddf9b60cc014b37ce65f7ac2e7c0"},
+    {file = "sacremoses-0.0.41.tar.gz", hash = "sha256:964e9e2c06f26932707bbb2a2890263d222a8d43b1867f6b565ef6022d8f7676"},
 ]
 scikit-learn = [
     {file = "scikit-learn-0.22.2.post1.tar.gz", hash = "sha256:57538d138ba54407d21e27c306735cbd42a6aae0df6a5a30c7a6edde46b0017d"},
