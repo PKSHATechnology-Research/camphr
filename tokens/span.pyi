@@ -15,6 +15,8 @@ class Span:
     sent: "Span"
     start_char: int
     end_char: int
+    label: int
+    label_: str
     def __iter__(self) -> Iterator[Token]: ...
     def __len__(self) -> int: ...
     _: Underscore
