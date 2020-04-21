@@ -110,7 +110,7 @@ def _modify_head_punct(heads: List[Token]) -> List[Token]:
         x = [u for u in t.rights]  # type: ignore
         if len(x) == 0:
             continue
-        h = x[0]
+        h = x[0] + [u for u in t.lefts]  # type: ignore
         h.head = t.head
         h.dep_ = t.dep_
         x = x[1:]
