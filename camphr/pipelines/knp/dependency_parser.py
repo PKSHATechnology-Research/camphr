@@ -110,10 +110,10 @@ def _modify_head_punct(heads: List[Token]) -> List[Token]:
         x = [u for u in t.rights]  # type: ignore
         if len(x) == 0:
             continue
-        h = x[0] + [u for u in t.lefts]  # type: ignore
+        h = x[0]
         h.head = t.head
         h.dep_ = t.dep_
-        x = x[1:]
+        x = x[1:] + [u for u in t.lefts]  # type: ignore
         x += [t, h] if h.dep_ == "ROOT" else [t]
         x += [u for u in s if u.head == t]
         for u in x:
