@@ -16,7 +16,7 @@ from .tag_map import TAG_MAP
 ShortUnitWord = namedtuple(
     "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
 )
-_REPLACE_STRINGS = {"\t": "　", "\r": "", "（": "(", "）": ")", "\n": "　"}
+_REPLACE_STRINGS = {"\t": "　", "\r": "", "(": "（", ")": "）", "\n": "　"}
 
 
 def han_to_zen_normalize(text):
