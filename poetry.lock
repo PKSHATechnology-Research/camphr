@@ -520,7 +520,7 @@ description = "Python library for serializing any arbitrary object graph into JS
 name = "jsonpickle"
 optional = true
 python-versions = ">=2.7"
-version = "1.4"
+version = "1.4.1"
 
 [package.dependencies]
 importlib-metadata = "*"
@@ -990,7 +990,7 @@ description = "A utility library for mocking out the `requests` Python library."
 name = "responses"
 optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "0.10.12"
+version = "0.10.14"
 
 [package.dependencies]
 requests = ">=2.0"
@@ -1853,8 +1853,8 @@ jsonnet = [
     {file = "jsonnet-0.15.0.tar.gz", hash = "sha256:e8fcf1049df374c0e81ed13288bdc6d826fd381e7fc2671b0946f4964b06f915"},
 ]
 jsonpickle = [
-    {file = "jsonpickle-1.4-py2.py3-none-any.whl", hash = "sha256:3d71018794242f6b1640f779a94a192500f73ceed9ef579b4f01799171ec3fb3"},
-    {file = "jsonpickle-1.4.tar.gz", hash = "sha256:e8ca6ec3f379f5eee6e11380d48db220aacc282b480dea46b11cc6f6009d1cdb"},
+    {file = "jsonpickle-1.4.1-py2.py3-none-any.whl", hash = "sha256:8919c166bac0574e3d74425c7559434062002d9dfc0ac2afa6dc746ba4a19439"},
+    {file = "jsonpickle-1.4.1.tar.gz", hash = "sha256:e8d4b7cd0bd6826001a74377df1079a76ad8bae0f909282de2554164c837c8ba"},
 ]
 kiwisolver = [
     {file = "kiwisolver-1.2.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:443c2320520eda0a5b930b2725b26f6175ca4453c61f739fef7a5847bd262f74"},
@@ -2234,8 +2234,8 @@ requests = [
     {file = "requests-2.23.0.tar.gz", hash = "sha256:b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6"},
 ]
 responses = [
-    {file = "responses-0.10.12-py2.py3-none-any.whl", hash = "sha256:0474ce3c897fbcc1aef286117c93499882d5c440f06a805947e4b1cb5ab3d474"},
-    {file = "responses-0.10.12.tar.gz", hash = "sha256:f83613479a021e233e82d52ffb3e2e0e2836d24b0cc88a0fa31978789f78d0e5"},
+    {file = "responses-0.10.14-py2.py3-none-any.whl", hash = "sha256:3d596d0be06151330cb230a2d630717ab20f7a81f205019481e206eb5db79915"},
+    {file = "responses-0.10.14.tar.gz", hash = "sha256:1a78bc010b20a5022a2c0cb76b8ee6dc1e34d887972615ebd725ab9a166a4960"},
 ]
 restructuredtext-lint = [
     {file = "restructuredtext_lint-1.3.0.tar.gz", hash = "sha256:97b3da356d5b3a8514d8f1f9098febd8b41463bed6a1d9f126cf0a048b6fd908"},
