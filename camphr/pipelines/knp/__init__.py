@@ -80,27 +80,41 @@ class KNP:
             blist = self.knp.parse_juman_result(sent._.get(JUMAN_LINES))
             mlist = blist.mrph_list()
             tlist = blist.tag_list()
+            if len(mlist) != len(sent):
+                mlist = _separate_mrph(mlist, sent)
             for l, comp in zip([blist, mlist, tlist], ["bunsetsu", "morph", "tag"]):
                 sent._.set(getattr(KNP_USER_KEYS, comp).list_, l)
-            if len(mlist) != len(sent):
-                t, m = None, None
-                for t, m in zip(sent, mlist):
-                    if t.text != m.midasi:
-                        break
-                raise ValueError(
-                    f"""Internal error occured
-            Sentence: {sent.text}
-            mlist : {[m.midasi for m in mlist]}
-            tokens: {[t.text for t in sent]}
-            diff  : {m.midasi}, {t.text}
-            """
-                )
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
         doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore
         doc.noun_chunks_iterator = knp_noun_chunker  # type: ignore
         # TODO: https://github.com/python/mypy/issues/3004
         return doc
+
+
+def _separate_mrph(mlist: List, sent: Span) -> List:
+    mm = []
+    i = 0
+    for m in mlist:
+        if "形態素連結" in m.fstring:
+            j = len(m.midasi)
+            while j > 0:
+                mm.append(m)
+                j -= len(sent[i].text)
+                i += 1
+        elif sent[i].text == m.midasi:
+            mm.append(m)
+            i += 1
+        else:
+            raise ValueError(
+                f"""Internal error occured
+            Sentence: {sent.text}
+            mlist : {[m.midasi for m in mlist]}
+            tokens: {[t.text for t in sent]}
+            diff  : {m.midasi}, {sent[i].text}
+            """
+            )
+    return mm
 
 
 @curry

@@ -37,6 +37,7 @@ def knp_dependency_parser(doc: Doc) -> Doc:
             c.head = tag[0]
             c.dep_ = _get_child_dep(c)
         s.append(tag[0])
+    s = _modify_head_punct(s)
     s = _modify_head_flat(s)
     s = _modify_head_conj(s)
     doc.is_parsed = True
@@ -101,6 +102,27 @@ def _get_child_dep(tag: Token) -> str:
         return "clf" if pp == NUM else "flat"
 
 
+def _modify_head_punct(heads: List[Token]) -> List[Token]:
+    s = [t for t in heads]
+    for i, t in enumerate(s):
+        if t.pos != PUNCT:
+            continue
+        x = [u for u in t.rights]  # type: ignore
+        if len(x) == 0:
+            continue
+        h = x[0]
+        h.head = t.head
+        h.dep_ = t.dep_
+        x = x[1:] + [u for u in t.lefts]  # type: ignore
+        x += [t, h] if h.dep_ == "ROOT" else [t]
+        x += [u for u in s if u.head == t]
+        for u in x:
+            u.head = h
+        t.dep_ = "punct"
+        s[i] = h
+    return s
+
+
 def _modify_head_flat(heads: List[Token]) -> List[Token]:
     s = [t for t in heads]
     for i, t in enumerate(s):
@@ -119,7 +141,7 @@ def _modify_head_flat(heads: List[Token]) -> List[Token]:
             continue
         h.head = t.head
         h.dep_ = t.dep_
-        x = x[1:]
+        x = x[1:] + [u for u in t.lefts]  # type: ignore
         x += [t, h] if h.dep_ == "ROOT" else [t]
         x += [u for u in s if u.head == t]
         for u in x:
