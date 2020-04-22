@@ -11,7 +11,6 @@ from typing_extensions import Literal
 
 from camphr.consts import JUMAN_LINES
 from camphr.utils import get_juman_command
-from pyknp import Morpheme
 
 from .consts import KNP_USER_KEYS
 from .noun_chunker import knp_noun_chunker
@@ -93,7 +92,7 @@ class KNP:
         return doc
 
 
-def _separate_mrph(mlist: List[Morpheme], sent: Span) -> List[Morpheme]:
+def _separate_mrph(mlist: List, sent: Span) -> List:
     mm = []
     i = 0
     for m in mlist:
