@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.20 (14/04/2020)
+- [**enhancement**] dependency improvement for KNP [#47](https://github.com/PKSHATechnology-Research/camphr/pull/47)
+
+Thanks for contributing, @KoichiYasuoka!
+---
+
 ## 0.5.19 (13/04/2020)
 - [**enhancement**] update transformers dependency [#46](https://github.com/PKSHATechnology-Research/camphr/pull/46)
 - [**CI**] Skip slow ci if unnecessary [#45](https://github.com/PKSHATechnology-Research/camphr/pull/45)
