@@ -26,7 +26,7 @@ known_first_party = "camphr"
 
 [tool.poetry.dependencies]
 python = ">=3.6.1"
-fire = "^0.2.1"
+fire = ">=0.2.1,<1.0"
 typing-extensions = ">=3.7.4"
 pyahocorasick = "^1.4.0"
 catalogue = "^1.0.0"

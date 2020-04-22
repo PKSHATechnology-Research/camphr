@@ -298,7 +298,7 @@ description = "A library for automatically generating command line interfaces."
 name = "fire"
 optional = false
 python-versions = "*"
-version = "0.2.1"
+version = "0.3.1"
 
 [package.dependencies]
 six = "*"
@@ -1553,7 +1553,6 @@ version = "1.11.2"
 [[package]]
 category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-marker = "python_version < \"3.8\""
 name = "zipp"
 optional = false
 python-versions = ">=3.6"
@@ -1571,7 +1570,7 @@ mecab = ["mecab-python3"]
 udify = ["unofficial-allennlp-nightly", "unofficial-udify"]
 
 [metadata]
-content-hash = "c6920141c5972deb788f30ed8be21e5bc5254f60b24fb9f73a1c7899e5a1984b"
+content-hash = "1c381bcf357944ca30a52563ef66c5d818352489a7cf1cf0aad99d0a356afe5a"
 python-versions = ">=3.6.1"
 
 [metadata.files]
@@ -1769,7 +1768,7 @@ filelock = [
     {file = "filelock-3.0.12.tar.gz", hash = "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59"},
 ]
 fire = [
-    {file = "fire-0.2.1.tar.gz", hash = "sha256:6865fefc6981a713d2ce56a2a2c92c56c729269f74a6cddd6f4b94d16ae084c9"},
+    {file = "fire-0.3.1.tar.gz", hash = "sha256:9736a16227c3d469e5d2d296bce5b4d8fa8d7851e953bda327a455fc2994307f"},
 ]
 flake8 = [
     {file = "flake8-3.7.9-py2.py3-none-any.whl", hash = "sha256:49356e766643ad15072a789a20915d3c91dc89fd313ccd71802303fd67e4deca"},
@@ -2165,7 +2164,7 @@ pyflakes = [
     {file = "pyflakes-2.1.1.tar.gz", hash = "sha256:d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"},
 ]
 pygments = [
-    {file = "Pygments-2.6.1-py3-none-any.whl", hash = "sha256:ff7a40b4860b727ab48fad6360eb351cc1b33cbf9b15a0f689ca5353e9463324"},
+    {file = "Pygments-2.6.1-py2.py3-none-any.whl", hash = "sha256:aa931c0bd5daa25c475afadb2147115134cfe501f0656828cbe7cb566c7123bc"},
     {file = "Pygments-2.6.1.tar.gz", hash = "sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44"},
 ]
 pylint = [
