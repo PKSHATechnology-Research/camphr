@@ -389,7 +389,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.10.1"
+version = "5.10.3"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -786,7 +786,7 @@ description = "A framework for managing and maintaining multi-language pre-commi
 name = "pre-commit"
 optional = false
 python-versions = ">=3.6.1"
-version = "2.2.0"
+version = "2.3.0"
 
 [package.dependencies]
 cfgv = ">=2.0.0"
@@ -1553,6 +1553,7 @@ version = "1.11.2"
 [[package]]
 category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
+marker = "python_version < \"3.8\""
 name = "zipp"
 optional = false
 python-versions = ">=3.6"
@@ -1570,7 +1571,7 @@ mecab = ["mecab-python3"]
 udify = ["unofficial-allennlp-nightly", "unofficial-udify"]
 
 [metadata]
-content-hash = "1c381bcf357944ca30a52563ef66c5d818352489a7cf1cf0aad99d0a356afe5a"
+content-hash = "c6920141c5972deb788f30ed8be21e5bc5254f60b24fb9f73a1c7899e5a1984b"
 python-versions = ">=3.6.1"
 
 [metadata.files]
@@ -1824,8 +1825,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.10.1-py3-none-any.whl", hash = "sha256:2c33b1f50bbe6eaa2d4b45f125c40957fbc479d20b631f9717963eb589974a7a"},
-    {file = "hypothesis-5.10.1.tar.gz", hash = "sha256:790acebcd8445fbc897b0f1a8e1e29ec4f476e6fdb64692c13c14b1e4f3c178d"},
+    {file = "hypothesis-5.10.3-py3-none-any.whl", hash = "sha256:f59a16be1184af7cf0052f58d1b1ac2c0ddd0858a73f5cc8de48294c96000bdb"},
+    {file = "hypothesis-5.10.3.tar.gz", hash = "sha256:f37b5c90e2922b4d2a129690ee11735f94bd714ec13b5ee2ae2317c5a3304735"},
 ]
 identify = [
     {file = "identify-1.4.14-py2.py3-none-any.whl", hash = "sha256:2bb8760d97d8df4408f4e805883dad26a2d076f04be92a10a3e43f09c6060742"},
@@ -2106,8 +2107,8 @@ pluggy = [
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
 ]
 pre-commit = [
-    {file = "pre_commit-2.2.0-py2.py3-none-any.whl", hash = "sha256:487c675916e6f99d355ec5595ad77b325689d423ef4839db1ed2f02f639c9522"},
-    {file = "pre_commit-2.2.0.tar.gz", hash = "sha256:c0aa11bce04a7b46c5544723aedf4e81a4d5f64ad1205a30a9ea12d5e81969e1"},
+    {file = "pre_commit-2.3.0-py2.py3-none-any.whl", hash = "sha256:979b53dab1af35063a483bfe13b0fcbbf1a2cf8c46b60e0a9a8d08e8269647a1"},
+    {file = "pre_commit-2.3.0.tar.gz", hash = "sha256:f3e85e68c6d1cbe7828d3471896f1b192cfcf1c4d83bf26e26beeb5941855257"},
 ]
 preshed = [
     {file = "preshed-3.0.2-cp27-cp27m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:448d9df12e63fe4a3024f6153ee6703bb95d2be0ce887b5eda7ddc41acfba825"},
@@ -2164,7 +2165,7 @@ pyflakes = [
     {file = "pyflakes-2.1.1.tar.gz", hash = "sha256:d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"},
 ]
 pygments = [
-    {file = "Pygments-2.6.1-py2.py3-none-any.whl", hash = "sha256:aa931c0bd5daa25c475afadb2147115134cfe501f0656828cbe7cb566c7123bc"},
+    {file = "Pygments-2.6.1-py3-none-any.whl", hash = "sha256:ff7a40b4860b727ab48fad6360eb351cc1b33cbf9b15a0f689ca5353e9463324"},
     {file = "Pygments-2.6.1.tar.gz", hash = "sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44"},
 ]
 pylint = [
