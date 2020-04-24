@@ -5,7 +5,9 @@ import pytest
 
 from camphr.lang.torch import TorchLanguage
 from camphr.models import create_model
+from spacy.util import minibatch
 from camphr.ner_labels.labels_ene import ALL_LABELS
+import torch
 
 
 @pytest.fixture
@@ -28,11 +30,11 @@ def nlp():
 
 
 @pytest.fixture
-def batch():
+def data():
     return json.loads((Path(__file__).parent / "fail.json").read_text())
 
 
-def test(nlp: TorchLanguage, batch):
-    optim = nlp.resume_training()
-    for text, gold in batch:
-        nlp.update([text], [gold], optim)
+def test(nlp: TorchLanguage, data):
+    if torch.cuda.is_available():
+        nlp.to(torch.device("cuda"))
+    nlp.evaluate(data, batch_size=256)
