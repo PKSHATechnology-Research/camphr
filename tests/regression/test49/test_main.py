@@ -2,12 +2,11 @@ import json
 from pathlib import Path
 
 import pytest
+import torch
 
 from camphr.lang.torch import TorchLanguage
 from camphr.models import create_model
-from spacy.util import minibatch
 from camphr.ner_labels.labels_ene import ALL_LABELS
-import torch
 
 
 @pytest.fixture
