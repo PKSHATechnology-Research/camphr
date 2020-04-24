@@ -101,7 +101,7 @@ def test_update(nlp: TorchLanguage):
     pipe.cfg["freeze"] = False
 
 
-def test_freeze_model(trf_testmodel_path, trf_model_config: NLPConfig):
+def test_freeze_model(trf_name_or_path, trf_model_config: NLPConfig):
     config = omegaconf.OmegaConf.to_container(trf_model_config)
     config["pipeline"][TRANSFORMERS_MODEL]["freeze"] = True
     nlp = create_model(config)

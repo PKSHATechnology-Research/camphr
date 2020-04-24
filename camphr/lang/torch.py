@@ -94,7 +94,7 @@ class TorchLanguage(Language):
             docs, golds = zip(*batch)
             docs, golds = self._format_docs_and_golds(docs, golds)  # type: ignore
             for _, pipe in self.pipeline:
-                self._eval_pipe(pipe, docs, golds)
+                self._eval_pipe(pipe, docs, golds, batch_size=batch_size)
             loss += cast(float, get_loss_from_docs(docs).cpu().float().item())
             for doc, gold in zip(docs, golds):
                 scorer.score(doc, gold)
@@ -103,14 +103,18 @@ class TorchLanguage(Language):
         return scores
 
     def _eval_pipe(
-        self, pipe: Pipe, docs: Sequence[Doc], golds: Sequence[GoldParse]
+        self,
+        pipe: Pipe,
+        docs: Sequence[Doc],
+        golds: Sequence[GoldParse],
+        batch_size: int,
     ) -> Sequence[Doc]:
         if not hasattr(pipe, "pipe"):
             docs = spacy.language._pipe(docs, pipe, {})
         elif hasattr(pipe, "eval"):
             pipe.eval(docs, golds)  # type: ignore
         else:
-            docs = list(pipe.pipe(docs))  # type: ignore
+            docs = list(pipe.pipe(docs, batch_size=batch_size))  # type: ignore
         return docs
 
     def resume_training(self, **kwargs) -> Optimizer:  # type: ignore

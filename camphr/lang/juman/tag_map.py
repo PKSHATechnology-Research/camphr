@@ -2,7 +2,25 @@
 
 from __future__ import unicode_literals
 
-from spacy.symbols import ADJ, ADP, ADV, AUX, CCONJ, DET, INTJ, NOUN, NUM, PART, POS, PRON, PROPN, PUNCT, SPACE, SYM, VERB  # type: ignore
+from spacy.symbols import (  # type: ignore
+    ADJ,
+    ADP,
+    ADV,
+    AUX,
+    CCONJ,
+    DET,
+    INTJ,
+    NOUN,
+    NUM,
+    PART,
+    POS,
+    PRON,
+    PROPN,
+    PUNCT,
+    SPACE,
+    SYM,
+    VERB,
+)
 
 TAG_MAP = {
     "名詞,普通名詞": {POS: NOUN},

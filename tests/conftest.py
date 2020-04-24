@@ -92,14 +92,10 @@ def lang(request):
 
 @pytest.fixture(scope="session", params=TRF_TESTMODEL_PATH)
 def trf_name_or_path(request):
-    if "bert-base-japanese" in request.param and not check_mecab():
+    name = request.param
+    if "bert-base-japanese" in name and not check_mecab():
         pytest.skip("mecab is required")
-    return request.param
-
-
-@pytest.fixture(scope="session", params=TRF_TESTMODEL_PATH)
-def trf_testmodel_path(request) -> str:
-    return request.param
+    return name
 
 
 @pytest.fixture(scope="session")
