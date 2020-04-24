@@ -20,7 +20,7 @@ Thanks for contributing, @KoichiYasuoka!
 Thanks for contributing, @KoichiYasuoka!
 ---
 
-## 0.5.18 (11/04/2020)
+## 0.5.18 (10/04/2020)
 - [**enhancement**] juman TAG_MAP tentative support [#41](https://github.com/PKSHATechnology-Research/camphr/pull/41)
 - [**bug**] Fix misuse `Vocab()` in Language instantiation [#42](https://github.com/PKSHATechnology-Research/camphr/pull/42)
 
