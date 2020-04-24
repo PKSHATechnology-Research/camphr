@@ -12,14 +12,7 @@ from camphr.lang.mecab import Japanese as Mecab
 from camphr.models import create_model
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 
-from .utils import (
-    FIXTURE_DIR,
-    LARGE_MODELS,
-    TRF_TESTMODEL_PATH,
-    check_juman,
-    check_lang,
-    check_mecab,
-)
+from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
 
 
 def pytest_addoption(parser):
@@ -98,12 +91,10 @@ def lang(request):
 
 
 @pytest.fixture(scope="session", params=TRF_TESTMODEL_PATH)
-def trf_name_or_path(request, config):
+def trf_name_or_path(request):
     name = request.param
     if "bert-base-japanese" in name and not check_mecab():
         pytest.skip("mecab is required")
-    if name in LARGE_MODELS and not config.getoption("--runslow"):
-        pytest.skip(f"{name} is large model. add --runslow to run.")
     return name
 
 
