@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.22 (24/04/2020)
+- [**bug**] fix transformers eval batchsize failure [#50](https://github.com/PKSHATechnology-Research/camphr/pull/50)
+
+---
+
 ## 0.5.21 (22/04/2020)
 - [**bug**] Proper treatment of PUNCTs for KNP [#48](https://github.com/PKSHATechnology-Research/camphr/pull/48)
 
