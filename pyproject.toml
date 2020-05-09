@@ -32,7 +32,7 @@ pyahocorasick = "^1.4.0"
 catalogue = "^1.0.0"
 more-itertools = "*"
 scikit-learn = "^0.22"
-# TODO support transformers==2.9
+# TODO #54 support transformers==2.9
 transformers = ">=2.4,<2.9"
 torch = "^1.0"
 pytokenizations = ">=0.4.8"
