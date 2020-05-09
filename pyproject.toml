@@ -7,7 +7,7 @@ files = [ "camphr/VERSION.py",]
 commit = true
 
 [tool.poetry]
-version = "0.5.22"
+version = "0.5.23"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
@@ -32,7 +32,6 @@ pyahocorasick = "^1.4.0"
 catalogue = "^1.0.0"
 more-itertools = "*"
 scikit-learn = "^0.22"
-# TODO #54 support transformers==2.9
 transformers = ">=2.4,<2.9"
 torch = "^1.0"
 pytokenizations = ">=0.4.8"
