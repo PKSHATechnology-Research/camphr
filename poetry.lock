@@ -1554,6 +1554,7 @@ version = "1.12.1"
 [[package]]
 category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
+marker = "python_version < \"3.8\""
 name = "zipp"
 optional = false
 python-versions = ">=3.6"
@@ -1571,7 +1572,7 @@ mecab = ["mecab-python3"]
 udify = ["unofficial-allennlp-nightly", "unofficial-udify"]
 
 [metadata]
-content-hash = "2ed39608ba515d5c18fb68b0c779275657c93c1b8b7cc4709464987875b6d5a5"
+content-hash = "c6920141c5972deb788f30ed8be21e5bc5254f60b24fb9f73a1c7899e5a1984b"
 python-versions = ">=3.6.1"
 
 [metadata.files]
@@ -2166,7 +2167,7 @@ pyflakes = [
     {file = "pyflakes-2.1.1.tar.gz", hash = "sha256:d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"},
 ]
 pygments = [
-    {file = "Pygments-2.6.1-py2.py3-none-any.whl", hash = "sha256:aa931c0bd5daa25c475afadb2147115134cfe501f0656828cbe7cb566c7123bc"},
+    {file = "Pygments-2.6.1-py3-none-any.whl", hash = "sha256:ff7a40b4860b727ab48fad6360eb351cc1b33cbf9b15a0f689ca5353e9463324"},
     {file = "Pygments-2.6.1.tar.gz", hash = "sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44"},
 ]
 pylint = [
