@@ -54,7 +54,7 @@ class TensorWrapper:
         return self.batch_tensor[self.i]
 
 
-GoldCat = Dict[str, Union[bool, float]]
+GoldCat = Dict[str, float]
 
 
 def goldcat_to_label(goldcat: GoldCat) -> str:

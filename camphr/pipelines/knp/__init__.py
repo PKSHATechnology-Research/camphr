@@ -82,8 +82,8 @@ class KNP:
             tlist = blist.tag_list()
             if len(mlist) != len(sent):
                 mlist = _separate_mrph(mlist, sent)
-            for l, comp in zip([blist, mlist, tlist], ["bunsetsu", "morph", "tag"]):
-                sent._.set(getattr(KNP_USER_KEYS, comp).list_, l)
+            for label, comp in zip([blist, mlist, tlist], ["bunsetsu", "morph", "tag"]):
+                sent._.set(getattr(KNP_USER_KEYS, comp).list_, label)
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
         doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore

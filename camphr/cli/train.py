@@ -21,6 +21,7 @@ from camphr.cli.utils import (
     convert_fullpath_if_path,
     create_data,
     report_fail,
+    unzip2,
 )
 from camphr.lang.torch import TorchLanguage
 from camphr.models import correct_model_config, create_model
@@ -87,7 +88,7 @@ def parse(cfg: Config):
     return cfg
 
 
-def evaluate_textcat(cfg: Config, nlp: Language, val_data: InputData) -> Dict:
+def evaluate_textcat(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Dict:
     # TODO: https://github.com/explosion/spaCy/pull/4664
     texts, golds = cast(Tuple[Tuple[str], Dict], zip(*val_data))
     try:
@@ -109,7 +110,7 @@ def evaluate(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Dict:
     return scores
 
 
-EvalFn = Callable[[Config, Union[TorchLanguage, Language], InputData], Dict]
+EvalFn = Callable[[Config, TorchLanguage, InputData], Dict]
 
 EVAL_FN_MAP = defaultdict(  # type: ignore
     lambda: evaluate, {"textcat": evaluate_textcat}  # type: ignore
@@ -126,7 +127,7 @@ def train_epoch(
     eval_fn: EvalFn,
 ) -> None:
     for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
-        texts, golds = zip(*batch)
+        texts, golds = unzip2(batch)
         try:
             nlp.update(texts, golds, optim, verbose=True)
         except Exception:

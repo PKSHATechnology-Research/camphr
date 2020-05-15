@@ -68,7 +68,7 @@ class Udify(AllennlpPipe):
     @staticmethod
     def import_udify():
         try:
-            from allennlp.common.util import import_submodules  # type: ignore
+            from allennlp.common.util import import_submodules
         except ImportError:
             Errors.E0(package="unofficial-allennlp-nightly")
 

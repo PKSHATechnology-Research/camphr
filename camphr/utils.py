@@ -216,6 +216,7 @@ class SerializationMixin:
     """
 
     serialization_fields: List[str] = []
+    name: str
 
     def from_bytes(self, bytes_data, **kwargs):
         pkls = srsly.pickle_loads(bytes_data)
@@ -231,7 +232,7 @@ class SerializationMixin:
 
     def from_disk(self, path: Path, **kwargs):
         path.mkdir(exist_ok=True)
-        with (path / f"data.pkl").open("rb") as file_:
+        with (path / "data.pkl").open("rb") as file_:
             data = file_.read()
         return self.from_bytes(data, **kwargs)
 

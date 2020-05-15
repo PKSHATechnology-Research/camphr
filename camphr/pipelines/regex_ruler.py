@@ -49,7 +49,7 @@ class MultipleRegexRuler(SerializationMixin):
     def get_spans(
         self, doc: Doc, pattern: Union[Pattern, str], label: str
     ) -> List[Span]:
-        spans_ij = [m.span() for m in re.finditer(pattern, doc.text)]
+        spans_ij = [m.span() for m in re.finditer(pattern, doc.text)]  # type: ignore
         return get_doc_char_spans_list(
             doc, spans_ij, destructive=self.destructive, label=label
         )

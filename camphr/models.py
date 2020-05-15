@@ -3,7 +3,7 @@ import functools
 from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, cast
 
 import omegaconf
 import spacy
@@ -119,7 +119,7 @@ ALIASES = {
     "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",
     "textcat_label": f"pipeline.{TRANSFORMERS_SEQ_CLASSIFIER}.labels",
     "multitextcat_label": f"pipeline.{TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER}.labels",
-    "optimizer": f"lang.optimizer",
+    "optimizer": "lang.optimizer",
 }
 
 
@@ -149,18 +149,21 @@ TASK2PIPE = {
 }
 
 
+TASKS = {"textcat", "ner", "multilabel_textcat"}
+
+
 def _add_pipes(cfg: NLPConfig) -> NLPConfig:
-    if cfg.task in {"textcat", "ner", "multilabel_textcat"}:
+    if cfg.task in TASKS:
         assert cfg.labels, "`cfg.labels` required"
         cfg.pipeline = cfg.pipeline or OmegaConf.create({})
-        prev = cfg.pipeline[TASK2PIPE[cfg.task]] or OmegaConf.create({})
-        cfg.pipeline[TASK2PIPE[cfg.task]] = OmegaConf.merge(
+        # TODO https://github.com/microsoft/pyright/issues/671
+        pipe = TASK2PIPE[cast(str, cfg.task)]
+        prev = cfg.pipeline[pipe] or OmegaConf.create({})
+        cfg.pipeline[pipe] = OmegaConf.merge(
             OmegaConf.create({"labels": cfg.labels}), prev
         )
     else:
-        assert (
-            not cfg.labels
-        ), f'One of ["textcat", "ner", "multilabel_textcat"] pipeline is required.'
+        assert not cfg.labels, f"One of {TASKS} pipeline is required."
     return cfg
 
 

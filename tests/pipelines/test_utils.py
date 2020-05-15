@@ -187,9 +187,9 @@ def test_flatten_docs_to_sens(vocab):
 
 
 @given(st.integers(1, 100), st.integers(1, 100), st.integers(-1000, 1000))
-def test_chunk(l, max_num, seed):
+def test_chunk(length, max_num, seed):
     random.seed(seed)
-    nums = [random.randint(1, max_num) for _ in range(l)]
+    nums = [random.randint(1, max_num) for _ in range(length)]
     s = sum(nums)
     seq = [random.randint(-100, 100) for _ in range(s)]
 

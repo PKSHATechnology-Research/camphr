@@ -205,6 +205,7 @@ class LabelsMixin:
 
     @property
     def label_weights(self: PipeProtocol) -> torch.Tensor:
+        # TODO remove all type: ignore
         if not hasattr(self, "_label_weights"):
             weights_map = self.cfg.get(LABEL_WEIGHTS)
             weights = torch.ones(len(self.label2id))  # type: ignore
@@ -212,7 +213,7 @@ class LabelsMixin:
                 assert len(weights_map) == len(self.label2id)  # type: ignore
                 for k, v in weights_map.items():
                     weights[self.label2id[k]] = v  # type: ignore
-            self._label_weights = weights
+            self._label_weights = weights  # type: ignore
         return self._label_weights  # type: ignore
 
     def convert_label(self: UserHooksMixin, label: str) -> str:  # type:ignore

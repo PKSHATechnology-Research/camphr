@@ -29,15 +29,15 @@ def make_ner_labels(
     """
     labels = ["-", "O"]
     prefixes = [p for p in type_ if p != "O"]
-    for l in entity_types:
+    for label in entity_types:
         for pref in prefixes:
-            labels.append(pref + "-" + l)
+            labels.append(pref + "-" + label)
     return list(dict.fromkeys(labels))  # unique while keep ordering
 
 
 def get_ner_labels(labels: Union[List[str], Pathlike], type_="BIO"):
     labels = get_labels(labels)
-    if all(l[:2] in {"-", "O", "I-", "B-", "L-", "U-"} for l in labels):
+    if all(label[:2] in {"-", "O", "I-", "B-", "L-", "U-"} for label in labels):
         return labels
     return make_ner_labels(labels, type_)
 
