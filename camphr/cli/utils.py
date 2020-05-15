@@ -3,7 +3,7 @@ import logging
 import os
 import random
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Tuple, Union
+from typing import Any, Dict, List, Sequence, Tuple, TypeVar, Union, cast
 
 import hydra
 import srsly
@@ -25,8 +25,8 @@ def create_data(cfg: Config) -> Tuple[InputData, InputData]:
     else:
         cfg.ndata = len(data)
     train, val = train_test_split(data, test_size=cfg.val_size)
-    srsly.write_jsonl(Path.cwd() / f"train-data.jsonl", train)
-    srsly.write_jsonl(Path.cwd() / f"val-data.jsonl", val)
+    srsly.write_jsonl(Path.cwd() / "train-data.jsonl", train)
+    srsly.write_jsonl(Path.cwd() / "val-data.jsonl", val)
     return train, val
 
 
@@ -40,7 +40,7 @@ def report_fail(json_serializable_data: Any) -> None:
 def convert_fullpath_if_path(text: str) -> str:
     path = os.path.expanduser(text)
     try:
-        path = hydra.utils.to_absolute_path(path)
+        path = cast(str, hydra.utils.to_absolute_path(path))
     except AttributeError:
         # Not in hydra runtime
         pass
@@ -58,3 +58,13 @@ def check_nonempty(cfg: Config, fields: Sequence[Union[str, Sequence[str]]]):
             errors.append(f"Any of {', '.join(key)} is required.")
     if errors:
         raise ValueError("\n".join(errors))
+
+
+T0 = TypeVar("T0")
+T1 = TypeVar("T1")
+
+
+def unzip2(x: List[Tuple[T0, T1]]) -> Tuple[Tuple[T0], Tuple[T1]]:
+    # trick to convince typechecker
+    a, b = zip(*x)
+    return a, b  # type: ignore

@@ -179,16 +179,16 @@ def inject_dummy():
     """,
         ),
         (
-            f"""
+            """
     pipeline:
-        foo: {{}}
-        baz: {{}}
+        foo: {}
+        baz: {}
     """,
-            f"""
+            """
     pipeline:
-        bar: {{}}
-        baz: {{}}
-        foo: {{}}
+        bar: {}
+        baz: {}
+        foo: {}
     """,
         ),
     ],
@@ -219,7 +219,7 @@ def test_assign_and_align_pipeline(yml, modified, inject_dummy):
     """,
         ),
         (
-            f"""
+            """
     ner_label: foo
     """,
             f"""

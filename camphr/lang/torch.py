@@ -2,9 +2,10 @@
 import itertools
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union, cast
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union, cast
 
 import spacy
+import spacy.language
 import srsly
 import torch
 from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
@@ -15,7 +16,7 @@ from spacy.tokens import Doc
 from spacy.util import minibatch
 from torch.optim.optimizer import Optimizer
 
-from camphr.torch_utils import OptimizerParameters, TorchPipe, get_loss_from_docs
+from camphr.torch_utils import TorchPipe, get_loss_from_docs
 from camphr.utils import get_defaults, get_requirements_line, import_attr
 
 logger = logging.getLogger(__name__)
@@ -138,9 +139,11 @@ class TorchLanguage(Language):
     def require_optimizer_config(self):
         assert isinstance(
             self.optimizer_config, dict
-        ), f"`self.optimizer_config` must be set."
+        ), "`self.optimizer_config` must be set."
 
-    def create_optimizer(self, params: OptimizerParameters, **kwargs) -> Optimizer:
+    def create_optimizer(
+        self, params: Iterable[Union[torch.Tensor, Dict[str, Any]]], **kwargs
+    ) -> Optimizer:
         cls = import_attr(self.optimizer_config["class"])
         return cls(params, **self.optimizer_config.get("params", {}))
 

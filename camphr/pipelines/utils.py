@@ -63,7 +63,7 @@ def construct_biluo_tag(biluo: str, body: str = "") -> str:
 
 
 def bio_to_biluo(tags: List[str]) -> List[str]:
-    warnings.warn(f"Use spacy.gold.iob_to_biluo instead", DeprecationWarning)
+    warnings.warn("Use spacy.gold.iob_to_biluo instead", DeprecationWarning)
     return iob_to_biluo(tags)
 
 
@@ -176,7 +176,7 @@ USER_HOOKS = "user_hooks"
 class UserHooksMixin:
     @property
     def user_hooks(self):
-        return self.cfg.setdefault(USER_HOOKS, {})
+        return self.cfg.setdefault(USER_HOOKS, {})  # type: ignore
 
     def add_user_hook(self, k: str, fn: Callable):
         hooks = self.user_hooks

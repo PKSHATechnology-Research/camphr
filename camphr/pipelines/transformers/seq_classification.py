@@ -3,6 +3,7 @@ import operator
 from typing import Any, Iterable, List, Optional, Sequence, Tuple, cast
 
 import spacy
+import spacy.language
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

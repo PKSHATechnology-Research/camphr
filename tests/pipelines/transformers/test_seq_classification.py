@@ -59,7 +59,7 @@ def docs_golds(labels, texts):
     res = []
     for text in texts:
         random.shuffle(labels)
-        cats = {l: random.uniform(0.0, 1.0) for l in labels}
+        cats = {label: random.uniform(0.0, 1.0) for label in labels}
         res.append((text, {"cats": cats}))
     return res
 
