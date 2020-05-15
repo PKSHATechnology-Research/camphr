@@ -10,6 +10,6 @@ class Matcher:
     def add(
         self,
         match_id: str,
-        on_match: Optional[Callable[["Matcher", Doc, str, Matches]]],
+        on_match: Optional[Callable[["Matcher", Doc, str, Matches], None]],
         *patterns: List[Dict[str, str]]
     ): ...
