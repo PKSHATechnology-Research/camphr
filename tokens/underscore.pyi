@@ -3,12 +3,12 @@ from __future__ import unicode_literals
 
 import functools
 import copy
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Set, Tuple
 
 from ..errors import Errors
 
 class Underscore(object):
-    mutable_types = (dict, list, set)
+    mutable_types = (dict, list, Set)
     doc_extensions: Dict
     span_extensions: Dict
     token_extensions: Dict
