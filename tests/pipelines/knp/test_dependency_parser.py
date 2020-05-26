@@ -35,7 +35,8 @@ def test_dependency_deps(nlp, text, deps):
     ("リンゴとバナナとミカン", [0, 0, 0, 2, 0], ["ROOT", "case", "conj", "case", "conj"]),
     ("三匹の豚", [3, 0, 0, 3], ["nummod", "clf", "case", "ROOT"]),
     ("御盃を相交わす", [1, 4, 1, 4, 4], ["compound", "obj", "case", "advmod", "ROOT"]),
-    ("子供を「僕」と呼ぶ", [6, 0, 3, 6, 3, 3, 6], ["obj", "case", "punct", "obl", "punct", "case", "ROOT"])
+    ("子供を「僕」と呼ぶ", [6, 0, 3, 6, 3, 3, 6], ["obj", "case", "punct", "obl", "punct", "case", "ROOT"]),
+    ("地震で半壊した家屋", [2, 0, 4, 2, 4], ["obl", "case", "acl", "aux", "ROOT"])
 ])
 def test_dependency_parse_deps(nlp, text, heads, deps):
     doc = nlp(text)

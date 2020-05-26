@@ -26,6 +26,9 @@ def knp_dependency_parser(doc: Doc) -> Doc:
     tag_spans: Iterable[Span] = doc._.get(KNP_USER_KEYS.tag.spans)
     s = []
     for tag in tag_spans:
+        for c in tag[1:]:
+            c.head = tag[0]
+            c.dep_ = _get_child_dep(c)
         parent: Optional[Span] = tag._.get(KNP_USER_KEYS.tag.parent)
         if parent is not None:
             tag[0].head = parent[0]
@@ -33,9 +36,6 @@ def knp_dependency_parser(doc: Doc) -> Doc:
         else:
             tag[0].head = tag[0]
             tag[0].dep_ = "ROOT"
-        for c in tag[1:]:
-            c.head = tag[0]
-            c.dep_ = _get_child_dep(c)
         s.append(tag[0])
     s = _modify_head_punct(s)
     s = _modify_head_flat(s)
