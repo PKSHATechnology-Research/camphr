@@ -384,7 +384,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.15.1"
+version = "5.16.0"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -817,7 +817,7 @@ description = "Protocol Buffers"
 name = "protobuf"
 optional = true
 python-versions = "*"
-version = "3.12.1"
+version = "3.12.2"
 
 [package.dependencies]
 setuptools = "*"
@@ -928,7 +928,7 @@ description = ""
 name = "pytokenizations"
 optional = false
 python-versions = "*"
-version = "0.4.10"
+version = "0.4.11"
 
 [[package]]
 category = "main"
@@ -1810,8 +1810,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.15.1-py3-none-any.whl", hash = "sha256:d44142b80572bb3392dd018a6b2e59f54b2ba77da50e2dd0cbddd815b7a84005"},
-    {file = "hypothesis-5.15.1.tar.gz", hash = "sha256:f523846f1e323e5d74694a437ef9f681ac1643e45404dc5c5bb7d1ee947c4a99"},
+    {file = "hypothesis-5.16.0-py3-none-any.whl", hash = "sha256:21bb5fbe456f775233fe20bcbeb26f648d68025bce554c94c0698fb4c33e7008"},
+    {file = "hypothesis-5.16.0.tar.gz", hash = "sha256:7c819501a26ff82ccb4bee8a96b1ff4fff187e041d79ed176964ca550b77098b"},
 ]
 identify = [
     {file = "identify-1.4.17-py2.py3-none-any.whl", hash = "sha256:ef6fa3d125c27516f8d1aaa2038c3263d741e8723825eb38350cdc0288ab35eb"},
@@ -2115,22 +2115,22 @@ preshed = [
     {file = "preshed-3.0.2.tar.gz", hash = "sha256:61d73468c97c1d6d5a048de0b01d5a6fd052123358aca4823cdb277e436436cb"},
 ]
 protobuf = [
-    {file = "protobuf-3.12.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:fdb1742f883ee4662e39fcc5916f2725fec36a5191a52123fec60f8c53b70495"},
-    {file = "protobuf-3.12.1-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:49fb6fab19cd3f30fa0e976eeedcbf2558e9061e5fa65b4fe51ded1f4002e04d"},
-    {file = "protobuf-3.12.1-cp35-cp35m-macosx_10_9_intel.whl", hash = "sha256:4c7cae1f56056a4a2a2e3b00b26ab8550eae738bd9548f4ea0c2fcb88ed76ae5"},
-    {file = "protobuf-3.12.1-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:519abfacbb421c3591d26e8daf7a4957763428db7267f7207e3693e29f6978db"},
-    {file = "protobuf-3.12.1-cp35-cp35m-win32.whl", hash = "sha256:c45f5980ce32879391144b5766120fd7b8803129f127ce36bd060dd38824801f"},
-    {file = "protobuf-3.12.1-cp35-cp35m-win_amd64.whl", hash = "sha256:60f32af25620abc4d7928d8197f9f25d49d558c5959aa1e08c686f974ac0b71a"},
-    {file = "protobuf-3.12.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:04d0b2bd99050d09393875a5a25fd12337b17f3ac2e29c0c1b8e65b277cbfe72"},
-    {file = "protobuf-3.12.1-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:175d85370947f89e33b3da93f4ccdda3f326bebe3e599df5915ceb7f804cd9df"},
-    {file = "protobuf-3.12.1-cp36-cp36m-win32.whl", hash = "sha256:9b1462c033a2cee7f4e8eb396905c69de2c532c3b835ff8f71f8e5fb77c38023"},
-    {file = "protobuf-3.12.1-cp36-cp36m-win_amd64.whl", hash = "sha256:613ac49f6db266fba243daf60fb32af107cfe3678e5c003bb40a381b6786389d"},
-    {file = "protobuf-3.12.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:440a8c77531b3652f24999b249256ed01fd44c498ab0973843066681bd276685"},
-    {file = "protobuf-3.12.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:954bb14816edd24e746ba1a6b2d48c43576393bbde2fb8e1e3bd6d4504c7feac"},
-    {file = "protobuf-3.12.1-cp37-cp37m-win32.whl", hash = "sha256:c0767f4d93ce4288475afe0571663c78870924f1f8881efd5406c10f070c75e4"},
-    {file = "protobuf-3.12.1-cp37-cp37m-win_amd64.whl", hash = "sha256:eeb7502f59e889a88bcb59f299493e215d1864f3d75335ea04a413004eb4fe24"},
-    {file = "protobuf-3.12.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:05288e44638e91498f13127a3699a6528dec6f9d3084d60959d721bfb9ea5b98"},
-    {file = "protobuf-3.12.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:fe554066c4962c2db0a1d4752655223eb948d2bfa0fb1c4a7f2c00ec07324f1c"},
+    {file = "protobuf-3.12.2-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:e1464a4a2cf12f58f662c8e6421772c07947266293fb701cb39cd9c1e183f63c"},
+    {file = "protobuf-3.12.2-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:6f349adabf1c004aba53f7b4633459f8ca8a09654bf7e69b509c95a454755776"},
+    {file = "protobuf-3.12.2-cp35-cp35m-macosx_10_9_intel.whl", hash = "sha256:be04fe14ceed7f8641e30f36077c1a654ff6f17d0c7a5283b699d057d150d82a"},
+    {file = "protobuf-3.12.2-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:f4b73736108a416c76c17a8a09bc73af3d91edaa26c682aaa460ef91a47168d3"},
+    {file = "protobuf-3.12.2-cp35-cp35m-win32.whl", hash = "sha256:5524c7020eb1fb7319472cb75c4c3206ef18b34d6034d2ee420a60f99cddeb07"},
+    {file = "protobuf-3.12.2-cp35-cp35m-win_amd64.whl", hash = "sha256:bff02030bab8b969f4de597543e55bd05e968567acb25c0a87495a31eb09e925"},
+    {file = "protobuf-3.12.2-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:c9ca9f76805e5a637605f171f6c4772fc4a81eced4e2f708f79c75166a2c99ea"},
+    {file = "protobuf-3.12.2-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:304e08440c4a41a0f3592d2a38934aad6919d692bb0edfb355548786728f9a5e"},
+    {file = "protobuf-3.12.2-cp36-cp36m-win32.whl", hash = "sha256:b5a114ea9b7fc90c2cc4867a866512672a47f66b154c6d7ee7e48ddb68b68122"},
+    {file = "protobuf-3.12.2-cp36-cp36m-win_amd64.whl", hash = "sha256:85b94d2653b0fdf6d879e39d51018bf5ccd86c81c04e18a98e9888694b98226f"},
+    {file = "protobuf-3.12.2-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:a7ab28a8f1f043c58d157bceb64f80e4d2f7f1b934bc7ff5e7f7a55a337ea8b0"},
+    {file = "protobuf-3.12.2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:eafe9fa19fcefef424ee089fb01ac7177ff3691af7cc2ae8791ae523eb6ca907"},
+    {file = "protobuf-3.12.2-cp37-cp37m-win32.whl", hash = "sha256:612bc97e42b22af10ba25e4140963fbaa4c5181487d163f4eb55b0b15b3dfcd2"},
+    {file = "protobuf-3.12.2-cp37-cp37m-win_amd64.whl", hash = "sha256:e72736dd822748b0721f41f9aaaf6a5b6d5cfc78f6c8690263aef8bba4457f0e"},
+    {file = "protobuf-3.12.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:87535dc2d2ef007b9d44e309d2b8ea27a03d2fa09556a72364d706fcb7090828"},
+    {file = "protobuf-3.12.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:50b5fee674878b14baea73b4568dc478c46a31dd50157a5b5d2f71138243b1a9"},
 ]
 py = [
     {file = "py-1.8.1-py2.py3-none-any.whl", hash = "sha256:c20fdd83a5dbc0af9efd622bee9a5564e278f6380fffcacc43ba6f43db2813b0"},
@@ -2168,19 +2168,19 @@ python-dateutil = [
     {file = "python_dateutil-2.8.0-py2.py3-none-any.whl", hash = "sha256:7e6584c74aeed623791615e26efd690f29817a27c73085b78e4bad02493df2fb"},
 ]
 pytokenizations = [
-    {file = "pytokenizations-0.4.10-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:c0db6311731e36af217e531897ccea25131a2dff4068826ea3c7a57e16d52df6"},
-    {file = "pytokenizations-0.4.10-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:771420fe76f6a29e15a2f3ce5f110de05bff73d4c58c5cd811cc941783df10e1"},
-    {file = "pytokenizations-0.4.10-cp35-none-win_amd64.whl", hash = "sha256:37efb544da1cfa51097c9042f761db13f1ddb174f585f1b6a6f519b8b19b3be9"},
-    {file = "pytokenizations-0.4.10-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:715225719b58064db0b973b0c4c3cfabac1f06c70a945da47218b41537ad41c4"},
-    {file = "pytokenizations-0.4.10-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:4284949ae2f1725f68b42c775cd7ae9711ace3dcc0b56eb8e6d34262ec3ab703"},
-    {file = "pytokenizations-0.4.10-cp36-none-win_amd64.whl", hash = "sha256:6f899823dbebbceaaad02d7ea5a34379e06afab922de384d773ccae81d87d843"},
-    {file = "pytokenizations-0.4.10-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:6b812db8ec6c9e31f4b63daf04fce2e27da2878de6cccad27d98abf7994a6fb8"},
-    {file = "pytokenizations-0.4.10-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:e8087eefb795252afff36968976f38390f965b2ed059c7558a50be6c44ff184e"},
-    {file = "pytokenizations-0.4.10-cp37-none-win_amd64.whl", hash = "sha256:f6d9a7fe0f6970026ae013e9cbab7dcd2b847e50aca6721cde53ac25a4fb6138"},
-    {file = "pytokenizations-0.4.10-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:e8ec40561ad7e3d32075581040c238c679299ef74cb398e56e75bdb8c21d4e46"},
-    {file = "pytokenizations-0.4.10-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:f7ae9362691713eabc5e75f8e9dd37d08402c6b0a9fc58732eddeb698e205827"},
-    {file = "pytokenizations-0.4.10-cp38-none-win_amd64.whl", hash = "sha256:63db3bab5abb1d9f9581eb74497d1533b02ca9fe994193c8129eccd91f6fe2bb"},
-    {file = "pytokenizations-0.4.10.tar.gz", hash = "sha256:4d05ca86e2ab98e41f015b9402e7cbad35d7d8a519300d58dd7637eecdf7cd35"},
+    {file = "pytokenizations-0.4.11-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:eb1042ef485d5d314f283db04dbaf6729f0b22faff4b40194eaa756c8284b1c7"},
+    {file = "pytokenizations-0.4.11-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:fa1c265add334e9e4323c08e3b14bd2a8f2a48380de3d1df114da83176b2fe0d"},
+    {file = "pytokenizations-0.4.11-cp35-none-win_amd64.whl", hash = "sha256:eaace465d1425a394cd196beb7d94e927151556cc425cea9bb604fccba9ceb80"},
+    {file = "pytokenizations-0.4.11-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:8e028a5fd33d4a61163cc4fd756fdf287832251b72722ba58e36a50abc802d65"},
+    {file = "pytokenizations-0.4.11-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:6f631e7121713d0a69b3778aec838e13549cae9bec196a8bfa3c1de3fe65eb85"},
+    {file = "pytokenizations-0.4.11-cp36-none-win_amd64.whl", hash = "sha256:5cf14ca1fd43dbd82d311d881f76b1cd13b577a94484da720496a32e20a43cd0"},
+    {file = "pytokenizations-0.4.11-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:56d3a8e131b37f15ac0d45ca808ceb6f2be6722c38f26e9f8110a13f4e40bf9a"},
+    {file = "pytokenizations-0.4.11-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:33eb9e05249fc5f810b12085b01d027cc7c4658e4d00c96f2a320faa2ab22bba"},
+    {file = "pytokenizations-0.4.11-cp37-none-win_amd64.whl", hash = "sha256:87d9e811309c5a55de804ffe6b8005045e625b7636599a7fde28d129b61676a0"},
+    {file = "pytokenizations-0.4.11-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:f7c3d2332f24e94bc460f243952084c80a68cfb716488a80e79e6f5c1283fea7"},
+    {file = "pytokenizations-0.4.11-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:29f2f2f3a2dbaf03062f9cb94c02270c0ad48814c3ba9b104a3c27a89e0fde4d"},
+    {file = "pytokenizations-0.4.11-cp38-none-win_amd64.whl", hash = "sha256:7c0414e85f21dd04aad975500c26d6ce6990df878970bd47fba5013e3c98365b"},
+    {file = "pytokenizations-0.4.11.tar.gz", hash = "sha256:ff6ce4680d26c46435e72b53a3e16852dcada642c652adfb069d83104f0b3140"},
 ]
 pytorch-pretrained-bert = [
     {file = "pytorch_pretrained_bert-0.6.2-py2-none-any.whl", hash = "sha256:edf4f9c2e64ef4e3cc68a335c88938fa45c17f18300952c64ba59fa66580f2f4"},
