@@ -928,7 +928,7 @@ description = ""
 name = "pytokenizations"
 optional = false
 python-versions = "*"
-version = "0.4.11"
+version = "0.5.0"
 
 [[package]]
 category = "main"
@@ -1459,7 +1459,7 @@ description = "Python module for JUMAN/KNP."
 name = "unofficial-pyknp"
 optional = true
 python-versions = "*"
-version = "0.4.1"
+version = "0.4.2"
 
 [package.dependencies]
 six = "*"
@@ -2131,6 +2131,8 @@ protobuf = [
     {file = "protobuf-3.12.2-cp37-cp37m-win_amd64.whl", hash = "sha256:e72736dd822748b0721f41f9aaaf6a5b6d5cfc78f6c8690263aef8bba4457f0e"},
     {file = "protobuf-3.12.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:87535dc2d2ef007b9d44e309d2b8ea27a03d2fa09556a72364d706fcb7090828"},
     {file = "protobuf-3.12.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:50b5fee674878b14baea73b4568dc478c46a31dd50157a5b5d2f71138243b1a9"},
+    {file = "protobuf-3.12.2-py2.py3-none-any.whl", hash = "sha256:a96f8fc625e9ff568838e556f6f6ae8eca8b4837cdfb3f90efcb7c00e342a2eb"},
+    {file = "protobuf-3.12.2.tar.gz", hash = "sha256:49ef8ab4c27812a89a76fa894fe7a08f42f2147078392c0dee51d4a444ef6df5"},
 ]
 py = [
     {file = "py-1.8.1-py2.py3-none-any.whl", hash = "sha256:c20fdd83a5dbc0af9efd622bee9a5564e278f6380fffcacc43ba6f43db2813b0"},
@@ -2168,19 +2170,19 @@ python-dateutil = [
     {file = "python_dateutil-2.8.0-py2.py3-none-any.whl", hash = "sha256:7e6584c74aeed623791615e26efd690f29817a27c73085b78e4bad02493df2fb"},
 ]
 pytokenizations = [
-    {file = "pytokenizations-0.4.11-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:eb1042ef485d5d314f283db04dbaf6729f0b22faff4b40194eaa756c8284b1c7"},
-    {file = "pytokenizations-0.4.11-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:fa1c265add334e9e4323c08e3b14bd2a8f2a48380de3d1df114da83176b2fe0d"},
-    {file = "pytokenizations-0.4.11-cp35-none-win_amd64.whl", hash = "sha256:eaace465d1425a394cd196beb7d94e927151556cc425cea9bb604fccba9ceb80"},
-    {file = "pytokenizations-0.4.11-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:8e028a5fd33d4a61163cc4fd756fdf287832251b72722ba58e36a50abc802d65"},
-    {file = "pytokenizations-0.4.11-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:6f631e7121713d0a69b3778aec838e13549cae9bec196a8bfa3c1de3fe65eb85"},
-    {file = "pytokenizations-0.4.11-cp36-none-win_amd64.whl", hash = "sha256:5cf14ca1fd43dbd82d311d881f76b1cd13b577a94484da720496a32e20a43cd0"},
-    {file = "pytokenizations-0.4.11-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:56d3a8e131b37f15ac0d45ca808ceb6f2be6722c38f26e9f8110a13f4e40bf9a"},
-    {file = "pytokenizations-0.4.11-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:33eb9e05249fc5f810b12085b01d027cc7c4658e4d00c96f2a320faa2ab22bba"},
-    {file = "pytokenizations-0.4.11-cp37-none-win_amd64.whl", hash = "sha256:87d9e811309c5a55de804ffe6b8005045e625b7636599a7fde28d129b61676a0"},
-    {file = "pytokenizations-0.4.11-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:f7c3d2332f24e94bc460f243952084c80a68cfb716488a80e79e6f5c1283fea7"},
-    {file = "pytokenizations-0.4.11-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:29f2f2f3a2dbaf03062f9cb94c02270c0ad48814c3ba9b104a3c27a89e0fde4d"},
-    {file = "pytokenizations-0.4.11-cp38-none-win_amd64.whl", hash = "sha256:7c0414e85f21dd04aad975500c26d6ce6990df878970bd47fba5013e3c98365b"},
-    {file = "pytokenizations-0.4.11.tar.gz", hash = "sha256:ff6ce4680d26c46435e72b53a3e16852dcada642c652adfb069d83104f0b3140"},
+    {file = "pytokenizations-0.5.0-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:7086bc5a919fcd242ef84ee9057f38c9c5341a968af4a745af165c34801bbebd"},
+    {file = "pytokenizations-0.5.0-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:43ecd755409a959fb4b375febc2859c28ffceaa8e485372d6b95fb5c74f63bdf"},
+    {file = "pytokenizations-0.5.0-cp35-none-win_amd64.whl", hash = "sha256:5b44ef417f607e014994690b038e0d60df6a6f968899ce7c2ce1226b62e00752"},
+    {file = "pytokenizations-0.5.0-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:aa5a9c9ea977d9b248fd13dd52e921038b0560831ecb47d0a83a7f18c34e46f2"},
+    {file = "pytokenizations-0.5.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:23a0b68ba44b5ba2fb12b8798024dafcfe2e8bf76718c95fd59ddf587b0cf0be"},
+    {file = "pytokenizations-0.5.0-cp36-none-win_amd64.whl", hash = "sha256:b1e25bb5528c69bc2b184dbd6fb9e0b4491bbe408cb34046f604db59285f7abd"},
+    {file = "pytokenizations-0.5.0-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:3a6e11eed72e5331ed2d6267179da6815ff1ef948b8b1b640a7bd69c96f7e275"},
+    {file = "pytokenizations-0.5.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:f75a4d3a3baf834bee9e3f1600ba93df434e86ac4d207094f0683a5dda7b4bd1"},
+    {file = "pytokenizations-0.5.0-cp37-none-win_amd64.whl", hash = "sha256:4b9fa883e04aa3e68e21bfb6336899b96d0e0a13e3cacef731c4e006fd4f1033"},
+    {file = "pytokenizations-0.5.0-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:8c7262ab4d19668cca305c1da202a4870cb2f64e37a96f2a608e2b938f40cfa9"},
+    {file = "pytokenizations-0.5.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:48494e12b847b187a17b2e9222e08aba65121bb59c481efd48e5ebc95e4965b8"},
+    {file = "pytokenizations-0.5.0-cp38-none-win_amd64.whl", hash = "sha256:9fb76ddece08bd74240a558394f1ebed243ada72f21461a252e06284e699c2d6"},
+    {file = "pytokenizations-0.5.0.tar.gz", hash = "sha256:1c1694d03ec1cd5cb2b0fe6dedda5530127507ef3f430a2d23492601aab5183c"},
 ]
 pytorch-pretrained-bert = [
     {file = "pytorch_pretrained_bert-0.6.2-py2-none-any.whl", hash = "sha256:edf4f9c2e64ef4e3cc68a335c88938fa45c17f18300952c64ba59fa66580f2f4"},
@@ -2486,8 +2488,8 @@ unofficial-allennlp-nightly = [
     {file = "unofficial_allennlp_nightly-0.9.1.dev0-py3-none-any.whl", hash = "sha256:3e00247571e30d3268526a399ee992f60639c11c8a9a62d5ba6ca05b12b19e48"},
 ]
 unofficial-pyknp = [
-    {file = "unofficial-pyknp-0.4.1.tar.gz", hash = "sha256:b69280652fab90f4ce26058f7c7940a2d9ff34ed3273beb030deb5796bd63b05"},
-    {file = "unofficial_pyknp-0.4.1-py3-none-any.whl", hash = "sha256:d772b4db6d8cfb57105cb0cefddd472479efc5c332c043d9a289efdbd1505dd6"},
+    {file = "unofficial-pyknp-0.4.2.tar.gz", hash = "sha256:897b40a54e7cc0062292f88c09a6558c930728a1aca3d3eb5141f6092437a9f7"},
+    {file = "unofficial_pyknp-0.4.2-py3-none-any.whl", hash = "sha256:3952053e1a971bb4b8b43c313635c7283282891b891b22253b174e92af046f8f"},
 ]
 unofficial-udify = [
     {file = "unofficial-udify-0.1.3.tar.gz", hash = "sha256:3d61f8585722a6e0f05450fb1d4532b3a6e40ac0bddbc7516db5f5dfd6133200"},
