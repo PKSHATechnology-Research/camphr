@@ -32,7 +32,7 @@ pyahocorasick = "^1.4.0"
 catalogue = "^1.0.0"
 more-itertools = "*"
 scikit-learn = "^0.22"
-transformers = ">=2.4,<2.9"
+transformers = "^2.9.0"
 torch = "^1.0"
 pytokenizations = ">=0.4.8"
 spacy = "^2.2.3"
@@ -42,9 +42,9 @@ dataclasses = "^0.6"
 toolz = "^0.10.0"
 
 [tool.poetry.extras]
-all = [ "unofficial-allennlp-nightly", "Cython", "mojimoji2", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
-allennlp = [ "unofficial-allennlp-nightly",]
-udify = [ "unofficial-allennlp-nightly", "unofficial-udify",]
+all = [ "allennlp", "Cython", "mojimoji2", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
+allennlp = [ "allennlp",]
+udify = [ "allennlp", "unofficial-udify",]
 juman = [ "Cython", "mojimoji2", "unofficial-pyknp",]
 mecab = [ "mecab-python3",]
 
@@ -63,10 +63,9 @@ mypy = "*"
 [tool.poetry.scripts]
 camphr = "camphr.cli.__main__:main"
 
-[tool.poetry.dependencies.unofficial-allennlp-nightly]
-version = "0.9.1.dev0"
+[tool.poetry.dependencies.allennlp]
+version = "^1.0.0"
 optional = true
-allow-prereleases = true
 
 [tool.poetry.dependencies.unofficial-udify]
 version = "0.1.3"
