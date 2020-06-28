@@ -243,7 +243,7 @@ description = "Distribution utilities"
 name = "distlib"
 optional = false
 python-versions = "*"
-version = "0.3.0"
+version = "0.3.1"
 
 [[package]]
 category = "dev"
@@ -385,7 +385,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.18.2"
+version = "5.18.3"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -419,7 +419,7 @@ description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "2.9"
+version = "2.10"
 
 [[package]]
 category = "main"
@@ -1715,7 +1715,8 @@ dataclasses = [
     {file = "dataclasses-0.6.tar.gz", hash = "sha256:6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84"},
 ]
 distlib = [
-    {file = "distlib-0.3.0.zip", hash = "sha256:2e166e231a26b36d6dfe35a48c4464346620f8645ed0ace01ee31822b288de21"},
+    {file = "distlib-0.3.1-py2.py3-none-any.whl", hash = "sha256:8c09de2c67b3e7deef7184574fc060ab8a793e7adbb183d942c389c8b13c52fb"},
+    {file = "distlib-0.3.1.zip", hash = "sha256:edf6116872c863e1aa9d5bb7cb5e05a022c519a4594dc703843343a9ddd9bff1"},
 ]
 doc8 = [
     {file = "doc8-0.8.1-py2.py3-none-any.whl", hash = "sha256:4d58a5c8c56cedd2b2c9d6e3153be5d956cf72f6051128f0f2255c66227df721"},
@@ -1818,16 +1819,16 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.18.2-py3-none-any.whl", hash = "sha256:693cf6ea8985fb0bb520851930c995f11939d90eb2d07cee1dbc0868a0275162"},
-    {file = "hypothesis-5.18.2.tar.gz", hash = "sha256:2537cd4f6b300cca14fd109d4874d2fec83eb37a555a5dc85baf9636ab095a81"},
+    {file = "hypothesis-5.18.3-py3-none-any.whl", hash = "sha256:76144b48a54a197aac9e1aacbcdeca2e0e2753c838b3c7a22e0a6deb21fd01f5"},
+    {file = "hypothesis-5.18.3.tar.gz", hash = "sha256:b56c27733f896c80731302422c8c55dfd2e818059b3dca0f3717ddbae780dcd0"},
 ]
 identify = [
     {file = "identify-1.4.20-py2.py3-none-any.whl", hash = "sha256:acf0712ab4042642e8f44e9532d95c26fbe60c0ab8b6e5b654dd1bc6512810e0"},
     {file = "identify-1.4.20.tar.gz", hash = "sha256:b2cd24dece806707e0b50517c1b3bcf3044e0b1cb13a72e7d34aa31c91f2a55a"},
 ]
 idna = [
-    {file = "idna-2.9-py2.py3-none-any.whl", hash = "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"},
-    {file = "idna-2.9.tar.gz", hash = "sha256:7588d1c14ae4c77d74036e8c22ff447b26d0fde8f007354fd48a7814db15b7cb"},
+    {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
+    {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
 ]
 imagesize = [
     {file = "imagesize-1.2.0-py2.py3-none-any.whl", hash = "sha256:6965f19a6a2039c7d48bca7dba2473069ff854c36ae6f19d2cde309d998228a1"},
