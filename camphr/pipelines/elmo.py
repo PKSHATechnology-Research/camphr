@@ -6,6 +6,7 @@ from typing import Generator, Iterable, List
 
 import numpy as np
 import spacy
+import torch
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
 
@@ -44,21 +45,21 @@ class Elmo(Pipe):
 
     @classmethod
     def Model(cls, options_file: Pathlike, weight_file: Pathlike, **cfg):
-        from allennlp.commands.elmo import ElmoEmbedder
+        from allennlp.modules.elmo import Elmo
 
-        return ElmoEmbedder(
-            str(Path(options_file).absolute()), str(Path(weight_file).absolute())
+        return Elmo(
+            str(Path(options_file).absolute()), str(Path(weight_file).absolute()), 3
         )
 
     def to_disk(self, path: Pathlike, **cfg):
         path = Path(path)
         path.mkdir(exist_ok=True)
         shutil.copy(
-            self.model.elmo_bilm._token_embedder._weight_file,
+            self.model._elmo_lstm._token_embedder._weight_file,
             str(path / self.WEIGHTS_FILE_NAME),
         )
         with (path / self.OPTIONS_FILE_NAME).open("w") as f:
-            json.dump(self.model.elmo_bilm._token_embedder._options, f)
+            json.dump(self.model._elmo_lstm._token_embedder._options, f)
 
     def from_disk(self, path: Pathlike, **cfg):
         path = Path(path)
@@ -67,10 +68,14 @@ class Elmo(Pipe):
         )
 
     def predict(self, docs: List[Doc]) -> Generator[np.ndarray, None, None]:
-        return self.model.embed_sentences([token.text for token in doc] for doc in docs)
+        from allennlp.modules.elmo import batch_to_ids
 
-    def set_annotations(self, docs: List[Doc], outputs: Iterable[np.ndarray]):
+        tokens = [[token.text for token in doc] for doc in docs]
+        return self.model(batch_to_ids(tokens))["elmo_representations"]
+
+    def set_annotations(self, docs: List[Doc], outputs: Iterable[torch.Tensor]):
         for doc, vec in zip(docs, outputs):
+            vec = vec.detach().cpu().numpy()
             assert vec.shape[1] == len(doc), f"vector: {vec.shape}, doc: {len(doc)}"
             doc.tensor = vec[-1]
             doc.user_hooks["vector"] = get_doc_vector_via_tensor
