@@ -50,7 +50,7 @@ mecab = [ "mecab-python3",]
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
-pytest = "<5.3.3"
+pytest = "<5.4.4"
 flake8 = "*"
 pyyaml = "*"
 hypothesis = "*"
