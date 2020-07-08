@@ -32,7 +32,7 @@ pyahocorasick = "^1.4.0"
 catalogue = "^1.0.0"
 more-itertools = "*"
 scikit-learn = "^0.22"
-transformers = "^2.9.0"
+transformers = "^2.8.0"
 torch = "^1.0"
 pytokenizations = ">=0.4.8"
 spacy = "^2.2.3"
@@ -43,8 +43,8 @@ toolz = "^0.10.0"
 
 [tool.poetry.extras]
 all = [ "allennlp", "Cython", "mojimoji2", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
-allennlp = [ "allennlp",]
-udify = [ "allennlp", "unofficial-udify",]
+allennlp = [ "allennlp", "boto3"]
+udify = [ "allennlp", "unofficial-udify","boto3"]
 juman = [ "Cython", "mojimoji2", "unofficial-pyknp",]
 mecab = [ "mecab-python3",]
 
@@ -65,6 +65,11 @@ camphr = "camphr.cli.__main__:main"
 
 [tool.poetry.dependencies.allennlp]
 version = "^1.0.0"
+optional = true
+
+[tool.poetry.dependencies.boto3]
+# To reduce the cost of computing the dependency of allennlp
+version = "^1.14"
 optional = true
 
 [tool.poetry.dependencies.unofficial-udify]
