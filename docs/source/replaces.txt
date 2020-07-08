@@ -4,7 +4,7 @@
 .. |model-page| replace:: release page
 .. _model-page: https://github.com/PKSHATechnology-Research/camphr_models/releases/latest
 
-.. |udify-tar| replace:: en_udify-0.5.tar.gz
+.. |udify-tar| replace:: en_udify-0.6.0.tar.gz
 .. |elmo-tar| replace:: en_elmo_medium-0.5.tar.gz
 
 .. |require-mecab| replace:: `mecab-python3` is required. Install with :code:`pip install mecab-python3`
