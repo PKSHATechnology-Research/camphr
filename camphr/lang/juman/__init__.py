@@ -130,6 +130,8 @@ _SEPS = ["。", ".", "．"]
 def _split_text_for_juman(text: str) -> Iterator[str]:
     """Juman denies long text (maybe >4096 bytes) so split text"""
     n = 1000
+    if len(text) == 0:
+        return
     if len(text) < n:
         yield text
         return

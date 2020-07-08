@@ -1,5 +1,4 @@
 import json
-import shutil
 import subprocess
 import sys
 import urllib.request
@@ -12,11 +11,6 @@ MAP_URL = "https://raw.githubusercontent.com/PKSHATechnology-Research/camphr_mod
 def get_modelmap() -> Dict[str, Any]:
     with urllib.request.urlopen(MAP_URL) as f:
         return json.loads(f.read().decode())
-
-
-def download(url: str, filename: Path, bufsize=10000):
-    with urllib.request.urlopen(url) as f, filename.open("wb") as fw:
-        shutil.copyfileobj(f, fw)
 
 
 def download_model(name: str, version: Optional[str], directory: Optional[Path] = None):

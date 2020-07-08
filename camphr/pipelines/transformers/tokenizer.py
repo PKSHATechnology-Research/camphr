@@ -20,7 +20,7 @@ class TrfTokenizer(TrfAutoMixin, Pipe):
 
     def __init__(self, vocab: Vocab, model=True, **cfg):
         self.vocab = vocab
-        self.model: transformers.PretrainedTokenizer = model
+        self.model: transformers.PreTrainedTokenizer = model
         self.cfg = cfg
 
     def predict(self, docs: Sequence[Doc]) -> TransformersInput:

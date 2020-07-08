@@ -144,3 +144,5 @@ outputs/
 user.yaml
 /.vscode
 pyrightconfig.json
+
+/camphr_models/
