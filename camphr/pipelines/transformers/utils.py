@@ -345,7 +345,6 @@ class TransformersInput:
     input_ids: torch.Tensor
     token_type_ids: torch.Tensor
     attention_mask: torch.Tensor
-    input_len: torch.LongTensor
     overflowing_tokens: Optional[torch.LongTensor] = None
     num_truncated_tokens: int = 0
 
@@ -371,5 +370,4 @@ class TransformersInput:
     @property
     def model_input(self) -> Dict[str, torch.Tensor]:
         output = {k: getattr(self, k) for k in self.tensor_field_names}
-        del output["input_len"]
         return output
