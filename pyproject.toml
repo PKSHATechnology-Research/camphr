@@ -42,10 +42,10 @@ dataclasses = "^0.6"
 toolz = "^0.10.0"
 
 [tool.poetry.extras]
-all = [ "allennlp", "Cython", "mojimoji2", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
+all = [ "allennlp", "mojimoji", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
 allennlp = [ "allennlp", "boto3",]
 udify = [ "allennlp", "unofficial-udify", "boto3",]
-juman = [ "Cython", "mojimoji2", "unofficial-pyknp",]
+juman = ["mojimoji", "unofficial-pyknp",]
 mecab = [ "mecab-python3",]
 
 [tool.poetry.dev-dependencies]
@@ -75,12 +75,8 @@ optional = true
 version = "^0.2.1"
 optional = true
 
-[tool.poetry.dependencies.Cython]
-version = "*"
-optional = true
-
-[tool.poetry.dependencies.mojimoji2]
-version = "*"
+[tool.poetry.dependencies.mojimoji]
+version = "^0.0.11"
 optional = true
 
 [tool.poetry.dependencies.unofficial-pyknp]
@@ -88,7 +84,7 @@ version = "*"
 optional = true
 
 [tool.poetry.dependencies.mecab-python3]
-version = "^0.996.3"
+version = ">=1.0,<1.1"
 optional = true
 
 [tool.poetry.dev-dependencies.isort]
