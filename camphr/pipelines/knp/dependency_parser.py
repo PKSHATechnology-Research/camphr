@@ -52,7 +52,7 @@ def _get_dep(tag: Token) -> str:
     ret = ({ADV: "advmod", CCONJ: "advmod", DET: "det"}).get(tag.pos)
     if ret:
         return ret
-    elif tag.pos in {VERB, ADJ}:
+    elif tag.pos in {VERB, ADJ, PART}:
         if tag._.knp_morph_tag._.knp_tag_element.features.get("係", "") == "連格":
             return "acl"
         return "advcl"
@@ -137,6 +137,9 @@ def _modify_head_flat(heads: List[Token]) -> List[Token]:
         elif t.pos == ADV and h.dep_ == "aux":
             d = "advmod"
             h.pos = VERB
+        elif t.pos == PART and h.dep_ == "aux":
+            d = "advmod"
+            h.pos = ADJ
         else:
             continue
         h.head = t.head
