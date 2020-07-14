@@ -52,7 +52,7 @@ def _get_dep(tag: Token) -> str:
     ret = ({ADV: "advmod", CCONJ: "advmod", DET: "det"}).get(tag.pos)
     if ret:
         return ret
-    elif tag.pos in {VERB, ADJ}:
+    elif tag.pos in {VERB, ADJ, PART}:
         if tag._.knp_morph_tag._.knp_tag_element.features.get("係", "") == "連格":
             return "acl"
         return "advcl"
