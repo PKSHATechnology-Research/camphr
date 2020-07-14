@@ -137,6 +137,9 @@ def _modify_head_flat(heads: List[Token]) -> List[Token]:
         elif t.pos == ADV and h.dep_ == "aux":
             d = "advmod"
             h.pos = VERB
+        elif t.pos == PART and h.dep_ == "aux":
+            d = "advmod"
+            h.pos = ADJ
         else:
             continue
         h.head = t.head
