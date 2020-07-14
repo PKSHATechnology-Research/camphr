@@ -367,7 +367,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.19.1"
+version = "5.19.2"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -1159,7 +1159,7 @@ description = "Manage dynamic plugins for Python applications"
 name = "stevedore"
 optional = false
 python-versions = ">=3.6"
-version = "3.0.0"
+version = "3.1.0"
 
 [package.dependencies]
 pbr = ">=2.0.0,<2.1.0 || >2.1.0"
@@ -1614,8 +1614,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.19.1-py3-none-any.whl", hash = "sha256:72826600ed92abb15dc85a71bc26682a81624f881c91fc906c8425243978529e"},
-    {file = "hypothesis-5.19.1.tar.gz", hash = "sha256:c13657e0dfba2d33406fd75dec436aba481c0525e899986bd67dfcf2c600857a"},
+    {file = "hypothesis-5.19.2-py3-none-any.whl", hash = "sha256:1c49d244580e84f187da8fcdeea85c62e30a10ffc7434fa952b736c15082edbc"},
+    {file = "hypothesis-5.19.2.tar.gz", hash = "sha256:f09da0ee85759662d797cd2a6cb760fa5e4bfc3de141bd08ad08a68982a839bd"},
 ]
 identify = [
     {file = "identify-1.4.23-py2.py3-none-any.whl", hash = "sha256:882c4b08b4569517b5f2257ecca180e01f38400a17f429f5d0edff55530c41c7"},
@@ -2150,8 +2150,8 @@ srsly = [
     {file = "srsly-1.0.2.tar.gz", hash = "sha256:59258b81d567df207f8a0a33c4b5fa232afccf1d927c8ce3ba5395bfd64c0ed8"},
 ]
 stevedore = [
-    {file = "stevedore-3.0.0-py3-none-any.whl", hash = "sha256:4ccc328424eb8b6b3d9def62976b686348b7064b2b470daf81ffd6251abd6d02"},
-    {file = "stevedore-3.0.0.tar.gz", hash = "sha256:182d557078b4f840f412f148e6f3c2ace83a3e206a020f35f6c97d3b8d91f180"},
+    {file = "stevedore-3.1.0-py3-none-any.whl", hash = "sha256:9fb12884b510fdc25f8a883bb390b8ff82f67863fb360891a33135bcb2ce8c54"},
+    {file = "stevedore-3.1.0.tar.gz", hash = "sha256:79270bd5fb4a052e76932e9fef6e19afa77090c4000f2680eb8c2e887d2e6e36"},
 ]
 tensorboardx = [
     {file = "tensorboardX-2.1-py2.py3-none-any.whl", hash = "sha256:2d81c10d9e3225dcd9bb5fb277588610bdf45317603e7682f6953d83b5b38f6a"},
