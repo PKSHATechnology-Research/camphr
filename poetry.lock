@@ -133,10 +133,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = true
 python-versions = "*"
-version = "1.14.20"
+version = "1.14.21"
 
 [package.dependencies]
-botocore = ">=1.17.20,<1.18.0"
+botocore = ">=1.17.21,<1.18.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -146,7 +146,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = true
 python-versions = "*"
-version = "1.17.20"
+version = "1.17.21"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -367,7 +367,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.19.2"
+version = "5.19.3"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -1370,7 +1370,7 @@ description = "Virtual Python Environment builder"
 name = "virtualenv"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-version = "20.0.26"
+version = "20.0.27"
 
 [package.dependencies]
 appdirs = ">=1.4.3,<2"
@@ -1490,12 +1490,12 @@ blis = [
     {file = "blis-0.4.1.tar.gz", hash = "sha256:d69257d317e86f34a7f230a2fd1f021fd2a1b944137f40d8cdbb23bd334cd0c4"},
 ]
 boto3 = [
-    {file = "boto3-1.14.20-py2.py3-none-any.whl", hash = "sha256:f7aa33b382cc9e73ef7f590b885e72732ad2bd9628c5e312c9aeb8ba011c6820"},
-    {file = "boto3-1.14.20.tar.gz", hash = "sha256:e6ab26155b2f83798218106580ab2b3cd47691e25aba912e0351502eda8d86e0"},
+    {file = "boto3-1.14.21-py2.py3-none-any.whl", hash = "sha256:5c2fa8ac4e4a4800d02b11d75b71bb8fcc190d6fbb15d957f99661414e655e10"},
+    {file = "boto3-1.14.21.tar.gz", hash = "sha256:b093e00e98ab31f98d444efad1738ab4795226f0b05abc6655d747f286f9baf9"},
 ]
 botocore = [
-    {file = "botocore-1.17.20-py2.py3-none-any.whl", hash = "sha256:e7fee600092b51ca8016c541d5c50a8b39179d5c184ec3fd430400d99ba0c55a"},
-    {file = "botocore-1.17.20.tar.gz", hash = "sha256:d1bf8c2085719221683edf54913c6155c68705f26ab4a72c45e4de5176a8cf7b"},
+    {file = "botocore-1.17.21-py2.py3-none-any.whl", hash = "sha256:9c4694e413c344ca2fb1175f33a97265dbf7f8a5943fbeafde3161d080b72308"},
+    {file = "botocore-1.17.21.tar.gz", hash = "sha256:fcbcda16c815744482be4206ed098f4d08f2dfddfb1fcfa0f822f4cfd94adb85"},
 ]
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
@@ -1614,8 +1614,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.19.2-py3-none-any.whl", hash = "sha256:1c49d244580e84f187da8fcdeea85c62e30a10ffc7434fa952b736c15082edbc"},
-    {file = "hypothesis-5.19.2.tar.gz", hash = "sha256:f09da0ee85759662d797cd2a6cb760fa5e4bfc3de141bd08ad08a68982a839bd"},
+    {file = "hypothesis-5.19.3-py3-none-any.whl", hash = "sha256:f078ab6d0a151395e9f9df0bd6bd5e8f2f17a81cc0e9cbb53758b5aee1ce6085"},
+    {file = "hypothesis-5.19.3.tar.gz", hash = "sha256:b58b40984915fbea34db942f58faac78f3db66e379b5394cad0d0ef60b7d98be"},
 ]
 identify = [
     {file = "identify-1.4.23-py2.py3-none-any.whl", hash = "sha256:882c4b08b4569517b5f2257ecca180e01f38400a17f429f5d0edff55530c41c7"},
@@ -2002,6 +2002,7 @@ regex = [
     {file = "regex-2020.7.14-cp38-cp38-manylinux1_i686.whl", hash = "sha256:5ea81ea3dbd6767873c611687141ec7b06ed8bab43f68fad5b7be184a920dc99"},
     {file = "regex-2020.7.14-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:bbb332d45b32df41200380fff14712cb6093b61bd142272a10b16778c418e98e"},
     {file = "regex-2020.7.14-cp38-cp38-manylinux2010_i686.whl", hash = "sha256:c11d6033115dc4887c456565303f540c44197f4fc1a2bfb192224a301534888e"},
+    {file = "regex-2020.7.14-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:75aaa27aa521a182824d89e5ab0a1d16ca207318a6b65042b046053cfc8ed07a"},
     {file = "regex-2020.7.14-cp38-cp38-win32.whl", hash = "sha256:d6cff2276e502b86a25fd10c2a96973fdb45c7a977dca2138d661417f3728341"},
     {file = "regex-2020.7.14-cp38-cp38-win_amd64.whl", hash = "sha256:7a2dd66d2d4df34fa82c9dc85657c5e019b87932019947faece7983f2089a840"},
     {file = "regex-2020.7.14.tar.gz", hash = "sha256:3a3af27a8d23143c49a3420efe5b3f8cf1a48c6fc8bc6856b03f638abc1833bb"},
@@ -2262,8 +2263,8 @@ urllib3 = [
     {file = "urllib3-1.22.tar.gz", hash = "sha256:cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"},
 ]
 virtualenv = [
-    {file = "virtualenv-20.0.26-py2.py3-none-any.whl", hash = "sha256:c11a475400e98450403c0364eb3a2d25d42f71cf1493da64390487b666de4324"},
-    {file = "virtualenv-20.0.26.tar.gz", hash = "sha256:e10cc66f40cbda459720dfe1d334c4dc15add0d80f09108224f171006a97a172"},
+    {file = "virtualenv-20.0.27-py2.py3-none-any.whl", hash = "sha256:c51f1ba727d1614ce8fd62457748b469fbedfdab2c7e5dd480c9ae3fbe1233f1"},
+    {file = "virtualenv-20.0.27.tar.gz", hash = "sha256:26cdd725a57fef4c7c22060dba4647ebd8ca377e30d1c1cf547b30a0b79c43b4"},
 ]
 wasabi = [
     {file = "wasabi-0.7.0.tar.gz", hash = "sha256:e875f11d7126a2796999ff7f092195f24005edbd90b32b2df16dde5d392ecc8c"},
