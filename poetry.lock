@@ -133,10 +133,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = true
 python-versions = "*"
-version = "1.14.26"
+version = "1.14.27"
 
 [package.dependencies]
-botocore = ">=1.17.26,<1.18.0"
+botocore = ">=1.17.27,<1.18.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -146,7 +146,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = true
 python-versions = "*"
-version = "1.17.26"
+version = "1.17.27"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -217,7 +217,7 @@ description = "Log formatting with colors!"
 name = "colorlog"
 optional = false
 python-versions = "*"
-version = "4.1.0"
+version = "4.2.1"
 
 [package.dependencies]
 colorama = "*"
@@ -367,7 +367,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.20.3"
+version = "5.21.0"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -1491,12 +1491,12 @@ blis = [
     {file = "blis-0.4.1.tar.gz", hash = "sha256:d69257d317e86f34a7f230a2fd1f021fd2a1b944137f40d8cdbb23bd334cd0c4"},
 ]
 boto3 = [
-    {file = "boto3-1.14.26-py2.py3-none-any.whl", hash = "sha256:4735fdf490094537ea0cb93ba4237db442195c37f974ea4ad44b9a5af98e6d7b"},
-    {file = "boto3-1.14.26.tar.gz", hash = "sha256:838cea329851e11b9a9dae1c00cd5ef2f3b29ac83c061733b2e93b64c333750f"},
+    {file = "boto3-1.14.27-py2.py3-none-any.whl", hash = "sha256:65c131b72c2a75e3cc6044e5fd6426719051b9b1f28bd026b4a5490648d13019"},
+    {file = "boto3-1.14.27.tar.gz", hash = "sha256:e1e09587763671cc07c9e6d349d93bf53a140f83947cb6cf1ec4cb9f07b0ff95"},
 ]
 botocore = [
-    {file = "botocore-1.17.26-py2.py3-none-any.whl", hash = "sha256:0c4ed6349e8ef6bfe9648757f3ff66c33a8f37d9cbadd9c17987138184990cbd"},
-    {file = "botocore-1.17.26.tar.gz", hash = "sha256:28832be365204f00d5c7d2c2a0538d9d082dbfc39ed984fdc9556770470b7487"},
+    {file = "botocore-1.17.27-py2.py3-none-any.whl", hash = "sha256:acd955f0315b5d17e3e8ddc2ef74d7f03c4ef37f0ceb042058637f7edfbbad4e"},
+    {file = "botocore-1.17.27.tar.gz", hash = "sha256:994a9f50e0e770c0f9ea74659f501848f7d12b22186026c219cde8a481ede298"},
 ]
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
@@ -1523,8 +1523,8 @@ colorama = [
     {file = "colorama-0.4.3.tar.gz", hash = "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"},
 ]
 colorlog = [
-    {file = "colorlog-4.1.0-py2.py3-none-any.whl", hash = "sha256:732c191ebbe9a353ec160d043d02c64ddef9028de8caae4cfa8bd49b6afed53e"},
-    {file = "colorlog-4.1.0.tar.gz", hash = "sha256:30aaef5ab2a1873dec5da38fd6ba568fa761c9fa10b40241027fa3edea47f3d2"},
+    {file = "colorlog-4.2.1-py2.py3-none-any.whl", hash = "sha256:43597fd822ce705190fc997519342fdaaf44b9b47f896ece7aa153ed4b909c74"},
+    {file = "colorlog-4.2.1.tar.gz", hash = "sha256:75e55822c3a3387d721579241e776de2cf089c9ef9528b1f09e8b04d403ad118"},
 ]
 conllu = [
     {file = "conllu-3.0-py2.py3-none-any.whl", hash = "sha256:f18113bbc7dc24fa04e7f1f8a4836b36dbd0325d1fb85a4228d507f44daeb71f"},
@@ -1615,8 +1615,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.20.3-py3-none-any.whl", hash = "sha256:8f03b4c85a3d1be8125c3cb4d2d3567ff5eb7b1120325b5116228d41b7254dd5"},
-    {file = "hypothesis-5.20.3.tar.gz", hash = "sha256:9e7d94802bd7c45013a595959f549a31cdb7cc15023d6f132aa9f3686b7384fb"},
+    {file = "hypothesis-5.21.0-py3-none-any.whl", hash = "sha256:b971c462bc21b83f095207213e370baf0d86b41edda2cea08408e6ba5efa9940"},
+    {file = "hypothesis-5.21.0.tar.gz", hash = "sha256:5aa113efc2227813364be42ec6c25bc01b59cc0c9b0022646dad804149895db1"},
 ]
 identify = [
     {file = "identify-1.4.25-py2.py3-none-any.whl", hash = "sha256:ccd88716b890ecbe10920659450a635d2d25de499b9a638525a48b48261d989b"},
