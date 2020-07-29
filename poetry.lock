@@ -133,10 +133,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = true
 python-versions = "*"
-version = "1.14.28"
+version = "1.14.30"
 
 [package.dependencies]
-botocore = ">=1.17.28,<1.18.0"
+botocore = ">=1.17.30,<1.18.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -146,7 +146,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = true
 python-versions = "*"
-version = "1.17.28"
+version = "1.17.30"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -367,7 +367,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.23.1"
+version = "5.23.3"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -1491,12 +1491,12 @@ blis = [
     {file = "blis-0.4.1.tar.gz", hash = "sha256:d69257d317e86f34a7f230a2fd1f021fd2a1b944137f40d8cdbb23bd334cd0c4"},
 ]
 boto3 = [
-    {file = "boto3-1.14.28-py2.py3-none-any.whl", hash = "sha256:9a3c6b6f93d381f1d7a06ec0f50a9ad3d7b81509443f80ba222eb66befa8976a"},
-    {file = "boto3-1.14.28.tar.gz", hash = "sha256:ec3a7662e318455727b4b36f4a57ba473a90b6526cebf1fc10e847182f1fd917"},
+    {file = "boto3-1.14.30-py2.py3-none-any.whl", hash = "sha256:4e357963ddd36a769e9a18ffe7517fed61f2b301a6e7d3c833cb5171146a5f53"},
+    {file = "boto3-1.14.30.tar.gz", hash = "sha256:859e29da7cce712f8fae8666fccb424bf3b42802d622b61b5219ea8a70e6a8f8"},
 ]
 botocore = [
-    {file = "botocore-1.17.28-py2.py3-none-any.whl", hash = "sha256:e855254817e289bb9a5fa3c143920c21ea8aeb424f1d4eed1e6c32d84dfd277d"},
-    {file = "botocore-1.17.28.tar.gz", hash = "sha256:71d45ae51c4c1a7ae485836016170a817d8d53292d940d04d72e49e473b98127"},
+    {file = "botocore-1.17.30-py2.py3-none-any.whl", hash = "sha256:8d5c40c2ab98223caa87cf1109d4449ee3022cb0ce9eb3b76696a231cf447888"},
+    {file = "botocore-1.17.30.tar.gz", hash = "sha256:d222643daa1a510f7e11e02b424689d69b49d6a88add13cbfd2a676daae6e200"},
 ]
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
@@ -1615,8 +1615,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.23.1-py3-none-any.whl", hash = "sha256:bb53f6a26c3bf6a784927d67db4f7259193b5ad79d54941af5e38d3851328221"},
-    {file = "hypothesis-5.23.1.tar.gz", hash = "sha256:d9d3ee6b9328a285f6e7ec02d5f144a3fb64116adfd9256abdcbe13039122356"},
+    {file = "hypothesis-5.23.3-py3-none-any.whl", hash = "sha256:3570011c168e8e2443e32b4643c5f8b15c84206f86f1d22be02ef5ccb4e87778"},
+    {file = "hypothesis-5.23.3.tar.gz", hash = "sha256:b961343a643d40999c3f082ffba484c401b18b7981fa59072f83d773231400df"},
 ]
 identify = [
     {file = "identify-1.4.25-py2.py3-none-any.whl", hash = "sha256:ccd88716b890ecbe10920659450a635d2d25de499b9a638525a48b48261d989b"},
