@@ -10,6 +10,14 @@ from typing_extensions import Literal
 from camphr.utils import SerializationMixin, get_doc_char_span
 
 
+def to_lemma_text(doc: Doc) -> str:
+    ret = ""
+    for token in doc:
+        ret += token.lemma_
+        ret += token.whitespace_
+    return ret
+
+
 @spacy.component("pattern_searcher")
 class PatternSearcher(SerializationMixin):
     serialization_fields = [
@@ -18,6 +26,8 @@ class PatternSearcher(SerializationMixin):
         "custom_label",
         "custom_label_map",
         "destructive",
+        "lemma",
+        "lower",
         "cfg",
     ]
 
@@ -29,7 +39,9 @@ class PatternSearcher(SerializationMixin):
         ] = None,
         custom_label: Optional[str] = None,
         custom_label_map: Optional[Dict[str, str]] = None,
-        destructive=False,
+        destructive: bool = False,
+        lemma: bool = False,
+        lower: bool = False,
         **cfg
     ):
         self.model = model
@@ -38,6 +50,8 @@ class PatternSearcher(SerializationMixin):
         self.custom_label_map = custom_label_map
         self._validate_label()
         self.destructive = destructive
+        self.lemma = lemma
+        self.lower = lower
         self.cfg = cfg
 
         if custom_label:
@@ -96,8 +110,18 @@ class PatternSearcher(SerializationMixin):
             i = j - len(word) + 1
             yield i, j + 1, word
 
+    def _to_text(self, doc: Doc) -> str:
+        if self.lemma:
+            text = to_lemma_text(doc)
+        else:
+            text = doc.text
+        if self.lower:
+            text = text.lower()
+        return text
+
     def __call__(self, doc: Doc) -> Doc:
-        matches = self.get_char_spans(doc.text)
+        text = self._to_text(doc)
+        matches = self.get_char_spans(text)
         spans = []
         for i, j, text in matches:
             span = get_doc_char_span(
