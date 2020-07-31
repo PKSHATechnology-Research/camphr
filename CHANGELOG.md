@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0 (09/07/2020)
+- [**dependencies**] Bump scikit-learn from 0.22.2.post1 to 0.23.1 [#61](https://github.com/PKSHATechnology-Research/camphr/pull/61)
+- [**dependencies**] Bump pytest from 5.3.2 to 5.4.3 [#60](https://github.com/PKSHATechnology-Research/camphr/pull/60)
+- [**closed**] support allennlp v1 [#59](https://github.com/PKSHATechnology-Research/camphr/pull/59)
+- [**closed**] Improvement for サ変 of KNP [#56](https://github.com/PKSHATechnology-Research/camphr/pull/56)
+- [**closed**] refactor [#55](https://github.com/PKSHATechnology-Research/camphr/pull/55)
+
+---
+
 ## 0.5.22 (24/04/2020)
 - [**bug**] fix transformers eval batchsize failure [#50](https://github.com/PKSHATechnology-Research/camphr/pull/50)
 
