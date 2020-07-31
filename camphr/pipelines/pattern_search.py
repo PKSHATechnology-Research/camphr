@@ -10,14 +10,6 @@ from typing_extensions import Literal
 from camphr.utils import SerializationMixin, get_doc_char_span
 
 
-def to_lemma_text(doc: Doc) -> str:
-    ret = ""
-    for token in doc:
-        ret += token.lemma_
-        ret += token.whitespace_
-    return ret
-
-
 @spacy.component("pattern_searcher")
 class PatternSearcher(SerializationMixin):
     serialization_fields = [
@@ -40,7 +32,6 @@ class PatternSearcher(SerializationMixin):
         custom_label: Optional[str] = None,
         custom_label_map: Optional[Dict[str, str]] = None,
         destructive: bool = False,
-        lemma: bool = False,
         lower: bool = False,
         **cfg
     ):
@@ -50,7 +41,6 @@ class PatternSearcher(SerializationMixin):
         self.custom_label_map = custom_label_map
         self._validate_label()
         self.destructive = destructive
-        self.lemma = lemma
         self.lower = lower
         self.cfg = cfg
 
@@ -111,10 +101,7 @@ class PatternSearcher(SerializationMixin):
             yield i, j + 1, word
 
     def _to_text(self, doc: Doc) -> str:
-        if self.lemma:
-            text = to_lemma_text(doc)
-        else:
-            text = doc.text
+        text = doc.text
         if self.lower:
             text = text.lower()
         return text
