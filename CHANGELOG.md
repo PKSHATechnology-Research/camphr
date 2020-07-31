@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0 (09/07/2020)
+- Support allennlp v1 (#59)
+---
+
 ## 0.5.22 (24/04/2020)
 - [**bug**] fix transformers eval batchsize failure [#50](https://github.com/PKSHATechnology-Research/camphr/pull/50)
 
