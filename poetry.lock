@@ -133,10 +133,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = true
 python-versions = "*"
-version = "1.14.31"
+version = "1.14.33"
 
 [package.dependencies]
-botocore = ">=1.17.31,<1.18.0"
+botocore = ">=1.17.33,<1.18.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -146,7 +146,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = true
 python-versions = "*"
-version = "1.17.31"
+version = "1.17.33"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -184,7 +184,7 @@ description = "Validate configuration and produce human readable error messages.
 name = "cfgv"
 optional = false
 python-versions = ">=3.6.1"
-version = "3.1.0"
+version = "3.2.0"
 
 [[package]]
 category = "main"
@@ -228,7 +228,7 @@ description = "CoNLL-U Parser parses a CoNLL-U formatted string into a nested py
 name = "conllu"
 optional = true
 python-versions = "*"
-version = "3.0"
+version = "3.1.1"
 
 [[package]]
 category = "main"
@@ -367,7 +367,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.23.7"
+version = "5.23.8"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -1370,7 +1370,7 @@ description = "Virtual Python Environment builder"
 name = "virtualenv"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-version = "20.0.28"
+version = "20.0.29"
 
 [package.dependencies]
 appdirs = ">=1.4.3,<2"
@@ -1491,12 +1491,12 @@ blis = [
     {file = "blis-0.4.1.tar.gz", hash = "sha256:d69257d317e86f34a7f230a2fd1f021fd2a1b944137f40d8cdbb23bd334cd0c4"},
 ]
 boto3 = [
-    {file = "boto3-1.14.31-py2.py3-none-any.whl", hash = "sha256:2ce62c4e4c98aa73f1b099d3e82e79f797ce5b483c97434543c59de5fb88a872"},
-    {file = "boto3-1.14.31.tar.gz", hash = "sha256:71dc5ef3c43cf5cc62904e90805c6c41d9f850d72af12abb4cd6f3bbb7d8d1c9"},
+    {file = "boto3-1.14.33-py2.py3-none-any.whl", hash = "sha256:e47537d530d523855e52367c2ff278c732651934cd6b33daf9487649dab8e674"},
+    {file = "boto3-1.14.33.tar.gz", hash = "sha256:35553b05b47fb6b3494bc447428342ca840348ede485e586d002399a32cae0a3"},
 ]
 botocore = [
-    {file = "botocore-1.17.31-py2.py3-none-any.whl", hash = "sha256:f20d1659594e23772d65caccabae606e7094440a00b7e285ce5826ec302fdfb4"},
-    {file = "botocore-1.17.31.tar.gz", hash = "sha256:1b098739f4b57851023ce64cc10af0451feab5e403a4f3c28c545130e50f24bc"},
+    {file = "botocore-1.17.33-py2.py3-none-any.whl", hash = "sha256:c12a0dc7021fca9d11c2bdbafdc44372e38180b56a1fab97c27b152f79455cd1"},
+    {file = "botocore-1.17.33.tar.gz", hash = "sha256:273dbd8e26d4faa568e4cd4ca3180890b59ff0e3e8df7fb352796796c6808527"},
 ]
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
@@ -1507,8 +1507,8 @@ certifi = [
     {file = "certifi-2020.6.20.tar.gz", hash = "sha256:5930595817496dd21bb8dc35dad090f1c2cd0adfaf21204bf6732ca5d8ee34d3"},
 ]
 cfgv = [
-    {file = "cfgv-3.1.0-py2.py3-none-any.whl", hash = "sha256:1ccf53320421aeeb915275a196e23b3b8ae87dea8ac6698b1638001d4a486d53"},
-    {file = "cfgv-3.1.0.tar.gz", hash = "sha256:c8e8f552ffcc6194f4e18dd4f68d9aef0c0d58ae7e7be8c82bee3c5e9edfa513"},
+    {file = "cfgv-3.2.0-py2.py3-none-any.whl", hash = "sha256:32e43d604bbe7896fe7c248a9c2276447dbef840feb28fe20494f62af110211d"},
+    {file = "cfgv-3.2.0.tar.gz", hash = "sha256:cf22deb93d4bcf92f345a5c3cd39d3d41d6340adc60c78bbbd6588c384fda6a1"},
 ]
 chardet = [
     {file = "chardet-3.0.4-py2.py3-none-any.whl", hash = "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"},
@@ -1527,8 +1527,8 @@ colorlog = [
     {file = "colorlog-4.2.1.tar.gz", hash = "sha256:75e55822c3a3387d721579241e776de2cf089c9ef9528b1f09e8b04d403ad118"},
 ]
 conllu = [
-    {file = "conllu-3.0-py2.py3-none-any.whl", hash = "sha256:f18113bbc7dc24fa04e7f1f8a4836b36dbd0325d1fb85a4228d507f44daeb71f"},
-    {file = "conllu-3.0.tar.gz", hash = "sha256:910f1aadc2c33bba643dcac162ba8ec8eb98578f244b138b96947092f3247d1f"},
+    {file = "conllu-3.1.1-py2.py3-none-any.whl", hash = "sha256:a3c70890d50b429ce942211544fd5827ad93aabb763ec9f2125dea338e9bc8f7"},
+    {file = "conllu-3.1.1.tar.gz", hash = "sha256:13a42aad7f7f1e56e3067883356822572bc9a7842cf94f4a923c5489ee027f2e"},
 ]
 cymem = [
     {file = "cymem-2.0.3-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:f4f19af4bca81f11922508a9dcf30ce1d2aee4972af9f81ce8e5331a6f46f5e1"},
@@ -1615,8 +1615,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.23.7-py3-none-any.whl", hash = "sha256:b287f36ed3e3922154ee10603d1828378538e14878c2064e78fa7c19154bb330"},
-    {file = "hypothesis-5.23.7.tar.gz", hash = "sha256:be8ef81c9e5d05b3e9ac94f460aed71a7ed1e9d142d97d2acc09927d59d798f6"},
+    {file = "hypothesis-5.23.8-py3-none-any.whl", hash = "sha256:3d40ba66042b15d6653fb0360728007144f7e540efdfe0c81cdd38587d34583b"},
+    {file = "hypothesis-5.23.8.tar.gz", hash = "sha256:772e85dd18c9670891e0da1b585c6fb5cffb498a681a5feca94086a70bcef07a"},
 ]
 identify = [
     {file = "identify-1.4.25-py2.py3-none-any.whl", hash = "sha256:ccd88716b890ecbe10920659450a635d2d25de499b9a638525a48b48261d989b"},
@@ -2264,8 +2264,8 @@ urllib3 = [
     {file = "urllib3-1.22.tar.gz", hash = "sha256:cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"},
 ]
 virtualenv = [
-    {file = "virtualenv-20.0.28-py2.py3-none-any.whl", hash = "sha256:8f582a030156282a9ee9d319984b759a232b07f86048c1d6a9e394afa44e78c8"},
-    {file = "virtualenv-20.0.28.tar.gz", hash = "sha256:688a61d7976d82b92f7906c367e83bb4b3f0af96f8f75bfcd3da95608fe8ac6c"},
+    {file = "virtualenv-20.0.29-py2.py3-none-any.whl", hash = "sha256:8aa9c37b082664dbce2236fa420759c02d64109d8e6013593ad13914718a30fd"},
+    {file = "virtualenv-20.0.29.tar.gz", hash = "sha256:f14a0a98ea4397f0d926cff950361766b6a73cd5975ae7eb259d12919f819a25"},
 ]
 wasabi = [
     {file = "wasabi-0.7.1.tar.gz", hash = "sha256:ee3809f4ce00e1e7f424b1572c753cff0dcaca2ca684e67e31f985033a9f070b"},
