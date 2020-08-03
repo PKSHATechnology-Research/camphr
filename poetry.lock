@@ -367,7 +367,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.23.8"
+version = "5.23.9"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -1417,7 +1417,6 @@ version = "1.12.1"
 [[package]]
 category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-marker = "python_version < \"3.8\""
 name = "zipp"
 optional = false
 python-versions = ">=3.6"
@@ -1436,7 +1435,6 @@ udify = ["allennlp", "unofficial-udify", "boto3"]
 
 [metadata]
 content-hash = "85275a8534f93290ed6054edb7a4b86f1f71eb2a820e3fc345fdf0a7537a4cb3"
-lock-version = "1.0"
 python-versions = ">=3.6.1"
 
 [metadata.files]
@@ -1615,8 +1613,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.23.8-py3-none-any.whl", hash = "sha256:3d40ba66042b15d6653fb0360728007144f7e540efdfe0c81cdd38587d34583b"},
-    {file = "hypothesis-5.23.8.tar.gz", hash = "sha256:772e85dd18c9670891e0da1b585c6fb5cffb498a681a5feca94086a70bcef07a"},
+    {file = "hypothesis-5.23.9-py3-none-any.whl", hash = "sha256:0400b95556216ae3e345f760726c89f8fb6ae47a22f41600868f692a2298773d"},
+    {file = "hypothesis-5.23.9.tar.gz", hash = "sha256:1dc52986324802b1c5b2fe3edc96d22f58a0fb20aacfdb0ebe9d1038ca397485"},
 ]
 identify = [
     {file = "identify-1.4.25-py2.py3-none-any.whl", hash = "sha256:ccd88716b890ecbe10920659450a635d2d25de499b9a638525a48b48261d989b"},
