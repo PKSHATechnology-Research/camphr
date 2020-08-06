@@ -1443,7 +1443,7 @@ mecab = ["mecab-python3"]
 udify = ["allennlp", "unofficial-udify", "boto3"]
 
 [metadata]
-content-hash = "4f8334137d786655618a4ca7872477a059931a9d80ebd84ad83828bb7f05c37a"
+content-hash = "37816ce370db3944c1d66a06d902f4f605e9c9d222e55cfc10a2f88d8c219cfc"
 python-versions = ">=3.6.1"
 
 [metadata.files]
