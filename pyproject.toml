@@ -7,7 +7,7 @@ files = [ "camphr/VERSION.py",]
 commit = true
 
 [tool.poetry]
-version = "0.6.2"
+version = "0.6.3"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
@@ -34,7 +34,8 @@ more-itertools = "*"
 scikit-learn = ">=0.22,<0.24"
 transformers = "^2.10"
 torch = "^1.0"
-pytokenizations = ">=0.4.8"
+pytokenizations = ">=0.4.8,<0.7"
+pytextspan = ">=0.2.2,<0.3"
 spacy = "^2.2.3"
 hydra-core = "^0.11.3"
 hydra_colorlog = "^0.1.4"
@@ -42,10 +43,10 @@ dataclasses = "^0.6"
 toolz = "^0.10.0"
 
 [tool.poetry.extras]
-all = [ "allennlp", "mojimoji", "unofficial-pyknp", "mecab-python3", "unofficial-udify",]
+all = [ "allennlp", "mojimoji", "pyknp", "mecab-python3", "unofficial-udify",]
 allennlp = [ "allennlp", "boto3",]
 udify = [ "allennlp", "unofficial-udify", "boto3",]
-juman = [ "mojimoji", "unofficial-pyknp",]
+juman = [ "mojimoji", "pyknp",]
 mecab = [ "mecab-python3",]
 
 [tool.poetry.dev-dependencies]
@@ -79,8 +80,8 @@ optional = true
 version = "^0.0.11"
 optional = true
 
-[tool.poetry.dependencies.unofficial-pyknp]
-version = "*"
+[tool.poetry.dependencies.pyknp]
+version = ">=0.4.2,<0.5"
 optional = true
 
 [tool.poetry.dependencies.mecab-python3]
