@@ -1,8 +1,9 @@
 """Defines pattern search pipeline based on ahocorasik."""
-from typing import Dict, Iterable, Iterator, Optional, Tuple, cast
+from typing import Callable, Dict, Iterable, Iterator, List, Optional, Tuple, cast
 
 import ahocorasick
 import spacy
+import textspan
 from spacy.tokens import Doc
 from spacy.util import filter_spans
 from typing_extensions import Literal
@@ -21,6 +22,7 @@ class PatternSearcher(SerializationMixin):
         "lemma",
         "lower",
         "cfg",
+        "normalizer",
     ]
 
     def __init__(
@@ -33,6 +35,7 @@ class PatternSearcher(SerializationMixin):
         custom_label_map: Optional[Dict[str, str]] = None,
         destructive: bool = False,
         lower: bool = False,
+        normalizer: Optional[Callable[[str], str]] = None,
         **cfg
     ):
         self.model = model
@@ -43,6 +46,7 @@ class PatternSearcher(SerializationMixin):
         self.destructive = destructive
         self.lower = lower
         self.cfg = cfg
+        self.normalizer = normalizer
 
         if custom_label:
             self.label_type = "custom_label"
@@ -104,13 +108,18 @@ class PatternSearcher(SerializationMixin):
         text = doc.text
         if self.lower:
             text = text.lower()
+        if self.normalizer:
+            text = self.normalizer(text)
         return text
 
     def __call__(self, doc: Doc) -> Doc:
         text = self._to_text(doc)
-        matches = self.get_char_spans(text)
+        _matches = list(self.get_char_spans(text))
+        matches = _modify_spans(_matches, text, doc.text)
         spans = []
         for i, j, text in matches:
+            if i is None or j is None:
+                continue
             span = get_doc_char_span(
                 doc, i, j, destructive=self.destructive, label=self.get_label(text)
             )
@@ -120,3 +129,14 @@ class PatternSearcher(SerializationMixin):
         ents = filter_spans(doc.ents + tuple(spans))
         doc.ents = tuple(ents)
         return doc
+
+
+def _modify_spans(
+    matches: List[Tuple[int, int, str]], text: str, original_text: str
+) -> Iterator[Tuple[Optional[int], Optional[int], str]]:
+    _spans = [(i, j) for i, j, _ in matches]
+    spans = (
+        (span[0][0], span[-1][1]) if len(span) > 0 else (None, None)
+        for span in textspan.align_spans(_spans, text, original_text)
+    )
+    yield from ((*span, text[2]) for span, text in zip(spans, matches))
