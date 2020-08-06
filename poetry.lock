@@ -801,6 +801,17 @@ python-versions = ">=3.5"
 version = "2.6.1"
 
 [[package]]
+category = "main"
+description = "Python module for JUMAN/KNP."
+name = "pyknp"
+optional = true
+python-versions = "*"
+version = "0.4.2"
+
+[package.dependencies]
+six = "*"
+
+[[package]]
 category = "dev"
 description = "python code static checker"
 name = "pylint"
@@ -1338,17 +1349,6 @@ version = "3.7.4.2"
 
 [[package]]
 category = "main"
-description = "Python module for JUMAN/KNP."
-name = "unofficial-pyknp"
-optional = true
-python-versions = "*"
-version = "0.4.2"
-
-[package.dependencies]
-six = "*"
-
-[[package]]
-category = "main"
 description = ""
 name = "unofficial-udify"
 optional = true
@@ -1435,14 +1435,14 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [extras]
-all = ["allennlp", "mojimoji", "unofficial-pyknp", "mecab-python3", "unofficial-udify"]
+all = ["allennlp", "mojimoji", "pyknp", "mecab-python3", "unofficial-udify"]
 allennlp = ["allennlp", "boto3"]
-juman = ["mojimoji", "unofficial-pyknp"]
+juman = ["mojimoji", "pyknp"]
 mecab = ["mecab-python3"]
 udify = ["allennlp", "unofficial-udify", "boto3"]
 
 [metadata]
-content-hash = "3da7c473914a3a250fb6fb31dc268fc91af9fc20aec59dce50ad6e1bf4b459fe"
+content-hash = "4f8334137d786655618a4ca7872477a059931a9d80ebd84ad83828bb7f05c37a"
 python-versions = ">=3.6.1"
 
 [metadata.files]
@@ -1917,6 +1917,9 @@ pygments = [
     {file = "Pygments-2.6.1-py2.py3-none-any.whl", hash = "sha256:aa931c0bd5daa25c475afadb2147115134cfe501f0656828cbe7cb566c7123bc"},
     {file = "Pygments-2.6.1.tar.gz", hash = "sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44"},
 ]
+pyknp = [
+    {file = "pyknp-0.4.2.zip", hash = "sha256:1714023c31c3834108c2e97a6c4c0202cdd17ab1f83bd839924b093490d279c3"},
+]
 pylint = [
     {file = "pylint-2.5.3-py3-none-any.whl", hash = "sha256:d0ece7d223fe422088b0e8f13fa0a1e8eb745ebffcb8ed53d3e95394b6101a1c"},
     {file = "pylint-2.5.3.tar.gz", hash = "sha256:7dd78437f2d8d019717dbf287772d0b2dbdfd13fc016aa7faa08d67bccc46adc"},
@@ -2242,10 +2245,6 @@ typing-extensions = [
     {file = "typing_extensions-3.7.4.2-py2-none-any.whl", hash = "sha256:f8d2bd89d25bc39dabe7d23df520442fa1d8969b82544370e03d88b5a591c392"},
     {file = "typing_extensions-3.7.4.2-py3-none-any.whl", hash = "sha256:6e95524d8a547a91e08f404ae485bbb71962de46967e1b71a0cb89af24e761c5"},
     {file = "typing_extensions-3.7.4.2.tar.gz", hash = "sha256:79ee589a3caca649a9bfd2a8de4709837400dfa00b6cc81962a1e6a1815969ae"},
-]
-unofficial-pyknp = [
-    {file = "unofficial-pyknp-0.4.2.tar.gz", hash = "sha256:897b40a54e7cc0062292f88c09a6558c930728a1aca3d3eb5141f6092437a9f7"},
-    {file = "unofficial_pyknp-0.4.2-py3-none-any.whl", hash = "sha256:3952053e1a971bb4b8b43c313635c7283282891b891b22253b174e92af046f8f"},
 ]
 unofficial-udify = [
     {file = "unofficial-udify-0.2.1.tar.gz", hash = "sha256:434d8558c455805e8708f0457d4803b9c7a68ecad86d9d4ed3887d7d6ee08e7e"},
