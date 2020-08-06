@@ -45,6 +45,7 @@ jobs:
     - name: Install dependencies
       run: | 
         poetry run pip install -U pip
+        poetry update
         poetry install
       if: steps.cache.outputs.cache-hit != true
 
