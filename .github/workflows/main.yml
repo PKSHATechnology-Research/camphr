@@ -43,7 +43,9 @@ jobs:
         poetry config virtualenvs.path ~/.virtualenvs
 
     - name: Install dependencies
-      run: poetry install
+      run: | 
+        poetry run pip install -U pip
+        poetry install
       if: steps.cache.outputs.cache-hit != true
 
     - run: poetry run mypy camphr
