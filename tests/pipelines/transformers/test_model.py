@@ -32,6 +32,10 @@ def test_forward(nlp, text):
     assert doc._.transformers_last_hidden_state is not None
 
 
+def test_pipe(nlp):
+    docs = list(nlp.pipe(TESTCASES))
+
+
 @pytest.mark.skip(
     reason="This test fails due to spacy's bug, and will success after the PR is merged: https://github.com/explosion/spaCy/pull/4925"
 )

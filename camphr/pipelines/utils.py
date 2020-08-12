@@ -194,6 +194,8 @@ def beamsearch(probs: torch.Tensor, k: int) -> torch.Tensor:
     assert len(probs.shape) == 2
     if len(probs) == 0:
         return torch.zeros(k, 0)
+    if k == 1:
+        return probs.argmax(-1)[None, :]
 
     # We calculate top k-th argmax of E = p0p1p2..pn-1.
     # To avoid over(under)flow, evaluete log(E) instead of E.
