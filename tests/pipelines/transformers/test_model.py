@@ -33,7 +33,7 @@ def test_forward(nlp, text):
 
 
 def test_pipe(nlp):
-    docs = list(nlp.pipe(TESTCASES))
+    list(nlp.pipe(TESTCASES))
 
 
 @pytest.mark.skip(
