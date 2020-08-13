@@ -50,11 +50,13 @@ def test_call(nlp, text, expected, target, lang):
     assert ents == expected
 
 
-def test_serialization(nlp, tmpdir):
+def test_serialization(nlp, tmpdir, lang):
+    text, expected, target = TESTCASES[0]
+    if lang != target:
+        pytest.skip(f"target lang is '{target}', but actual lang is {lang}")
     path = Path(tmpdir)
     nlp.to_disk(path)
     nlp = spacy.load(path)
-    text, expected, _ = TESTCASES[0]
     doc = nlp(text)
     ents = [span.text for span in doc.ents]
-    assert ents == expected
+    assert ents == expected, list(doc)
