@@ -133,10 +133,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = true
 python-versions = "*"
-version = "1.14.36"
+version = "1.14.41"
 
 [package.dependencies]
-botocore = ">=1.17.36,<1.18.0"
+botocore = ">=1.17.41,<1.18.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -146,7 +146,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = true
 python-versions = "*"
-version = "1.17.36"
+version = "1.17.41"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -367,7 +367,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.23.11"
+version = "5.24.2"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -814,7 +814,7 @@ description = "Python module for JUMAN/KNP."
 name = "pyknp"
 optional = true
 python-versions = "*"
-version = "0.4.2"
+version = "0.4.4"
 
 [package.dependencies]
 six = "*"
@@ -1076,7 +1076,7 @@ description = "Python documentation generator"
 name = "sphinx"
 optional = false
 python-versions = ">=3.5"
-version = "3.1.2"
+version = "3.2.0"
 
 [package.dependencies]
 Jinja2 = ">=2.3"
@@ -1426,6 +1426,7 @@ version = "1.12.1"
 [[package]]
 category = "main"
 description = "Backport of pathlib-compatible object wrapper for zip files"
+marker = "python_version < \"3.8\""
 name = "zipp"
 optional = false
 python-versions = ">=3.6"
@@ -1498,12 +1499,12 @@ blis = [
     {file = "blis-0.4.1.tar.gz", hash = "sha256:d69257d317e86f34a7f230a2fd1f021fd2a1b944137f40d8cdbb23bd334cd0c4"},
 ]
 boto3 = [
-    {file = "boto3-1.14.36-py2.py3-none-any.whl", hash = "sha256:84fec841e07c854177ed264283cf52e3e4ac06c37d4e2b371369a93881f869b7"},
-    {file = "boto3-1.14.36.tar.gz", hash = "sha256:ad9156f1c76ece440a4fc60116b13bd627aa8ae5ed7b7d0b0380e3021bf54bda"},
+    {file = "boto3-1.14.41-py2.py3-none-any.whl", hash = "sha256:e9a5efddf7492719ec3d4024e67170fc71a874125d37eb5211b242f23c242dac"},
+    {file = "boto3-1.14.41.tar.gz", hash = "sha256:26f76c7780470de54dfe816bcbeed57a05f53a0bec7c9ae9e8ad7b61ac4c74cc"},
 ]
 botocore = [
-    {file = "botocore-1.17.36-py2.py3-none-any.whl", hash = "sha256:7740b12a9a32e78ee32c31dd6882e70c7469259cddf7b2c1f41eabf7eacece6b"},
-    {file = "botocore-1.17.36.tar.gz", hash = "sha256:1132a09abb84018081e9ad74bf7aba3cc8f776c576db7ec52bf72dee40a7a962"},
+    {file = "botocore-1.17.41-py2.py3-none-any.whl", hash = "sha256:329ca6d6d5e91e97569ecd7f328cd3d627e918ce0703943f93d0b9de6af9aab2"},
+    {file = "botocore-1.17.41.tar.gz", hash = "sha256:519fcccf9c41634d2aba9dc769b0ac6aa14034f20a60882b0e098ae2e07cab55"},
 ]
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
@@ -1622,8 +1623,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.23.11-py3-none-any.whl", hash = "sha256:c0ed9cbbba273fb4ff4148ff539b73b52d5b6422b1bb86a7901f8cbb43f49db3"},
-    {file = "hypothesis-5.23.11.tar.gz", hash = "sha256:69882d263175bd4731200c35c1bdfdc0a6c1af08a85672cdc51af26b18e3cac7"},
+    {file = "hypothesis-5.24.2-py3-none-any.whl", hash = "sha256:13cdb53377a68da9d863a5f3ee14d1fa7dd70172a5c6dc2008ea1ce8e9beb7e9"},
+    {file = "hypothesis-5.24.2.tar.gz", hash = "sha256:abf041341b7da81666dce36c2741e0f53d8a34ee68a17c85fb099bc6759fde16"},
 ]
 identify = [
     {file = "identify-1.4.25-py2.py3-none-any.whl", hash = "sha256:ccd88716b890ecbe10920659450a635d2d25de499b9a638525a48b48261d989b"},
@@ -1735,12 +1736,38 @@ mccabe = [
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
 ]
 mecab-python3 = [
+    {file = "mecab-python3-1.0.1.tar.gz", hash = "sha256:d56d27e4d30be72cff7a2436dbc9de99b8cb590954a26dcbd1326c345de78608"},
+    {file = "mecab_python3-1.0.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:731a6e11d0971b42e9d45f62fa9e08a543824802981d3504c4a9983eed3e96a5"},
+    {file = "mecab_python3-1.0.1-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:1942c884a374d1e334ec2a6f30cc16a4fd68ea328227bc8deab909ee76e9781c"},
+    {file = "mecab_python3-1.0.1-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:bb7b8ae3b3269fea3f843321f9d770046662f6164a4797bcc9db8c03b5e2b2af"},
     {file = "mecab_python3-1.0.1-cp27-cp27m-manylinux2010_i686.whl", hash = "sha256:29fea64fa7a1c47f8bffa52a2517230c06c32a3494164a3550e67be2ced668bb"},
+    {file = "mecab_python3-1.0.1-cp27-cp27m-manylinux2010_x86_64.whl", hash = "sha256:2b0b0f8dc5ecae28084210ed5f1fe7b5cbe6e40ca3b4a2689d668e3e521d62d0"},
+    {file = "mecab_python3-1.0.1-cp27-cp27mu-manylinux1_i686.whl", hash = "sha256:46f4cfa3be37c07f0583baccfa5116aab3fda297fb38f2134841686d15915515"},
+    {file = "mecab_python3-1.0.1-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:a8b9cccb8dcee6196c66eec9d4bbfe2ae6acf7bf7146908597fe1e04e41ef228"},
+    {file = "mecab_python3-1.0.1-cp27-cp27mu-manylinux2010_i686.whl", hash = "sha256:466bf2ff6a185f26aa8cab0479f65ca5d214d328766af21c5d996c2b445124a1"},
     {file = "mecab_python3-1.0.1-cp27-cp27mu-manylinux2010_x86_64.whl", hash = "sha256:a24133836219e3ca321f3d5621a0aa2ff385ac430e5485dff8f789f1df4f2a5f"},
+    {file = "mecab_python3-1.0.1-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:0817d06254a86da9d6fea3e483f0163e87b45abafaa2039ce93ce6b81cee2bef"},
+    {file = "mecab_python3-1.0.1-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:37c40c443a54ebb8a2a73a2cd08d447f4689bd13eefba8557a5041c43a687683"},
+    {file = "mecab_python3-1.0.1-cp35-cp35m-manylinux2010_i686.whl", hash = "sha256:2745a712fcf879f75e4f938fc906958ca8408d1b971e7ae9e5735a85f16eee5a"},
+    {file = "mecab_python3-1.0.1-cp35-cp35m-manylinux2010_x86_64.whl", hash = "sha256:a115c89232eb1bd9d68f2c67185fd36b1360d6d262cbcc80d0313eb04b9021df"},
     {file = "mecab_python3-1.0.1-cp35-cp35m-win_amd64.whl", hash = "sha256:63d1e2fd60d12b0d54defa5be9973d5aa253d1c65527bdb7437c8c0110202f77"},
+    {file = "mecab_python3-1.0.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:cbb28289a7f314ef25430a252e0a49033f74b9ebd0e229159972d91759e7be8e"},
+    {file = "mecab_python3-1.0.1-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:4a174ef891786df9401b3b72d8ddf5ff126d569ab8c81839deaab576630e82ad"},
+    {file = "mecab_python3-1.0.1-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:086bb7ecc3ac2aa64e11297d8a6919a31deb02e081c8b53d8db3afd77934bd39"},
     {file = "mecab_python3-1.0.1-cp36-cp36m-manylinux2010_i686.whl", hash = "sha256:2a176d769b9060df7a7db5af5ae4b580a69c523ed732b2958a560be7e66181e9"},
+    {file = "mecab_python3-1.0.1-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:1fefff295d47987dde0192533470d3adaa1eb46cfb9b6861c1f36cc475f9c463"},
     {file = "mecab_python3-1.0.1-cp36-cp36m-win_amd64.whl", hash = "sha256:69aaadd795dd67ef0a192e08a87d515b86ec0aedaa6b902246d411e63dbd51ff"},
+    {file = "mecab_python3-1.0.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:3fd30ceaef9d087b96065067b8ce5070efd65c240f073e8704056e2bda1cf8bb"},
+    {file = "mecab_python3-1.0.1-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:6e9f3eea821b04a57e5509791e01012511b9ebd62510e36d8c87ba36facda366"},
+    {file = "mecab_python3-1.0.1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:aad42c0c2d6496ce16e04e1fd65a9f0847706bd7928e37c1ea68db5c47911622"},
+    {file = "mecab_python3-1.0.1-cp37-cp37m-manylinux2010_i686.whl", hash = "sha256:2650f86d86f6df8b7b6428aea38d0a353f5bb2e8758be3f6eba2d21314bb903d"},
+    {file = "mecab_python3-1.0.1-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:6bdeff06758472af4990dfa2c0fce181e9badf1db7242bd6a43d23ee8f49c27c"},
     {file = "mecab_python3-1.0.1-cp37-cp37m-win_amd64.whl", hash = "sha256:139b673a5f08a33ca52d333fd0959ac41035dd9c328d8024160a7afd58ffa7d6"},
+    {file = "mecab_python3-1.0.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:47a230de0ece95fa56e7920915aa45a6e1256d11d619906f020ec31ce0ac620e"},
+    {file = "mecab_python3-1.0.1-cp38-cp38-manylinux1_i686.whl", hash = "sha256:5dbbb1ba289258cc9af8dd381db83843eb17852f7d9ec85a9aa6ef8d91d81f2d"},
+    {file = "mecab_python3-1.0.1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:efdf4c3754b368a5f2524df18152db44d930d367ed58a757f026d196b22c883f"},
+    {file = "mecab_python3-1.0.1-cp38-cp38-manylinux2010_i686.whl", hash = "sha256:88780b2b358296eb0ec3b2f2d2433ebcaf74d4a9ccfe9303ff541d5890eed5b9"},
+    {file = "mecab_python3-1.0.1-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:0675037dcf9f143e725326f21659c439c07e46d1e9d2c2aad698f95778d3f5d2"},
     {file = "mecab_python3-1.0.1-cp38-cp38-win_amd64.whl", hash = "sha256:6c54047963764c9433cbd149931ea6308a1a871d60c2a44d20fecb5e4f4a27fe"},
 ]
 mojimoji = [
@@ -1919,11 +1946,11 @@ pyflakes = [
     {file = "pyflakes-2.2.0.tar.gz", hash = "sha256:35b2d75ee967ea93b55750aa9edbbf72813e06a66ba54438df2cfac9e3c27fc8"},
 ]
 pygments = [
-    {file = "Pygments-2.6.1-py2.py3-none-any.whl", hash = "sha256:aa931c0bd5daa25c475afadb2147115134cfe501f0656828cbe7cb566c7123bc"},
+    {file = "Pygments-2.6.1-py3-none-any.whl", hash = "sha256:ff7a40b4860b727ab48fad6360eb351cc1b33cbf9b15a0f689ca5353e9463324"},
     {file = "Pygments-2.6.1.tar.gz", hash = "sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44"},
 ]
 pyknp = [
-    {file = "pyknp-0.4.2.zip", hash = "sha256:1714023c31c3834108c2e97a6c4c0202cdd17ab1f83bd839924b093490d279c3"},
+    {file = "pyknp-0.4.4.zip", hash = "sha256:b550fb8eca2b349ac35ca39635723bf070cf3bead919ddcccda82ae4e4e1f369"},
 ]
 pylint = [
     {file = "pylint-2.5.3-py3-none-any.whl", hash = "sha256:d0ece7d223fe422088b0e8f13fa0a1e8eb745ebffcb8ed53d3e95394b6101a1c"},
@@ -2109,8 +2136,8 @@ spacy = [
     {file = "spacy-2.2.4.tar.gz", hash = "sha256:f0f3a67c5841e6e35d62c98f40ebb3d132587d3aba4f4dccac5056c4e90ff5b9"},
 ]
 sphinx = [
-    {file = "Sphinx-3.1.2-py3-none-any.whl", hash = "sha256:97dbf2e31fc5684bb805104b8ad34434ed70e6c588f6896991b2fdfd2bef8c00"},
-    {file = "Sphinx-3.1.2.tar.gz", hash = "sha256:b9daeb9b39aa1ffefc2809b43604109825300300b987a24f45976c001ba1a8fd"},
+    {file = "Sphinx-3.2.0-py3-none-any.whl", hash = "sha256:f7db5b76c42c8b5ef31853c2de7178ef378b985d7793829ec071e120dac1d0ca"},
+    {file = "Sphinx-3.2.0.tar.gz", hash = "sha256:cf2d5bc3c6c930ab0a1fbef3ad8a82994b1bf4ae923f8098a05c7e5516f07177"},
 ]
 sphinxcontrib-applehelp = [
     {file = "sphinxcontrib-applehelp-1.0.2.tar.gz", hash = "sha256:a072735ec80e7675e3f432fcae8610ecf509c5f1869d17e2eecff44389cdbc58"},
