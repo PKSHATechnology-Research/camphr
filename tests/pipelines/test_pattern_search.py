@@ -23,7 +23,7 @@ def nlp(lang):
     _nlp = spacy.blank(lang)
     pipe = PatternSearcher.from_words(
         KEYWORDS,
-        destructive=True,
+        destructive=False,
         lower=True,
         lemma=True,
         normalizer=lambda x: re.sub(r"\W", "", x),
@@ -36,7 +36,8 @@ TESTCASES = [
     ("今日はいい天気だ", ["今日", "は"], "ja_mecab"),
     ("Mice is a plural form of mouse", ["mouse"], "en"),
     ("foo-bar", ["foo-bar"], "en"),
-    ("たくさん走った", ["走"], "ja_mecab"),
+    ("たくさん走った", ["走っ"], "ja_mecab"),
+    ("走れ", ["走れ"], "ja_mecab"),
 ]
 
 

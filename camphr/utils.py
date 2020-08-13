@@ -56,8 +56,8 @@ def token_from_char_pos(doc: Doc, i: int) -> Token:
 
 def _get_covering_span(doc: Doc, i: int, j: int) -> Span:
     token_idxs = [t.idx for t in doc]
-    i = doc[bisect.bisect(token_idxs, i) - 1].i
-    j = doc[bisect.bisect_left(token_idxs, j)].i
+    i = bisect.bisect(token_idxs, i) - 1
+    j = bisect.bisect_left(token_idxs, j)
     return doc[i:j]
 
 
