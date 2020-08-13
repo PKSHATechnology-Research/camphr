@@ -31,5 +31,5 @@ jobs:
         git config --global user.name "Github Action"
         git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
         git add .
-        git commit -m "Update Changelog"
-        git push github HEAD:${GITHUB_REF}
+        git commit -m "Update Changelog" && "nothing new to commit"
+        git push github HEAD:${GITHUB_REF} && "nothing new to push"
