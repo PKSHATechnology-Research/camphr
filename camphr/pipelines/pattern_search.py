@@ -1,10 +1,21 @@
 """Defines pattern search pipeline based on ahocorasik."""
-from typing import Callable, Dict, Iterable, Iterator, List, Optional, Tuple, cast
+from typing import (
+    Callable,
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    Optional,
+    Tuple,
+    Union,
+    cast,
+)
 
 import ahocorasick
 import spacy
 import textspan
 from spacy.tokens import Doc
+from spacy.tokens.span import Span
 from spacy.util import filter_spans
 from typing_extensions import Literal
 
@@ -106,7 +117,7 @@ class PatternSearcher(SerializationMixin):
             i = j - len(word) + 1
             yield i, j + 1, word
 
-    def _to_text(self, doc: Doc) -> str:
+    def _to_text(self, doc: Union[Doc, Span]) -> str:
         if self.lemma:
             text = _to_lemma_text(doc)
         else:
@@ -133,7 +144,7 @@ class PatternSearcher(SerializationMixin):
                 covering=not self.destructive,
                 label=self.get_label(text),
             )
-            if span:
+            if span and self._to_text(span) == text:
                 spans.append(span)
         [s.text for s in spans]  # TODO: resolve the evaluation bug and remove this line
         ents = filter_spans(doc.ents + tuple(spans))
@@ -141,7 +152,7 @@ class PatternSearcher(SerializationMixin):
         return doc
 
 
-def _to_lemma_text(doc: Doc) -> str:
+def _to_lemma_text(doc: Union[Doc, Span]) -> str:
     ret = ""
     for token in doc:
         ret += token.lemma_
