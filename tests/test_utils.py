@@ -42,10 +42,16 @@ def test_split_keepsep(text, sep, expected):
 
 
 @pytest.mark.parametrize(
-    "tokens,i,j,expected",
-    [(["Foo", "bar", "baz"], 0, 2, "Fo"), (["Foo", "bar", "baz"], 0, 5, "Foo b")],
+    "tokens,i,j,destructive,covering,expected",
+    [
+        (["Foo", "bar", "baz"], 0, 2, True, False, "Fo"),
+        (["Foo", "bar", "baz"], 0, 5, True, False, "Foo b"),
+        (["Foo", "bar", "baz"], 0, 5, False, True, "Foo bar"),
+        (["Foo", "bar", "baz"], 0, 3, False, True, "Foo"),
+        (["Foo", "bar", "baz"], 1, 5, False, True, "Foo bar"),
+    ],
 )
-def test_get_doc_char_span(vocab, tokens, i, j, expected):
+def test_get_doc_char_span(vocab, tokens, i, j, destructive, covering, expected):
     doc = Doc(vocab, tokens)
-    span = get_doc_char_span(doc, i, j)
+    span = get_doc_char_span(doc, i, j, destructive=destructive, covering=covering)
     assert span.text == expected

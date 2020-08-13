@@ -8,7 +8,7 @@ from spacy.tokens import Doc
 from camphr.pipelines.pattern_search import PatternSearcher
 from tests.utils import check_mecab
 
-KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar"]
+KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar", "走る"]
 
 
 @pytest.fixture(scope="module", params=["en", "ja_mecab"])
@@ -36,6 +36,7 @@ TESTCASES = [
     ("今日はいい天気だ", ["今日", "は"], "ja_mecab"),
     ("Mice is a plural form of mouse", ["mouse"], "en"),
     ("foo-bar", ["foo-bar"], "en"),
+    ("たくさん走った", ["走"], "ja_mecab"),
 ]
 
 
