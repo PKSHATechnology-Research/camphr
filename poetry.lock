@@ -133,10 +133,10 @@ description = "The AWS SDK for Python"
 name = "boto3"
 optional = true
 python-versions = "*"
-version = "1.14.40"
+version = "1.14.41"
 
 [package.dependencies]
-botocore = ">=1.17.40,<1.18.0"
+botocore = ">=1.17.41,<1.18.0"
 jmespath = ">=0.7.1,<1.0.0"
 s3transfer = ">=0.3.0,<0.4.0"
 
@@ -146,7 +146,7 @@ description = "Low-level, data-driven core of boto 3."
 name = "botocore"
 optional = true
 python-versions = "*"
-version = "1.17.40"
+version = "1.17.41"
 
 [package.dependencies]
 docutils = ">=0.10,<0.16"
@@ -367,7 +367,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.23.12"
+version = "5.24.2"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -806,7 +806,7 @@ description = "Python module for JUMAN/KNP."
 name = "pyknp"
 optional = true
 python-versions = "*"
-version = "0.4.2"
+version = "0.4.4"
 
 [package.dependencies]
 six = "*"
@@ -866,7 +866,7 @@ description = ""
 name = "pytextspan"
 optional = false
 python-versions = "*"
-version = "0.2.2"
+version = "0.3.0"
 
 [[package]]
 category = "main"
@@ -1497,12 +1497,12 @@ blis = [
     {file = "blis-0.4.1.tar.gz", hash = "sha256:d69257d317e86f34a7f230a2fd1f021fd2a1b944137f40d8cdbb23bd334cd0c4"},
 ]
 boto3 = [
-    {file = "boto3-1.14.40-py2.py3-none-any.whl", hash = "sha256:a88d486dcbc80c3e180d811707b366f7b178cf293e0746ae3c00c24a07deac92"},
-    {file = "boto3-1.14.40.tar.gz", hash = "sha256:c9cab4e0ce77a8c54724eadff047adc976e541f912ca15e35bb475f42b344e0c"},
+    {file = "boto3-1.14.41-py2.py3-none-any.whl", hash = "sha256:e9a5efddf7492719ec3d4024e67170fc71a874125d37eb5211b242f23c242dac"},
+    {file = "boto3-1.14.41.tar.gz", hash = "sha256:26f76c7780470de54dfe816bcbeed57a05f53a0bec7c9ae9e8ad7b61ac4c74cc"},
 ]
 botocore = [
-    {file = "botocore-1.17.40-py2.py3-none-any.whl", hash = "sha256:c3fad73aefabc89c918687a0f207772925530017ce1ca58e2a47b459a1060cb0"},
-    {file = "botocore-1.17.40.tar.gz", hash = "sha256:feb71e0d2e73fed3c35f1ebfc6b9ff6e499dc9c66db60b63c787fffea3b360a5"},
+    {file = "botocore-1.17.41-py2.py3-none-any.whl", hash = "sha256:329ca6d6d5e91e97569ecd7f328cd3d627e918ce0703943f93d0b9de6af9aab2"},
+    {file = "botocore-1.17.41.tar.gz", hash = "sha256:519fcccf9c41634d2aba9dc769b0ac6aa14034f20a60882b0e098ae2e07cab55"},
 ]
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
@@ -1621,8 +1621,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.23.12-py3-none-any.whl", hash = "sha256:f4a7e640ed777c5c73de18ea0bf8ff0b3c334a39c90145ae87331cb4082c1969"},
-    {file = "hypothesis-5.23.12.tar.gz", hash = "sha256:b4e9f31ead2fcf22c534f5788174af5bea2c2e5766ac33ca2929041b266981b5"},
+    {file = "hypothesis-5.24.2-py3-none-any.whl", hash = "sha256:13cdb53377a68da9d863a5f3ee14d1fa7dd70172a5c6dc2008ea1ce8e9beb7e9"},
+    {file = "hypothesis-5.24.2.tar.gz", hash = "sha256:abf041341b7da81666dce36c2741e0f53d8a34ee68a17c85fb099bc6759fde16"},
 ]
 identify = [
     {file = "identify-1.4.25-py2.py3-none-any.whl", hash = "sha256:ccd88716b890ecbe10920659450a635d2d25de499b9a638525a48b48261d989b"},
@@ -1944,7 +1944,7 @@ pygments = [
     {file = "Pygments-2.6.1.tar.gz", hash = "sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44"},
 ]
 pyknp = [
-    {file = "pyknp-0.4.2.zip", hash = "sha256:1714023c31c3834108c2e97a6c4c0202cdd17ab1f83bd839924b093490d279c3"},
+    {file = "pyknp-0.4.4.zip", hash = "sha256:b550fb8eca2b349ac35ca39635723bf070cf3bead919ddcccda82ae4e4e1f369"},
 ]
 pylint = [
     {file = "pylint-2.5.3-py3-none-any.whl", hash = "sha256:d0ece7d223fe422088b0e8f13fa0a1e8eb745ebffcb8ed53d3e95394b6101a1c"},
@@ -1959,16 +1959,16 @@ pytest = [
     {file = "pytest-5.4.3.tar.gz", hash = "sha256:7979331bfcba207414f5e1263b5a0f8f521d0f457318836a7355531ed1a4c7d8"},
 ]
 pytextspan = [
-    {file = "pytextspan-0.2.2-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:babbb1f9b5607f17e22a23141da107a99a91b98bb35f2287c19f0433b40266e0"},
-    {file = "pytextspan-0.2.2-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:7d0509a62de44793fa1cb8b7a46dadff87e2646b1ec96de0c3dbb45108147103"},
-    {file = "pytextspan-0.2.2-cp36-none-win_amd64.whl", hash = "sha256:cd3a0d2df2650ecb8e964243057f3d9c42854e42d92c08bc0ae2de06e854c0ad"},
-    {file = "pytextspan-0.2.2-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:2bb20fe30b6e5f58c4613907b55b331805206330e6212517fde453bad00ac88a"},
-    {file = "pytextspan-0.2.2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:c4e8556f1c877348a42714baa861891d69165c315ef8e6bc01f8f494aef8b4ad"},
-    {file = "pytextspan-0.2.2-cp37-none-win_amd64.whl", hash = "sha256:6d31125303114cd72667adc67d9cd77b326afb3cc69ca0f40143a98be891e3b3"},
-    {file = "pytextspan-0.2.2-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:f5537446302e6c26420aaa125af73e296b5e11e64fc86559922007798ab9a50e"},
-    {file = "pytextspan-0.2.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:63fca5a135df709f1dfc0f5d4c78fbaeba34a001a43572bab6a6ca2c8b147e72"},
-    {file = "pytextspan-0.2.2-cp38-none-win_amd64.whl", hash = "sha256:a4e979f59b9e1da321343c466af423f217f5fc5f92f208ecf40e585113772c82"},
-    {file = "pytextspan-0.2.2.tar.gz", hash = "sha256:1a02b0fb4f1b9af4ec95f3ae3fde92ff604617fb0eec51d7b9ade45888f89281"},
+    {file = "pytextspan-0.3.0-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:fc9770d5ca333e6c4a3422d3427d4ad05d490f748d5757fe99b8c94842686376"},
+    {file = "pytextspan-0.3.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:b138a65c9d20051df4a570799d3b4d0aa512f5182701c6ab3384a8678e5f8957"},
+    {file = "pytextspan-0.3.0-cp36-none-win_amd64.whl", hash = "sha256:5326c9c08827bce850885d2e25bac556e1f4ddd366e38b37bade2c3cecef645c"},
+    {file = "pytextspan-0.3.0-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:67c88d502e41bf81011850ed2e6fcb9addbe2e52d3480dc7dbd578fdbafffee8"},
+    {file = "pytextspan-0.3.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:03f1aa04f46bd55039052230ad7c5efcfa71c5ec075a57b77efe6dadadfcdd97"},
+    {file = "pytextspan-0.3.0-cp37-none-win_amd64.whl", hash = "sha256:a34d9ca82ad72a43dc660cb1b313b0c5c1cfdb845b04b2d7235a8a9ad3683213"},
+    {file = "pytextspan-0.3.0-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:97c5403e28af5882615a037a6142e22c23e7e47522f05ea94d731efe6fd70a1d"},
+    {file = "pytextspan-0.3.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:4363b0380d34f953245563a7ac71f3e8a1869ba52b22818bbc83aacea4c90baf"},
+    {file = "pytextspan-0.3.0-cp38-none-win_amd64.whl", hash = "sha256:5c42f794417a691ce800c96426e874dfa2024e292e1fb0474077ffdedf14cbe6"},
+    {file = "pytextspan-0.3.0.tar.gz", hash = "sha256:5b392cbc3cdb46aa10a836e1b9e338fab5ebcac2a09194c9b562832dfe32268e"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
