@@ -54,6 +54,13 @@ def token_from_char_pos(doc: Doc, i: int) -> Token:
     return doc[bisect.bisect(token_idxs, i) - 1]
 
 
+def _get_covering_span(doc: Doc, i: int, j: int) -> Span:
+    token_idxs = [t.idx for t in doc]
+    i = doc[bisect.bisect(token_idxs, i) - 1].i
+    j = doc[bisect.bisect_left(token_idxs, j)].i
+    return doc[i:j]
+
+
 def destruct_token(doc: Doc, *char_pos: int) -> Doc:
     for i in char_pos:
         with doc.retokenize() as retokenizer:
@@ -64,7 +71,7 @@ def destruct_token(doc: Doc, *char_pos: int) -> Doc:
 
 
 def get_doc_char_span(
-    doc: Doc, i: int, j: int, destructive: bool = True, **kwargs
+    doc: Doc, i: int, j: int, destructive: bool = True, covering: bool = False, **kwargs
 ) -> Optional[Span]:
     """Get Span from Doc with char position, similar to doc.char_span.
 
@@ -72,9 +79,12 @@ def get_doc_char_span(
         i: The index of the first character of the span
         j: The index of the first character after the span
         destructive: If True, tokens in [i,j) will be splitted and make sure to return span.
+        covering: If True, [i,j) will be adjusted to match the existing token boundaries. It precedes `destructive`.
         kwargs: passed to Doc.char_span
     """
     span = doc.char_span(i, j, **kwargs)
+    if not span and covering:
+        span = _get_covering_span(doc, i, j)
     if not span and destructive:
         destruct_token(doc, i, j)
         span = doc.char_span(i, j, **kwargs)

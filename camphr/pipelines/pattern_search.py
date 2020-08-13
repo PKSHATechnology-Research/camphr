@@ -36,6 +36,7 @@ class PatternSearcher(SerializationMixin):
         destructive: bool = False,
         lower: bool = False,
         normalizer: Optional[Callable[[str], str]] = None,
+        lemma: bool = False,
         **cfg
     ):
         self.model = model
@@ -47,6 +48,7 @@ class PatternSearcher(SerializationMixin):
         self.lower = lower
         self.cfg = cfg
         self.normalizer = normalizer
+        self.lemma = lemma
 
         if custom_label:
             self.label_type = "custom_label"
@@ -105,7 +107,10 @@ class PatternSearcher(SerializationMixin):
             yield i, j + 1, word
 
     def _to_text(self, doc: Doc) -> str:
-        text = doc.text
+        if self.lemma:
+            text = _to_lemma_text(doc)
+        else:
+            text = doc.text
         if self.lower:
             text = text.lower()
         if self.normalizer:
@@ -121,7 +126,12 @@ class PatternSearcher(SerializationMixin):
             if i is None or j is None:
                 continue
             span = get_doc_char_span(
-                doc, i, j, destructive=self.destructive, label=self.get_label(text)
+                doc,
+                i,
+                j,
+                destructive=self.destructive,
+                covering=not self.destructive,
+                label=self.get_label(text),
             )
             if span:
                 spans.append(span)
@@ -129,6 +139,14 @@ class PatternSearcher(SerializationMixin):
         ents = filter_spans(doc.ents + tuple(spans))
         doc.ents = tuple(ents)
         return doc
+
+
+def _to_lemma_text(doc: Doc) -> str:
+    ret = ""
+    for token in doc:
+        ret += token.lemma_
+        ret += token.whitespace_
+    return ret
 
 
 def _modify_spans(
