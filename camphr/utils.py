@@ -54,11 +54,11 @@ def token_from_char_pos(doc: Doc, i: int) -> Token:
     return doc[bisect.bisect(token_idxs, i) - 1]
 
 
-def _get_covering_span(doc: Doc, i: int, j: int) -> Span:
+def _get_covering_span(doc: Doc, i: int, j: int, **kwargs) -> Span:
     token_idxs = [t.idx for t in doc]
     i = bisect.bisect(token_idxs, i) - 1
     j = bisect.bisect_left(token_idxs, j)
-    return doc[i:j]
+    return Span(doc, i, j, **kwargs)
 
 
 def destruct_token(doc: Doc, *char_pos: int) -> Doc:
@@ -84,7 +84,7 @@ def get_doc_char_span(
     """
     span = doc.char_span(i, j, **kwargs)
     if not span and covering:
-        span = _get_covering_span(doc, i, j)
+        span = _get_covering_span(doc, i, j, **kwargs)
     if not span and destructive:
         destruct_token(doc, i, j)
         span = doc.char_span(i, j, **kwargs)
