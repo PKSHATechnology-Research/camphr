@@ -23,7 +23,7 @@ def nlp(lang):
     _nlp = spacy.blank(lang)
     pipe = PatternSearcher.from_words(
         KEYWORDS,
-        destructive=True,
+        destructive=False,
         lower=True,
         lemma=True,
         normalizer=lambda x: re.sub(r"\W", "", x),
@@ -36,7 +36,8 @@ TESTCASES = [
     ("今日はいい天気だ", ["今日", "は"], "ja_mecab"),
     ("Mice is a plural form of mouse", ["mouse"], "en"),
     ("foo-bar", ["foo-bar"], "en"),
-    ("たくさん走った", ["走"], "ja_mecab"),
+    ("たくさん走った", ["走っ"], "ja_mecab"),
+    ("走れ", ["走れ"], "ja_mecab"),
 ]
 
 
@@ -49,11 +50,13 @@ def test_call(nlp, text, expected, target, lang):
     assert ents == expected
 
 
-def test_serialization(nlp, tmpdir):
+def test_serialization(nlp, tmpdir, lang):
+    text, expected, target = TESTCASES[0]
+    if lang != target:
+        pytest.skip(f"target lang is '{target}', but actual lang is {lang}")
     path = Path(tmpdir)
     nlp.to_disk(path)
     nlp = spacy.load(path)
-    text, expected, _ = TESTCASES[0]
     doc = nlp(text)
     ents = [span.text for span in doc.ents]
-    assert ents == expected
+    assert ents == expected, list(doc)
