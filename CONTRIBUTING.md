@@ -14,24 +14,6 @@ $ pre-commit install
 $ poetry run pytest tests
 ```
 
-### Test Udify and Elmo
-
-Udify and Elmo are [extras dependencies](https://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies), and testing them requires model parameters.
-
-Udify:
-
-```bash
-$ poetry install -E udify
-$ poetry run python scripts/download_model.py en_udify
-```
-
-Elmo:
-
-```bash
-$ poetry install -E udify
-$ poetry run python scripts/download_model.py en_elmo_medium
-```
-
 ### Test MeCab, KNP (Japanese pipeline)
 
 For testing MeCab or KNP, you need to install `mecab` or `knp` in your system respectively.

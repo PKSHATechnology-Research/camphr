@@ -10,17 +10,3 @@ services:
             dockerfile: dockerfiles/juman/Dockerfile
             context: .
         command: poetry run pytest tests
-    udify:
-        build: 
-            dockerfile: dockerfiles/udify/Dockerfile 
-            context: .
-        volumes: 
-            - .:/app
-        command: pytest tests -k udify --runslow -rs
-    elmo:
-        build: 
-            dockerfile: dockerfiles/elmo/Dockerfile 
-            context: .
-        volumes: 
-            - .:/app
-        command: pytest tests -k elmo --runslow -rs
