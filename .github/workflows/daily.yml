@@ -12,7 +12,7 @@ jobs:
       matrix:
         python-version: [3.6, 3.7]
         os: [ubuntu-latest, macos-latest]
-        extras: [udify, elmo, none]
+        extras: [none]
     steps:
     - uses: actions/checkout@v2
     - name: Checkout submodules
@@ -32,14 +32,6 @@ jobs:
       run: |
         poetry update
         poetry install
-    - name: Install udify
-      run: |
-        poetry run python scripts/download_model.py en_udify
-        poetry install -E udify
-    - name: Install elmo
-      run: |
-        poetry run python scripts/download_model.py en_elmo_medium
-        poetry install -E allennlp
     - run: poetry run mypy camphr
     - run: poetry run flake8
     - name: Run pytest
