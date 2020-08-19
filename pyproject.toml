@@ -7,7 +7,7 @@ files = [ "camphr/VERSION.py",]
 commit = true
 
 [tool.poetry]
-version = "0.6.5"
+version = "0.7.0-rc0"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
@@ -15,7 +15,7 @@ readme = "README.md"
 license = "Apache-2.0"
 homepage = "https://github.com/PKSHATechnology-Research/camphr"
 repository = "https://github.com/PKSHATechnology-Research/camphr"
-keywords = [ "spaCy", "nlp", "natural language processing", "transformers"]
+keywords = [ "spaCy", "nlp", "natural language processing", "transformers",]
 
 [tool.isort]
 skip = ".venv/**/*.py"
@@ -43,7 +43,7 @@ toolz = "^0.10.0"
 spacy = ">=2.2,<2.4"
 
 [tool.poetry.extras]
-all = [ "mojimoji", "pyknp", "mecab-python3"]
+all = [ "mojimoji", "pyknp", "mecab-python3",]
 juman = [ "mojimoji", "pyknp",]
 mecab = [ "mecab-python3",]
 
@@ -87,7 +87,6 @@ ja_juman = "camphr.lang.juman:Japanese"
 ja_mecab = "camphr.lang.mecab:Japanese"
 sentencepiece = "camphr.lang.sentencepiece:SentencePieceLang"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
-
 
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
