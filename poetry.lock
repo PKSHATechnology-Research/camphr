@@ -661,7 +661,7 @@ description = "Python module for JUMAN/KNP."
 name = "pyknp"
 optional = true
 python-versions = "*"
-version = "0.4.4"
+version = "0.4.5"
 
 [package.dependencies]
 six = "*"
@@ -1665,7 +1665,7 @@ pygments = [
     {file = "Pygments-2.6.1.tar.gz", hash = "sha256:647344a061c249a3b74e230c739f434d7ea4d8b1d5f3721bc0f3558049b38f44"},
 ]
 pyknp = [
-    {file = "pyknp-0.4.4.zip", hash = "sha256:b550fb8eca2b349ac35ca39635723bf070cf3bead919ddcccda82ae4e4e1f369"},
+    {file = "pyknp-0.4.5.zip", hash = "sha256:5fcc053b5a891013897fc516a9a12b539d99507b4d07b7e2e1262e7e804a8345"},
 ]
 pylint = [
     {file = "pylint-2.5.3-py3-none-any.whl", hash = "sha256:d0ece7d223fe422088b0e8f13fa0a1e8eb745ebffcb8ed53d3e95394b6101a1c"},
