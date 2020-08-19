@@ -10,6 +10,7 @@ class Token:
     tag: int
     lemma_: str
     whitespace_: str
+    is_space: bool
     pos_: str
     pos: int
     doc: Doc
@@ -29,6 +30,7 @@ class Token:
     @classmethod
     def set_extension(cls, name: str, **kwargs) -> None:
         ...
+
     def __len__(self) -> int:
         ...
 
