@@ -13,9 +13,9 @@ authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
 readme = "README.md"
 license = "Apache-2.0"
-homepage = ""
+homepage = "https://github.com/PKSHATechnology-Research/camphr"
 repository = "https://github.com/PKSHATechnology-Research/camphr"
-keywords = [ "spaCy", "nlp", "natural language processing", "transformers", "udify",]
+keywords = [ "spaCy", "nlp", "natural language processing", "transformers"]
 
 [tool.isort]
 skip = ".venv/**/*.py"
@@ -36,16 +36,14 @@ transformers = "^2.10"
 torch = "^1.0"
 pytokenizations = ">=0.4.8,<0.7"
 pytextspan = ">=0.2.2,<0.4"
-spacy = "^2.2.3"
 hydra-core = "^0.11.3"
 hydra_colorlog = "^0.1.4"
 dataclasses = "^0.6"
 toolz = "^0.10.0"
+spacy = ">=2.2,<2.4"
 
 [tool.poetry.extras]
-all = [ "allennlp", "mojimoji", "pyknp", "mecab-python3", "unofficial-udify",]
-allennlp = [ "allennlp", "boto3",]
-udify = [ "allennlp", "unofficial-udify", "boto3",]
+all = [ "mojimoji", "pyknp", "mecab-python3"]
 juman = [ "mojimoji", "pyknp",]
 mecab = [ "mecab-python3",]
 
@@ -63,18 +61,6 @@ mypy = "*"
 
 [tool.poetry.scripts]
 camphr = "camphr.cli.__main__:main"
-
-[tool.poetry.dependencies.allennlp]
-version = "^1.0.0"
-optional = true
-
-[tool.poetry.dependencies.boto3]
-version = "^1.14"
-optional = true
-
-[tool.poetry.dependencies.unofficial-udify]
-version = "^0.2.1"
-optional = true
 
 [tool.poetry.dependencies.mojimoji]
 version = "^0.0.11"
@@ -102,6 +88,7 @@ ja_mecab = "camphr.lang.mecab:Japanese"
 sentencepiece = "camphr.lang.sentencepiece:SentencePieceLang"
 camphr_torch = "camphr.lang.torch:TorchLanguage"
 
+
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
 transformers_ner = "camphr.pipelines.transformers:TrfForNamedEntityRecognition.from_nlp"
@@ -112,8 +99,6 @@ juman_sentencizer = "camphr.pipelines.knp:juman_sentencizer_factory"
 knp = "camphr.pipelines.knp:KNP.from_nlp"
 knp_dependency_parser = "camphr.pipelines.knp.dependency_parser:knp_dependency_parser_factory"
 knp_parallel_noun_chunker = "camphr.pipelines.knp.noun_chunker:knp_parallel_noun_chunker_factory"
-udify = "camphr.pipelines:Udify.from_nlp"
-elmo = "camphr.pipelines:Elmo.from_nlp"
 pattern_searcher = "camphr.pipelines:PatternSearcher"
 multiple_regex_ruler = "camphr.pipelines:MultipleRegexRuler.from_nlp"
 regex_ruler = "camphr.pipelines:RegexRuler.from_nlp"

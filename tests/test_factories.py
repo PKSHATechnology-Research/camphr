@@ -4,13 +4,7 @@ import pytest
 import spacy
 import toml
 
-from .utils import (
-    check_allennlp,
-    check_juman,
-    check_knp,
-    check_lang,
-    check_serialization,
-)
+from .utils import check_juman, check_knp, check_lang, check_serialization
 
 with (Path(__file__).parent / "../pyproject.toml") as f:
     conf = toml.load(f)
@@ -35,12 +29,7 @@ def nlp():
     return spacy.blank("en")
 
 
-SKIPS = {
-    "knp": check_knp(),
-    "juman_sentencizer": check_juman(),
-    "udify": check_allennlp(),
-    "elmo": check_allennlp(),
-}
+SKIPS = {"knp": check_knp(), "juman_sentencizer": check_juman()}
 
 
 @pytest.mark.parametrize("name", PIPES)
