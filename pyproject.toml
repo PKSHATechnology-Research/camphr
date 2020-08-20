@@ -40,7 +40,7 @@ hydra-core = "^0.11.3"
 hydra_colorlog = "^0.1.4"
 dataclasses = "^0.6"
 toolz = "^0.10.0"
-spacy = ">=2.2,<2.4"
+spacy = ">=2.2,<3"
 
 [tool.poetry.extras]
 all = [ "mojimoji", "pyknp", "mecab-python3",]
