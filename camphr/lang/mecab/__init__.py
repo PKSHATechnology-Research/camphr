@@ -53,7 +53,7 @@ class Tokenizer(SerializationMixin):
         doc = Doc(self.vocab, words=words, spaces=spaces)
         for token, dtoken in zip(doc, dtokens):
             token.tag_ = dtoken.pos
-            token.lemma_ = dtoken.lemma
+            token.lemma_ = dtoken.lemma if dtoken.lemma != "*" else token.text
             token._.set(self.key_fstring, dtoken.fstring)
 
         with doc.retokenize() as retokenizer:

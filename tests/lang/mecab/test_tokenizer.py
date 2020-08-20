@@ -92,3 +92,8 @@ def test_spaces(mecab_tokenizer, text):
 def test_ja_tokenizer_tags(mecab_tokenizer, text, expected_tags):
     tags = [token.tag_ for token in mecab_tokenizer(text)]
     assert tags == expected_tags
+
+
+@pytest.mark.parametrize("word,lemma", [("foo", "foo"), ("今日", "今日"), ("走っ", "走る")])
+def test_lemma(mecab_tokenizer, word, lemma):
+    assert mecab_tokenizer("foo")[0].lemma_ == "foo"
