@@ -206,8 +206,8 @@ category = "dev"
 description = "Docutils -- Python Documentation Utilities"
 name = "docutils"
 optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-version = "0.15.2"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "0.16"
 
 [[package]]
 category = "main"
@@ -286,7 +286,7 @@ description = "A library for property-based testing"
 name = "hypothesis"
 optional = false
 python-versions = ">=3.5.2"
-version = "5.26.0"
+version = "5.26.1"
 
 [package.dependencies]
 attrs = ">=19.2.0"
@@ -1244,6 +1244,7 @@ mecab = ["mecab-python3"]
 
 [metadata]
 content-hash = "4f617d4a2fdbc119e83365c77129d2cf2d4202c5fc443b56945cd01ae83cc46e"
+lock-version = "1.0"
 python-versions = ">=3.6.1"
 
 [metadata.files]
@@ -1348,9 +1349,8 @@ doc8 = [
     {file = "doc8-0.8.1.tar.gz", hash = "sha256:4d1df12598807cf08ffa9a1d5ef42d229ee0de42519da01b768ff27211082c12"},
 ]
 docutils = [
-    {file = "docutils-0.15.2-py2-none-any.whl", hash = "sha256:9e4d7ecfc600058e07ba661411a2b7de2fd0fafa17d1a7f7361cd47b1175c827"},
-    {file = "docutils-0.15.2-py3-none-any.whl", hash = "sha256:6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0"},
-    {file = "docutils-0.15.2.tar.gz", hash = "sha256:a2aeea129088da402665e92e0b25b04b073c04b2dce4ab65caaa38b7ce2e1a99"},
+    {file = "docutils-0.16-py2.py3-none-any.whl", hash = "sha256:0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af"},
+    {file = "docutils-0.16.tar.gz", hash = "sha256:c2de3a60e9e7d07be26b7f2b00ca0309c207e06c100f9cc2a94931fc75a478fc"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
@@ -1375,8 +1375,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.26.0-py3-none-any.whl", hash = "sha256:88260b37437f4ae311822589bdb798a15c3def70db1839d86fa0a3ff4b63d564"},
-    {file = "hypothesis-5.26.0.tar.gz", hash = "sha256:54f3ce8d7146cb59eef419a26d5edfdf4e8518615b9df8c7e1f5392a2c5c9c36"},
+    {file = "hypothesis-5.26.1-py3-none-any.whl", hash = "sha256:612e833bb37bcaf5330a6ee45d634c7dd132be0e8dae1f7dd639e902a95d9cd2"},
+    {file = "hypothesis-5.26.1.tar.gz", hash = "sha256:8eca3095fa02d89d9564a46acee4f9f419ca7cb815724b40690454b98f2fdf62"},
 ]
 identify = [
     {file = "identify-1.4.28-py2.py3-none-any.whl", hash = "sha256:69c4769f085badafd0e04b1763e847258cbbf6d898e8678ebffc91abdb86f6c6"},
