@@ -25,21 +25,15 @@ class TrfTokenizer(TrfAutoMixin, Pipe):
 
     def predict(self, docs: Sequence[Doc]) -> TransformersInput:
         self.require_model()
-        max_len = (
-            None
-            if self.model.max_len > max(len(doc.text) for doc in docs)
-            else self.model.max_len
-        )
         output = self.model.batch_encode_plus(
             [doc.text for doc in docs],
             add_special_tokens=True,
             return_tensors="pt",
             return_input_lengths=True,
             return_attention_masks=True,
-            max_length=max_len,
-            return_overflowing_tokens=True,
             return_special_tokens_mask=True,
-            pad_to_max_length=True,
+            truncation=True,
+            padding=True,
         )
         return TransformersInput(**output)
 

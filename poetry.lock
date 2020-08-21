@@ -247,6 +247,18 @@ version = "*"
 
 [[package]]
 category = "main"
+description = "A Cython MeCab wrapper for fast, pythonic Japanese tokenization."
+name = "fugashi"
+optional = true
+python-versions = ">=3.5"
+version = "1.0.4"
+
+[package.extras]
+unidic = ["unidic"]
+unidic-lite = ["unidic-lite"]
+
+[[package]]
+category = "main"
 description = "Clean single-source support for Python 3 and 2"
 name = "future"
 optional = false
@@ -371,6 +383,14 @@ name = "iniconfig"
 optional = false
 python-versions = "*"
 version = "1.0.1"
+
+[[package]]
+category = "main"
+description = "IPAdic packaged for Python"
+name = "ipadic"
+optional = true
+python-versions = "*"
+version = "1.0.0"
 
 [[package]]
 category = "dev"
@@ -1237,12 +1257,12 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [extras]
-all = ["mojimoji", "pyknp", "mecab-python3"]
+all = ["fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic"]
 juman = ["mojimoji", "pyknp"]
-mecab = ["mecab-python3"]
+mecab = ["mecab-python3", "fugashi"]
 
 [metadata]
-content-hash = "4f617d4a2fdbc119e83365c77129d2cf2d4202c5fc443b56945cd01ae83cc46e"
+content-hash = "959ee2e9d8b5e162f5795f59575123a434178650a94fbb6d3f847c25673437c8"
 lock-version = "1.0"
 python-versions = ">=3.6.1"
 
@@ -1362,6 +1382,21 @@ flake8 = [
     {file = "flake8-3.8.3-py2.py3-none-any.whl", hash = "sha256:15e351d19611c887e482fb960eae4d44845013cc142d42896e9862f775d8cf5c"},
     {file = "flake8-3.8.3.tar.gz", hash = "sha256:f04b9fcbac03b0a3e58c0ab3a0ecc462e023a9faf046d57794184028123aa208"},
 ]
+fugashi = [
+    {file = "fugashi-1.0.4-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:36c3e22267609705fd929364674f270515a34ed961570d2f4c3d8e9f7fb36d96"},
+    {file = "fugashi-1.0.4-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:1e187305f4b23d8f596591f60cfb81815ce6ff0aaaa167b132bd01c7a1699308"},
+    {file = "fugashi-1.0.4-cp35-cp35m-win_amd64.whl", hash = "sha256:e951446b994c0fc55e65e748c29c1203867b2fcc9f132ef29f32fc3330cb6c26"},
+    {file = "fugashi-1.0.4-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:d486dca2dd7d6723eb3a68593c9f0faba7a7cead6bb3a37afca3c9edbf8c9913"},
+    {file = "fugashi-1.0.4-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:4daf6dacc0c65b0c262b7570ca70e890602d1fc186383b1b888bf97404b57cd2"},
+    {file = "fugashi-1.0.4-cp36-cp36m-win_amd64.whl", hash = "sha256:9f79269d752d069e3772f40b7147e54ca8e50ed1e5352e4a4dd9888792e6bb65"},
+    {file = "fugashi-1.0.4-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:e1e6b33d625c4109244de60cb77ced8e9b5f20c3b9daf28ed57d48dc5a29373d"},
+    {file = "fugashi-1.0.4-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:dc3682974ba0920e58122712fec33d30dd58e4d3ea2e4bd384c598f4d071c7e7"},
+    {file = "fugashi-1.0.4-cp37-cp37m-win_amd64.whl", hash = "sha256:74f8315f804c33d52bb5844c1808b50a15f8ff67bb85f9a0ac714826b5dc7f0f"},
+    {file = "fugashi-1.0.4-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:39578bb62ffa3ddddfc6927d36ee23733319e416c3237111802bbd9f6169984b"},
+    {file = "fugashi-1.0.4-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:7a6606cec6e6a7a76dbf6342d7dfb25da57c8faff72ac0f379eaa2c56343cd39"},
+    {file = "fugashi-1.0.4-cp38-cp38-win_amd64.whl", hash = "sha256:6be2748d4796d8f62c7efe4d4c7c8ee44ec2968c92b50edcac08c557be0cab50"},
+    {file = "fugashi-1.0.4.tar.gz", hash = "sha256:f60c4ee1937dfdfac98a5fd99602adca4f130cd9b4b9d0120b9f4e14376f91d5"},
+]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
 ]
@@ -1400,6 +1435,9 @@ importlib-resources = [
 iniconfig = [
     {file = "iniconfig-1.0.1-py3-none-any.whl", hash = "sha256:80cf40c597eb564e86346103f609d74efce0f6b4d4f30ec8ce9e2c26411ba437"},
     {file = "iniconfig-1.0.1.tar.gz", hash = "sha256:e5f92f89355a67de0595932a6c6c02ab4afddc6fcdc0bfc5becd0d60884d3f69"},
+]
+ipadic = [
+    {file = "ipadic-1.0.0.tar.gz", hash = "sha256:f5923d31eca6131acaaf18ed28d8998665b1347b640d3a6476f64650e9a71c07"},
 ]
 isort = [
     {file = "isort-4.3.21-py2.py3-none-any.whl", hash = "sha256:6e811fcb295968434526407adb8796944f1988c5b65e8139058f2014cbe100fd"},

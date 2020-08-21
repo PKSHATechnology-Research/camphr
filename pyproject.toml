@@ -43,9 +43,9 @@ toolz = "^0.10.0"
 spacy = ">=2.2,<3"
 
 [tool.poetry.extras]
-all = [ "mojimoji", "pyknp", "mecab-python3",]
-juman = [ "mojimoji", "pyknp",]
-mecab = [ "mecab-python3",]
+all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic" ]
+juman = [ "mojimoji", "pyknp" ]
+mecab = [ "mecab-python3", "fugashi", "ipadic "]
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
@@ -64,6 +64,14 @@ camphr = "camphr.cli.__main__:main"
 
 [tool.poetry.dependencies.mojimoji]
 version = "^0.0.11"
+optional = true
+
+[tool.poetry.dependencies.ipadic]
+version = ">=1.0,<2.0"
+optional = true
+
+[tool.poetry.dependencies.fugashi]
+version = ">=1.0,<2.0"
 optional = true
 
 [tool.poetry.dependencies.pyknp]
