@@ -29,14 +29,6 @@ def check_mecab() -> bool:
     return True
 
 
-def check_allennlp() -> bool:
-    try:
-        import allennlp  # noqa
-    except ImportError:
-        return False
-    return True
-
-
 checks = {
     "ja_mecab": check_mecab,
     "ja_juman": check_juman,
