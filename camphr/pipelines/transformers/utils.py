@@ -347,6 +347,7 @@ class TransformersInput:
     attention_mask: torch.Tensor
     overflowing_tokens: Optional[torch.LongTensor] = None
     num_truncated_tokens: int = 0
+    special_tokens_mask: Optional[torch.Tensor] = None
 
     def __iter__(self) -> Iterator["TransformersInput"]:
         for i in range(len(cast(Sized, self.input_ids))):
