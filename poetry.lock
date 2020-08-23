@@ -1263,7 +1263,6 @@ mecab = ["mecab-python3", "fugashi"]
 
 [metadata]
 content-hash = "959ee2e9d8b5e162f5795f59575123a434178650a94fbb6d3f847c25673437c8"
-lock-version = "1.0"
 python-versions = ">=3.6.1"
 
 [metadata.files]
