@@ -1100,7 +1100,7 @@ description = "Fast and Customizable Tokenizers"
 name = "tokenizers"
 optional = false
 python-versions = "*"
-version = "0.8.1rc1"
+version = "0.8.1rc2"
 
 [package.extras]
 testing = ["pytest"]
@@ -1150,7 +1150,7 @@ description = "State-of-the-art Natural Language Processing for TensorFlow 2.0 a
 name = "transformers"
 optional = false
 python-versions = ">=3.6.0"
-version = "3.0.2"
+version = "3.3.0"
 
 [package.dependencies]
 filelock = "*"
@@ -1160,7 +1160,7 @@ regex = "!=2019.12.17"
 requests = "*"
 sacremoses = "*"
 sentencepiece = "!=0.1.92"
-tokenizers = "0.8.1.rc1"
+tokenizers = "0.8.1.rc2"
 tqdm = ">=4.27"
 
 [package.dependencies.dataclasses]
@@ -1169,16 +1169,18 @@ version = "*"
 
 [package.extras]
 all = ["pydantic", "uvicorn", "fastapi", "starlette", "tensorflow", "torch"]
-dev = ["pytest", "pytest-xdist", "timeout-decorator", "psutil", "black", "isort", "flake8", "mecab-python3 (<1)", "scikit-learn", "tensorflow", "torch"]
+dev = ["pytest", "pytest-xdist", "timeout-decorator", "parameterized", "psutil", "faiss-cpu", "datasets", "black (>=20.8b1)", "isort (>=5)", "flake8 (>=3.8.3)", "fugashi (>=1.0)", "ipadic (>=1.0.0,<2.0)", "unidic-lite (>=1.0.7)", "unidic (>=1.0.2)", "scikit-learn", "tensorflow", "torch"]
 docs = ["recommonmark", "sphinx", "sphinx-markdown-tables", "sphinx-rtd-theme (0.4.3)", "sphinx-copybutton"]
-mecab = ["mecab-python3 (<1)"]
-quality = ["black", "isort", "flake8"]
+ja = ["fugashi (>=1.0)", "ipadic (>=1.0.0,<2.0)", "unidic-lite (>=1.0.7)", "unidic (>=1.0.2)"]
+onnxruntime = ["onnxruntime (>=1.4.0)", "onnxruntime-tools (>=1.4.2)"]
+quality = ["black (>=20.8b1)", "isort (>=5)", "flake8 (>=3.8.3)"]
+retrieval = ["faiss-cpu", "datasets"]
 serving = ["pydantic", "uvicorn", "fastapi", "starlette"]
 sklearn = ["scikit-learn"]
-testing = ["pytest", "pytest-xdist", "timeout-decorator", "psutil"]
-tf = ["tensorflow", "onnxconverter-common", "keras2onnx"]
-tf-cpu = ["tensorflow-cpu", "onnxconverter-common", "keras2onnx"]
-torch = ["torch"]
+testing = ["pytest", "pytest-xdist", "timeout-decorator", "parameterized", "psutil", "faiss-cpu", "datasets"]
+tf = ["tensorflow (>=2.0)", "onnxconverter-common", "keras2onnx"]
+tf-cpu = ["tensorflow-cpu (>=2.0)", "onnxconverter-common", "keras2onnx"]
+torch = ["torch (>=1.0)"]
 
 [[package]]
 category = "dev"
@@ -1954,23 +1956,23 @@ threadpoolctl = [
     {file = "threadpoolctl-2.1.0.tar.gz", hash = "sha256:ddc57c96a38beb63db45d6c159b5ab07b6bced12c45a1f07b2b92f272aebfa6b"},
 ]
 tokenizers = [
-    {file = "tokenizers-0.8.1rc1-cp35-cp35m-macosx_10_10_x86_64.whl", hash = "sha256:49f421fe35695aebe010180923e28044035ff8099d211ce736772cb9de685d6e"},
-    {file = "tokenizers-0.8.1rc1-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:9a1b06d64822d74ced767a584812034386133e1cd11a7330ac1b59ce2c807dd2"},
-    {file = "tokenizers-0.8.1rc1-cp35-cp35m-win32.whl", hash = "sha256:206ee9d10d46415eca527055d7468f6ad43fe5cf5f4629dbcb0674e621bf193a"},
-    {file = "tokenizers-0.8.1rc1-cp35-cp35m-win_amd64.whl", hash = "sha256:8fb9657b43baa7230c15db7cf1d040914580431342a0e16c3cb2f8f682745654"},
-    {file = "tokenizers-0.8.1rc1-cp36-cp36m-macosx_10_10_x86_64.whl", hash = "sha256:ef206a95d89133f30e918c7f7a5c5e123fb8a1f6471362df08131dded3539002"},
-    {file = "tokenizers-0.8.1rc1-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:49dec8c6cb1fcbd3f0c997ec1f31a7ef83285c2e12855bd80c8009c3d9d66126"},
-    {file = "tokenizers-0.8.1rc1-cp36-cp36m-win32.whl", hash = "sha256:6191f3d707a865e57cd211dd91076b66039c1b0f580d5dfe71e0c84d146614a4"},
-    {file = "tokenizers-0.8.1rc1-cp36-cp36m-win_amd64.whl", hash = "sha256:210fc91ff4dfaf43b558f958fa0edbfe98724c2a6cbba25ffe4477ca941cfeaa"},
-    {file = "tokenizers-0.8.1rc1-cp37-cp37m-macosx_10_10_x86_64.whl", hash = "sha256:b211e4837e709fbf36612ac8821406d4b29dde311b58ffbc609e229665759605"},
-    {file = "tokenizers-0.8.1rc1-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:b108431ef2e0375c28339266886719cfc2431494047fd682dd7c72c5795e08f9"},
-    {file = "tokenizers-0.8.1rc1-cp37-cp37m-win32.whl", hash = "sha256:39a989338cb77c3897340b977b0db1e75b59b98bd0c10182fa2f8901233049f0"},
-    {file = "tokenizers-0.8.1rc1-cp37-cp37m-win_amd64.whl", hash = "sha256:f8239f602f636c0d3727925a9686362d05477d1dcef4bfa9d097d40dfc53ffd3"},
-    {file = "tokenizers-0.8.1rc1-cp38-cp38-macosx_10_10_x86_64.whl", hash = "sha256:76dd23a1eaae5f9ed0deda05b5361a979c11ac621a901e729227564d0936383f"},
-    {file = "tokenizers-0.8.1rc1-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:da0a7c7df84805315f732e471eb7ae25be50f07f53042202aeb36ecc23244730"},
-    {file = "tokenizers-0.8.1rc1-cp38-cp38-win32.whl", hash = "sha256:6ef5fb622383b437ec71412f2457211f330286abc35953ba150a7f58ebee217b"},
-    {file = "tokenizers-0.8.1rc1-cp38-cp38-win_amd64.whl", hash = "sha256:6b8fe503a38afe67085accc433ce3692c002d3c48baf20e67a3e93b558b96597"},
-    {file = "tokenizers-0.8.1rc1.tar.gz", hash = "sha256:98af43fa61f1fc0ade954102d3d34e02df3c6f896315500865b93400f93dd99e"},
+    {file = "tokenizers-0.8.1rc2-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:43d1f68b894ebdc60480375f87864d4376ddccebe0ad6988b86c2dd525d58376"},
+    {file = "tokenizers-0.8.1rc2-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:4855c6d1b59cb31c6182dc8ae7a66e1a088f744cd99f2437f585e36bc0399b6e"},
+    {file = "tokenizers-0.8.1rc2-cp35-cp35m-win32.whl", hash = "sha256:f8b901bfca97cbb94cfa2881bc51388dba7385f5494c70778842e5039d5d14e5"},
+    {file = "tokenizers-0.8.1rc2-cp35-cp35m-win_amd64.whl", hash = "sha256:e92fb6dffb5793563266b1c151846fac60bbb2525b40a49652e0a07854596f25"},
+    {file = "tokenizers-0.8.1rc2-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:c7982733bb821934a5e53f4b4825edda3c5435b32a1705209b36d44c32215621"},
+    {file = "tokenizers-0.8.1rc2-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:22b775f07de4255e1d4aeab358064574384cacbdc1f2a67c2defc7f7bfa429ea"},
+    {file = "tokenizers-0.8.1rc2-cp36-cp36m-win32.whl", hash = "sha256:fb37429f2d8c00cf6c5aec8404f355772cb5afb54adb3e5e8a2a0a2d1095433a"},
+    {file = "tokenizers-0.8.1rc2-cp36-cp36m-win_amd64.whl", hash = "sha256:f29e45b0f31ca680d64890ad292569da804f44db6d160b50e7e8a2ae639db988"},
+    {file = "tokenizers-0.8.1rc2-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:38e08cfd4ed6f84fd51af9f9a2f1899cef91d47060dd2190e7c5490cef770072"},
+    {file = "tokenizers-0.8.1rc2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:f9adb89b46df83807c324e74177d776d5ebccacb9694568094f7335de9b5a759"},
+    {file = "tokenizers-0.8.1rc2-cp37-cp37m-win32.whl", hash = "sha256:308dc517d188a6dae2386d230df373834fabfec1f8c32fc77a8539364ce00d86"},
+    {file = "tokenizers-0.8.1rc2-cp37-cp37m-win_amd64.whl", hash = "sha256:49fe908cb2baa2c8fd666a7ff32cbed04f7269dbc36da29091c1444ccf9910f5"},
+    {file = "tokenizers-0.8.1rc2-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:a416bd2d6954ffe0b10ff5cef8cd5b99a68a041988af644d4dd7d1451511673d"},
+    {file = "tokenizers-0.8.1rc2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:0fe77daab9b92bad46f8b74cff0aaf6676cdec61d0e7d321ee8a3946e60aa78c"},
+    {file = "tokenizers-0.8.1rc2-cp38-cp38-win32.whl", hash = "sha256:3880731fa4f1873e779bccaacc1f8f262fa6ffc7aae43be65f2815d54763be11"},
+    {file = "tokenizers-0.8.1rc2-cp38-cp38-win_amd64.whl", hash = "sha256:a863f813ece3e95618185e68d37560fc107f89d1a91608d23285294d1e414d8c"},
+    {file = "tokenizers-0.8.1rc2.tar.gz", hash = "sha256:db9dcf9efd3cd6b2c994b1fbbdbb3961208d5b7291c1d722301005730c105eb3"},
 ]
 toml = [
     {file = "toml-0.10.1-py2.py3-none-any.whl", hash = "sha256:bda89d5935c2eac546d648028b9901107a595863cb36bae0c73ac804a9b4ce88"},
@@ -1992,8 +1994,8 @@ tqdm = [
     {file = "tqdm-4.49.0.tar.gz", hash = "sha256:faf9c671bd3fad5ebaeee366949d969dca2b2be32c872a7092a1e1a9048d105b"},
 ]
 transformers = [
-    {file = "transformers-3.0.2-py3-none-any.whl", hash = "sha256:53ecfd27839d5ecf38af6978211462d44d76b526edd7b65d84eaa9b29c9610b8"},
-    {file = "transformers-3.0.2.tar.gz", hash = "sha256:e3a72bdba426b7202ed90611aa5b1a1f695c484e937182cbbfa9e719a5400d7e"},
+    {file = "transformers-3.3.0-py3-none-any.whl", hash = "sha256:7a86e3178677a9db595926cf3750e852217993b41c5232d1fd8a6c5bb0acac1f"},
+    {file = "transformers-3.3.0.tar.gz", hash = "sha256:d83aafaa822a55510b5e4ccb66575f4985b0ccaf84271c53d15686618a04e1d9"},
 ]
 typed-ast = [
     {file = "typed_ast-1.4.1-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:73d785a950fc82dd2a25897d525d003f6378d1cb23ab305578394694202a58c3"},
