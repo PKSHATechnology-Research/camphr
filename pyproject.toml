@@ -49,7 +49,7 @@ mecab = [ "mecab-python3", "fugashi", "ipadic ",]
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
-pytest = "<6.0.2"
+pytest = "<6.1.2"
 flake8 = "*"
 pyyaml = "*"
 hypothesis = "*"

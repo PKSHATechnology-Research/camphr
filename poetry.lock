@@ -693,7 +693,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "pytest"
-version = "6.0.1"
+version = "6.1.1"
 description = "pytest: simple powerful testing with Python"
 category = "dev"
 optional = false
@@ -705,7 +705,6 @@ attrs = ">=17.4.0"
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
 importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
 iniconfig = "*"
-more-itertools = ">=4.0.0"
 packaging = "*"
 pluggy = ">=0.12,<1.0"
 py = ">=1.8.2"
@@ -1229,7 +1228,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.1"
-content-hash = "5a9b12bf1b971b825fa1657608d49ec8ce5372583be236145e35607f4c08b7e4"
+content-hash = "71ccb12b1b088d37e889479b12b202c785048c538edaa32beade336165fbd58c"
 
 [metadata.files]
 alabaster = [
@@ -1678,8 +1677,8 @@ pyparsing = [
     {file = "pyparsing-2.4.7.tar.gz", hash = "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1"},
 ]
 pytest = [
-    {file = "pytest-6.0.1-py3-none-any.whl", hash = "sha256:8b6007800c53fdacd5a5c192203f4e531eb2a1540ad9c752e052ec0f7143dbad"},
-    {file = "pytest-6.0.1.tar.gz", hash = "sha256:85228d75db9f45e06e57ef9bf4429267f81ac7c0d742cc9ed63d09886a9fe6f4"},
+    {file = "pytest-6.1.1-py3-none-any.whl", hash = "sha256:7a8190790c17d79a11f847fba0b004ee9a8122582ebff4729a082c109e81a4c9"},
+    {file = "pytest-6.1.1.tar.gz", hash = "sha256:8f593023c1a0f916110285b6efd7f99db07d59546e3d8c36fc60e2ab05d3be92"},
 ]
 pytextspan = [
     {file = "pytextspan-0.2.2-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:babbb1f9b5607f17e22a23141da107a99a91b98bb35f2287c19f0433b40266e0"},
