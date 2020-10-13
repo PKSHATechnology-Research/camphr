@@ -7,7 +7,7 @@ files = [ "camphr/VERSION.py",]
 commit = true
 
 [tool.poetry]
-version = "0.7.0"
+version = "0.7.1"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
@@ -43,9 +43,9 @@ toolz = "^0.10.0"
 spacy = ">=2.2,<3"
 
 [tool.poetry.extras]
-all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic" ]
-juman = [ "mojimoji", "pyknp" ]
-mecab = [ "mecab-python3", "fugashi", "ipadic "]
+all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic",]
+juman = [ "mojimoji", "pyknp",]
+mecab = [ "mecab-python3", "fugashi", "ipadic ",]
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
