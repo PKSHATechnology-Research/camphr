@@ -21,6 +21,12 @@ from typing_extensions import Literal
 
 from camphr.utils import SerializationMixin, get_doc_char_span
 
+# Sometimes matched text is different from original text
+# since `PatternSearcher` can match the `lemma`.
+# This extension holds the matched text.
+PATTERN_MATCH_AS = "pattern_match_as"
+Span.set_extension(PATTERN_MATCH_AS, default=None, force=True)
+
 
 @spacy.component("pattern_searcher")
 class PatternSearcher(SerializationMixin):
@@ -145,6 +151,7 @@ class PatternSearcher(SerializationMixin):
                 label=self.get_label(text),
             )
             if span and self._to_text(span) == text:
+                span._.set(PATTERN_MATCH_AS, text)
                 spans.append(span)
         [s.text for s in spans]  # TODO: resolve the evaluation bug and remove this line
         ents = filter_spans(doc.ents + tuple(spans))
