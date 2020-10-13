@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0 (21/08/2020)
+- Separeted `udify` and `elmo` pipelines to [camphr_allennlp](https://github.com/PKSHATechnology-Research/camphr-allennlp) - now camphr doesn't depend on allennlp.
+---
+
 ## 0.6.0 (09/07/2020)
 - [**dependencies**] Bump scikit-learn from 0.22.2.post1 to 0.23.1 [#61](https://github.com/PKSHATechnology-Research/camphr/pull/61)
 - [**dependencies**] Bump pytest from 5.3.2 to 5.4.3 [#60](https://github.com/PKSHATechnology-Research/camphr/pull/60)
