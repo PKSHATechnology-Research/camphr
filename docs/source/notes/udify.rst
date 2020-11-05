@@ -44,7 +44,7 @@ Use udify with non-space-delimited languages
 Switching the tokenizer allows you to use Udify for non-space-delimited languages such as Japanese.
 Camphr offers a useful function for this purpose: :code:`load_udify`:
 
-    >>> from camphr.pipelines import load_udify
+    >>> from camphr_allennlp.udify import load_udify
     >>> nlp = load_udify("ja", punct_chars=["。"])
     >>> doc = nlp("日本語も解析可能です")
     >>> spacy.displacy.render(doc)
