@@ -724,7 +724,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "pytokenizations"
-version = "0.6.0"
+version = "0.7.2"
 description = ""
 category = "main"
 optional = false
@@ -1230,7 +1230,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.1"
-content-hash = "799ab8fca232c5a555e7514c3799df5c698d0d6bdba58d71c2344f16d533b53e"
+content-hash = "a5201ea1715febb8f220b4055253a1f8ecd5030172bcc5afc0fc2d32ed0e3883"
 
 [metadata.files]
 alabaster = [
@@ -1711,19 +1711,19 @@ pytextspan = [
     {file = "pytextspan-0.2.2.tar.gz", hash = "sha256:1a02b0fb4f1b9af4ec95f3ae3fde92ff604617fb0eec51d7b9ade45888f89281"},
 ]
 pytokenizations = [
-    {file = "pytokenizations-0.6.0-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:9748a1211a0c088c9421aacfacb4541f37af9982b1569197a4f966fe5b07a5b9"},
-    {file = "pytokenizations-0.6.0-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:43b72612ecb6c04056f29090897868bdc4d092939f977e7f3681df981678aa74"},
-    {file = "pytokenizations-0.6.0-cp35-none-win_amd64.whl", hash = "sha256:1f0b373a16317ab29caad4811bfa0204c9e47e7b281fcbae2562389ac5aa5d96"},
-    {file = "pytokenizations-0.6.0-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:714dc7fcd6b50f0818943cfddcb2bd6ed300b41f33f6c3e87bfc7b604d909472"},
-    {file = "pytokenizations-0.6.0-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:d9484ee0d94276a330418cf040d7ae791fac8a0d715858f1948bb5d4990795a5"},
-    {file = "pytokenizations-0.6.0-cp36-none-win_amd64.whl", hash = "sha256:f7fb6f0c2880fbc2ce9dd1d04eef187c4f23a9b270f2ade4c49951236880566f"},
-    {file = "pytokenizations-0.6.0-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:c8476819c20d82c0bee82a699e7c03793d5cf6378a9519eafcf20575a22a64d1"},
-    {file = "pytokenizations-0.6.0-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:c3b22b3c3a3dc9d638dc5089fef8e4f50012a6b41d3e24251082b08db866d052"},
-    {file = "pytokenizations-0.6.0-cp37-none-win_amd64.whl", hash = "sha256:8d95be888c4362a59795ccd97dd55678037000524a570fb549a885a3f7e15c44"},
-    {file = "pytokenizations-0.6.0-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:17adf5f683f3d295f7f111c366de6d9d8768845a7be0a8dd3b757620ce21c411"},
-    {file = "pytokenizations-0.6.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:a3de2aa2d636857d376f36d10c60837028fc2e8957cae7aedf945e85da160ce1"},
-    {file = "pytokenizations-0.6.0-cp38-none-win_amd64.whl", hash = "sha256:090ec87df0383675e7e889671e4759ba6f9f76ba85ff1e27170ac61a1ac5d637"},
-    {file = "pytokenizations-0.6.0.tar.gz", hash = "sha256:d9442aa3a925f9d0fd2aa325a179284a1458ee92f72fc1aa8296747c5b736877"},
+    {file = "pytokenizations-0.7.2-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:b69d266738da5d5471c877ab85f829e9a58c86591e5c4aeb913b30445f40705e"},
+    {file = "pytokenizations-0.7.2-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:24df13f949e39203c7a9d8370fe9a81646f5f2877276de25ac19f27cadc711d7"},
+    {file = "pytokenizations-0.7.2-cp35-none-win_amd64.whl", hash = "sha256:e9ab60150b8516039ca87e8cf07ae0dbe99fd53df310f21f383d0a347a9a4505"},
+    {file = "pytokenizations-0.7.2-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:05ba025327b0959bb3fcb9ec85aee903d5c9ce4b9d1c13d07c7ff2878732d328"},
+    {file = "pytokenizations-0.7.2-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:775a394484f8ba8860801173ec44ffeb8d0e2548dd33efa6b7453c841d5af719"},
+    {file = "pytokenizations-0.7.2-cp36-none-win_amd64.whl", hash = "sha256:1cf676a968c53f8731a0fdb89db1af775337457fc6bffaee3c2a09851514ee7c"},
+    {file = "pytokenizations-0.7.2-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:d02e1ba22949848834f09add93aca79d5d1200e58a82ee4c95e801a5d28c7efa"},
+    {file = "pytokenizations-0.7.2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:7c444dc31e9cb7389bede4b0d2c7d99821333b195df2478739a0b896118a4857"},
+    {file = "pytokenizations-0.7.2-cp37-none-win_amd64.whl", hash = "sha256:84d5adf92dc2ee6eee4a5b96e875413c260c261a4e37e45619cd87d958c3db35"},
+    {file = "pytokenizations-0.7.2-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:8f7c73b95fcfdd7e46532aee99cb9d4dcfa369a8bb235988a80fa3f9f39c7266"},
+    {file = "pytokenizations-0.7.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:ed2100488fdf0d5a0315422f251e39bea832e08fc37043e28ca8c7758a416b20"},
+    {file = "pytokenizations-0.7.2-cp38-none-win_amd64.whl", hash = "sha256:d1f02e63f6c59e57b3338f09543b13e42deb7d638f1cb60ebbaf1c62061787ed"},
+    {file = "pytokenizations-0.7.2.tar.gz", hash = "sha256:e8a07ed9dd3b1ba9c29866ccaf11dc4648ea97ef231955ec3f34054e34760f1d"},
 ]
 pytz = [
     {file = "pytz-2020.4-py2.py3-none-any.whl", hash = "sha256:5c55e189b682d420be27c6995ba6edce0c0a77dd67bfbe2ae6607134d5851ffd"},
