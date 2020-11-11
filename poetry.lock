@@ -998,7 +998,7 @@ test = ["pytest"]
 
 [[package]]
 name = "srsly"
-version = "1.0.3"
+version = "1.0.4"
 description = "Modern high-performance serialization utilities for Python"
 category = "main"
 optional = false
@@ -1915,19 +1915,19 @@ sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib_serializinghtml-1.1.4-py2.py3-none-any.whl", hash = "sha256:f242a81d423f59617a8e5cf16f5d4d74e28ee9a66f9e5b637a18082991db5a9a"},
 ]
 srsly = [
-    {file = "srsly-1.0.3-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:fb575a6b288da19fed05ed5f97528e9242a276e9a109b18f94074117cc435431"},
-    {file = "srsly-1.0.3-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:c8bf0111ce888831e22d092a573135281b495dee9d9b3c18dddae0fcacd0e4ca"},
-    {file = "srsly-1.0.3-cp36-cp36m-win_amd64.whl", hash = "sha256:310568b273602bfa922866bd503fd1892aef6e62040af4a783bd5de24865b28e"},
-    {file = "srsly-1.0.3-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:6186dff418f4240a274ede369e69c304d7486de110f911d1b748d26af8138413"},
-    {file = "srsly-1.0.3-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:228665f648e5f88a21790c044428bd05d05b71e4466a89bba0752e0da0b8c791"},
-    {file = "srsly-1.0.3-cp37-cp37m-win_amd64.whl", hash = "sha256:2e1359a6fe106904b129651fed3dd240df07fe0669aaa68755e0133a6f222e40"},
-    {file = "srsly-1.0.3-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:924a73334503d69b17ad85af22378bffe55ffb7210a0966fac115831a3e1ddec"},
-    {file = "srsly-1.0.3-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:c23ff73ade789bc621fa1152d407622ba4bbe6b113fd84fcb65bdceb12997aab"},
-    {file = "srsly-1.0.3-cp38-cp38-win_amd64.whl", hash = "sha256:e68198bc7a27d5c485aefaeac4dbd8630f4b501a95b34b3d09993db00fa9bd45"},
-    {file = "srsly-1.0.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:0d74328b0c9d6c4694ee2d0ab35232d1d7996cf1c205b253a636a9e1a2686490"},
-    {file = "srsly-1.0.3-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:3a80183e7f31a1c9d9e4777c34e62b08105131412b72498a7406702843cfe522"},
-    {file = "srsly-1.0.3-cp39-cp39-win_amd64.whl", hash = "sha256:15d3edf65eb91281991f9c02405c7c0c00d6e92cf50fefbd896b96df21c325a4"},
-    {file = "srsly-1.0.3.tar.gz", hash = "sha256:25bd33819a0e95dbe5d49072d07c361827658cf5f7d69d15e580c43d5adb873a"},
+    {file = "srsly-1.0.4-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:39a8bd6b383b4ea5c3a6793d790e1356e236701f421badef278a0ea80bc95d30"},
+    {file = "srsly-1.0.4-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:02acfa09769380023e9bbed5c63f5f41b04dbc13ff392a7284df685127d224ae"},
+    {file = "srsly-1.0.4-cp36-cp36m-win_amd64.whl", hash = "sha256:c1fa001bbd87a771998c8e2487991fc0dfe16edc09e3dec0d64f9472832f89bd"},
+    {file = "srsly-1.0.4-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:b4fb0ff57e25a99e9ac9a61b262478efe8493b3cff0f50812c09534c76688b0b"},
+    {file = "srsly-1.0.4-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:deee259837443ea8a4c194967f56eb62809c3cf3a11cd9d4f425de4aea5ecb81"},
+    {file = "srsly-1.0.4-cp37-cp37m-win_amd64.whl", hash = "sha256:4b8bd311fa20fa5d1a0deac0dd8f3c43c7ca23df2c483a7102d96acf2cddb506"},
+    {file = "srsly-1.0.4-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:660b80ffa3ea4ef9db254e5a22d2f52294f15342910c3274844a8f5a81369cbc"},
+    {file = "srsly-1.0.4-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:2b9e2b7c00e522d6e54952564d702e72bc4729cc828e27a01b4dac70b870d44a"},
+    {file = "srsly-1.0.4-cp38-cp38-win_amd64.whl", hash = "sha256:3f46e5efbbb0e857f302394257539aae4487c201cdafc3519db4bde897341fee"},
+    {file = "srsly-1.0.4-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:f7aee40cd66f190e7694d7e7c83be018b1a7b9546a305db52c8793d93b1d0a7e"},
+    {file = "srsly-1.0.4-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:713766bf4289ebe6f21d1e5203b6b75f71fd4512e877dbe5a3f660b4a51d77ac"},
+    {file = "srsly-1.0.4-cp39-cp39-win_amd64.whl", hash = "sha256:2ae6327e013934126f2b7082ce36284785eed951635ac99c73e39de75ecd1345"},
+    {file = "srsly-1.0.4.tar.gz", hash = "sha256:9ca5633a5303ce0d0b84d1bdb6d029f665ba2b7d320f5482525b125ddfb8a390"},
 ]
 stevedore = [
     {file = "stevedore-3.2.2-py3-none-any.whl", hash = "sha256:5e1ab03eaae06ef6ce23859402de785f08d97780ed774948ef16c4652c41bc62"},
