@@ -287,7 +287,7 @@ dev = ["black", "coverage", "flake8", "flake8-copyright", "nox", "pre-commit", "
 
 [[package]]
 name = "hypothesis"
-version = "5.41.3"
+version = "5.41.4"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -539,7 +539,7 @@ lint = ["black", "flake8"]
 
 [[package]]
 name = "packaging"
-version = "20.5"
+version = "20.7"
 description = "Core utilities for Python packages"
 category = "main"
 optional = false
@@ -1376,8 +1376,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.41.3-py3-none-any.whl", hash = "sha256:989162a9e0715c624b99ad9b2b4206765879b40eb51eef17b1e37de3e898370a"},
-    {file = "hypothesis-5.41.3.tar.gz", hash = "sha256:6a3471ff74864ab04a0650c75500ef15f2f4a901d49ccbb7cbec668365736688"},
+    {file = "hypothesis-5.41.4-py3-none-any.whl", hash = "sha256:fdc490f98d81861e218c77f222ae889c993ff9d6d579dd4c9bb7b75e2dc63852"},
+    {file = "hypothesis-5.41.4.tar.gz", hash = "sha256:7ef22dd2ae4a906ef1e237dcd6806aa7f97e30c37f924a0e6d595f4639350b53"},
 ]
 identify = [
     {file = "identify-1.5.10-py2.py3-none-any.whl", hash = "sha256:cc86e6a9a390879dcc2976cef169dd9cc48843ed70b7380f321d1b118163c60e"},
@@ -1601,8 +1601,8 @@ omegaconf = [
     {file = "omegaconf-1.4.1.tar.gz", hash = "sha256:5bb6c9391224c6277e06171b661904a68dcbcfbabd831eb552f4803a02eefddc"},
 ]
 packaging = [
-    {file = "packaging-20.5-py2.py3-none-any.whl", hash = "sha256:1a67848015ca7e7879eee30a7ae1053bc04d031e31eccbde6082820150f08621"},
-    {file = "packaging-20.5.tar.gz", hash = "sha256:5d21ed3d936beb102850195eadaa1371bfb4b93da6ad63d231410c6dca25a665"},
+    {file = "packaging-20.7-py2.py3-none-any.whl", hash = "sha256:eb41423378682dadb7166144a4926e443093863024de508ca5c9737d6bc08376"},
+    {file = "packaging-20.7.tar.gz", hash = "sha256:05af3bb85d320377db281cf254ab050e1a7ebcbf5410685a9a407e18a1f81236"},
 ]
 pathspec = [
     {file = "pathspec-0.8.1-py2.py3-none-any.whl", hash = "sha256:aa0cb481c4041bf52ffa7b0d8fa6cd3e88a2ca4879c533c9153882ee2556790d"},
