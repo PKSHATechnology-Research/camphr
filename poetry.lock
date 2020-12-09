@@ -1025,7 +1025,7 @@ python-versions = "*"
 
 [[package]]
 name = "thinc"
-version = "7.4.3"
+version = "7.4.4"
 description = "Practical Machine Learning for NLP"
 category = "main"
 optional = false
@@ -1044,15 +1044,16 @@ tqdm = ">=4.10.0,<5.0.0"
 wasabi = ">=0.0.9,<1.1.0"
 
 [package.extras]
-cuda = ["cupy (>=5.0.0b4,<8.0.0)"]
-cuda100 = ["cupy-cuda100 (>=5.0.0b4,<8.0.0)"]
-cuda101 = ["cupy-cuda101 (>=5.0.0b4,<8.0.0)"]
-cuda102 = ["cupy-cuda102 (>=5.0.0b4,<8.0.0)"]
-cuda110 = ["cupy-cuda110 (>=5.0.0b4,<8.0.0)"]
-cuda80 = ["cupy-cuda80 (>=5.0.0b4,<8.0.0)"]
-cuda90 = ["cupy-cuda90 (>=5.0.0b4,<8.0.0)"]
-cuda91 = ["cupy-cuda91 (>=5.0.0b4,<8.0.0)"]
-cuda92 = ["cupy-cuda92 (>=5.0.0b4,<8.0.0)"]
+cuda = ["cupy (>=5.0.0b4)"]
+cuda100 = ["cupy-cuda100 (>=5.0.0b4)"]
+cuda101 = ["cupy-cuda101 (>=5.0.0b4)"]
+cuda102 = ["cupy-cuda102 (>=5.0.0b4)"]
+cuda110 = ["cupy-cuda110 (>=5.0.0b4)"]
+cuda111 = ["cupy-cuda110 (>=5.0.0b4)"]
+cuda80 = ["cupy-cuda80 (>=5.0.0b4)"]
+cuda90 = ["cupy-cuda90 (>=5.0.0b4)"]
+cuda91 = ["cupy-cuda91 (>=5.0.0b4)"]
+cuda92 = ["cupy-cuda92 (>=5.0.0b4)"]
 
 [[package]]
 name = "threadpoolctl"
@@ -1938,19 +1939,19 @@ termcolor = [
     {file = "termcolor-1.1.0.tar.gz", hash = "sha256:1d6d69ce66211143803fbc56652b41d73b4a400a2891d7bf7a1cdf4c02de613b"},
 ]
 thinc = [
-    {file = "thinc-7.4.3-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:2ea3fd503974078a24a9f3d07c49d2adf4f0252530780eda38de3bf6517237e2"},
-    {file = "thinc-7.4.3-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:312bbb18f668e190b14563c2d38928d187faaef69217ea5ff4d7e0d6e2e1f21c"},
-    {file = "thinc-7.4.3-cp36-cp36m-win_amd64.whl", hash = "sha256:9e4772c1094b2997394fe95377eb76e15c2a2f50cdb46e2351442a8a9c370146"},
-    {file = "thinc-7.4.3-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:862e846033a31644be600c7f9606a965e913bcc42a45cad64a0c77c81c677bdf"},
-    {file = "thinc-7.4.3-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:187b8245124305b0a709a7f7c79775742c270d6c176a3879afecdaadcfb92fb4"},
-    {file = "thinc-7.4.3-cp37-cp37m-win_amd64.whl", hash = "sha256:e609261414e6978692c17b9ae091925edf3361b47c8f8c086390684ce604805f"},
-    {file = "thinc-7.4.3-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:241b8c9e9e068d1728e1fb97d95bfc4a956a8eebb40c63ecbe68aad416dac26c"},
-    {file = "thinc-7.4.3-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:63471847f282ca2f2b2f88d3e6fb15240f4ea0ec6931549ddceb57967deeca18"},
-    {file = "thinc-7.4.3-cp38-cp38-win_amd64.whl", hash = "sha256:d28d5b300f7e18fa143b3efba0c9321e886fa6ec36a553fac5b32f686df6584a"},
-    {file = "thinc-7.4.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:39405be25a5d232e4fb6e1d4830568bd826867d43878d093497c9db277f3e90f"},
-    {file = "thinc-7.4.3-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:1e516f78d63ab710fcea49f0eed1c8068f2ca29ce5c6323a2a23fb8140fceb45"},
-    {file = "thinc-7.4.3-cp39-cp39-win_amd64.whl", hash = "sha256:16002dc0feb941d4fc985cee90a0af8081190d098247d4e7f6db7d3da1ae0222"},
-    {file = "thinc-7.4.3.tar.gz", hash = "sha256:c98491b083165f48bda95f5533f7d9dbd3980d32ad621bfe579ff08ef625a4d3"},
+    {file = "thinc-7.4.4-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:90e7f7f73ebf9754d196587918d9838633227f106fd77cc43c65b50339abb16f"},
+    {file = "thinc-7.4.4-cp36-cp36m-manylinux2014_x86_64.whl", hash = "sha256:e62019616744c891688ecf1148562c8a3846375bb71f94e57e1d248edea2543e"},
+    {file = "thinc-7.4.4-cp36-cp36m-win_amd64.whl", hash = "sha256:6115594184215afb5372d87ffd91181143a3ccc1e6937db6c197b0b34c6d7426"},
+    {file = "thinc-7.4.4-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:e2b8c09519ea3ea35f3e5efefbb9c3655e289eceb1ab23b71ba27b40be1ff52e"},
+    {file = "thinc-7.4.4-cp37-cp37m-manylinux2014_x86_64.whl", hash = "sha256:de2c0e976c0794dd979a532539336707a1cf6f465af9f6406fbc6d79846c3620"},
+    {file = "thinc-7.4.4-cp37-cp37m-win_amd64.whl", hash = "sha256:cd9a8c756ca1133cc4ea47d7e47fb4b505364f0ad654c5f78e87e70af1900e6a"},
+    {file = "thinc-7.4.4-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:bc5bbb0354337c4b87304f75a39abefc9cb19f164e2788a4240ca53e681c3255"},
+    {file = "thinc-7.4.4-cp38-cp38-manylinux2014_x86_64.whl", hash = "sha256:9e3fde7bcad2462dff5a320e265e3d9a9e016db5a92b442db2664e63ac5a258e"},
+    {file = "thinc-7.4.4-cp38-cp38-win_amd64.whl", hash = "sha256:cf4802c6b873e9c5d992a85d19f993bcfdeaf0f0b85d01918631897ef944b036"},
+    {file = "thinc-7.4.4-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:90dc51e0d969fe40490f965e8d265fd56cde810ea51f4efdf9ebe444c3cdea40"},
+    {file = "thinc-7.4.4-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:dad2d36cdd3619f600ad75009a62feb56f1dbd5a9a1ffa0710a00acf231bdc72"},
+    {file = "thinc-7.4.4-cp39-cp39-win_amd64.whl", hash = "sha256:a961d5d7d669c31c7668f131ef72460c85c991df058289e940f06f7089bfdb75"},
+    {file = "thinc-7.4.4.tar.gz", hash = "sha256:08cf5cf7d70135db931c9f9d6f3b1844c53046c88f6072675fc164884f44c9e2"},
 ]
 threadpoolctl = [
     {file = "threadpoolctl-2.1.0-py3-none-any.whl", hash = "sha256:38b74ca20ff3bb42caca8b00055111d74159ee95c4370882bbff2b93d24da725"},
