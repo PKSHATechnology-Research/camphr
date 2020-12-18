@@ -1,24 +1,25 @@
 from typing import (
     Any,
     Callable,
-    Iterable,
     Dict,
+    Iterable,
     Iterator,
     List,
     Optional,
-    Tuple,
-    overload,
     Sequence,
+    Tuple,
+    Union,
+    overload
 )
-from spacy.tokens.underscore import Underscore
-
-from spacy.vocab import Vocab
-from .span import Span
-
-from .token import Token
-from ._retokenize import Retokenizer
 
 from spacy import tokens
+from spacy.tokens.underscore import Underscore
+from spacy.vocab import Vocab
+
+from ._retokenize import Retokenizer
+from .span import Span
+from .token import Token
+
 
 class Doc:
     text: str
@@ -56,7 +57,7 @@ class Doc:
         self,
         start_idx: int,
         end_idx: int,
-        label: int = 0,
+        label: Union[int, str]= 0,
         kb_id: int = 0,
         vector: Any = None,
     ): ...
