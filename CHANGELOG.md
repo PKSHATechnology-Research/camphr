@@ -1,7 +1,23 @@
 # Changelog
 
 ## 0.7.0 (21/08/2020)
-- Separeted `udify` and `elmo` pipelines to [camphr_allennlp](https://github.com/PKSHATechnology-Research/camphr-allennlp) - now camphr doesn't depend on allennlp.
+- [**dependencies**] Bump pyknp from 0.4.4 to 0.4.5 [#80](https://github.com/PKSHATechnology-Research/camphr/pull/80)
+- [**dependencies**] Bump spacy from 2.2.4 to 2.3.2 [#81](https://github.com/PKSHATechnology-Research/camphr/pull/81)
+- [**dependencies**] Bump torch from 1.5.1 to 1.6.0 [#82](https://github.com/PKSHATechnology-Research/camphr/pull/82)
+- [**closed**] move allennlp to camphr_allennlp [#79](https://github.com/PKSHATechnology-Research/camphr/pull/79)
+- [**dependencies**] Bump hypothesis from 5.23.11 to 5.23.12 [#73](https://github.com/PKSHATechnology-Research/camphr/pull/73)
+- [**dependencies**] Bump pytest from 5.4.3 to 6.0.1 [#66](https://github.com/PKSHATechnology-Research/camphr/pull/66)
+- [**closed**] fix get_doc_char_span and covering span [#78](https://github.com/PKSHATechnology-Research/camphr/pull/78)
+- [**closed**] fix index error [#77](https://github.com/PKSHATechnology-Research/camphr/pull/77)
+- [**closed**] add lemma search to PatternSearch [#76](https://github.com/PKSHATechnology-Research/camphr/pull/76)
+- [**dependencies**] Bump pytextspan from 0.2.2 to 0.3.0 [#74](https://github.com/PKSHATechnology-Research/camphr/pull/74)
+- [**closed**] improve beamsearch performance for k ==1 [#75](https://github.com/PKSHATechnology-Research/camphr/pull/75)
+- [**closed**] use pyknp [#71](https://github.com/PKSHATechnology-Research/camphr/pull/71)
+- [**closed**] add normalizer to pattern search [#70](https://github.com/PKSHATechnology-Research/camphr/pull/70)
+- [**closed**] Pattern searcher becomes able to search with lemma and lower [#65](https://github.com/PKSHATechnology-Research/camphr/pull/65)
+- [**closed**] 形容詞接頭辞 into PART [#63](https://github.com/PKSHATechnology-Research/camphr/pull/63)
+- [**closed**] fix deps [#62](https://github.com/PKSHATechnology-Research/camphr/pull/62)
+
 ---
 
 ## 0.6.0 (09/07/2020)
