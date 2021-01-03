@@ -287,7 +287,7 @@ dev = ["black", "coverage", "flake8", "flake8-copyright", "nox", "pre-commit", "
 
 [[package]]
 name = "hypothesis"
-version = "5.43.5"
+version = "5.43.9"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -1111,7 +1111,7 @@ typing-extensions = "*"
 
 [[package]]
 name = "tqdm"
-version = "4.55.0"
+version = "4.55.1"
 description = "Fast, Extensible Progress Meter"
 category = "main"
 optional = false
@@ -1383,8 +1383,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.43.5-py3-none-any.whl", hash = "sha256:546db914a7a7be1ccacbd408cf4cec4fa958b96b4015a2216f8187e4f0ec7eaa"},
-    {file = "hypothesis-5.43.5.tar.gz", hash = "sha256:9377cd796a5bca3c0ae74ef1c592aa231d3a04cde948467bace9344148ee75cb"},
+    {file = "hypothesis-5.43.9-py3-none-any.whl", hash = "sha256:c0150491f53277622b96a5649cd7637edf3496cbeb8f6c342abf665e97cad79c"},
+    {file = "hypothesis-5.43.9.tar.gz", hash = "sha256:67c7a7291c50d35bf8192321417d4310213fe66a253fb979ea38a548108e4775"},
 ]
 identify = [
     {file = "identify-1.5.11-py2.py3-none-any.whl", hash = "sha256:7aef7a5104d6254c162990e54a203cdc0fd202046b6c415bd5d636472f6565c4"},
@@ -2002,8 +2002,8 @@ torch = [
     {file = "torch-1.7.0-cp38-none-macosx_10_9_x86_64.whl", hash = "sha256:b8000e39600e101b2f19dbbab75de663a3b78e3979c3e1720b7136aae1c35ce2"},
 ]
 tqdm = [
-    {file = "tqdm-4.55.0-py2.py3-none-any.whl", hash = "sha256:0cd81710de29754bf17b6fee07bdb86f956b4fa20d3078f02040f83e64309416"},
-    {file = "tqdm-4.55.0.tar.gz", hash = "sha256:f4f80b96e2ceafea69add7bf971b8403b9cba8fb4451c1220f91c79be4ebd208"},
+    {file = "tqdm-4.55.1-py2.py3-none-any.whl", hash = "sha256:b8b46036fd00176d0870307123ef06bb851096964fa7fc578d789f90ce82c3e4"},
+    {file = "tqdm-4.55.1.tar.gz", hash = "sha256:556c55b081bd9aa746d34125d024b73f0e2a0e62d5927ff0e400e20ee0a03b9a"},
 ]
 transformers = [
     {file = "transformers-3.0.2-py3-none-any.whl", hash = "sha256:53ecfd27839d5ecf38af6978211462d44d76b526edd7b65d84eaa9b29c9610b8"},
