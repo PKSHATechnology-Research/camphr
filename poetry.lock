@@ -287,7 +287,7 @@ dev = ["black", "coverage", "flake8", "flake8-copyright", "nox", "pre-commit", "
 
 [[package]]
 name = "hypothesis"
-version = "5.48.0"
+version = "5.49.0"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -1384,8 +1384,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-5.48.0-py3-none-any.whl", hash = "sha256:7046f840621d78729e7b3c09d2cd732ed39b24077cbeaf9ec9dd32aa36c07de7"},
-    {file = "hypothesis-5.48.0.tar.gz", hash = "sha256:c54dcccdca262ac119953510d66fde1c0256d43715c4ddc4eb897f80dd6c2e9f"},
+    {file = "hypothesis-5.49.0-py3-none-any.whl", hash = "sha256:e91111f2f01abf2566041c4c86366aa7f08bfd5b3d858cc77a545fcf67df335e"},
+    {file = "hypothesis-5.49.0.tar.gz", hash = "sha256:36a4d5587c34193125d654b61bf9284e24a227d1edd339c49143378658a10c7d"},
 ]
 identify = [
     {file = "identify-1.5.11-py2.py3-none-any.whl", hash = "sha256:7aef7a5104d6254c162990e54a203cdc0fd202046b6c415bd5d636472f6565c4"},
