@@ -6,7 +6,6 @@ from typing import (
     Iterator,
     List,
     Optional,
-    Sequence,
     Tuple,
     Union,
     overload
@@ -20,14 +19,14 @@ from ._retokenize import Retokenizer
 from .span import Span
 from .token import Token
 
-
 class Doc:
     text: str
+    doc: "Doc"
     is_parsed: bool
     is_tagged: bool
     is_sentenced: bool
     sents: Iterator[tokens.Span]
-    user_data: Dict[str, Any]
+    user_data: Dict[Union[str, Tuple], Any]
     tensor: Any
     user_hooks: Dict[str, Callable]
     user_span_hooks: Dict[str, Callable]
@@ -35,8 +34,10 @@ class Doc:
     _: Underscore
     cats: Dict[str, Any]
     vector: Any
+    vocab: Vocab
     noun_chunks_iterator: Callable[[Doc], Iterable[Tuple[int, int, str]]]
     noun_chunks: Iterator[Span]
+    is_nered: bool
     def __init__(
         self,
         vocab: Vocab,
@@ -66,3 +67,5 @@ class Doc:
     def ents(self) -> Tuple[Span, ...]: ...
     @ents.setter
     def ents(self, ents: Iterable[Span]): ...
+    def to_array(self, attrs: List):...
+    def from_array(self, attrs: List, array: List):...

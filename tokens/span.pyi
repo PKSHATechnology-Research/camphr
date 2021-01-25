@@ -1,9 +1,8 @@
-from typing import Iterator, Tuple, overload, Any, Union
-
-from spacy.tokens.underscore import Underscore
+from typing import Any, Iterator, Tuple, Union, overload
 
 from spacy.tokens.doc import Doc
 from spacy.tokens.token import Token
+from spacy.tokens.underscore import Underscore
 
 class Span:
     text: str

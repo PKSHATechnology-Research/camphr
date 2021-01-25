@@ -1,12 +1,11 @@
 from pathlib import Path
-from typing import Any, Callable, Iterable, Iterator, List, Optional, Sequence, Union
+from typing import (Any, Callable, Iterable, Iterator, List, Optional,
+                    Sequence, Union)
 
 from spacy.gold import GoldParse
-from spacy.tokens.doc import Doc
-
-from spacy.vocab import Vocab
-
 from spacy.language import Language
+from spacy.tokens.doc import Doc
+from spacy.vocab import Vocab
 
 class Pipe:
     name: Union[str]
@@ -28,4 +27,3 @@ class Sentencizer:
 class Tagger: ...
 class Tensorizer: ...
 class TextCategorizer: ...
-

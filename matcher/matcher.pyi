@@ -1,4 +1,5 @@
-from typing import List, Tuple, Optional, Callable, Dict
+from typing import Callable, Dict, List, Optional, Tuple
+
 import spacy.vocab
 from spacy.tokens import Doc
 

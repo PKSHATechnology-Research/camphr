@@ -1,5 +1,7 @@
 from typing import Dict, List
+
 from spacy.tokens.doc import Doc
+
 from .span import Span
 from .token import Token
 

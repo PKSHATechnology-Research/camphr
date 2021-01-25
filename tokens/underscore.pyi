@@ -1,8 +1,8 @@
 # coding: utf8
 from __future__ import unicode_literals
 
-import functools
 import copy
+import functools
 from typing import Any, Dict, Optional, Set, Tuple
 
 from ..errors import Errors
