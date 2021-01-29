@@ -1,5 +1,5 @@
 import warnings
-from typing import Type
+from typing import Any, Type
 
 
 class W:
@@ -7,7 +7,7 @@ class W:
         self.msg = msg
         self.warning_cls = warning_cls
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any):
         warnings.warn(self.msg.format(*args, **kwargs), self.warning_cls, stacklevel=3)
 
 
@@ -16,7 +16,7 @@ class E:
         self.msg = msg
         self.exception_cls = exception_cls
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any):
         raise self.exception_cls(self.msg.format(*args, **kwargs))
 
 

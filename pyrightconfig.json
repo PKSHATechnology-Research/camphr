@@ -1,0 +1,13 @@
+{
+  "include": [
+    "camphr"
+  ],
+  "stubPath": "./typings",
+  "typeCheckingMode": "strict",
+  "reportMissingTypeStubs": false,
+  "reportUnknownMemberType": "warning",
+  "reportUnknownVariableType": "warning",
+  "reportUnnecessaryIsInstance": "warning",
+  "reportPrivateUsage": "warning",
+  "reportUnknownArgumentType": "warning"
+}
