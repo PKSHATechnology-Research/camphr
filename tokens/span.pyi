@@ -24,14 +24,14 @@ class Span:
     @overload
     def __getitem__(self, i: slice) -> Span: ...
     @classmethod
-    def set_extension(cls, name: str, **kwargs) -> None: ...
+    def set_extension(cls, name: str, **kwargs: Any) -> None: ...
     def __init__(
         self,
         doc: Doc,
         start: int,
         end: int,
-        label: Union[int, str] = 0,
-        vector: Any = None,
-        vector_norm: Any = None,
-        kb_id: int = 0,
-    ): ...
+        label: Union[int, str] = ...,
+        vector: Any = ...,
+        vector_norm: Any = ...,
+        kb_id: int = ...,
+    ) -> None: ...
