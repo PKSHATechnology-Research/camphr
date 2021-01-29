@@ -126,7 +126,7 @@ class Language(object):
         DOCS: https://spacy.io/api/language#get_pipe
         """
         ...
-    def create_pipe(self, name, config=...):
+    def create_pipe(self, name: str, config: Any=...) -> Pipe:
         """Create a pipeline component from a factory.
 
         name (unicode): Factory name to look up in `Language.factories`.
