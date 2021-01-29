@@ -100,7 +100,7 @@ def _traverse_children(
     tag: Span, _is_root: bool = True, _root: Optional[Span] = None
 ) -> List[Span]:
     """Traverse children except for `para` dependency.
-    
+
     Args:
         tag: tag to be traversed
         _is_root: internally used parameter. Should not be changed outside this function.

@@ -143,6 +143,5 @@ outputs/
 /multirun/
 user.yaml
 /.vscode
-pyrightconfig.json
 
 /camphr_models/

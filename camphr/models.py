@@ -1,4 +1,7 @@
-"""`models` defined `camphr.load`, camphr model loader."""
+"""`models` defined `camphr.load`, camphr model loader.
+
+TODO: strictly type
+"""
 import functools
 from collections import deque
 from dataclasses import dataclass
@@ -60,7 +63,7 @@ class NLPConfig(omegaconf.Config):
 
 def create_model(cfg: Union[NLPConfig, Any]) -> Language:
     if not isinstance(cfg, omegaconf.Config):
-        cfg = OmegaConf.create(cfg)
+        cfg = cast(NLPConfig, OmegaConf.create(cfg))
     cfg = correct_model_config(cfg)
     nlp = create_lang(cfg.lang)
     for pipe in create_pipeline(nlp, cfg.pipeline):
@@ -73,24 +76,29 @@ def create_model(cfg: Union[NLPConfig, Any]) -> Language:
 
 def create_lang(cfg: LangConfig) -> Language:
     kwargs = cfg.kwargs or {}
-    kwargs = (
+    # TODO: remove cast
+    kwargs = cast(
+        Dict[str, Any],
         OmegaConf.to_container(kwargs)
         if isinstance(kwargs, omegaconf.Config)
-        else kwargs
+        else kwargs,
     )
     if cfg.torch:
-        kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})
+        kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})  # type: ignore
         return TorchLanguage(True, optimizer_config=cfg.optimizer, **kwargs)
     return spacy.blank(cfg.name, **kwargs)
 
 
 def create_pipeline(nlp: Language, cfg: omegaconf.DictConfig) -> List[Pipe]:
     if not isinstance(cfg, omegaconf.DictConfig):
-        cfg = OmegaConf.create(cfg)
+        _cfg = OmegaConf.create(cfg)
+        assert isinstance(_cfg, omegaconf.DictConfig)
+        cfg = _cfg
 
     pipes = []
     for name, pipe_config in cfg.items():
         pipe_config = OmegaConf.to_container(pipe_config or OmegaConf.create({}))
+        assert isinstance(name, str)
         pipes.append(nlp.create_pipe(name, config=pipe_config or dict()))
     return pipes
 
@@ -155,7 +163,7 @@ TASKS = {"textcat", "ner", "multilabel_textcat"}
 def _add_pipes(cfg: NLPConfig) -> NLPConfig:
     if cfg.task in TASKS:
         assert cfg.labels, "`cfg.labels` required"
-        cfg.pipeline = cfg.pipeline or OmegaConf.create({})
+        cfg.pipeline = cfg.pipeline or OmegaConf.create({})  # type: ignore
         # TODO https://github.com/microsoft/pyright/issues/671
         pipe = TASK2PIPE[cast(str, cfg.task)]
         prev = cfg.pipeline[pipe] or OmegaConf.create({})

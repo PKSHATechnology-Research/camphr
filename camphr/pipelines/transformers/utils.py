@@ -78,7 +78,7 @@ LABELS = "labels"
 
 def get_last_hidden_state_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
     """Get transformers text embedding from docs.
-    
+
     Useful for downstream task pipelines.
     `last_hidden_state` is set in `camphr.pipelines.transformers.TrfModel.set_annotations`.
     """
