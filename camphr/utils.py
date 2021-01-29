@@ -54,7 +54,7 @@ def token_from_char_pos(doc: Doc, i: int) -> Token:
     return doc[bisect.bisect(token_idxs, i) - 1]
 
 
-def _get_covering_span(doc: Doc, i: int, j: int, **kwargs) -> Span:
+def _get_covering_span(doc: Doc, i: int, j: int, **kwargs: Any) -> Span:
     token_idxs = [t.idx for t in doc]
     i = bisect.bisect(token_idxs, i) - 1
     j = bisect.bisect_left(token_idxs, j)
@@ -71,7 +71,12 @@ def destruct_token(doc: Doc, *char_pos: int) -> Doc:
 
 
 def get_doc_char_span(
-    doc: Doc, i: int, j: int, destructive: bool = True, covering: bool = False, **kwargs
+    doc: Doc,
+    i: int,
+    j: int,
+    destructive: bool = True,
+    covering: bool = False,
+    **kwargs: Any,
 ) -> Optional[Span]:
     """Get Span from Doc with char position, similar to doc.char_span.
 
@@ -92,7 +97,7 @@ def get_doc_char_span(
 
 
 def get_doc_char_spans_list(
-    doc: Doc, spans: Iterable[Tuple[int, int]], destructive: bool = True, **kwargs
+    doc: Doc, spans: Iterable[Tuple[int, int]], destructive: bool = True, **kwargs: Any
 ) -> List[Span]:
     res = []
     for i, j in spans:
@@ -151,7 +156,7 @@ def get_labels(labels_or_path: Union[List[str], Pathlike]) -> List[str]:
     return cast(List[str], labels_or_path)
 
 
-def get_by_dotkey(d: dict, dotkey: str) -> Any:
+def get_by_dotkey(d: Any, dotkey: str) -> Any:
     assert dotkey
     keys = dotkey.split(".")
     cur = d
@@ -228,25 +233,25 @@ class SerializationMixin:
     serialization_fields: List[str] = []
     name: str
 
-    def from_bytes(self, bytes_data, **kwargs):
+    def from_bytes(self, bytes_data: bytes, **kwargs: Any):
         pkls = srsly.pickle_loads(bytes_data)
         for field in self.serialization_fields:
             setattr(self, field, pkls[field])
         return self
 
-    def to_bytes(self, **kwargs):
+    def to_bytes(self, **kwargs: Any):
         pkls = OrderedDict()
         for field in self.serialization_fields:
             pkls[field] = getattr(self, field, None)
         return srsly.pickle_dumps(pkls)
 
-    def from_disk(self, path: Path, **kwargs):
+    def from_disk(self, path: Path, **kwargs: Any):
         path.mkdir(exist_ok=True)
         with (path / "data.pkl").open("rb") as file_:
             data = file_.read()
         return self.from_bytes(data, **kwargs)
 
-    def to_disk(self, path: Path, **kwargs):
+    def to_disk(self, path: Path, **kwargs: Any):
         path.mkdir(exist_ok=True)
         data = self.to_bytes(**kwargs)
         with (path / "data.pkl").open("wb") as file_:
