@@ -2,12 +2,14 @@
   "include": [
     "camphr"
   ],
-  "stubPath": "./typings",
-  "typeCheckingMode": "strict",
+  "strict": [
+    "camphr"
+  ],
   "reportMissingTypeStubs": false,
   "reportUnknownMemberType": "warning",
   "reportUnknownVariableType": "warning",
   "reportUnnecessaryIsInstance": "warning",
   "reportPrivateUsage": "warning",
-  "reportUnknownArgumentType": "warning"
+  "reportUnknownArgumentType": "warning",
+  "reportUnknownLambdaType": false
 }

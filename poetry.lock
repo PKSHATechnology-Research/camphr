@@ -287,7 +287,7 @@ dev = ["black", "coverage", "flake8", "flake8-copyright", "nox", "pre-commit", "
 
 [[package]]
 name = "hypothesis"
-version = "6.0.4"
+version = "6.1.1"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -403,7 +403,7 @@ xdg_home = ["appdirs (>=1.4.0)"]
 
 [[package]]
 name = "jinja2"
-version = "2.11.2"
+version = "2.11.3"
 description = "A very fast and expressive template engine."
 category = "dev"
 optional = false
@@ -543,7 +543,7 @@ lint = ["black", "flake8"]
 
 [[package]]
 name = "packaging"
-version = "20.8"
+version = "20.9"
 description = "Core utilities for Python packages"
 category = "main"
 optional = false
@@ -719,11 +719,11 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xm
 
 [[package]]
 name = "pytextspan"
-version = "0.2.2"
+version = "0.4.2"
 description = ""
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = "^3.6"
 
 [[package]]
 name = "pytokenizations"
@@ -735,7 +735,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "pytz"
-version = "2020.5"
+version = "2021.1"
 description = "World timezone definitions, modern and historical"
 category = "dev"
 optional = false
@@ -1173,19 +1173,20 @@ python-versions = "*"
 
 [[package]]
 name = "urllib3"
-version = "1.22"
+version = "1.26.3"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
 [package.extras]
+brotli = ["brotlipy (>=0.6.0)"]
 secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "virtualenv"
-version = "20.4.0"
+version = "20.4.2"
 description = "Virtual Python Environment builder"
 category = "dev"
 optional = false
@@ -1205,7 +1206,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 
 [[package]]
 name = "wasabi"
-version = "0.8.1"
+version = "0.8.2"
 description = "A lightweight console printing and formatting toolkit"
 category = "main"
 optional = false
@@ -1238,8 +1239,8 @@ mecab = ["mecab-python3", "fugashi"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.6.1"
-content-hash = "a5201ea1715febb8f220b4055253a1f8ecd5030172bcc5afc0fc2d32ed0e3883"
+python-versions = ">=3.6.1,<4"
+content-hash = "df08d61277fce829c36e5d875909ac1523d8c1c6d06c6de7d8a46940ee307532"
 
 [metadata.files]
 alabaster = [
@@ -1384,8 +1385,8 @@ hydra-core = [
     {file = "hydra_core-0.11.3-py3-none-any.whl", hash = "sha256:43ef27b4a32a70cbf566b10bd198def5c5d03cab212d4ea49e744aeb0c14a6b7"},
 ]
 hypothesis = [
-    {file = "hypothesis-6.0.4-py3-none-any.whl", hash = "sha256:682b47436332a737ecb5a90bc0ce3d8fd866140ce5d46fb7d8a2e3a147693fa1"},
-    {file = "hypothesis-6.0.4.tar.gz", hash = "sha256:f13662cfe7131cba67abbdb38e935ad4a3f4ad3b4aa4c7ed49df1cb15be94a67"},
+    {file = "hypothesis-6.1.1-py3-none-any.whl", hash = "sha256:4da042e6df01417308d389afa8769de0a762b827476f431eb7848852f4a02647"},
+    {file = "hypothesis-6.1.1.tar.gz", hash = "sha256:47673d3c0cb87055f5b4d322d3d16a7556ae5962e9677aa98d6f5503ffd74f7a"},
 ]
 identify = [
     {file = "identify-1.5.13-py2.py3-none-any.whl", hash = "sha256:9dfb63a2e871b807e3ba62f029813552a24b5289504f5b071dea9b041aee9fe4"},
@@ -1419,8 +1420,8 @@ isort = [
     {file = "isort-4.3.21.tar.gz", hash = "sha256:54da7e92468955c4fceacd0c86bd0ec997b0e1ee80d97f67c35a78b719dccab1"},
 ]
 jinja2 = [
-    {file = "Jinja2-2.11.2-py2.py3-none-any.whl", hash = "sha256:f0a4641d3cf955324a89c04f3d94663aa4d638abe8f733ecd3582848e1c37035"},
-    {file = "Jinja2-2.11.2.tar.gz", hash = "sha256:89aab215427ef59c34ad58735269eb58b1a5808103067f7bb9d5836c651b3bb0"},
+    {file = "Jinja2-2.11.3-py2.py3-none-any.whl", hash = "sha256:03e47ad063331dd6a3f04a43eddca8a966a26ba0c5b7207a9a9e4e08f1b29419"},
+    {file = "Jinja2-2.11.3.tar.gz", hash = "sha256:a6d58433de0ae800347cab1fa3043cebbabe8baa9d29e668f1c768cb87a333c6"},
 ]
 joblib = [
     {file = "joblib-1.0.0-py3-none-any.whl", hash = "sha256:75ead23f13484a2a414874779d69ade40d4fa1abe62b222a23cd50d4bc822f6f"},
@@ -1617,8 +1618,8 @@ omegaconf = [
     {file = "omegaconf-1.4.1.tar.gz", hash = "sha256:5bb6c9391224c6277e06171b661904a68dcbcfbabd831eb552f4803a02eefddc"},
 ]
 packaging = [
-    {file = "packaging-20.8-py2.py3-none-any.whl", hash = "sha256:24e0da08660a87484d1602c30bb4902d74816b6985b93de36926f5bc95741858"},
-    {file = "packaging-20.8.tar.gz", hash = "sha256:78598185a7008a470d64526a8059de9aaa449238f280fc9eb6b13ba6c4109093"},
+    {file = "packaging-20.9-py2.py3-none-any.whl", hash = "sha256:67714da7f7bc052e064859c05c595155bd1ee9f69f76557e21f051443c20947a"},
+    {file = "packaging-20.9.tar.gz", hash = "sha256:5b327ac1320dc863dca72f4514ecc086f31186744b84a230374cc1fd776feae5"},
 ]
 pathspec = [
     {file = "pathspec-0.8.1-py2.py3-none-any.whl", hash = "sha256:aa0cb481c4041bf52ffa7b0d8fa6cd3e88a2ca4879c533c9153882ee2556790d"},
@@ -1694,16 +1695,16 @@ pytest = [
     {file = "pytest-6.1.2.tar.gz", hash = "sha256:c0a7e94a8cdbc5422a51ccdad8e6f1024795939cc89159a0ae7f0b316ad3823e"},
 ]
 pytextspan = [
-    {file = "pytextspan-0.2.2-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:babbb1f9b5607f17e22a23141da107a99a91b98bb35f2287c19f0433b40266e0"},
-    {file = "pytextspan-0.2.2-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:7d0509a62de44793fa1cb8b7a46dadff87e2646b1ec96de0c3dbb45108147103"},
-    {file = "pytextspan-0.2.2-cp36-none-win_amd64.whl", hash = "sha256:cd3a0d2df2650ecb8e964243057f3d9c42854e42d92c08bc0ae2de06e854c0ad"},
-    {file = "pytextspan-0.2.2-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:2bb20fe30b6e5f58c4613907b55b331805206330e6212517fde453bad00ac88a"},
-    {file = "pytextspan-0.2.2-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:c4e8556f1c877348a42714baa861891d69165c315ef8e6bc01f8f494aef8b4ad"},
-    {file = "pytextspan-0.2.2-cp37-none-win_amd64.whl", hash = "sha256:6d31125303114cd72667adc67d9cd77b326afb3cc69ca0f40143a98be891e3b3"},
-    {file = "pytextspan-0.2.2-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:f5537446302e6c26420aaa125af73e296b5e11e64fc86559922007798ab9a50e"},
-    {file = "pytextspan-0.2.2-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:63fca5a135df709f1dfc0f5d4c78fbaeba34a001a43572bab6a6ca2c8b147e72"},
-    {file = "pytextspan-0.2.2-cp38-none-win_amd64.whl", hash = "sha256:a4e979f59b9e1da321343c466af423f217f5fc5f92f208ecf40e585113772c82"},
-    {file = "pytextspan-0.2.2.tar.gz", hash = "sha256:1a02b0fb4f1b9af4ec95f3ae3fde92ff604617fb0eec51d7b9ade45888f89281"},
+    {file = "pytextspan-0.4.2-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:e65a14e688d5c119997766745a8e8ab2645642012e1479b6176d007498e6d836"},
+    {file = "pytextspan-0.4.2-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:07a70a13308a3c05f6e7c7aa0b3a2be0195caad4312ec8ab9ac05822fd22e9dc"},
+    {file = "pytextspan-0.4.2-cp36-none-win_amd64.whl", hash = "sha256:7594214fdaef2cacbc79c8939c431f635d345ba33f45d6fadbf6b4e97cf98659"},
+    {file = "pytextspan-0.4.2-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:385e0d9fa4d6bfab9948d0f947cf5bfa3ae6d9c7c222abf4f0ce7791e6e0cb4c"},
+    {file = "pytextspan-0.4.2-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:c4ff26f641f41fe64350e03764c3689ab956b17e956f26fc377a957386fb0377"},
+    {file = "pytextspan-0.4.2-cp37-none-win_amd64.whl", hash = "sha256:16b1e5fa0034fab05337974a8ddc540382dfb5a83d8e238fbfd56919a30d9952"},
+    {file = "pytextspan-0.4.2-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:d819351a05cbd2f2f90aa36802d9b6c769ee7f04c596d44d7a7d2a41a3794762"},
+    {file = "pytextspan-0.4.2-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:260deface465bed20772297267a5877f09d7aef78270c4728b0c02c13bfb7e60"},
+    {file = "pytextspan-0.4.2-cp38-none-win_amd64.whl", hash = "sha256:cfb49d2aa3639c60b2b7ce0b2abd00fa90be1160f376f1853d7f533e5c787d81"},
+    {file = "pytextspan-0.4.2.tar.gz", hash = "sha256:b44995490ac2333b5d6040f67977044614760fcec388995ffd4cd76348741488"},
 ]
 pytokenizations = [
     {file = "pytokenizations-0.7.2-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:b69d266738da5d5471c877ab85f829e9a58c86591e5c4aeb913b30445f40705e"},
@@ -1721,8 +1722,8 @@ pytokenizations = [
     {file = "pytokenizations-0.7.2.tar.gz", hash = "sha256:e8a07ed9dd3b1ba9c29866ccaf11dc4648ea97ef231955ec3f34054e34760f1d"},
 ]
 pytz = [
-    {file = "pytz-2020.5-py2.py3-none-any.whl", hash = "sha256:16962c5fb8db4a8f63a26646d8886e9d769b6c511543557bc84e9569fb9a9cb4"},
-    {file = "pytz-2020.5.tar.gz", hash = "sha256:180befebb1927b16f6b57101720075a984c019ac16b1b7575673bea42c6c3da5"},
+    {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},
+    {file = "pytz-2021.1.tar.gz", hash = "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da"},
 ]
 pyyaml = [
     {file = "PyYAML-5.4.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:3b2b1824fe7112845700f815ff6a489360226a5609b96ec2190a45e62a9fc922"},
@@ -2066,16 +2067,16 @@ typing-extensions = [
     {file = "typing_extensions-3.7.4.3.tar.gz", hash = "sha256:99d4073b617d30288f569d3f13d2bd7548c3a7e4c8de87db09a9d29bb3a4a60c"},
 ]
 urllib3 = [
-    {file = "urllib3-1.22-py2.py3-none-any.whl", hash = "sha256:06330f386d6e4b195fbfc736b297f58c5a892e4440e54d294d7004e3a9bbea1b"},
-    {file = "urllib3-1.22.tar.gz", hash = "sha256:cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"},
+    {file = "urllib3-1.26.3-py2.py3-none-any.whl", hash = "sha256:1b465e494e3e0d8939b50680403e3aedaa2bc434b7d5af64dfd3c958d7f5ae80"},
+    {file = "urllib3-1.26.3.tar.gz", hash = "sha256:de3eedaad74a2683334e282005cd8d7f22f4d55fa690a2a1020a416cb0a47e73"},
 ]
 virtualenv = [
-    {file = "virtualenv-20.4.0-py2.py3-none-any.whl", hash = "sha256:227a8fed626f2f20a6cdb0870054989f82dd27b2560a911935ba905a2a5e0034"},
-    {file = "virtualenv-20.4.0.tar.gz", hash = "sha256:219ee956e38b08e32d5639289aaa5bd190cfbe7dafcb8fa65407fca08e808f9c"},
+    {file = "virtualenv-20.4.2-py2.py3-none-any.whl", hash = "sha256:2be72df684b74df0ea47679a7df93fd0e04e72520022c57b479d8f881485dbe3"},
+    {file = "virtualenv-20.4.2.tar.gz", hash = "sha256:147b43894e51dd6bba882cf9c282447f780e2251cd35172403745fc381a0a80d"},
 ]
 wasabi = [
-    {file = "wasabi-0.8.1-py3-none-any.whl", hash = "sha256:62284f46cac06607508395aa75fb716eb61944f79b39bc894891e3c7351f3e09"},
-    {file = "wasabi-0.8.1.tar.gz", hash = "sha256:6e5228a51f5550844ef5080e74759e7ecb6e344241989d018686ba968f0b4f5a"},
+    {file = "wasabi-0.8.2-py3-none-any.whl", hash = "sha256:a493e09d86109ec6d9e70d040472f9facc44634d4ae6327182f94091ca73a490"},
+    {file = "wasabi-0.8.2.tar.gz", hash = "sha256:b4a36aaa9ca3a151f0c558f269d442afbb3526f0160fd541acd8a0d5e5712054"},
 ]
 wrapt = [
     {file = "wrapt-1.12.1.tar.gz", hash = "sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7"},
