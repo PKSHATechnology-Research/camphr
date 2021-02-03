@@ -138,13 +138,13 @@ class Language(object):
         ...
     def add_pipe(
         self,
-        component,
+        component: Callable[[Doc], Doc],
         name: Optional[Any] = ...,
         before: Optional[Any] = ...,
         after: Optional[Any] = ...,
         first: Optional[Any] = ...,
         last: Optional[Any] = ...,
-    ):
+    ) -> None:
         """Add a component to the processing pipeline. Valid components are
         callables that take a `Doc` object, modify it and return it. Only one
         of before/after/first/last can be set. Default behaviour is "last".
