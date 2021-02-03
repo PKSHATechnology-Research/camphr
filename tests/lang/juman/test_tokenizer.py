@@ -39,16 +39,10 @@ def test_juman_tokenizer_difficult(juman_tokenizer, text, foo, bar):
 
 
 def test_serialization():
-    def foo(x):
-        return 2 * x
-
-    nlp = Juman(
-        meta={"tokenizer": {"juman_kwargs": {"jumanpp": False}, "preprocessor": foo}}
-    )
+    nlp = Juman(meta={"tokenizer": {"juman_kwargs": {"jumanpp": False}}})
     with tempfile.TemporaryDirectory() as tmpd:
         nlp.to_disk(tmpd)
         nlp2 = spacy.load(tmpd)
-    assert nlp.tokenizer.preprocessor(1) == nlp2.tokenizer.preprocessor(1)
     assert nlp2.tokenizer.tokenizer.command == "juman"
 
 
