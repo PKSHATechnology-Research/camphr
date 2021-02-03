@@ -1,5 +1,4 @@
 import re
-from pathlib import Path
 from typing import List
 
 import pytest
@@ -7,7 +6,7 @@ import spacy
 from spacy.language import Language
 from spacy.tokens import Doc
 
-from camphr.pipelines.pattern_search import PATTERN_MATCH_AS, PatternSearcher
+from camphr.pipelines.pattern_search import PatternSearcher
 from tests.utils import check_mecab
 
 KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar", "走る", "頭痛"]
