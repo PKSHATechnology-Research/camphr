@@ -85,11 +85,11 @@ class PatternSearcher:
         if self.normalizer is not None:
             normalizers.append(self.normalizer)
 
-        spans = []
+        spans: Iterable[Tuple[int, int]] = []
         for normalizer in normalizers:
             spans = itertools.chain(spans, self._search_by_normalizer(doc, normalizer))
         spans = textspan.remove_span_overlaps(
             list((s.start, s.end) for s in doc.ents) + list(spans)
         )
-        doc.ents = [doc[i:j] for i, j in spans]
+        doc.ents = tuple(doc[i:j] for i, j in spans)
         return doc
