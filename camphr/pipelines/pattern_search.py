@@ -12,8 +12,7 @@ from typing import (
 import ahocorasick
 from spacy.tokens.token import Token
 import textspan
-from spacy.tokens import Doc
-from spacy.tokens.span import Span
+from spacy.tokens import Doc, Span
 
 
 # Sometimes matched text is different from original text
@@ -88,8 +87,11 @@ class PatternSearcher:
         spans: Iterable[Tuple[int, int]] = []
         for normalizer in normalizers:
             spans = itertools.chain(spans, self._search_by_normalizer(doc, normalizer))
-        spans = textspan.remove_span_overlaps(
-            list((s.start, s.end) for s in doc.ents) + list(spans)
-        )
-        doc.ents = tuple(doc[i:j] for i, j in spans)
+
+        ents = list(doc.ents)
+        for i, j in spans:
+            ent = Span(doc, i, j, label=self.label)
+            ents.append(ent)
+        selected = textspan.remove_span_overlaps_idx([(s.start, s.end) for s in ents])
+        doc.ents = tuple(ents[i] for i in selected)
         return doc

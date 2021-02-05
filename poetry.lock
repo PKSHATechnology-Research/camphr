@@ -719,7 +719,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xm
 
 [[package]]
 name = "pytextspan"
-version = "0.4.2"
+version = "0.5.0"
 description = ""
 category = "main"
 optional = false
@@ -1240,7 +1240,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.1,<4"
-content-hash = "df08d61277fce829c36e5d875909ac1523d8c1c6d06c6de7d8a46940ee307532"
+content-hash = "b39bbc9b9637371447baf99b482483063401b006dbccb1e5557385ffa6ede522"
 
 [metadata.files]
 alabaster = [
@@ -1714,16 +1714,16 @@ pytest = [
     {file = "pytest-6.1.2.tar.gz", hash = "sha256:c0a7e94a8cdbc5422a51ccdad8e6f1024795939cc89159a0ae7f0b316ad3823e"},
 ]
 pytextspan = [
-    {file = "pytextspan-0.4.2-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:e65a14e688d5c119997766745a8e8ab2645642012e1479b6176d007498e6d836"},
-    {file = "pytextspan-0.4.2-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:07a70a13308a3c05f6e7c7aa0b3a2be0195caad4312ec8ab9ac05822fd22e9dc"},
-    {file = "pytextspan-0.4.2-cp36-none-win_amd64.whl", hash = "sha256:7594214fdaef2cacbc79c8939c431f635d345ba33f45d6fadbf6b4e97cf98659"},
-    {file = "pytextspan-0.4.2-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:385e0d9fa4d6bfab9948d0f947cf5bfa3ae6d9c7c222abf4f0ce7791e6e0cb4c"},
-    {file = "pytextspan-0.4.2-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:c4ff26f641f41fe64350e03764c3689ab956b17e956f26fc377a957386fb0377"},
-    {file = "pytextspan-0.4.2-cp37-none-win_amd64.whl", hash = "sha256:16b1e5fa0034fab05337974a8ddc540382dfb5a83d8e238fbfd56919a30d9952"},
-    {file = "pytextspan-0.4.2-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:d819351a05cbd2f2f90aa36802d9b6c769ee7f04c596d44d7a7d2a41a3794762"},
-    {file = "pytextspan-0.4.2-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:260deface465bed20772297267a5877f09d7aef78270c4728b0c02c13bfb7e60"},
-    {file = "pytextspan-0.4.2-cp38-none-win_amd64.whl", hash = "sha256:cfb49d2aa3639c60b2b7ce0b2abd00fa90be1160f376f1853d7f533e5c787d81"},
-    {file = "pytextspan-0.4.2.tar.gz", hash = "sha256:b44995490ac2333b5d6040f67977044614760fcec388995ffd4cd76348741488"},
+    {file = "pytextspan-0.5.0-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:068985b9865fd11d539d183147f457d33737a770c95b0430f5c3a7493028771f"},
+    {file = "pytextspan-0.5.0-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:ae83759598ee7cdd8b40c23708ed27c6df7b9eb6af4e1889d8104306388e1b6d"},
+    {file = "pytextspan-0.5.0-cp36-none-win_amd64.whl", hash = "sha256:48df6e71fb9fb74acd9f1bd6a73d1cfca580088735c60d30df451bd61a0d3c58"},
+    {file = "pytextspan-0.5.0-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:918064acb1aa7d3de4bc02d971c381a3d9fca6c151baf8b6e1c92ecd51f478b3"},
+    {file = "pytextspan-0.5.0-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:78e4d15301092a3984d2c5feb1f1b710df7936e4110ae158b8ac5c6fd76db8a1"},
+    {file = "pytextspan-0.5.0-cp37-none-win_amd64.whl", hash = "sha256:eb165292c2e4b56c8af35bbd578fd958416637f0ac64fe2ed247e22b7f89ba7d"},
+    {file = "pytextspan-0.5.0-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:a792a43f7cdfd99c08338fc84c79d01e11650e11662c19a62ed0722939080963"},
+    {file = "pytextspan-0.5.0-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:2378dd15e6243e7fd996d1e496d5fc4c80ea32015e702b57b9034d5857bcb003"},
+    {file = "pytextspan-0.5.0-cp38-none-win_amd64.whl", hash = "sha256:4e9c1e58828e19b344edc2bada9334ef6dbb81a80f09566f6c28ffe00311b714"},
+    {file = "pytextspan-0.5.0.tar.gz", hash = "sha256:31fe55dfcdd61bc8eb3de953214d51f4a8f1e08e088c762052d66c1e6fad269c"},
 ]
 pytokenizations = [
     {file = "pytokenizations-0.7.2-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:b69d266738da5d5471c877ab85f829e9a58c86591e5c4aeb913b30445f40705e"},
