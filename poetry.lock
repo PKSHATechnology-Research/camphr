@@ -469,7 +469,7 @@ python-versions = "*"
 
 [[package]]
 name = "more-itertools"
-version = "8.6.0"
+version = "8.7.0"
 description = "More routines for operating on iterables, beyond itertools"
 category = "main"
 optional = false
@@ -1542,8 +1542,8 @@ mojimoji = [
     {file = "mojimoji-0.0.11.tar.gz", hash = "sha256:adef094e1bfd961e40c1fbd2d4664da1be2426d5b31884e27394226af15d50b5"},
 ]
 more-itertools = [
-    {file = "more-itertools-8.6.0.tar.gz", hash = "sha256:b3a9005928e5bed54076e6e549c792b306fddfe72b2d1d22dd63d42d5d3899cf"},
-    {file = "more_itertools-8.6.0-py3-none-any.whl", hash = "sha256:8e1a2a43b2f2727425f2b5839587ae37093f19153dc26c0927d1048ff6557330"},
+    {file = "more-itertools-8.7.0.tar.gz", hash = "sha256:c5d6da9ca3ff65220c3bfd2a8db06d698f05d4d2b9be57e1deb2be5a45019713"},
+    {file = "more_itertools-8.7.0-py3-none-any.whl", hash = "sha256:5652a9ac72209ed7df8d9c15daf4e1aa0e3d2ccd3c87f8265a0673cd9cbc9ced"},
 ]
 murmurhash = [
     {file = "murmurhash-1.0.5-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:ef8819d15973e0d6f69688bafc097a1fae081675c1de39807028869a1320b1a9"},
