@@ -673,14 +673,14 @@ six = "*"
 
 [[package]]
 name = "pylint"
-version = "2.6.0"
+version = "2.6.1"
 description = "python code static checker"
 category = "dev"
 optional = false
 python-versions = ">=3.5.*"
 
 [package.dependencies]
-astroid = ">=2.4.0,<=2.5"
+astroid = ">=2.4.0,<2.5"
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
 isort = ">=4.2.5,<6"
 mccabe = ">=0.6,<0.7"
@@ -1239,7 +1239,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.1,<4"
-content-hash = "5007775466d5ad9e35a757d69559d25c97341b398f52968527f81e563c17442d"
+content-hash = "320ecc6ba997a7c9b5b3eaf6b06b2c26d1650c77f38b512d20ed715d3f597a88"
 
 [metadata.files]
 alabaster = [
@@ -1701,8 +1701,8 @@ pyknp = [
     {file = "pyknp-0.4.6.zip", hash = "sha256:3406300592ae45814fc2e013f6a1eded9469cb774eed7f3d23dc198cb1267825"},
 ]
 pylint = [
-    {file = "pylint-2.6.0-py3-none-any.whl", hash = "sha256:bfe68f020f8a0fece830a22dd4d5dddb4ecc6137db04face4c3420a46a52239f"},
-    {file = "pylint-2.6.0.tar.gz", hash = "sha256:bb4a908c9dadbc3aac18860550e870f58e1a02c9f2c204fdf5693d73be061210"},
+    {file = "pylint-2.6.1-py3-none-any.whl", hash = "sha256:c363263b5aa5d4101e0e0c345155accc663ae2148be93a712b9c5ba341120ef9"},
+    {file = "pylint-2.6.1.tar.gz", hash = "sha256:a112c3a6d0b1a08e0c1581ced69d3be9e2bedd2e1e1cd6965d0454353015e6d0"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
