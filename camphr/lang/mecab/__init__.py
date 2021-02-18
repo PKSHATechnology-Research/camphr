@@ -1,9 +1,12 @@
 """The package mecab defines Japanese spacy.Language with Mecab tokenizer."""
 import shutil
-from collections import namedtuple
 from pathlib import Path
 from shutil import copytree
-from typing import List, Optional, Type
+from typing import Any, List, NamedTuple, Optional, TYPE_CHECKING, Type
+from typing_extensions import Literal, Protocol
+
+if TYPE_CHECKING:
+    from MeCab import Tagger
 
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -13,9 +16,30 @@ from camphr.consts import KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
 from camphr.utils import RE_URL, SerializationMixin
 
-ShortUnitWord = namedtuple(
-    "ShortUnitWord", ["surface", "lemma", "pos", "space", "fstring"]
-)
+
+class ShortUnitWord(NamedTuple):
+    surface: str
+    lemma: str
+    pos: str
+    space: bool
+    fstring: str
+
+
+def get_dictionary_type(tagger: "Tagger") -> Literal["ipadic", "unidic", "neologd"]:
+    filename = tagger.dictionary_info().filename  # type: ignore
+    for k in ["ipadic", "unidic", "neologd"]:
+        if k in filename:
+            return k  # type: ignore
+    raise ValueError(f"Unsupported dictionary type: {filename}")
+
+
+class MecabNodeProto(Protocol):
+    next: "MecabNodeProto"
+    surface: str
+    posid: int
+    feature: str
+    length: int
+    rlength: int
 
 
 class Tokenizer(SerializationMixin):
@@ -44,6 +68,7 @@ class Tokenizer(SerializationMixin):
         """
         self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
         self.tokenizer = self.get_mecab(dicdir=dicdir, userdic=userdic)
+        self.dictionary_type = get_dictionary_type(self.tokenizer)
         self.assets = assets
 
     def __call__(self, text: str) -> Doc:
@@ -66,16 +91,15 @@ class Tokenizer(SerializationMixin):
 
     def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
         """Tokenize text with Mecab and format the outputs for further processing"""
-        node = self.tokenizer.parseToNode(text)
+        node: MecabNodeProto = self.tokenizer.parseToNode(text)
         node = node.next
+        lemma_idx = 10 if self.dictionary_type == "unidic" else 6
         words: List[ShortUnitWord] = []
         while node.posid != 0:
-            parts = node.feature.split(",")
+            parts: List[str] = node.feature.split(",")
             pos = ",".join(parts[0:4])
             surface = node.surface
-            base = surface
-            if len(parts) > 6:
-                base = parts[6]
+            base = parts[lemma_idx] if len(parts) > lemma_idx else surface
             nextnode = node.next
             if nextnode.length != nextnode.rlength:
                 # next node contains space, so attach it to this node.
@@ -104,14 +128,14 @@ class Tokenizer(SerializationMixin):
         tokenizer.parseToNode("")  # see https://github.com/explosion/spaCy/issues/2901
         return tokenizer
 
-    def to_disk(self, path: Path, **kwargs):
+    def to_disk(self, path: Path, **kwargs: Any):
         path.mkdir(exist_ok=True)
         if self.userdic:
             shutil.copy(self.userdic, path / self.USERDIC)
         if self.assets:
             copytree(self.assets, path / self.ASSETS)
 
-    def from_disk(self, path: Path, **kwargs):
+    def from_disk(self, path: Path, **kwargs: Any):
         """TODO: is userdic portable?"""
         userdic = (path / self.USERDIC).absolute()
         if userdic.exists():
@@ -132,7 +156,11 @@ class Defaults(Language.Defaults):  # type: ignore
 
     @classmethod
     def create_tokenizer(
-        cls, nlp=None, dicdir: str = None, userdic: str = None, assets: str = None
+        cls,
+        nlp: Optional[Language] = None,
+        dicdir: Optional[str] = None,
+        userdic: Optional[str] = None,
+        assets: Optional[str] = None,
     ):
         return Tokenizer(cls, nlp, dicdir=dicdir, userdic=userdic, assets=assets)
 
@@ -146,7 +174,7 @@ class Japanese(Language):
 
 
 # avoid pickling problem (see https://github.com/explosion/spaCy/issues/3191)
-def pickle_japanese(instance):
+def pickle_japanese(instance: Any):
     return Japanese, tuple()
 
 
