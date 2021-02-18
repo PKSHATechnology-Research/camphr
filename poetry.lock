@@ -673,7 +673,7 @@ six = "*"
 
 [[package]]
 name = "pylint"
-version = "2.6.1"
+version = "2.6.2"
 description = "python code static checker"
 category = "dev"
 optional = false
@@ -1701,8 +1701,8 @@ pyknp = [
     {file = "pyknp-0.4.6.zip", hash = "sha256:3406300592ae45814fc2e013f6a1eded9469cb774eed7f3d23dc198cb1267825"},
 ]
 pylint = [
-    {file = "pylint-2.6.1-py3-none-any.whl", hash = "sha256:c363263b5aa5d4101e0e0c345155accc663ae2148be93a712b9c5ba341120ef9"},
-    {file = "pylint-2.6.1.tar.gz", hash = "sha256:a112c3a6d0b1a08e0c1581ced69d3be9e2bedd2e1e1cd6965d0454353015e6d0"},
+    {file = "pylint-2.6.2-py3-none-any.whl", hash = "sha256:e71c2e9614a4f06e36498f310027942b0f4f2fde20aebb01655b31edc63b9eaf"},
+    {file = "pylint-2.6.2.tar.gz", hash = "sha256:718b74786ea7ed07aa0c58bf572154d4679f960d26e9641cc1de204a30b87fc9"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
