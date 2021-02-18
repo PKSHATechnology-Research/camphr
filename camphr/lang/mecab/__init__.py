@@ -2,9 +2,11 @@
 import shutil
 from pathlib import Path
 from shutil import copytree
-from typing import Any, List, NamedTuple, Optional, Type
+from typing import Any, List, NamedTuple, Optional, TYPE_CHECKING, Type
 from typing_extensions import Literal, Protocol
-from MeCab import Tagger
+
+if TYPE_CHECKING:
+    from MeCab import Tagger
 
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -23,7 +25,7 @@ class ShortUnitWord(NamedTuple):
     fstring: str
 
 
-def get_dictionary_type(tagger: Tagger) -> Literal["ipadic", "unidic", "neologd"]:
+def get_dictionary_type(tagger: "Tagger") -> Literal["ipadic", "unidic", "neologd"]:
     filename = tagger.dictionary_info().filename  # type: ignore
     for k in ["ipadic", "unidic", "neologd"]:
         if k in filename:
