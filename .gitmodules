@@ -1,3 +1,0 @@
-[submodule "spacy"]
-	path = spacy
-	url = git@github.com:tamuhey/typeshed_spacy.git
