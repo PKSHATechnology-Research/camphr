@@ -10,7 +10,7 @@ from spacy.tokens.span import Span
 from camphr.pipelines.pattern_search import PatternSearcher
 from tests.utils import check_mecab
 
-KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar", "走る", "頭痛"]
+KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar", "走る", "頭痛", "New York"]
 
 
 @pytest.fixture(scope="module", params=["en", "ja_mecab"])
@@ -41,6 +41,7 @@ TESTCASES = [
     ("たくさん走った", ["走っ"], ["走る"], "ja_mecab", None),
     ("走れ", ["走れ"], ["走る"], "ja_mecab", None),
     ("頭痛", ["頭痛"], ["ズツウ"], "ja_mecab", ["matched"]),
+    ("I live in New York", ["New York"], ["New York"], "en", None),
 ]
 
 
