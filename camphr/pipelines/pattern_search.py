@@ -31,6 +31,7 @@ class PatternSearcher:
         normalizer: Optional[Callable[[Token], str]] = None,
         lemma: bool = False,
         extend_span_to_token_boundary: bool = False,
+        ignore_space: bool = True,
     ):
         self.model = model
         self.lower = lower
@@ -38,6 +39,7 @@ class PatternSearcher:
         self.lemma = lemma
         self.label = label
         self.extend_span_to_token_boundary = extend_span_to_token_boundary
+        self.ignore_space = ignore_space
 
     @staticmethod
     def get_model_from_words(words: Iterable[str]) -> ahocorasick.Automaton:
@@ -61,7 +63,7 @@ class PatternSearcher:
                 yield (l, r)
 
     def _search_by_normalizer(
-        self, doc: Doc, normalizer: Callable[[Token], str]
+        self, doc: Doc, normalizer: Callable[[Token], str], ignore_space: bool
     ) -> Iterable[Tuple[int, int]]:
         text = ""
         token_spans: List[Tuple[int, int]] = []
@@ -70,6 +72,9 @@ class PatternSearcher:
             token_text = normalizer(token)
             text += token_text
             right = left + len(token_text)
+            if not ignore_space:
+                text += token.whitespace_
+                right += len(token.whitespace_)
             token_spans.append((left, right))
             left = right
         matches = self.get_char_spans(text)
@@ -86,7 +91,14 @@ class PatternSearcher:
 
         spans: Iterable[Tuple[int, int]] = []
         for normalizer in normalizers:
-            spans = itertools.chain(spans, self._search_by_normalizer(doc, normalizer))
+            spans = itertools.chain(
+                spans, self._search_by_normalizer(doc, normalizer, ignore_space=False)
+            )
+            if self.ignore_space:
+                spans = itertools.chain(
+                    spans,
+                    self._search_by_normalizer(doc, normalizer, ignore_space=True),
+                )
 
         ents = list(doc.ents)
         for i, j in spans:
