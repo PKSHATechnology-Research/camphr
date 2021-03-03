@@ -57,7 +57,8 @@ class PatternSearcher:
     def _get_spans_from_matches(
         self, matches: Iterable[Tuple[int, int, str]], tokens: List[Tuple[int, int]]
     ) -> Iterator[Tuple[int, int]]:
-        spans = textspan.lift_spans_index([(i, j) for i, j, _ in matches], tokens)
+        idx = sorted((i, j) for i, j, _ in matches)
+        spans = textspan.lift_spans_index(idx, tokens)
         for (l, l_ok), (r, r_ok) in spans:
             if self.extend_span_to_token_boundary or (l_ok and r_ok):
                 yield (l, r)

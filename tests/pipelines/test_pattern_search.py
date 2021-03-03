@@ -10,7 +10,7 @@ from spacy.tokens.span import Span
 from camphr.pipelines.pattern_search import PatternSearcher
 from tests.utils import check_mecab
 
-KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar", "走る", "頭痛", "New York"]
+KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar", "走る", "頭痛", "BC", "AB ABC"]
 
 
 @pytest.fixture(scope="module", params=["en", "ja_mecab"])
@@ -35,13 +35,13 @@ def nlp(lang: str):
 
 
 TESTCASES = [
+    ("I live in AB ABC", ["AB ABC"], ["AB ABC"], "en", None),
     ("今日はいい天気だ", ["今日", "は"], None, "ja_mecab", None),
     ("Mice is a plural form of mouse", ["mouse"], None, "en", None),
     ("foo-bar", ["foo-bar"], ["foobar"], "en", None),
     ("たくさん走った", ["走っ"], ["走る"], "ja_mecab", None),
     ("走れ", ["走れ"], ["走る"], "ja_mecab", None),
     ("頭痛", ["頭痛"], ["ズツウ"], "ja_mecab", ["matched"]),
-    ("I live in New York", ["New York"], ["New York"], "en", None),
 ]
 
 
@@ -84,3 +84,22 @@ def test_overlaps(nlp: Language, lang: str):
     assert len(doc.ents) == 2
     assert [e.text for e in doc.ents] == ["lower", "foo bar"]
     assert [e.label_ for e in doc.ents] == ["matched", "foo"]
+
+
+def test_overlaps2():
+    nlp = spacy.blank("en")
+    keywords = [
+        "a bc",
+        "b",
+    ]
+
+    model = PatternSearcher.get_model_from_words(keywords)
+    pipe = PatternSearcher(
+        model,
+        lower=True,
+        lemma=True,
+    )
+    nlp.add_pipe(pipe)
+
+    doc = nlp("a bc")
+    assert [s.text for s in doc.ents] == ["a bc"]
