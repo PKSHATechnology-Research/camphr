@@ -101,5 +101,5 @@ def test_overlaps2():
     )
     nlp.add_pipe(pipe)
 
-    doc = nlp("a bc")
+    doc = nlp("a bc ")
     assert [s.text for s in doc.ents] == ["a bc"]

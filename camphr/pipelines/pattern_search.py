@@ -75,9 +75,11 @@ class PatternSearcher:
             right = left + len(token_text)
             if not ignore_space:
                 text += token.whitespace_
-                right += len(token.whitespace_)
             token_spans.append((left, right))
-            left = right
+            if ignore_space:
+                left = right
+            else:
+                left = right + len(token.whitespace_)
         matches = self.get_char_spans(text)
         return self._get_spans_from_matches(matches, token_spans)
 
