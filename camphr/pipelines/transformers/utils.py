@@ -1,5 +1,6 @@
 """Defines utility functions, classes, mixins for transformers pipelines."""
 import dataclasses
+import functools
 import pickle
 from contextlib import contextmanager
 from pathlib import Path
@@ -47,6 +48,7 @@ class ATTRS:
     batch_inputs = "transformers_batch_inputs"
 
 
+@functools.lru_cache
 def _get_transformers_align(doc: Doc) -> List[List[int]]:
     """Get tokens alignment from spacy tokens to transformers tokens"""
     trf_tokens = doc._.get(ATTRS.cleaned_tokens)
