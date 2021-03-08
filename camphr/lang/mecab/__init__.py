@@ -25,9 +25,11 @@ class ShortUnitWord(NamedTuple):
     fstring: str
 
 
-def get_dictionary_type(tagger: "Tagger") -> Literal["ipadic", "unidic", "neologd"]:
+def get_dictionary_type(
+    tagger: "Tagger",
+) -> Literal["ipadic", "unidic", "neologd", "juman"]:
     filename = tagger.dictionary_info().filename  # type: ignore
-    for k in ["ipadic", "unidic", "neologd"]:
+    for k in ["ipadic", "unidic", "neologd", "juman"]:
         if k in filename:
             return k  # type: ignore
     raise ValueError(f"Unsupported dictionary type: {filename}")
@@ -93,7 +95,12 @@ class Tokenizer(SerializationMixin):
         """Tokenize text with Mecab and format the outputs for further processing"""
         node: MecabNodeProto = self.tokenizer.parseToNode(text)
         node = node.next
-        lemma_idx = 10 if self.dictionary_type == "unidic" else 6
+        if self.dictionary_type == "unidic":
+            lemma_idx = 10
+        elif self.dictionary_type == "juman":
+            lemma_idx = 4
+        else:
+            lemma_idx = 6
         words: List[ShortUnitWord] = []
         while node.posid != 0:
             parts: List[str] = node.feature.split(",")
