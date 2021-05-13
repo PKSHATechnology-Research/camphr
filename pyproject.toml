@@ -35,6 +35,8 @@ transformers = ">=3.0,<3.1"
 torch = "^1.0"
 pytokenizations = ">=0.4.8,<1.0"
 pytextspan = ">=0.5.0,<1.0"
+hydra-core = "^0.11.3"
+hydra_colorlog = "^0.1.4"
 dataclasses = "^0.6"
 toolz = ">=0.10,<0.12"
 spacy = ">=2.2,<3"
@@ -55,9 +57,6 @@ toml = "^0.10.0"
 sphinx = "*"
 doc8 = "*"
 mypy = "*"
-
-# [tool.poetry.scripts]
-# camphr = "camphr.cli.__main__:main"
 
 [tool.poetry.dependencies.mojimoji]
 version = "^0.0.11"
