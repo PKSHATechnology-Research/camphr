@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "camphr_cli"
+version = "0.1.0"
+description = ""
+authors = ["Yohei Tamura <tamuhey@gmail.com>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fire = "^0.4.0"
+hydra-core = "0.11.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
