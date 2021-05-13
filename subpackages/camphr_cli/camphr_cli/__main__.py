@@ -27,7 +27,7 @@ def run(cmd: str):
     # Lazy load `cmd` because Hydra's instantiation takes few seconds.
     # All `cmd` must exist in the form of `camphr.cli.cmd.main`.
     cmd = cmd.replace("-", "_")
-    m = importlib.import_module(f"camphr.cli.{cmd}")
+    m = importlib.import_module(f"camphr_cli.{cmd}")
     getattr(m, "main")()
 
 

@@ -9,8 +9,13 @@ license = "Apache-2.0"
 python = "^3.8"
 fire = "^0.4.0"
 hydra-core = "0.11.3"
+camphr = {path = "../.."}
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+
+[tool.poetry.scripts]
+camphr = "camphr_cli.__main__:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
