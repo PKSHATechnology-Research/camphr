@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 from typing import (
     Any,
+    Callable,
     Dict,
     Iterable,
     List,
@@ -205,7 +206,6 @@ def merge_dicts(dict_a: Dict[Any, Any], dict_b: Dict[Any, Any]) -> Dict[Any, Any
     return ret
 
 
-@curry
 def resolve_alias(aliases: Dict[str, str], cfg: Dict[str, Any]) -> Dict[str, Any]:
     for alias, name in aliases.items():
         v = get_by_dotkey(cfg, alias)

@@ -158,7 +158,7 @@ python-versions = "*"
 
 [[package]]
 name = "dataclass-utils"
-version = "0.7.6"
+version = "0.7.8"
 description = ""
 category = "main"
 optional = false
@@ -1154,7 +1154,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "4e716cce44dd4b24990b559a9bbfab44abf2003d35e163c7d8622a951d3b8792"
+content-hash = "571a32e650e5d14e6a1aa86ea040261ce1c98109262e5ad604645814e3b7eff3"
 
 [metadata.files]
 alabaster = [
@@ -1240,8 +1240,8 @@ cymem = [
     {file = "cymem-2.0.5.tar.gz", hash = "sha256:190e15d9cf2c3bde60ae37bddbae6568a36044dc4a326d84081a5fa08818eee0"},
 ]
 dataclass-utils = [
-    {file = "dataclass_utils-0.7.6-py3-none-any.whl", hash = "sha256:03ebbe4e9be4d557b8c0f394fe939a9b82599270f6c54853538a8a614c330816"},
-    {file = "dataclass_utils-0.7.6.tar.gz", hash = "sha256:8548a8b592eb6a89a1b2b214e803bf2b2417c815b576657c1e426cfe74a41d69"},
+    {file = "dataclass_utils-0.7.8-py3-none-any.whl", hash = "sha256:d2e21713503d2a0aa54f6408f3a808a225db672b82f44a78cfff09898872cced"},
+    {file = "dataclass_utils-0.7.8.tar.gz", hash = "sha256:da020c9ae8cc159fcfc21ed12ceb490fc2508e52177b06a0a20dc230c506518f"},
 ]
 dataclasses = [
     {file = "dataclasses-0.6-py3-none-any.whl", hash = "sha256:454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f"},

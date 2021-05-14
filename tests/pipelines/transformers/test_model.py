@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
-import torch
 from spacy.language import Language
 from spacy.tokens import Doc
+import torch
 
 from camphr.lang.torch import TorchLanguage
 from camphr.models import NLPConfig, create_model, load

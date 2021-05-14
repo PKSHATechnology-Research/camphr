@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Type, TypeVar
 
 import dataclass_utils
 import pytest
@@ -25,9 +25,15 @@ from camphr.utils import resolve_alias
 
 from .utils import BERT_DIR
 
+T = TypeVar("T")
+
+
+def from_yml(kls: Type[T], yml: str) -> T:
+    return dataclass_utils.into(yaml.safe_load(yml), kls)
+
 
 def yml_to_nlpconfig(yml: str) -> NLPConfig:
-    return dataclass_utils.into(yaml.safe_load(yml), NLPConfig)
+    return from_yml(NLPConfig, yml)
 
 
 @pytest.mark.parametrize(
@@ -44,7 +50,7 @@ def yml_to_nlpconfig(yml: str) -> NLPConfig:
     ],
 )
 def test_create_nlp(yml: str):
-    config: LangConfig = yaml.safe_load(yml)
+    config = from_yml(LangConfig, yml)
     nlp = create_lang(config)
     assert not config.torch or isinstance(nlp, TorchLanguage)
     assert nlp.lang == config.name
@@ -66,7 +72,7 @@ def does_not_raise():
         {TRANSFORMERS_NER}:
     """,
             None,
-            pytest.raises(ValueError),
+            pytest.raises(TypeError),
         ),
         (
             f"""
@@ -119,12 +125,14 @@ def does_not_raise():
     ],
 )
 def test_correct(yml: str, modified: Optional[str], error):
-    config = yaml.safe_load(yml)
+    cfg_dict = yaml.safe_load(yml)
     with error as e:
+        cfg_dict = resolve_alias(ALIASES, cfg_dict)
+        config = dataclass_utils.into(cfg_dict, NLPConfig)
         correct_model_config(config)
     if not e:
         assert modified
-        assert config == yaml.safe_load(modified)
+        assert config == dataclass_utils.into(yaml.safe_load(modified), NLPConfig)
 
 
 @pytest.fixture(scope="session")

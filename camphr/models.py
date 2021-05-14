@@ -46,27 +46,29 @@ __all__ = ["load"]
 @dataclass
 class LangConfig:
     name: str
-    torch: bool
-    optimizer: Dict[str, Any]
+    torch: bool = False
+    optimizer: Optional[Dict[str, Any]] = None
     kwargs: Optional[Dict[str, Any]] = None
 
 
 @dataclass
 class NLPConfig:
     lang: LangConfig
-    pipeline: Dict[str, Dict[str, Any]]
-    task: Optional[Literal["ner", "textcat", "multilabel_textcat"]]
-    labels: Optional[str]
+    pipeline: Dict[str, Optional[Dict[str, Any]]]
+    task: Optional[Literal["ner", "textcat", "multilabel_textcat"]] = None
+    labels: Optional[str] = None
     name: Optional[str] = None
 
 
 def create_model(cfg: Union[Dict[str, Any], str]) -> Language:
     if isinstance(cfg, str):
-        cfg_ = dataclass_utils.into(yaml_to_dict(cfg), NLPConfig)
+        cfg_dict = yaml_to_dict(cfg)
     elif isinstance(cfg, dict):
-        cfg_ = dataclass_utils.into(cfg, NLPConfig)
+        cfg_dict = cfg
     else:
         raise ValueError()
+    cfg_dict = resolve_alias(ALIASES, cfg_dict)
+    cfg_ = dataclass_utils.into(cfg_dict, NLPConfig)
     cfg_ = correct_model_config(cfg_)
     nlp = create_lang(cfg_.lang)
     for pipe in create_pipeline(nlp, cfg_.pipeline):
@@ -98,7 +100,6 @@ _ConfigParser = Callable[[NLPConfig], NLPConfig]
 def correct_model_config(cfg: NLPConfig) -> NLPConfig:
     """Parse config, Complement missing informations, resolve aliases, etc."""
     funs: List[_ConfigParser] = [
-        resolve_alias(ALIASES),
         _add_pipes,
         _add_required_pipes,
         _align_pipeline,
@@ -162,7 +163,7 @@ def _add_pipes(cfg: NLPConfig) -> NLPConfig:
         prev["labels"] = cfg.labels  # todo: avoid hardcoding
         cfg.pipeline[pipe] = prev
     else:
-        if not cfg.labels:
+        if cfg.labels:
             raise ValueError(f"One of {TASKS} pipeline is required.")
     return cfg
 
@@ -234,17 +235,21 @@ def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
     if not set(cfg.pipeline.keys()) & set(TRF_PIPES):
         return cfg
     for k, v in cfg.pipeline.items():
-        nval = v.get(KEY, "")
-        if not isinstance(nval, str):
-            raise ValueError(f"Value of '{KEY}' must be string, but got {nval}")
-        val = nval or val
+        if v:
+            nval = v.get(KEY, "")
+            if not isinstance(nval, str):
+                raise ValueError(f"Value of '{KEY}' must be string, but got {nval}")
+            val = nval or val
     if not val:
         raise ValueError(
             f"Invalid configuration. At least one of transformer's pipe needs `{KEY}`, but the configuration is:\n{cfg.pipeline}"
         )
     for k, v in cfg.pipeline.items():
-        if k in TRF_PIPES and not v.get(KEY, None):
-            v[KEY] = val
+        if k in TRF_PIPES:
+            if v:
+                v[KEY] = val
+            else:
+                v = {KEY: val}
     return cfg
 
 
@@ -257,13 +262,13 @@ def _correct_torch(cfg: NLPConfig) -> NLPConfig:
 
 def _resolve_label(cfg: NLPConfig) -> NLPConfig:
     """Resolver for ner and sequence classification label config."""
-    ner = cfg.pipeline[TRANSFORMERS_NER]
+    ner = cfg.pipeline.get(TRANSFORMERS_NER, None)
     if ner:
         ner[LABELS] = get_ner_labels(ner[LABELS])
-    seq = cfg.pipeline[TRANSFORMERS_SEQ_CLASSIFIER]
+    seq = cfg.pipeline.get(TRANSFORMERS_SEQ_CLASSIFIER, None)
     if seq:
         seq[LABELS] = get_labels(seq[LABELS])
-    multiseq = cfg.pipeline[TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER]
+    multiseq = cfg.pipeline.get(TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER, None)
     if multiseq:
         multiseq[LABELS] = get_labels(multiseq[LABELS])
     return cfg

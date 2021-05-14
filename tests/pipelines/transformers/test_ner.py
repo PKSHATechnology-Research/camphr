@@ -1,10 +1,9 @@
 import json
 from typing import Dict, List
 
-import omegaconf
 import pytest
-import torch
 from spacy.language import Language
+import torch
 
 from camphr.models import create_model, load
 from camphr.ner_labels.labels_ene import ALL_LABELS as enes
