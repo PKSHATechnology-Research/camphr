@@ -53,6 +53,8 @@ jobs:
     - run: poetry run flake8
     - name: Run pytest
       run: poetry run pytest tests
+    - name: Run pytest in subpackages
+      run: cd subpackages/camphr_cli/ && poetry run pytest tests
 
   publish:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
