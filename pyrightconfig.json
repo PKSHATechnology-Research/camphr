@@ -6,7 +6,7 @@
     "camphr"
   ],
   "reportMissingTypeStubs": false,
-  "reportUnknownMemberType": "warning",
+  "reportUnknownMemberType": false,
   "reportUnknownVariableType": "warning",
   "reportUnnecessaryIsInstance": "warning",
   "reportPrivateUsage": "warning",
