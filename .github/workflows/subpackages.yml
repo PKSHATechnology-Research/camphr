@@ -15,10 +15,10 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9]
         os: [ubuntu-latest, macos-latest]
-        subpackage: [cli]
+        subpackage: [camphr_cli]
     defaults:
       run:
-        working-directory: subpackages/camphr_cli
+        working-directory: subpackages/${{ matrix.subpackage }}
     steps:
     - uses: actions/checkout@v2
     - name: Checkout submodules
@@ -52,7 +52,7 @@ jobs:
         poetry install
       if: steps.cache.outputs.cache-hit != true
 
-    - run: poetry run mypy camphr
+    - run: poetry run mypy ${{ matrix.subpackage }}
     - run: poetry run flake8
 
     - name: Run pytest
