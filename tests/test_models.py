@@ -1,13 +1,16 @@
 from contextlib import contextmanager
+from typing import Any, Dict, Optional
 
+import dataclass_utils
 import pytest
-from omegaconf import OmegaConf
+import yaml
 
 from camphr.lang.torch import TorchLanguage
 from camphr.models import (
     ALIASES,
-    PIPELINE_ALIGNMENT,
     LangConfig,
+    NLPConfig,
+    PIPELINE_ALIGNMENT,
     _add_required_pipes,
     _align_pipeline,
     correct_model_config,
@@ -23,6 +26,10 @@ from camphr.utils import resolve_alias
 from .utils import BERT_DIR
 
 
+def yml_to_nlpconfig(yml: str) -> NLPConfig:
+    return dataclass_utils.into(yaml.safe_load(yml), NLPConfig)
+
+
 @pytest.mark.parametrize(
     "yml",
     [
@@ -36,8 +43,8 @@ from .utils import BERT_DIR
     """,
     ],
 )
-def test_create_nlp(yml):
-    config: LangConfig = OmegaConf.create(yml)
+def test_create_nlp(yml: str):
+    config: LangConfig = yaml.safe_load(yml)
     nlp = create_lang(config)
     assert not config.torch or isinstance(nlp, TorchLanguage)
     assert nlp.lang == config.name
@@ -111,14 +118,13 @@ def does_not_raise():
         ),
     ],
 )
-def test_correct(yml, modified, error):
-    config = OmegaConf.create(yml)
+def test_correct(yml: str, modified: Optional[str], error):
+    config = yaml.safe_load(yml)
     with error as e:
         correct_model_config(config)
     if not e:
-        assert OmegaConf.to_container(
-            OmegaConf.create(modified)
-        ) == OmegaConf.to_container(config)
+        assert modified
+        assert config == yaml.safe_load(modified)
 
 
 @pytest.fixture(scope="session")
@@ -193,11 +199,11 @@ def inject_dummy():
         ),
     ],
 )
-def test_assign_and_align_pipeline(yml, modified, inject_dummy):
-    config = OmegaConf.create(yml)
+def test_assign_and_align_pipeline(yml: str, modified: str, inject_dummy):
+    config = yml_to_nlpconfig(yml)
     config = _add_required_pipes(config)
     config = _align_pipeline(config)
-    assert config.pipeline == OmegaConf.create(modified).pipeline
+    assert config.pipeline == yml_to_nlpconfig(modified).pipeline
 
 
 @pytest.mark.parametrize(
@@ -232,13 +238,13 @@ def test_assign_and_align_pipeline(yml, modified, inject_dummy):
         ),
     ],
 )
-def test_align_pipeline_and_alias(yml, modified):
-    config = OmegaConf.create(yml)
-    config = resolve_alias(ALIASES, config)
+def test_align_pipeline_and_alias(yml: str, modified: str):
+    config_dict = yaml.safe_load(yml)
+    config_dict: Dict[str, Any] = resolve_alias(ALIASES, config_dict)  # type: ignore
+    config = dataclass_utils.into(config_dict, NLPConfig)
     config = _add_required_pipes(config)
     config = _align_pipeline(config)
-    modified = OmegaConf.create(modified)
-    assert list(config.pipeline) == list(modified.pipeline)
+    assert list(config.pipeline) == list(yml_to_nlpconfig(modified).pipeline)
 
 
 @pytest.mark.parametrize(
