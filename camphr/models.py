@@ -2,20 +2,19 @@
 
 TODO: strictly type
 """
-import functools
 from collections import deque
 from dataclasses import dataclass
+import dataclasses
+import functools
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Union
+from typing_extensions import Literal
 
-import omegaconf
+import dataclass_utils
 import spacy
-import toolz
-from omegaconf import OmegaConf
 from spacy.language import Language
 from spacy.pipeline import Pipe
 from toolz import merge
-from typing_extensions import Literal
 
 from camphr.lang.torch import TorchLanguage
 from camphr.ner_labels.utils import get_ner_labels
@@ -27,7 +26,7 @@ from camphr.pipelines.transformers.seq_classification import (
 )
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.pipelines.transformers.utils import LABELS
-from camphr.utils import get_labels, resolve_alias
+from camphr.utils import get_labels, resolve_alias, yaml_to_dict
 
 __dir__ = Path(__file__).parent
 _MODEL_CFG_DIR = __dir__ / "model_config"
@@ -45,61 +44,51 @@ __all__ = ["load"]
 
 
 @dataclass
-class LangConfig(omegaconf.Config):
+class LangConfig:
     name: str
     torch: bool
     optimizer: Dict[str, Any]
-    kwargs: Optional[Dict[str, Any]]
+    kwargs: Optional[Dict[str, Any]] = None
 
 
 @dataclass
-class NLPConfig(omegaconf.Config):
-    name: str
+class NLPConfig:
     lang: LangConfig
-    pipeline: omegaconf.DictConfig
+    pipeline: Dict[str, Dict[str, Any]]
     task: Optional[Literal["ner", "textcat", "multilabel_textcat"]]
     labels: Optional[str]
+    name: Optional[str] = None
 
 
-def create_model(cfg: Union[NLPConfig, Any]) -> Language:
-    if not isinstance(cfg, omegaconf.Config):
-        cfg = cast(NLPConfig, OmegaConf.create(cfg))
-    cfg = correct_model_config(cfg)
-    nlp = create_lang(cfg.lang)
-    for pipe in create_pipeline(nlp, cfg.pipeline):
+def create_model(cfg: Union[Dict[str, Any], str]) -> Language:
+    if isinstance(cfg, str):
+        cfg_ = dataclass_utils.into(yaml_to_dict(cfg), NLPConfig)
+    elif isinstance(cfg, dict):
+        cfg_ = dataclass_utils.into(cfg, NLPConfig)
+    else:
+        raise ValueError()
+    cfg_ = correct_model_config(cfg_)
+    nlp = create_lang(cfg_.lang)
+    for pipe in create_pipeline(nlp, cfg_.pipeline):
         nlp.add_pipe(pipe)
-    if cfg.name and isinstance(cfg.name, str):
-        nlp._meta["name"] = cfg.name
-    nlp._meta["config"] = OmegaConf.to_container(cfg.lang)
+    if cfg_.name:
+        nlp._meta["name"] = cfg.name  # type: ignore
+    nlp._meta["config"] = dataclasses.asdict(cfg_.lang)  # type: ignore
     return nlp
 
 
 def create_lang(cfg: LangConfig) -> Language:
     kwargs = cfg.kwargs or {}
-    # TODO: remove cast
-    kwargs = cast(
-        Dict[str, Any],
-        OmegaConf.to_container(kwargs)
-        if isinstance(kwargs, omegaconf.Config)
-        else kwargs,
-    )
     if cfg.torch:
         kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})  # type: ignore
         return TorchLanguage(True, optimizer_config=cfg.optimizer, **kwargs)
     return spacy.blank(cfg.name, **kwargs)
 
 
-def create_pipeline(nlp: Language, cfg: omegaconf.DictConfig) -> List[Pipe]:
-    if not isinstance(cfg, omegaconf.DictConfig):
-        _cfg = OmegaConf.create(cfg)
-        assert isinstance(_cfg, omegaconf.DictConfig)
-        cfg = _cfg
-
-    pipes = []
+def create_pipeline(nlp: Language, cfg: Dict[str, Any]) -> List[Pipe]:
+    pipes: List[Pipe] = []
     for name, pipe_config in cfg.items():
-        pipe_config = OmegaConf.to_container(pipe_config or OmegaConf.create({}))
-        assert isinstance(name, str)
-        pipes.append(nlp.create_pipe(name, config=pipe_config or dict()))
+        pipes.append(nlp.create_pipe(name, config=pipe_config))
     return pipes
 
 
@@ -107,8 +96,8 @@ _ConfigParser = Callable[[NLPConfig], NLPConfig]
 
 
 def correct_model_config(cfg: NLPConfig) -> NLPConfig:
-    """Parse config. Complement missing informations, resolve aliases, etc."""
-    PARSERS: List[_ConfigParser] = [
+    """Parse config, Complement missing informations, resolve aliases, etc."""
+    funs: List[_ConfigParser] = [
         resolve_alias(ALIASES),
         _add_pipes,
         _add_required_pipes,
@@ -116,7 +105,9 @@ def correct_model_config(cfg: NLPConfig) -> NLPConfig:
         _correct_trf_pipeline,
         _resolve_label,
     ]
-    return toolz.pipe(cfg, *PARSERS)
+    for f in funs:
+        cfg = f(cfg)
+    return cfg
 
 
 # Alias definition.
@@ -162,16 +153,17 @@ TASKS = {"textcat", "ner", "multilabel_textcat"}
 
 def _add_pipes(cfg: NLPConfig) -> NLPConfig:
     if cfg.task in TASKS:
-        assert cfg.labels, "`cfg.labels` required"
+        if not cfg.labels:
+            raise ValueError("`cfg.labels` required")
         cfg.pipeline = cfg.pipeline or OmegaConf.create({})  # type: ignore
-        # TODO https://github.com/microsoft/pyright/issues/671
-        pipe = TASK2PIPE[cast(str, cfg.task)]
-        prev = cfg.pipeline[pipe] or OmegaConf.create({})
-        cfg.pipeline[pipe] = OmegaConf.merge(
-            OmegaConf.create({"labels": cfg.labels}), prev
-        )
+        assert cfg.task  # for type checker
+        pipe = TASK2PIPE[cfg.task]
+        prev = cfg.pipeline[pipe]
+        prev["labels"] = cfg.labels  # todo: avoid hardcoding
+        cfg.pipeline[pipe] = prev
     else:
-        assert not cfg.labels, f"One of {TASKS} pipeline is required."
+        if not cfg.labels:
+            raise ValueError(f"One of {TASKS} pipeline is required.")
     return cfg
 
 
@@ -234,23 +226,25 @@ def _correct_trf_pipeline(cfg: NLPConfig) -> NLPConfig:
 def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
     """For transformers pipeline.
 
-    All transformers pipeline requires same `trf_name_or_path`, but it is a pain to write down.
-    So if there is any transformers pipeline with `trf_name_or_path`, copy to other transformers pipes.
+    All transformers pipeline requires same `trf_name_or_path`, but it is a pain to write down in every pipes.
+    So if there is any transformers pipeline with `trf_name_or_path`, copy it into the other pipes.
     """
     KEY = "trf_name_or_path"
-    VAL = ""
+    val = ""
     if not set(cfg.pipeline.keys()) & set(TRF_PIPES):
         return cfg
     for k, v in cfg.pipeline.items():
-        VAL = v[KEY] or VAL
-    if not VAL:
+        nval = v.get(KEY, "")
+        if not isinstance(nval, str):
+            raise ValueError(f"Value of '{KEY}' must be string, but got {nval}")
+        val = nval or val
+    if not val:
         raise ValueError(
-            f"Invalid configuration. At least one of transformer's pipe needs `{KEY}`, but the configuration is:\n"
-            + cfg.pipeline.pretty()
+            f"Invalid configuration. At least one of transformer's pipe needs `{KEY}`, but the configuration is:\n{cfg.pipeline}"
         )
     for k, v in cfg.pipeline.items():
         if k in TRF_PIPES and not v.get(KEY, None):
-            v[KEY] = VAL
+            v[KEY] = val
     return cfg
 
 
