@@ -6,7 +6,7 @@ authors = ["Yohei Tamura <tamuhey@gmail.com>"]
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 fire = "^0.4.0"
 hydra-core = "0.11.3"
 camphr = {path = "../.."}
