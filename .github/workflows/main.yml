@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.6, 3.7]
+        python-version: [3.6, 3.7, 3.8, 3.9]
         os: [ubuntu-latest, macos-latest]
     steps:
     - uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
     - run: poetry run mypy camphr
     - run: poetry run flake8
     - name: Run pytest
-      run: poetry run pytest
+      run: poetry run pytest tests
 
   publish:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
