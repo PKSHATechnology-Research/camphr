@@ -145,10 +145,14 @@ def inject_dummy():
     [
         (
             f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_NER}: {{}}
     """,
             f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_TOKENIZER}: {{}}
         {TRANSFORMERS_MODEL}: {{}}
@@ -157,22 +161,14 @@ def inject_dummy():
         ),
         (
             f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_MODEL}: {{}}
     """,
             f"""
-    pipeline:
-        {TRANSFORMERS_TOKENIZER}: {{}}
-        {TRANSFORMERS_MODEL}: {{}}
-    """,
-        ),
-        (
-            f"""
-    pipeline:
-        {TRANSFORMERS_MODEL}: {{}}
-        {TRANSFORMERS_TOKENIZER}: {{}}
-    """,
-            f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_TOKENIZER}: {{}}
         {TRANSFORMERS_MODEL}: {{}}
@@ -180,12 +176,32 @@ def inject_dummy():
         ),
         (
             f"""
+    lang:
+        name: ja
+    pipeline:
+        {TRANSFORMERS_MODEL}: {{}}
+        {TRANSFORMERS_TOKENIZER}: {{}}
+    """,
+            f"""
+    lang:
+        name: ja
+    pipeline:
+        {TRANSFORMERS_TOKENIZER}: {{}}
+        {TRANSFORMERS_MODEL}: {{}}
+    """,
+        ),
+        (
+            f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_NER}: {{}}
         {TRANSFORMERS_MODEL}: {{}}
         {TRANSFORMERS_TOKENIZER}: {{}}
     """,
             f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_TOKENIZER}: {{}}
         {TRANSFORMERS_MODEL}: {{}}
@@ -194,11 +210,15 @@ def inject_dummy():
         ),
         (
             """
+    lang:
+        name: ja
     pipeline:
         foo: {}
         baz: {}
     """,
             """
+    lang:
+        name: ja
     pipeline:
         bar: {}
         baz: {}
