@@ -74,54 +74,6 @@ def does_not_raise():
             None,
             pytest.raises(TypeError),
         ),
-        (
-            f"""
-    lang:
-        name: en
-    pipeline:
-        {TRANSFORMERS_NER}:
-            trf_name_or_path: foo
-            labels: ['-', 'O', 'I-Foo', 'B-Foo']
-    """,
-            f"""
-    lang:
-        name: en
-        torch: true
-    pipeline:
-        {TRANSFORMERS_TOKENIZER}:
-            trf_name_or_path: foo
-        {TRANSFORMERS_MODEL}:
-            trf_name_or_path: foo
-        {TRANSFORMERS_NER}:
-            trf_name_or_path: foo
-            labels: ['-', 'O', 'I-Foo', 'B-Foo']
-    """,
-            does_not_raise(),
-        ),
-        (
-            f"""
-    lang:
-        name: en
-    pipeline:
-        {TRANSFORMERS_NER}:
-            trf_name_or_path: foo
-            labels: ["Foo"]
-    """,
-            f"""
-    lang:
-        name: en
-        torch: true
-    pipeline:
-        {TRANSFORMERS_TOKENIZER}:
-            trf_name_or_path: foo
-        {TRANSFORMERS_MODEL}:
-            trf_name_or_path: foo
-        {TRANSFORMERS_NER}:
-            trf_name_or_path: foo
-            labels: ['-', 'O', 'B-Foo','I-Foo']
-    """,
-            does_not_raise(),
-        ),
     ],
 )
 def test_correct(yml: str, modified: Optional[str], error):
