@@ -56,7 +56,7 @@ class NLPConfig:
     lang: LangConfig
     pipeline: Dict[str, Optional[Dict[str, Any]]]
     task: Optional[Literal["ner", "textcat", "multilabel_textcat"]] = None
-    labels: Optional[str] = None
+    labels: Optional[List[str]] = None
     name: Optional[str] = None
 
 
@@ -94,7 +94,7 @@ def create_lang(cfg: LangConfig) -> Language:
     kwargs = cfg.kwargs or {}
     if cfg.torch:
         kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})  # type: ignore
-        if not cfg.optimizer:
+        if cfg.optimizer is None:
             raise ValueError("torch requires `optimizer` in configuration")
         return TorchLanguage(True, optimizer_config=cfg.optimizer, **kwargs)
     return spacy.blank(cfg.name, **kwargs)
@@ -172,7 +172,7 @@ def _add_pipes(cfg: NLPConfig) -> NLPConfig:
         cfg.pipeline = cfg.pipeline or OmegaConf.create({})  # type: ignore
         assert cfg.task  # for type checker
         pipe = TASK2PIPE[cfg.task]
-        prev = cfg.pipeline[pipe] or dict()
+        prev = cfg.pipeline.get(pipe, dict()) or dict()
         prev["labels"] = cfg.labels  # todo: avoid hardcoding
         cfg.pipeline[pipe] = prev
     else:

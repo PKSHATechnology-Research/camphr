@@ -14,6 +14,7 @@ from camphr.models import (
     PIPELINE_ALIGNMENT,
     _add_required_pipes,
     _align_pipeline,
+    _filter_fields,
     correct_model_config,
     create_lang,
     create_model,
@@ -239,11 +240,15 @@ def test_assign_and_align_pipeline(yml: str, modified: str, inject_dummy):
     [
         (
             f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_NER}:
     pretrained: foo
     """,
             f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_TOKENIZER}: {{}}
         {TRANSFORMERS_MODEL}:
@@ -254,9 +259,13 @@ def test_assign_and_align_pipeline(yml: str, modified: str, inject_dummy):
         ),
         (
             """
+    lang:
+        name: ja
     ner_label: foo
     """,
             f"""
+    lang:
+        name: ja
     pipeline:
         {TRANSFORMERS_TOKENIZER}: {{}}
         {TRANSFORMERS_MODEL}:
@@ -269,11 +278,15 @@ def test_assign_and_align_pipeline(yml: str, modified: str, inject_dummy):
 def test_align_pipeline_and_alias(yml: str, modified: str):
     config_dict = yaml.safe_load(yml)
     config_dict: Dict[str, Any] = resolve_alias(ALIASES, config_dict)  # type: ignore
-
+    config_dict = _filter_fields(config_dict, NLPConfig)
     config = dataclass_utils.into(config_dict, NLPConfig)
     config = _add_required_pipes(config)
     config = _align_pipeline(config)
-    assert list(config.pipeline) == list(yml_to_nlpconfig(modified).pipeline)
+
+    expected = dataclass_utils.into(
+        _filter_fields(yaml.safe_load(modified), NLPConfig), NLPConfig
+    )
+    assert list(config.pipeline) == list(expected.pipeline)
 
 
 @pytest.mark.parametrize(
@@ -286,6 +299,7 @@ def test_align_pipeline_and_alias(yml: str, modified: str):
     task: textcat
     labels: ["a", "b", "c"]
     pretrained: {BERT_DIR}
+    optimizer: {{}}
     """,
             TRANSFORMERS_SEQ_CLASSIFIER,
         ),
@@ -296,6 +310,7 @@ def test_align_pipeline_and_alias(yml: str, modified: str):
     task: ner
     labels: ["a", "b", "c"]
     pretrained: {BERT_DIR}
+    optimizer: {{}}
     """,
             TRANSFORMERS_NER,
         ),
