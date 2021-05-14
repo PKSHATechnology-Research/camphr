@@ -1,5 +1,4 @@
 import numpy as np
-import omegaconf
 import pytest
 import torch
 from spacy.language import Language
