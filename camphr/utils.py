@@ -194,7 +194,7 @@ def merge_dicts(dict_a: Dict[Any, Any], dict_b: Dict[Any, Any]) -> Dict[Any, Any
             ret[k] = dict_a[k]
         elif k not in dict_a and k in dict_b:
             ret[k] = dict_b[k]
-        elif k in dict_a and k not in dict_b:
+        elif k in dict_a and k in dict_b:
             va = dict_a[k]
             vb = dict_b[k]
             if isinstance(va, dict) and isinstance(vb, dict):

@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import dataclasses
 import functools
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 from typing_extensions import Literal
 
 import dataclass_utils
@@ -60,6 +60,16 @@ class NLPConfig:
     name: Optional[str] = None
 
 
+def _filter_fields(dat: Dict[str, Any], kls: Type[Any]) -> Dict[str, Any]:
+    assert dataclasses.is_dataclass(kls)
+    fields = kls.__annotations__
+    ret: Dict[str, Any] = {}
+    for k, v in dat.items():
+        if k in fields:
+            ret[k] = v
+    return ret
+
+
 def create_model(cfg: Union[Dict[str, Any], str]) -> Language:
     if isinstance(cfg, str):
         cfg_dict = yaml_to_dict(cfg)
@@ -68,6 +78,7 @@ def create_model(cfg: Union[Dict[str, Any], str]) -> Language:
     else:
         raise ValueError()
     cfg_dict = resolve_alias(ALIASES, cfg_dict)
+    cfg_dict = _filter_fields(cfg_dict, NLPConfig)
     cfg_ = dataclass_utils.into(cfg_dict, NLPConfig)
     cfg_ = correct_model_config(cfg_)
     nlp = create_lang(cfg_.lang)
@@ -83,6 +94,8 @@ def create_lang(cfg: LangConfig) -> Language:
     kwargs = cfg.kwargs or {}
     if cfg.torch:
         kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})  # type: ignore
+        if not cfg.optimizer:
+            raise ValueError("torch requires `optimizer` in configuration")
         return TorchLanguage(True, optimizer_config=cfg.optimizer, **kwargs)
     return spacy.blank(cfg.name, **kwargs)
 
@@ -159,7 +172,7 @@ def _add_pipes(cfg: NLPConfig) -> NLPConfig:
         cfg.pipeline = cfg.pipeline or OmegaConf.create({})  # type: ignore
         assert cfg.task  # for type checker
         pipe = TASK2PIPE[cfg.task]
-        prev = cfg.pipeline[pipe]
+        prev = cfg.pipeline[pipe] or dict()
         prev["labels"] = cfg.labels  # todo: avoid hardcoding
         cfg.pipeline[pipe] = prev
     else:
@@ -249,7 +262,7 @@ def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
             if v:
                 v[KEY] = val
             else:
-                v = {KEY: val}
+                cfg.pipeline[k] = {KEY: val}
     return cfg
 
 
@@ -262,13 +275,13 @@ def _correct_torch(cfg: NLPConfig) -> NLPConfig:
 
 def _resolve_label(cfg: NLPConfig) -> NLPConfig:
     """Resolver for ner and sequence classification label config."""
-    ner = cfg.pipeline.get(TRANSFORMERS_NER, None)
+    ner = cfg.pipeline.get(TRANSFORMERS_NER)
     if ner:
         ner[LABELS] = get_ner_labels(ner[LABELS])
-    seq = cfg.pipeline.get(TRANSFORMERS_SEQ_CLASSIFIER, None)
+    seq = cfg.pipeline.get(TRANSFORMERS_SEQ_CLASSIFIER)
     if seq:
         seq[LABELS] = get_labels(seq[LABELS])
-    multiseq = cfg.pipeline.get(TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER, None)
+    multiseq = cfg.pipeline.get(TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER)
     if multiseq:
         multiseq[LABELS] = get_labels(multiseq[LABELS])
     return cfg

@@ -1,5 +1,6 @@
 from contextlib import contextmanager
-from typing import Any, Dict, Optional, Type, TypeVar
+import dataclasses
+from typing import Any, Dict, Optional, Set, Type, TypeVar
 
 import dataclass_utils
 import pytest
@@ -41,7 +42,6 @@ def yml_to_nlpconfig(yml: str) -> NLPConfig:
     [
         """
     name: en
-    torch: true
     """,
         """
     name: en
@@ -72,7 +72,55 @@ def does_not_raise():
         {TRANSFORMERS_NER}:
     """,
             None,
-            pytest.raises(TypeError),
+            pytest.raises(ValueError),
+        ),
+        (
+            f"""
+    lang:
+        name: en
+    pipeline:
+        {TRANSFORMERS_NER}:
+            trf_name_or_path: foo
+            labels: ['-', 'O', 'I-Foo', 'B-Foo']
+    """,
+            f"""
+    lang:
+        name: en
+        torch: true
+    pipeline:
+        {TRANSFORMERS_TOKENIZER}:
+            trf_name_or_path: foo
+        {TRANSFORMERS_MODEL}:
+            trf_name_or_path: foo
+        {TRANSFORMERS_NER}:
+            trf_name_or_path: foo
+            labels: ['-', 'O', 'I-Foo', 'B-Foo']
+    """,
+            does_not_raise(),
+        ),
+        (
+            f"""
+    lang:
+        name: en
+    pipeline:
+        {TRANSFORMERS_NER}:
+            trf_name_or_path: foo
+            labels: ["Foo"]
+    """,
+            f"""
+    lang:
+        name: en
+        torch: true
+    pipeline:
+        {TRANSFORMERS_TOKENIZER}:
+            trf_name_or_path: foo
+        {TRANSFORMERS_MODEL}:
+            trf_name_or_path: foo
+        {TRANSFORMERS_NER}:
+            trf_name_or_path: foo
+            labels: ['-', 'O', 'B-Foo','I-Foo']
+    """,
+            does_not_raise(),
         ),
     ],
 )
@@ -98,7 +146,7 @@ def inject_dummy():
         (
             f"""
     pipeline:
-        {TRANSFORMERS_NER}:
+        {TRANSFORMERS_NER}: {{}}
     """,
             f"""
     pipeline:
@@ -110,7 +158,7 @@ def inject_dummy():
         (
             f"""
     pipeline:
-        {TRANSFORMERS_MODEL}:
+        {TRANSFORMERS_MODEL}: {{}}
     """,
             f"""
     pipeline:
@@ -201,6 +249,7 @@ def test_assign_and_align_pipeline(yml: str, modified: str, inject_dummy):
 def test_align_pipeline_and_alias(yml: str, modified: str):
     config_dict = yaml.safe_load(yml)
     config_dict: Dict[str, Any] = resolve_alias(ALIASES, config_dict)  # type: ignore
+
     config = dataclass_utils.into(config_dict, NLPConfig)
     config = _add_required_pipes(config)
     config = _align_pipeline(config)
