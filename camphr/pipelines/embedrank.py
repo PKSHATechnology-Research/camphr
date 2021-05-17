@@ -5,9 +5,9 @@
 from typing import Callable, Dict, List, Optional
 
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 import spacy
 import spacy.language
-from sklearn.metrics.pairwise import cosine_similarity
 from spacy.matcher import Matcher
 from spacy.tokens import Doc, Span
 from spacy.vocab import Vocab
@@ -94,7 +94,7 @@ class EmbedRank(SerializationMixin):
         scores0 = np.squeeze(scores0)
 
         candidates = list(range(len(spans)))
-        i = np.argmax(scores0)
+        i = int(np.argmax(scores0))
         candidates.remove(i)
         populated: List[int] = [i]
 
@@ -104,7 +104,7 @@ class EmbedRank(SerializationMixin):
             scores = scores0[candidates] - (1 - self.lambda_) * np.max(
                 spans_sims[candidates][:, populated], axis=1
             )
-            i = np.argmax(scores)
+            i = int(np.argmax(scores))
             populated.append(candidates[i])
             candidates.pop(i)
         doc._.set(EMBEDRANK_KEYPHRASES, [spans[i] for i in populated])
