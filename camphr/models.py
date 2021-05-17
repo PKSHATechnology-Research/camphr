@@ -54,9 +54,11 @@ class LangConfig:
 @dataclass
 class NLPConfig:
     lang: LangConfig
-    pipeline: Dict[str, Optional[Dict[str, Any]]]
+    pipeline: Dict[str, Optional[Dict[str, Any]]] = dataclasses.field(
+        default_factory=dict
+    )
     task: Optional[Literal["ner", "textcat", "multilabel_textcat"]] = None
-    labels: Optional[List[str]] = None
+    labels: Optional[str] = None
     name: Optional[str] = None
     pretrained: Optional[str] = None
     ner_label: Optional[List[str]] = None
@@ -71,6 +73,7 @@ def create_model(cfg: Union[Dict[str, Any], str, NLPConfig]) -> Language:
     elif isinstance(cfg, dict):
         cfg_dict = cfg
     elif isinstance(cfg, NLPConfig):
+        # TODO: obviously ugly
         cfg_dict = dataclasses.asdict(cfg)
     else:
         raise ValueError(f"Expected dict, got {type(cfg)}")

@@ -4,8 +4,6 @@ model:
         optimizer:
             class: transformers.optimization.AdamW
             params:
-    pretrained:
-    pipeline:
 train:
     data:
         path:

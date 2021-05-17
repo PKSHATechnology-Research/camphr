@@ -1,10 +1,12 @@
 from collections import defaultdict
+import dataclasses
 import logging
 import os
 from pathlib import Path
 import random
 from typing import Any, Callable, Dict, Tuple, Type, Union, cast
 
+import dataclass_utils
 import numpy as np
 from sklearn.metrics import classification_report
 from spacy.language import Language
@@ -23,6 +25,7 @@ from camphr.utils import (
     import_attr,
     resolve_alias,
 )
+from camphr_cli.config import TrainConfig
 from camphr_cli.utils import (
     InputData,
     check_nonempty,
@@ -80,12 +83,12 @@ def resolve_path(cfg: Config) -> Config:
     return cfg
 
 
-def parse(cfg: Config):
-    assert isinstance(cfg, Config), cfg
-    cfg = resolve_alias(ALIASES, cfg)
-    check_nonempty(cfg, MUST_FIELDS)
-    cfg = resolve_path(cfg)
-    return cfg
+def parse(cfg: TrainConfig) -> TrainConfig:
+    cfg_dict = dataclasses.asdict(cfg)
+    cfg_dict = resolve_alias(ALIASES, cfg_dict)
+    check_nonempty(cfg_dict, MUST_FIELDS)
+    cfg_dict = resolve_path(cfg_dict)
+    return dataclass_utils.into(cfg_dict, TrainConfig)
 
 
 def evaluate_textcat(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Dict:
@@ -203,7 +206,7 @@ def _main(cfg: Config) -> None:
         cfg = OmegaConf.merge(
             cfg, OmegaConf.load(hydra.utils.to_absolute_path(cfg.user_config))
         )
-    cfg_: Dict[str, Any] = cfg.to_container()
+    cfg_ = dataclass_utils.into(cfg.to_container(), TrainConfig)
     cfg_ = parse(cfg_)
     if cfg_.get("seed"):
         set_seed(cfg_["seed"])
