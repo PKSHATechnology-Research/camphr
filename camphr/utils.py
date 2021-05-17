@@ -8,7 +8,6 @@ from pathlib import Path
 import re
 from typing import (
     Any,
-    Callable,
     Dict,
     Iterable,
     List,
@@ -27,7 +26,7 @@ from spacy.errors import Errors
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
-from toolz import curry
+import srsly
 import yaml
 
 from camphr.VERSION import __version__
@@ -251,6 +250,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
+
+
 
 
 class SerializationMixin:

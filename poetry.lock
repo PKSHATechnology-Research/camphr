@@ -1154,7 +1154,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "0651f4d6a2a99ff3d914ac146b041cfe1fb73ddca17c606e03490cce85347894"
+content-hash = "46de1c3f399ca751f423d441c142057cf34f136fa1fd98a7d68a7d5b160fe5bb"
 
 [metadata.files]
 alabaster = [
