@@ -1,28 +1,20 @@
+from collections import defaultdict
 import logging
 import os
-import random
-from collections import defaultdict
 from pathlib import Path
+import random
 from typing import Callable, Dict, Tuple, Type, Union, cast
 
 import hydra
 import hydra.utils
 import numpy as np
-import torch
 from omegaconf import Config, OmegaConf
-from sklearn.metrics import classification_report  # type: ignore
+from sklearn.metrics import classification_report
 from spacy.language import Language
 from spacy.util import minibatch
+import torch
 from torch.optim.optimizer import Optimizer
 
-from camphr.cli.utils import (
-    InputData,
-    check_nonempty,
-    convert_fullpath_if_path,
-    create_data,
-    report_fail,
-    unzip2,
-)
 from camphr.lang.torch import TorchLanguage
 from camphr.models import correct_model_config, create_model
 from camphr.pipelines.transformers.seq_classification import TOP_LABEL
@@ -32,6 +24,14 @@ from camphr.utils import (
     get_by_dotkey,
     import_attr,
     resolve_alias,
+)
+from camphr_cli.utils import (
+    InputData,
+    check_nonempty,
+    convert_fullpath_if_path,
+    create_data,
+    report_fail,
+    unzip2,
 )
 
 logger = logging.getLogger(__name__)
