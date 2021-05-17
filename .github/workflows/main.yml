@@ -2,9 +2,13 @@ name: test and publish
 
 on: 
   push:
+    branches:
+      - master
     paths-ignore:
       - "docs/**"
   pull_request:
+    branches:
+      - master
     paths-ignore:
       - "docs/**"
 
