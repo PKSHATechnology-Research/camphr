@@ -169,7 +169,7 @@ def _add_pipes(cfg: NLPConfig) -> NLPConfig:
     if cfg.task in TASKS:
         if not cfg.labels:
             raise ValueError("`cfg.labels` required")
-        cfg.pipeline = cfg.pipeline or OmegaConf.create({})  # type: ignore
+        cfg.pipeline = cfg.pipeline or dict()
         assert cfg.task  # for type checker
         pipe = TASK2PIPE[cfg.task]
         prev = cfg.pipeline.get(pipe, dict()) or cast(Dict[str, Any], dict())

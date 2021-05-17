@@ -82,7 +82,7 @@ def get_loss_from_docs(docs: Iterable[Doc]) -> torch.Tensor:
 
 
 def add_loss_to_docs(docs: Sequence[Doc], loss: torch.Tensor):
-    """Add loss to docs' existing loss. """
+    """Add loss to docs' existing loss."""
     doc = docs[0]
     if TORCH_LOSS in doc.user_data:
         doc.user_data[TORCH_LOSS] += loss

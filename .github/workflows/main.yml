@@ -50,7 +50,7 @@ jobs:
       if: steps.cache.outputs.cache-hit != true
 
     - run: poetry run mypy camphr
-    - run: poetry run flake8
+    - run: poetry run flake8 camphr
 
     - name: Run pytest
       run: poetry run pytest tests
