@@ -779,7 +779,7 @@ python-versions = "*"
 
 [[package]]
 name = "sortedcontainers"
-version = "2.3.0"
+version = "2.4.0"
 description = "Sorted Containers -- Sorted List, Sorted Dict, Sorted Set"
 category = "dev"
 optional = false
@@ -1154,7 +1154,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "571a32e650e5d14e6a1aa86ea040261ce1c98109262e5ad604645814e3b7eff3"
+content-hash = "0651f4d6a2a99ff3d914ac146b041cfe1fb73ddca17c606e03490cce85347894"
 
 [metadata.files]
 alabaster = [
@@ -1792,8 +1792,8 @@ snowballstemmer = [
     {file = "snowballstemmer-2.1.0.tar.gz", hash = "sha256:e997baa4f2e9139951b6f4c631bad912dfd3c792467e2f03d7239464af90e914"},
 ]
 sortedcontainers = [
-    {file = "sortedcontainers-2.3.0-py2.py3-none-any.whl", hash = "sha256:37257a32add0a3ee490bb170b599e93095eed89a55da91fa9f48753ea12fd73f"},
-    {file = "sortedcontainers-2.3.0.tar.gz", hash = "sha256:59cc937650cf60d677c16775597c89a960658a09cf7c1a668f86e1e4464b10a1"},
+    {file = "sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0"},
+    {file = "sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88"},
 ]
 spacy = [
     {file = "spacy-2.3.5-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:faa728e56f7b8fe0a70c4bedc42611da23de86b783f6ad588a92c115f427b90c"},
