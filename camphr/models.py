@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import dataclasses
 import functools
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Dict, List, Optional, Type, Union, cast
 from typing_extensions import Literal
 
 import dataclass_utils
@@ -172,7 +172,7 @@ def _add_pipes(cfg: NLPConfig) -> NLPConfig:
         cfg.pipeline = cfg.pipeline or OmegaConf.create({})  # type: ignore
         assert cfg.task  # for type checker
         pipe = TASK2PIPE[cfg.task]
-        prev = cfg.pipeline.get(pipe, dict()) or dict()
+        prev = cfg.pipeline.get(pipe, dict()) or cast(Dict[str, Any], dict())
         prev["labels"] = cfg.labels  # todo: avoid hardcoding
         cfg.pipeline[pipe] = prev
     else:

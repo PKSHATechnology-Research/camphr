@@ -172,7 +172,7 @@ def create_dict_from_dotkey(dotkey: str, value: Any) -> Dict[str, Any]:
     result: Dict[str, Any] = {}
     cur = result
     for key in keys[:-1]:
-        ncur = {}
+        ncur: Dict[str, Any] = {}
         cur[key] = ncur
         cur = ncur
     cur[keys[-1]] = value
@@ -250,9 +250,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-
-
-
 
 
 class SerializationMixin:

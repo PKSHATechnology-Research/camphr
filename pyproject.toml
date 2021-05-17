@@ -40,7 +40,7 @@ dataclasses = "^0.6"
 toolz = ">=0.10,<0.12"
 spacy = ">=2.2,<3"
 PyYAML = "^5.4.1"
-dataclass-utils = "^0.7.8"
+dataclass-utils = "^0.7.9"
 
 [tool.poetry.extras]
 all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic",]
