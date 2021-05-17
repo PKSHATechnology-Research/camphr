@@ -8,4 +8,4 @@ lint:
 test:
 	poetry run mypy ${LIB}
 	poetry run flake8 ${LIB}
-	poetry run pytest ${LIB}
+	poetry run pytest tests

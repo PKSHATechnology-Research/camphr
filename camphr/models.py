@@ -237,33 +237,43 @@ def _correct_trf_pipeline(cfg: NLPConfig) -> NLPConfig:
     return cfg
 
 
+_TRF_NAME_OR_PATH = "trf_name_or_path"
+
+
 def _complement_trf_name(cfg: NLPConfig) -> NLPConfig:
     """For transformers pipeline.
 
     All transformers pipeline requires same `trf_name_or_path`, but it is a pain to write down in every pipes.
     So if there is any transformers pipeline with `trf_name_or_path`, copy it into the other pipes.
     """
-    KEY = "trf_name_or_path"
-    val = ""
     if not set(cfg.pipeline.keys()) & set(TRF_PIPES):
         return cfg
-    for k, v in cfg.pipeline.items():
-        if v:
-            nval = v.get(KEY, "")
-            if not isinstance(nval, str):
-                raise ValueError(f"Value of '{KEY}' must be string, but got {nval}")
-            val = nval or val
-    if not val:
-        raise ValueError(
-            f"Invalid configuration. At least one of transformer's pipe needs `{KEY}`, but the configuration is:\n{cfg.pipeline}"
-        )
+
+    val = _get_trf_name(cfg)
     for k, v in cfg.pipeline.items():
         if k in TRF_PIPES:
             if v:
-                v[KEY] = val
+                v[_TRF_NAME_OR_PATH] = val
             else:
-                cfg.pipeline[k] = {KEY: val}
+                cfg.pipeline[k] = {_TRF_NAME_OR_PATH: val}
     return cfg
+
+
+def _get_trf_name(cfg: NLPConfig) -> str:
+    val = ""
+    for _, v in cfg.pipeline.items():
+        if v:
+            nval = v.get(_TRF_NAME_OR_PATH, "")
+            if not isinstance(nval, str):
+                raise ValueError(
+                    f"Value of '{_TRF_NAME_OR_PATH}' must be string, but got {nval}"
+                )
+            val = nval or val
+    if not val:
+        raise ValueError(
+            f"Invalid configuration. At least one of transformer's pipe needs `{_TRF_NAME_OR_PATH}`, but the configuration is:\n{cfg.pipeline}"
+        )
+    return val
 
 
 def _correct_torch(cfg: NLPConfig) -> NLPConfig:
