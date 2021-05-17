@@ -110,6 +110,8 @@ def test_seed(chdir, default_config):
         return sum(p.sum().cpu().item() for p in pipe.model.parameters())
 
     cfg_dict = merge_dicts(default_config, yaml.safe_load(cfg))
+    for k, v in cfg_dict.items():
+        print(k, v)
     cfg = dataclass_utils.into(cfg_dict, TrainConfig)
     assert cfg.seed is not None
     set_seed(cfg.seed)
