@@ -198,14 +198,18 @@ def validate_data(cfg: Config, data: InputData, n_check=100):
 
 
 def _main(cfg: Config) -> None:
-    if cfg.user_config is not None:
+    if cfg.get("user_config") is not None:
         # Override config by user config.
         # This `user_config` have some limitations, and it will be improved
         # after the issue https://github.com/facebookresearch/hydra/issues/386 solved
         cfg = OmegaConf.merge(
-            cfg, OmegaConf.load(hydra.utils.to_absolute_path(cfg.user_config))
+            cfg, OmegaConf.load(hydra.utils.to_absolute_path(cfg["user_config"]))
         )
-    cfg_ = dataclass_utils.into(cfg.to_container(), TrainConfig)
+    if isinstance(cfg, Config):
+        cfg_dict = cfg.to_container()
+    else:
+        cfg_dict = cfg
+    cfg_ = dataclass_utils.into(cfg_dict, TrainConfig)
     cfg_ = parse(cfg_)
     if cfg_.seed:
         set_seed(cfg_.seed)
