@@ -25,14 +25,14 @@ include_trailing_comma = true
 known_first_party = "camphr"
 
 [tool.poetry.dependencies]
-python = ">=3.6.1,<4"
+python = ">=3.6.2,<4"
 typing-extensions = ">=3.7.4"
 pyahocorasick = "^1.4.0"
 catalogue = "^1.0.0"
 more-itertools = "*"
 scikit-learn = ">=0.22,<0.25"
 transformers = ">=3.0,<3.1"
-torch = "^1.0"
+torch = "^1.7.1"
 pytokenizations = ">=0.4.8,<1.0"
 pytextspan = ">=0.5.0,<1.0"
 dataclasses = "^0.6"
