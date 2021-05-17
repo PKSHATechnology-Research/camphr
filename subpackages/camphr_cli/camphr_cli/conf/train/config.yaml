@@ -5,7 +5,7 @@ model:
             class: transformers.optimization.AdamW
 train:
     data:
-        path:
+        path: foo
         ndata: -1
         val_size: 0.1
     niter: 10
