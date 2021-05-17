@@ -6,6 +6,17 @@ from pathlib import Path
 import random
 from typing import Any, Callable, Dict, Tuple, Type, Union, cast
 
+from camphr.lang.torch import TorchLanguage
+from camphr.models import correct_model_config, create_model
+from camphr.pipelines.transformers.seq_classification import TOP_LABEL
+from camphr.torch_utils import goldcat_to_label
+from camphr.utils import merge_dicts
+from camphr.utils import (
+    create_dict_from_dotkey,
+    get_by_dotkey,
+    import_attr,
+    resolve_alias,
+)
 import dataclass_utils
 import numpy as np
 from sklearn.metrics import classification_report
@@ -15,16 +26,6 @@ import torch
 from torch.optim.optimizer import Optimizer
 import yaml
 
-from camphr.lang.torch import TorchLanguage
-from camphr.models import correct_model_config, create_model
-from camphr.pipelines.transformers.seq_classification import TOP_LABEL
-from camphr.torch_utils import goldcat_to_label
-from camphr.utils import (
-    create_dict_from_dotkey,
-    get_by_dotkey,
-    import_attr,
-    resolve_alias,
-)
 from camphr_cli.config import TrainConfig
 from camphr_cli.utils import (
     InputData,
@@ -72,14 +73,12 @@ ALIASES = {
 }
 
 
-def resolve_path(cfg: Config) -> Config:
+def resolve_path(cfg: Dict[str, Any]) -> Dict[str, Any]:
     for key in PATH_FIELDS:
         path = get_by_dotkey(cfg, key)
         if path:
             path = convert_fullpath_if_path(path)
-            cfg = OmegaConf.merge(
-                cfg, OmegaConf.create(create_dict_from_dotkey(key, path))
-            )
+            cfg = merge_dicts(cfg, create_dict_from_dotkey(key, path))
     return cfg
 
 
@@ -104,9 +103,9 @@ def evaluate_textcat(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Di
     return classification_report(y, preds, output_dict=True)
 
 
-def evaluate(cfg: Config, nlp: TorchLanguage, val_data: InputData) -> Dict:
+def evaluate(cfg: TrainConfig, nlp: TorchLanguage, val_data: InputData) -> Dict:
     try:
-        scores = nlp.evaluate(val_data, batch_size=cfg.nbatch * 2)
+        scores = nlp.evaluate(val_data, batch_size=cfg.train.nbatch * 2)
     except Exception:
         report_fail(val_data)
         raise
@@ -121,7 +120,7 @@ EVAL_FN_MAP = defaultdict(  # type: ignore
 
 
 def train_epoch(
-    cfg: Config,
+    cfg: TrainConfig,
     nlp: TorchLanguage,
     optim: Optimizer,
     train_data: InputData,
@@ -129,14 +128,14 @@ def train_epoch(
     epoch: int,
     eval_fn: EvalFn,
 ) -> None:
-    for j, batch in enumerate(minibatch(train_data, size=cfg.nbatch)):
+    for j, batch in enumerate(minibatch(train_data, size=cfg.train.nbatch)):
         texts, golds = unzip2(batch)
         try:
             nlp.update(texts, golds, optim, verbose=True)
         except Exception:
             report_fail(batch)
             raise
-        logger.info(f"epoch {epoch} {j*cfg.nbatch}/{cfg.data.ndata}")
+        logger.info(f"epoch {epoch} {j*cfg.train.nbatch}/{cfg.train.data.ndata}")
 
 
 def save_model(nlp: Language, path: Path) -> None:
@@ -151,32 +150,32 @@ class DummyScheduler:
 
 
 def load_scheduler(
-    cfg: Config, optimizer: Optimizer
+    cfg: TrainConfig, optimizer: Optimizer
 ) -> Union[torch.optim.lr_scheduler.LambdaLR, Type[DummyScheduler]]:
-    cls_str = get_by_dotkey(cfg, "scheduler.class")
-    if not cls_str:
+    if not cfg.train.scheduler or not cfg.train.scheduler.class_:
         return DummyScheduler
+    cls_str = cfg.train.scheduler.class_
     cls = cast(Type[torch.optim.lr_scheduler.LambdaLR], import_attr(cls_str))
-    params = OmegaConf.to_container(cfg.scheduler.params) or {}
+    params = cfg.train.scheduler.params or {}
     return cls(optimizer, **params)
 
 
 def train(
-    cfg: Config,
+    cfg: TrainConfig,
     nlp: TorchLanguage,
     train_data: InputData,
     val_data: InputData,
     savedir: Path,
 ) -> None:
-    eval_fn = EVAL_FN_MAP[cfg.task]
+    eval_fn = EVAL_FN_MAP[cfg.model.task]
     optim = nlp.resume_training()
     scheduler = load_scheduler(cfg, optim)
-    for i in range(cfg.niter):
+    for i in range(cfg.train.niter):
         random.shuffle(train_data)
         train_epoch(cfg, nlp, optim, train_data, val_data, i, eval_fn)
         scheduler.step()  # type: ignore # (https://github.com/pytorch/pytorch/pull/26531)
         scores = eval_fn(cfg, nlp, val_data)
-        nlp.meta.update({"score": scores, "config": OmegaConf.to_container(cfg)})
+        nlp.meta.update({"score": scores, "config": dataclasses.asdict(cfg)})
         save_model(nlp, savedir / str(i))
 
 
@@ -208,11 +207,11 @@ def _main(cfg: Config) -> None:
         )
     cfg_ = dataclass_utils.into(cfg.to_container(), TrainConfig)
     cfg_ = parse(cfg_)
-    if cfg_.get("seed"):
-        set_seed(cfg_["seed"])
+    if cfg_.seed:
+        set_seed(cfg_.seed)
     logger.info(yaml.dump(cfg))
-    nlp = cast(TorchLanguage, create_model(cfg_["model"]))
-    train_data, val_data = create_data(cfg_["train"]["data"])
+    nlp = cast(TorchLanguage, create_model(cfg_.model))
+    train_data, val_data = create_data(cfg_.train.data)
     validate_data(cfg_, train_data)
     logger.info("output dir: {}".format(os.getcwd()))
     if torch.cuda.is_available():
@@ -220,7 +219,7 @@ def _main(cfg: Config) -> None:
         nlp.to(torch.device("cuda"))
     savedir = Path.cwd() / "models"
     savedir.mkdir(exist_ok=True)
-    train(cfg_.train, nlp, train_data, val_data, savedir)
+    train(cfg_, nlp, train_data, val_data, savedir)
 
 
 # Avoid to use decorator for testing

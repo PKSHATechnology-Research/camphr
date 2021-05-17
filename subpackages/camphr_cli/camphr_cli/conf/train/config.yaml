@@ -3,7 +3,6 @@ model:
         name:
         optimizer:
             class: transformers.optimization.AdamW
-            params:
 train:
     data:
         path:
