@@ -58,7 +58,7 @@ class NLPConfig:
         default_factory=dict
     )
     task: Optional[Literal["ner", "textcat", "multilabel_textcat"]] = None
-    labels: Optional[str] = None
+    labels: Optional[Union[str, List[str]]] = None
     name: Optional[str] = None
     pretrained: Optional[str] = None
     ner_label: Optional[List[str]] = None
