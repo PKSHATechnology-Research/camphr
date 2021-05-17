@@ -158,7 +158,7 @@ python-versions = "*"
 
 [[package]]
 name = "dataclass-utils"
-version = "0.7.9"
+version = "0.7.10"
 description = ""
 category = "main"
 optional = false
@@ -243,7 +243,7 @@ unidic-lite = ["unidic-lite"]
 
 [[package]]
 name = "hypothesis"
-version = "6.12.0"
+version = "6.12.1"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -1154,7 +1154,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "6baed965e3d4476c33bfad2b21867000715e6c9b386cb7dafbd96dcbafb23fa2"
+content-hash = "02a6b8e28d9a3d225cc7d3e17390f504d7482bf1eb61d88289652300449aa0ea"
 
 [metadata.files]
 alabaster = [
@@ -1240,8 +1240,8 @@ cymem = [
     {file = "cymem-2.0.5.tar.gz", hash = "sha256:190e15d9cf2c3bde60ae37bddbae6568a36044dc4a326d84081a5fa08818eee0"},
 ]
 dataclass-utils = [
-    {file = "dataclass_utils-0.7.9-py3-none-any.whl", hash = "sha256:6210416c8abca637d8cd12778a3e8a2f734d65869e121c28f6253c3aac2ce30b"},
-    {file = "dataclass_utils-0.7.9.tar.gz", hash = "sha256:2ead84f0b81c29e14085546152272cc608f4809713d44486501dff491e030fc2"},
+    {file = "dataclass_utils-0.7.10-py3-none-any.whl", hash = "sha256:d245cc27a3cce8b9abcfc4b7ded5353f853e319482d93b2f859f68c90c74c40f"},
+    {file = "dataclass_utils-0.7.10.tar.gz", hash = "sha256:5a06bacf67b828928ccf335354a432356824c0f438ecca1621a11439b162b1a4"},
 ]
 dataclasses = [
     {file = "dataclasses-0.6-py3-none-any.whl", hash = "sha256:454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f"},
@@ -1286,8 +1286,8 @@ fugashi = [
     {file = "fugashi-1.1.0.tar.gz", hash = "sha256:073c529f777affadf91b7cd59f8ed6d2a9cdfa728a5aeb54e9b64a48b5114cbd"},
 ]
 hypothesis = [
-    {file = "hypothesis-6.12.0-py3-none-any.whl", hash = "sha256:d26f2b7bb6e3edebc6eded70ff99cd15425bf4266608e7a041d75f00b58ac7cb"},
-    {file = "hypothesis-6.12.0.tar.gz", hash = "sha256:a24b2ccb7b84860762df3fabb8faa196bf627cbee62917a5095f3de8ff71050b"},
+    {file = "hypothesis-6.12.1-py3-none-any.whl", hash = "sha256:27b489fedf54746a1ecfdf1d49dd01611f3fd833c164283c341f8cc1eed2a5fd"},
+    {file = "hypothesis-6.12.1.tar.gz", hash = "sha256:7fdca79cc4005c9a8c5a4688537d47578bcfa307595769858ef811fa3f16e3c7"},
 ]
 identify = [
     {file = "identify-2.2.4-py2.py3-none-any.whl", hash = "sha256:ad9f3fa0c2316618dc4d840f627d474ab6de106392a4f00221820200f490f5a8"},
