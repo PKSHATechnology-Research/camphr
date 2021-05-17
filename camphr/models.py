@@ -58,27 +58,23 @@ class NLPConfig:
     task: Optional[Literal["ner", "textcat", "multilabel_textcat"]] = None
     labels: Optional[List[str]] = None
     name: Optional[str] = None
+    pretrained: Optional[str] = None
+    ner_label: Optional[List[str]] = None
+    textcat_label: Optional[List[str]] = None
+    multitextcat_label: Optional[List[str]] = None
+    optimizer: Optional[Dict[str, Any]] = None
 
 
-def _filter_fields(dat: Dict[str, Any], kls: Type[Any]) -> Dict[str, Any]:
-    assert dataclasses.is_dataclass(kls)
-    fields = kls.__annotations__
-    ret: Dict[str, Any] = {}
-    for k, v in dat.items():
-        if k in fields:
-            ret[k] = v
-    return ret
-
-
-def create_model(cfg: Union[Dict[str, Any], str]) -> Language:
+def create_model(cfg: Union[Dict[str, Any], str, NLPConfig]) -> Language:
     if isinstance(cfg, str):
         cfg_dict = yaml_to_dict(cfg)
     elif isinstance(cfg, dict):
         cfg_dict = cfg
+    elif isinstance(cfg, NLPConfig):
+        cfg_dict = dataclasses.asdict(cfg)
     else:
-        raise ValueError()
+        raise ValueError(f"Expected dict, got {type(cfg)}")
     cfg_dict = resolve_alias(ALIASES, cfg_dict)
-    cfg_dict = _filter_fields(cfg_dict, NLPConfig)
     cfg_ = dataclass_utils.into(cfg_dict, NLPConfig)
     cfg_ = correct_model_config(cfg_)
     nlp = create_lang(cfg_.lang)
@@ -126,7 +122,7 @@ def correct_model_config(cfg: NLPConfig) -> NLPConfig:
 
 # Alias definition.
 # For example, `pretrained` key is converted to `pipeline.transformers_model.trf_name_or_path`.
-# The aliases in config is resolved by `resolved_alias`
+# The aliases in config are resolved by `resolved_alias`
 ALIASES = {
     "pretrained": f"pipeline.{TRANSFORMERS_MODEL}.trf_name_or_path",
     "ner_label": f"pipeline.{TRANSFORMERS_NER}.labels",
@@ -271,7 +267,7 @@ def _get_trf_name(cfg: NLPConfig) -> str:
             val = nval or val
     if not val:
         raise ValueError(
-            f"Invalid configuration. At least one of transformer's pipe needs `{_TRF_NAME_OR_PATH}`, but the configuration is:\n{cfg.pipeline}"
+            f"Invalid configuration. At least one of transformer's pipe needs `{_TRF_NAME_OR_PATH}`, but the configuration is:\n{cfg}"
         )
     return val
 

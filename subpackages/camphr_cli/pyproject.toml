@@ -9,7 +9,7 @@ license = "Apache-2.0"
 python = "^3.7"
 fire = "^0.4.0"
 hydra-core = "0.11.3"
-camphr = {path = "../.."}
+camphr = {path = "../..", develop=true}
 mypy = "^0.812"
 flake8 = "^3.9.2"
 

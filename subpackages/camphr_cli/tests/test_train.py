@@ -4,13 +4,13 @@ from pathlib import Path
 import subprocess
 import sys
 
-from omegaconf import Config, OmegaConf
 import pytest
 
 from camphr import __version__
 from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 from camphr_cli.train import _main, set_seed, validate_data
+from omegaconf import Config, OmegaConf
 
 from .utils import BERT_DIR, BERT_JA_DIR, FIXTURE_DIR, XLNET_DIR, check_mecab
 

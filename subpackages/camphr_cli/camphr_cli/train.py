@@ -3,17 +3,15 @@ import logging
 import os
 from pathlib import Path
 import random
-from typing import Callable, Dict, Tuple, Type, Union, cast
+from typing import Any, Callable, Dict, Tuple, Type, Union, cast
 
-import hydra
-import hydra.utils
 import numpy as np
-from omegaconf import Config, OmegaConf
 from sklearn.metrics import classification_report
 from spacy.language import Language
 from spacy.util import minibatch
 import torch
 from torch.optim.optimizer import Optimizer
+import yaml
 
 from camphr.lang.torch import TorchLanguage
 from camphr.models import correct_model_config, create_model
@@ -33,6 +31,9 @@ from camphr_cli.utils import (
     report_fail,
     unzip2,
 )
+import hydra
+import hydra.utils
+from omegaconf import Config, OmegaConf
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +85,6 @@ def parse(cfg: Config):
     cfg = resolve_alias(ALIASES, cfg)
     check_nonempty(cfg, MUST_FIELDS)
     cfg = resolve_path(cfg)
-    cfg.model = correct_model_config(cfg.model)
     return cfg
 
 
@@ -203,20 +203,21 @@ def _main(cfg: Config) -> None:
         cfg = OmegaConf.merge(
             cfg, OmegaConf.load(hydra.utils.to_absolute_path(cfg.user_config))
         )
-    cfg = parse(cfg)
-    if cfg.seed:
-        set_seed(cfg.seed)
-    logger.info(cfg.pretty())
-    nlp = cast(TorchLanguage, create_model(cfg.model))
-    train_data, val_data = create_data(cfg.train.data)
-    validate_data(cfg, train_data)
+    cfg_: Dict[str, Any] = cfg.to_container()
+    cfg_ = parse(cfg_)
+    if cfg_.get("seed"):
+        set_seed(cfg_["seed"])
+    logger.info(yaml.dump(cfg))
+    nlp = cast(TorchLanguage, create_model(cfg_["model"]))
+    train_data, val_data = create_data(cfg_["train"]["data"])
+    validate_data(cfg_, train_data)
     logger.info("output dir: {}".format(os.getcwd()))
     if torch.cuda.is_available():
         logger.info("CUDA enabled")
         nlp.to(torch.device("cuda"))
     savedir = Path.cwd() / "models"
     savedir.mkdir(exist_ok=True)
-    train(cfg.train, nlp, train_data, val_data, savedir)
+    train(cfg_.train, nlp, train_data, val_data, savedir)
 
 
 # Avoid to use decorator for testing
