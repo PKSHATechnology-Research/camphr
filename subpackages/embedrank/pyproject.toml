@@ -32,6 +32,10 @@ catalogue = "^1.0.0"
 more-itertools = "^8.7.0"
 scikit-learn = ">=0.22,<0.25"
 camphr = {path = "../..", develop=true}
+numpy = "^1.20.3"
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+mypy = "^0.812"
+flake8 = "^3.9.2"
 

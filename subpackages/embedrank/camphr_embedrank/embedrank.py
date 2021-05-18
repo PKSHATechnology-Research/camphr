@@ -2,8 +2,9 @@
 
 `EmbedRank` assigns `Doc` extension `embedrank_keyphrases`
 """
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Union
 
+from camphr.utils import SerializationMixin
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import spacy
@@ -12,7 +13,6 @@ from spacy.matcher import Matcher
 from spacy.tokens import Doc, Span
 from spacy.vocab import Vocab
 
-from camphr.utils import SerializationMixin
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 
@@ -21,7 +21,7 @@ EMBEDRANK_KEYPHRASES = "embedrank_keyphrases"
 
 
 class ExtractKeywordsRuler:
-    def __init__(self, vocab: Vocab, patterns: Dict[str, List]):
+    def __init__(self, vocab: Vocab, patterns: Dict[str, List[Any]]):
         self.matcher = Matcher(vocab)
         for k, v in patterns.items():
             self.matcher.add(k, None, v)
@@ -36,11 +36,14 @@ class ExtractKeywordsRuler:
     requires=["doc.vector", "token.vector"],
 )
 class EmbedRank(SerializationMixin):
-    DefaultPatterns = {
-        "keyword": [
+    DefaultPatterns: Dict[str, List[Dict[str, Union[Dict[str, str], str]]]] = {
+        "keyword_ja": [
             {"TAG": {"REGEX": "(名詞|形容詞|助詞,連体化|接頭詞,名詞接続).*"}, "OP": "*"},
             {"TAG": {"REGEX": "名詞,.*"}, "OP": "+"},
-        ]
+        ],
+        "keyword_en": [
+            {"TAG": {"REGEX": "NN"}, "OP": "+"},
+        ],
     }
 
     serialization_fields = ["max_keyphrases", "extract_keyphrases", "lambda_"]
