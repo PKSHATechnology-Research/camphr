@@ -7,7 +7,11 @@ from camphr_embedrank.embedrank import EMBEDRANK_KEYPHRASES, EmbedRank
 
 @pytest.fixture(scope="module")
 def nlp():
-    _nlp = spacy.load("en_core_web_sm")
+    _nlp = spacy.blank("en")
+    pipe = _nlp.create_pipe("tagger")
+    pipe.begin_training()
+    _nlp.add_pipe(pipe)
+    EmbedRank.DefaultPatterns = {"keyword": [{"TEXT": "test"}]}  # hack for test
     pipe = EmbedRank(vocab=_nlp.vocab)
     _nlp.add_pipe(pipe)
     return _nlp
