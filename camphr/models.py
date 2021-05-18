@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import dataclasses
 import functools
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Type, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Union, cast
 from typing_extensions import Literal
 
 import dataclass_utils
@@ -61,9 +61,9 @@ class NLPConfig:
     labels: Optional[Union[str, List[str]]] = None
     name: Optional[str] = None
     pretrained: Optional[str] = None
-    ner_label: Optional[List[str]] = None
-    textcat_label: Optional[List[str]] = None
-    multitextcat_label: Optional[List[str]] = None
+    ner_label: Optional[Union[List[str], str]] = None
+    textcat_label: Optional[Union[List[str], str]] = None
+    multitextcat_label: Optional[Union[List[str], str]] = None
     optimizer: Optional[Dict[str, Any]] = None
 
 
