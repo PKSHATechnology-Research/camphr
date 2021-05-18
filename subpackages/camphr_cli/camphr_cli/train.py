@@ -7,7 +7,7 @@ import random
 from typing import Any, Callable, Dict, Tuple, Type, Union, cast
 
 from camphr.lang.torch import TorchLanguage
-from camphr.models import correct_model_config, create_model
+from camphr.models import create_model
 from camphr.pipelines.transformers.seq_classification import TOP_LABEL
 from camphr.torch_utils import goldcat_to_label
 from camphr.utils import merge_dicts

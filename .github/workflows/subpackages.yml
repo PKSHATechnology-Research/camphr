@@ -52,8 +52,5 @@ jobs:
         poetry install
       if: steps.cache.outputs.cache-hit != true
 
-    - run: poetry run mypy ${{ matrix.subpackage }}
-    - run: poetry run flake8
-
-    - name: Run pytest
-      run: poetry run pytest tests
+    - name: Run test
+      run: ../../scripts/test.sh ${{ matrix.subpackage }}

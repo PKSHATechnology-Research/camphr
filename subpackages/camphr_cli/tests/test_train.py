@@ -15,7 +15,7 @@ import yaml
 
 from camphr_cli.config import TrainConfig
 from camphr_cli.train import _main, set_seed, validate_data
-from omegaconf import Config, OmegaConf
+from omegaconf import OmegaConf
 
 from .utils import BERT_DIR, BERT_JA_DIR, FIXTURE_DIR, XLNET_DIR, check_mecab
 
