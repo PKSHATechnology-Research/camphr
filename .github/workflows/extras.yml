@@ -2,11 +2,12 @@ name: test extras
 
 on:
   push:
-    paths-ignore:
-      - "docs/**"
+    branches:
+      - master
   pull_request:
-    paths-ignore:
-      - "docs/**"
+    branches:
+      - master
+
 jobs:
   build:
     if: contains(github.event.head_commit.message, '[skip ci]') == false
