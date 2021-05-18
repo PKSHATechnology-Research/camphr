@@ -1,12 +1,12 @@
-name: test and publish
+name: test subpackages
 
 on: 
   push:
-    paths-ignore:
-      - "docs/**"
+    branches:
+      - master
   pull_request:
-    paths-ignore:
-      - "docs/**"
+    branches:
+      - master
 
 jobs:
   test:
