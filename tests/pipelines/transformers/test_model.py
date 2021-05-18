@@ -1,9 +1,11 @@
+from typing import Any, Dict
+import dataclass_utils
+
 import numpy as np
-import omegaconf
 import pytest
-import torch
 from spacy.language import Language
 from spacy.tokens import Doc
+import torch
 
 from camphr.lang.torch import TorchLanguage
 from camphr.models import NLPConfig, create_model, load
@@ -105,9 +107,9 @@ def test_update(nlp: TorchLanguage):
     pipe.cfg["freeze"] = False
 
 
-def test_freeze_model(trf_name_or_path, trf_model_config: NLPConfig):
-    config = omegaconf.OmegaConf.to_container(trf_model_config)
-    config["pipeline"][TRANSFORMERS_MODEL]["freeze"] = True
+def test_freeze_model(trf_name_or_path, trf_model_config: Dict[str, Any]):
+    config = dataclass_utils.into(trf_model_config, NLPConfig)
+    config.pipeline[TRANSFORMERS_MODEL]["freeze"] = True
     nlp = create_model(config)
     pipe = nlp.pipeline[-1][1]
     assert pipe.cfg["freeze"]

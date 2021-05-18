@@ -5,15 +5,15 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union, cast
 
 import spacy
+from spacy.gold import GoldParse
 import spacy.language
-import srsly
-import torch
-from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
 from spacy.language import Language
 from spacy.pipeline.pipes import Pipe
 from spacy.scorer import Scorer
 from spacy.tokens import Doc
 from spacy.util import minibatch
+import srsly
+import torch
 from torch.optim.optimizer import Optimizer
 
 from camphr.torch_utils import TorchPipe, get_loss_from_docs

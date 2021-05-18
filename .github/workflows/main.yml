@@ -1,6 +1,12 @@
 name: test and publish
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   test:
@@ -43,11 +49,8 @@ jobs:
         poetry install
       if: steps.cache.outputs.cache-hit != true
 
-    - run: poetry run mypy camphr
-    - run: poetry run flake8
-
-    - name: Run pytest
-      run: poetry run pytest tests
+    - name: Run test
+      run: ./scripts/test.sh camphr
 
   publish:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')

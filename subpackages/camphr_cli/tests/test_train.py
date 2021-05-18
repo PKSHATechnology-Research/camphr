@@ -3,28 +3,33 @@ import json
 from pathlib import Path
 import subprocess
 import sys
-
-from omegaconf import Config, OmegaConf
-import pytest
+from typing import Any, Dict
 
 from camphr import __version__
 from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+from camphr.utils import merge_dicts
+import dataclass_utils
+import pytest
+import yaml
+
+from camphr_cli.config import TrainConfig
 from camphr_cli.train import _main, set_seed, validate_data
+from omegaconf import OmegaConf
 
 from .utils import BERT_DIR, BERT_JA_DIR, FIXTURE_DIR, XLNET_DIR, check_mecab
 
 
 @pytest.fixture
-def default_config() -> Config:
-    return OmegaConf.load(
-        str(
+def default_config() -> Dict[str, Any]:
+    return yaml.safe_load(
+        Path(
             Path(__file__).parent.parent
             / "camphr_cli"
             / "conf"
             / "train"
             / "config.yaml"
-        )
+        ).read_text()
     )
 
 
@@ -68,8 +73,8 @@ def config(request, default_config):
     ident, diff, skip = request.param
     if skip:
         pytest.skip()
-    diff = OmegaConf.create(diff)
-    _config = OmegaConf.merge(default_config, diff)
+    diff = yaml.safe_load(diff)
+    _config = merge_dicts(default_config, diff)
     return _config
 
 
@@ -77,9 +82,9 @@ def test_main(config, chdir):
     _main(config)
 
 
-def test_cli(config: Config, chdir):
+def test_cli(config: Dict[str, Any], chdir):
     cfgpath = Path("user.yaml").absolute()
-    cfgpath.write_text(json.dumps(OmegaConf.to_container(config)))
+    cfgpath.write_text(json.dumps(config))
     res = subprocess.run(
         [sys.executable, "-m", "camphr_cli", "train", f"user_config={cfgpath}"],
         stderr=subprocess.PIPE,
@@ -99,12 +104,14 @@ def test_seed(chdir, default_config):
     seed: 0
     """
 
-    def get_model_value(cfg):
+    def get_model_value(cfg: TrainConfig):
         nlp = create_model(cfg.model)
         pipe = nlp.get_pipe(TRANSFORMERS_NER)
         return sum(p.sum().cpu().item() for p in pipe.model.parameters())
 
-    cfg = OmegaConf.merge(default_config, OmegaConf.create(cfg))
+    cfg_dict = merge_dicts(default_config, yaml.safe_load(cfg))
+    cfg = dataclass_utils.into(cfg_dict, TrainConfig)
+    assert cfg.seed is not None
     set_seed(cfg.seed)
     first = get_model_value(cfg)
     set_seed(cfg.seed)

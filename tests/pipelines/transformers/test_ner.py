@@ -1,10 +1,10 @@
 import json
 from typing import Dict, List
 
-import omegaconf
 import pytest
-import torch
 from spacy.language import Language
+import torch
+import yaml
 
 from camphr.models import create_model, load
 from camphr.ner_labels.labels_ene import ALL_LABELS as enes
@@ -41,7 +41,7 @@ def labels(label_type):
 
 @pytest.fixture(scope="module")
 def config(labels, lang, trf_name_or_path, device):
-    return omegaconf.OmegaConf.create(
+    return yaml.safe_load(
         f"""
     lang:
         name: {lang}
@@ -172,6 +172,7 @@ def test_kbeam_config(labels):
         f"""
     lang:
         name: ja_mecab
+        optimizer: {{}}
     pipeline:
         {TRANSFORMERS_NER}:
             k_beam: 111

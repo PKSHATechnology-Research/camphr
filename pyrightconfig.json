@@ -6,10 +6,18 @@
     "camphr"
   ],
   "reportMissingTypeStubs": false,
-  "reportUnknownMemberType": "warning",
+  "reportUnknownMemberType": false,
   "reportUnknownVariableType": "warning",
   "reportUnnecessaryIsInstance": "warning",
   "reportPrivateUsage": "warning",
   "reportUnknownArgumentType": "warning",
-  "reportUnknownLambdaType": false
+  "reportUnknownLambdaType": false,
+  "executionEnvironments": [
+    {
+      "root": "./subpackages/camphr_cli",
+      "extraPaths": [
+        "./subpackages/camphr_cli/camphr_cli"
+      ]
+    }
+  ]
 }

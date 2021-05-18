@@ -1,10 +1,11 @@
 """The utils module defines util functions used accross sub packages."""
 import bisect
+from collections import OrderedDict
 import distutils.spawn
 import importlib
-import re
-from collections import OrderedDict
+import json
 from pathlib import Path
+import re
 from typing import (
     Any,
     Dict,
@@ -17,21 +18,19 @@ from typing import (
     Union,
     cast,
 )
+from typing_extensions import Literal
 
-import spacy
-import srsly
-import yaml
 from more_itertools import padded
-from omegaconf import Config, OmegaConf
+import spacy
 from spacy.errors import Errors
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
-from toolz import curry
-from typing_extensions import Literal
+import srsly
+import yaml
 
-from camphr.types import Pathlike
 from camphr.VERSION import __version__
+from camphr.types import Pathlike
 
 
 def zero_pad(a: List[List[int]], pad_value: int = 0) -> List[List[int]]:
@@ -99,7 +98,7 @@ def get_doc_char_span(
 def get_doc_char_spans_list(
     doc: Doc, spans: Iterable[Tuple[int, int]], destructive: bool = True, **kwargs: Any
 ) -> List[Span]:
-    res = []
+    res: List[Span] = []
     for i, j in spans:
         span = get_doc_char_span(doc, i, j, destructive=destructive, **kwargs)
         if span:
@@ -140,7 +139,7 @@ def get_requirements_line():
 
 def get_defaults(lang: str) -> Type[BaseDefaults]:
     try:
-        lang_cls = spacy.util.get_lang_class(lang)
+        lang_cls = spacy.util.get_lang_class(lang)  # type: ignore
     except Exception:
         return BaseDefaults
     return getattr(lang_cls, "Defaults", BaseDefaults)
@@ -150,18 +149,18 @@ def get_labels(labels_or_path: Union[List[str], Pathlike]) -> List[str]:
     if isinstance(labels_or_path, (str, Path)):
         path = Path(labels_or_path)
         if path.suffix == ".json":
-            return srsly.read_json(labels_or_path)
+            return json.loads(path.read_text())
         elif path.suffix in {".yml", ".yaml"}:
             return yaml.safe_load(path.read_text())
     return cast(List[str], labels_or_path)
 
 
 def get_by_dotkey(d: Any, dotkey: str) -> Any:
-    assert dotkey
     keys = dotkey.split(".")
     cur = d
     for key in keys:
-        assert hasattr(cur, "get"), f"Try to load '{dotkey}' from `{d}`, but not found."
+        if not hasattr(cur, "get"):
+            raise ValueError(f"Try to load '{dotkey}' from `{d}`, but not found.")
         cur = cur.get(key, None)
         if cur is None:
             return None
@@ -169,25 +168,60 @@ def get_by_dotkey(d: Any, dotkey: str) -> Any:
 
 
 def create_dict_from_dotkey(dotkey: str, value: Any) -> Dict[str, Any]:
-    assert dotkey
     keys = dotkey.split(".")
     result: Dict[str, Any] = {}
     cur = result
     for key in keys[:-1]:
-        cur[key] = {}
-        cur = cur[key]
+        ncur: Dict[str, Any] = {}
+        cur[key] = ncur
+        cur = ncur
     cur[keys[-1]] = value
     return result
 
 
-@curry
-def resolve_alias(aliases: Dict[str, str], cfg: Config) -> Config:
+def merge_dicts(dict_a: Dict[Any, Any], dict_b: Dict[Any, Any]) -> Dict[Any, Any]:
+    """dict_b has precedens
+
+    >>> a = {1: 2, "a": {"x": 1, "y": {"z": 3}}}
+    >>> b = {1: 3, "a": {"x": 2, "y": 10}}
+    >>> expected = {1: 3, "a": {"x": 2, "y": 10}}
+    """
+    keys = set(dict_a.keys()) | set(dict_b.keys())
+    ret: Dict[Any, Any] = {}
+    for k in keys:
+        if k in dict_a and k not in dict_b:
+            ret[k] = dict_a[k]
+        elif k not in dict_a and k in dict_b:
+            ret[k] = dict_b[k]
+        elif k in dict_a and k in dict_b:
+            va = dict_a[k]
+            vb = dict_b[k]
+            if isinstance(va, dict) and isinstance(vb, dict):
+                ret[k] = merge_dicts(va, vb)  # type: ignore
+            else:
+                ret[k] = vb
+        else:
+            raise ValueError("Unreachable")
+    return ret
+
+
+def resolve_alias(aliases: Dict[str, str], cfg: Dict[str, Any]) -> Dict[str, Any]:
     for alias, name in aliases.items():
         v = get_by_dotkey(cfg, alias)
         if v is None:
             continue
-        cfg = OmegaConf.merge(cfg, OmegaConf.create(create_dict_from_dotkey(name, v)))
+        cfg = merge_dicts(cfg, create_dict_from_dotkey(name, v))
     return cfg
+
+
+def yaml_to_dict(yaml_string: str) -> Dict[Any, Any]:
+    try:
+        ret = yaml.safe_load(yaml_string)
+    except Exception as e:
+        raise ValueError(f"Failed to parse yaml string: {yaml_string}") from e
+    if not isinstance(ret, dict):
+        raise ValueError(f"Not dictionary format: {yaml_string}")
+    return ret  # type: ignore
 
 
 """

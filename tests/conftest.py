@@ -1,16 +1,18 @@
 import os
 from pathlib import Path
+from typing import Any, Dict
 
-import omegaconf
 import pytest
 import sentencepiece as spm
-import torch
 from spacy.vocab import Vocab
+import torch
+import yaml
 
 from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
 from camphr.models import create_model
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+from camphr.utils import yaml_to_dict
 
 from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
 
@@ -99,8 +101,8 @@ def trf_name_or_path(request):
 
 
 @pytest.fixture(scope="session")
-def trf_model_config(lang, trf_name_or_path, device):
-    return omegaconf.OmegaConf.create(
+def trf_model_config(lang, trf_name_or_path, device) -> Dict[str, Any]:
+    return yaml_to_dict(
         f"""
     lang:
         name: {lang}
