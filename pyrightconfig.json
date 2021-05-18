@@ -18,6 +18,12 @@
       "extraPaths": [
         "./subpackages/camphr_cli/camphr_cli"
       ]
+    },
+    {
+      "root": "./subpackages/embedrank",
+      "extraPaths": [
+        "./subpackages/embedrank/camphr_embedrank"
+      ]
     }
   ]
 }
