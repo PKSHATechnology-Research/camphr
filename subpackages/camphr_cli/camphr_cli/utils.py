@@ -1,16 +1,16 @@
 import json
 import logging
 import os
-import random
 from pathlib import Path
+import random
 from typing import Any, Dict, List, Sequence, Tuple, TypeVar, Union, cast
 
-import hydra
-import srsly
-from omegaconf import Config
 from sklearn.model_selection import train_test_split
+import srsly
 
 from camphr.utils import get_by_dotkey
+import hydra
+from omegaconf import Config
 
 GoldParsable = Dict[str, Any]
 InputData = List[Tuple[str, GoldParsable]]
@@ -38,6 +38,8 @@ def report_fail(json_serializable_data: Any) -> None:
 
 
 def convert_fullpath_if_path(text: str) -> str:
+    if not isinstance(text, str):
+        raise ValueError(f"Expected str, got {type(text)}, value {text}")
     path = os.path.expanduser(text)
     try:
         path = cast(str, hydra.utils.to_absolute_path(path))

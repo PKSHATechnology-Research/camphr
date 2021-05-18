@@ -3,12 +3,9 @@ model:
         name:
         optimizer:
             class: transformers.optimization.AdamW
-            params:
-    pretrained:
-    pipeline:
 train:
     data:
-        path:
+        path: foo
         ndata: -1
         val_size: 0.1
     niter: 10

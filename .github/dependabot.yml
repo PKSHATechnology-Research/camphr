@@ -1,0 +1,51 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: pylint
+    versions:
+    - 2.7.1
+    - 2.7.4
+    - 2.8.1
+  - dependency-name: hypothesis
+    versions:
+    - 6.1.1
+    - 6.10.0
+    - 6.3.1
+    - 6.3.2
+    - 6.3.4
+    - 6.4.0
+    - 6.4.2
+    - 6.7.0
+    - 6.8.3
+    - 6.8.4
+    - 6.8.5
+    - 6.8.6
+    - 6.8.9
+    - 6.9.1
+    - 6.9.2
+  - dependency-name: pre-commit
+    versions:
+    - 2.12.0
+  - dependency-name: transformers
+    versions:
+    - 4.2.2
+    - 4.3.0
+    - 4.3.2
+    - 4.3.3
+    - 4.4.1
+    - 4.4.2
+    - 4.5.0
+  - dependency-name: sphinx
+    versions:
+    - 3.5.2
+  - dependency-name: fugashi
+    versions:
+    - 1.1.0
+  - dependency-name: hydra-core
+    versions:
+    - 1.0.5

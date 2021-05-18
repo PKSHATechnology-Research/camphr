@@ -37,21 +37,23 @@ version = "0.8.9"
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
 category = "main"
 optional = false
-python-versions = ">=3.6.1,<4"
-develop = false
+python-versions = ">=3.7,<4"
+develop = true
 
 [package.dependencies]
 catalogue = "^1.0.0"
+dataclass-utils = "^0.7.9"
 dataclasses = "^0.6"
-more-itertools = "*"
-omegaconf = "1.4.1"
+more-itertools = "^8.7.0"
 pyahocorasick = "^1.4.0"
 pytextspan = ">=0.5.0,<1.0"
 pytokenizations = ">=0.4.8,<1.0"
+PyYAML = "^5.4.1"
 scikit-learn = ">=0.22,<0.25"
 spacy = ">=2.2,<3"
+srsly = "^1.0"
 toolz = ">=0.10,<0.12"
-torch = "^1.0"
+torch = "^1.7.1"
 transformers = ">=3.0,<3.1"
 typing-extensions = ">=3.7.4"
 
@@ -117,6 +119,17 @@ description = "Manage calls to calloc/free through Cython"
 category = "main"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "dataclass-utils"
+version = "0.7.9"
+description = ""
+category = "main"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+typing-extensions = ">=3.10.0,<4.0.0"
 
 [[package]]
 name = "dataclasses"
@@ -737,7 +750,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "9c0b85dd308bce3d78963e959a1629f05f82071367dcee3ff9d25af2415fa4f0"
+content-hash = "c59afaa6edb4b625564fc0f8534c916a0af23df6f2cde5547b2f2fe03f877054"
 
 [metadata.files]
 atomicwrites = [
@@ -798,6 +811,10 @@ cymem = [
     {file = "cymem-2.0.5-cp39-cp39-manylinux2014_x86_64.whl", hash = "sha256:ce1e81c1d031f56b67bac2136e73b4512cbc794706cd570178972d54ba6115d8"},
     {file = "cymem-2.0.5-cp39-cp39-win_amd64.whl", hash = "sha256:d19f68b90411e02ab33b1654118337f96f41c13a3cd00c4f44f7abed2bc712e7"},
     {file = "cymem-2.0.5.tar.gz", hash = "sha256:190e15d9cf2c3bde60ae37bddbae6568a36044dc4a326d84081a5fa08818eee0"},
+]
+dataclass-utils = [
+    {file = "dataclass_utils-0.7.9-py3-none-any.whl", hash = "sha256:6210416c8abca637d8cd12778a3e8a2f734d65869e121c28f6253c3aac2ce30b"},
+    {file = "dataclass_utils-0.7.9.tar.gz", hash = "sha256:2ead84f0b81c29e14085546152272cc608f4809713d44486501dff491e030fc2"},
 ]
 dataclasses = [
     {file = "dataclasses-0.6-py3-none-any.whl", hash = "sha256:454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f"},
