@@ -18,3 +18,10 @@ services:
             dockerfile: dockerfiles/juman/Dockerfile
             context: .
         command: poetry run pytest tests
+        volumes:
+          - type: bind
+            source: ./camphr
+            target: /app/camphr
+          - type: bind
+            source: ./tests
+            target: /app/tests
