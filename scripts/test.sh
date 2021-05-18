@@ -16,7 +16,9 @@ function test_package() {
 set -x
 
 if [[ $1 == "all" ]]; then
-    cd ./subpackages/camphr_cli && test_package camphr_cli && cd ../..
+    for subpackage in camphr_embedrank camphr_cli; do
+        cd ./subpackages/${subpackage} && test_package ${subpackage} && cd ../..
+    done;
     test_package camphr
 else
     test_package $1
