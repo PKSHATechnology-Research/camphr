@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Any, Dict
 
 import pytest
 import sentencepiece as spm
@@ -100,7 +101,7 @@ def trf_name_or_path(request):
 
 
 @pytest.fixture(scope="session")
-def trf_model_config(lang, trf_name_or_path, device):
+def trf_model_config(lang, trf_name_or_path, device) -> Dict[str, Any]:
     return yaml_to_dict(
         f"""
     lang:

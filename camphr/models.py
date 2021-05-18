@@ -84,7 +84,7 @@ def create_model(cfg: Union[Dict[str, Any], str, NLPConfig]) -> Language:
     for pipe in create_pipeline(nlp, cfg_.pipeline):
         nlp.add_pipe(pipe)
     if cfg_.name:
-        nlp._meta["name"] = cfg.name  # type: ignore
+        nlp._meta["name"] = cfg_.name  # type: ignore
     nlp._meta["config"] = dataclasses.asdict(cfg_.lang)  # type: ignore
     return nlp
 
@@ -102,7 +102,7 @@ def create_lang(cfg: LangConfig) -> Language:
 def create_pipeline(nlp: Language, cfg: Dict[str, Any]) -> List[Pipe]:
     pipes: List[Pipe] = []
     for name, pipe_config in cfg.items():
-        pipes.append(nlp.create_pipe(name, config=pipe_config))
+        pipes.append(nlp.create_pipe(name, config=pipe_config or {}))
     return pipes
 
 
