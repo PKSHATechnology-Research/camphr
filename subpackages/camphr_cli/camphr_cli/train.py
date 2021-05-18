@@ -18,7 +18,10 @@ from camphr.utils import (
     resolve_alias,
 )
 import dataclass_utils
+import hydra
+import hydra.utils
 import numpy as np
+from omegaconf import Config, OmegaConf
 from sklearn.metrics import classification_report
 from spacy.language import Language
 from spacy.util import minibatch
@@ -35,9 +38,6 @@ from camphr_cli.utils import (
     report_fail,
     unzip2,
 )
-import hydra
-import hydra.utils
-from omegaconf import Config, OmegaConf
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +167,10 @@ def train(
     val_data: InputData,
     savedir: Path,
 ) -> None:
-    eval_fn = EVAL_FN_MAP[cfg.model.task]
+    task = cfg.model.task
+    if task is None:
+        raise ValueError("Task is not specified.")
+    eval_fn = EVAL_FN_MAP[task]
     optim = nlp.resume_training()
     scheduler = load_scheduler(cfg, optim)
     for i in range(cfg.train.niter):
