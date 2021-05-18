@@ -1,0 +1,13 @@
+{
+  "include": [
+    "./camphr_embedrank"
+  ],
+  "reportMissingTypeStubs": false,
+  "reportUnknownMemberType": false,
+  "reportUnknownVariableType": "warning",
+  "reportUnnecessaryIsInstance": "warning",
+  "reportPrivateUsage": "warning",
+  "reportUnknownArgumentType": "warning",
+  "reportUnknownLambdaType": false,
+  "stubPath": "../../typings"
+}
