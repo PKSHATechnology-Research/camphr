@@ -38,7 +38,7 @@ pytokenizations = "^0.8.3"
 pytextspan = ">=0.5.0,<1.0"
 dataclasses = "^0.6"
 toolz = ">=0.10,<0.12"
-spacy = ">=2.2,<3"
+spacy = ">=2.2,<=2.3.5"
 PyYAML = "^5.4.1"
 dataclass-utils = "^0.7.9"
 
