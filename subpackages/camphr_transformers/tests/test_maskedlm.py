@@ -1,4 +1,4 @@
-from camphr_core.torch_utils import get_loss_from_docs
+from camphr_torch.utils import get_loss_from_docs
 import pytest
 from spacy.language import Language
 

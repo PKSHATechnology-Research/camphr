@@ -2,6 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable, List, Optional, Tuple, cast
 
+from camphr_torch.utils import TorchPipe, add_loss_to_docs
 import numpy as np
 import spacy
 from spacy.gold import GoldParse
@@ -12,8 +13,6 @@ import torch
 import torch.nn.functional as F
 from transformers import BertConfig
 import transformers.modeling_bert
-
-from camphr_core.torch_utils import TorchPipe, add_loss_to_docs
 
 from .model import TRANSFORMERS_MODEL
 from .tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer

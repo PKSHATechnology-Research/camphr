@@ -11,7 +11,7 @@ import torch
 import transformers
 
 from camphr.pipelines.utils import get_similarity
-from camphr_core.torch_utils import TensorWrapper, TorchPipe, set_grad
+from camphr_torch.utils import TensorWrapper, TorchPipe, set_grad
 
 from .auto import get_trf_model_cls
 from .tokenizer import TrfTokenizer
