@@ -1,0 +1,37 @@
+[build-system]
+requires = [ "poetry>=1.0.0",]
+build-backend = "poetry.masonry.api"
+
+[tool.versionup]
+files = [ "camphr_pattern_search/VERSION.py",]
+commit = true
+
+[tool.poetry]
+version = "0.1.0"
+name = "camphr_pattern_search"
+authors = [ "tamuhey <tamuhey@gmail.com>",]
+description = ""
+license = "Apache-2.0"
+homepage = "https://github.com/PKSHATechnology-Research/camphr"
+repository = "https://github.com/PKSHATechnology-Research/camphr"
+keywords = []
+
+[tool.isort]
+skip = ".venv/**/*.py"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_first_party = "camphr"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+typing-extensions = ">=3.7.4"
+pyahocorasick = "^1.4.0"
+camphr = {path = "../..", develop=true}
+pytextspan = "^0.5.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+mypy = "^0.812"
+flake8 = "^3.9.2"
+
