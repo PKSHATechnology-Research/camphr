@@ -5,7 +5,6 @@ import pytest
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 
-from camphr_pipelines.models import create_model
 from camphr_transformers.tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer
 from camphr_transformers.utils import ATTRS
 from tests.utils import BERT_JA_DIR, XLNET_DIR

@@ -21,17 +21,17 @@ from typing import (
 )
 from typing_extensions import Literal, Protocol
 
+from camphr_core.utils import UserHooksMixin
+from camphr_torch.utils import TensorWrapper, set_grad
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
-from tokenizations import get_alignments
 import torch
 import torch.nn as nn
 import transformers
 
-from camphr.pipelines.utils import UserHooksMixin
-from camphr_core.torch_utils import TensorWrapper, set_grad
+from tokenizations import get_alignments
 
 from .auto import get_trf_config_cls, get_trf_name
 

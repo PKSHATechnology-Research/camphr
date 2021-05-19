@@ -1,11 +1,10 @@
 import random
 
-from camphr_core.torch_utils import get_loss_from_docs
 from camphr_test.utils import check_serialization
+from camphr_torch.utils import get_loss_from_docs
 import pytest
 from spacy.language import Language
 
-from camphr_pipelines.models import create_model
 from camphr_transformers.seq_classification import (
     TOPK_LABELS,
     TOP_LABEL,

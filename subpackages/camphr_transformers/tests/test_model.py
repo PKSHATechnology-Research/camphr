@@ -1,19 +1,18 @@
 from typing import Any, Dict
 
-from camphr_core.lang.torch import TorchLanguage
-from camphr_core.torch_utils import add_loss_to_docs
 from camphr_test.utils import check_serialization
+from camphr_torch.lang import TorchLanguage
+from camphr_torch.utils import add_loss_to_docs
+import dataclass_utils
 import numpy as np
 import pytest
 from spacy.language import Language
 from spacy.tokens import Doc
-from tests.utils import TRF_TESTMODEL_PATH
+import torch
 
-from camphr_pipelines.models import NLPConfig, create_model, load
 from camphr_transformers.model import TRANSFORMERS_MODEL, TrfModel
 from camphr_transformers.utils import ATTRS, get_last_hidden_state_from_docs
-import dataclass_utils
-import torch
+from tests.utils import TRF_TESTMODEL_PATH
 
 TESTCASES = [
     "今日はいい天気です",
@@ -108,26 +107,5 @@ def test_update(nlp: TorchLanguage):
     pipe.cfg["freeze"] = False
 
 
-def test_freeze_model(trf_name_or_path, trf_model_config: Dict[str, Any]):
-    config = dataclass_utils.into(trf_model_config, NLPConfig)
-    config.pipeline[TRANSFORMERS_MODEL]["freeze"] = True
-    nlp = create_model(config)
-    pipe = nlp.pipeline[-1][1]
-    assert pipe.cfg["freeze"]
-
-
 def test_check_serialization(nlp):
     check_serialization(nlp)
-
-
-@pytest.mark.slow
-@pytest.mark.parametrize("name", ["bert-base-cased", "xlm-roberta-base"])
-def test_load_transformers(name):
-    cfg = f"""
-    lang:
-        name: en
-    pipeline:
-        transformers_model:
-            trf_name_or_path: {name}
-    """
-    load(cfg)

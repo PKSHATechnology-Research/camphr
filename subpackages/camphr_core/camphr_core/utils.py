@@ -37,9 +37,10 @@ from spacy.util import filter_spans
 from spacy.util import filter_spans
 import yaml
 
-from .errors import Warnings
 from camphr_core.VERSION import __version__
 from camphr_core.types import Pathlike
+
+from .errors import Warnings
 
 GoldCat = Dict[str, float]
 

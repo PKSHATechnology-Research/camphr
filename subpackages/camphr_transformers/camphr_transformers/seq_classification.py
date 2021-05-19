@@ -3,7 +3,8 @@ import operator
 from typing import Any, Iterable, List, Optional, Sequence, Tuple, cast
 
 from camphr_core.consts import TOP_LABEL
-from camphr_core.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
+from camphr_core.utils import UserHooksMixin
+from camphr_torch.utils import TorchPipe, add_loss_to_docs, goldcat_to_label
 import spacy
 from spacy.gold import GoldParse
 import spacy.language
@@ -13,8 +14,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import transformers
 from transformers.modeling_utils import SequenceSummary
-
-from camphr.pipelines.utils import UserHooksMixin
 
 from .auto import get_trf_config_cls
 from .utils import (
