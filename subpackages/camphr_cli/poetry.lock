@@ -74,12 +74,29 @@ develop = true
 
 [package.dependencies]
 more-itertools = "^8.7.0"
+PyYAML = "^5.4.1"
 spacy = ">=2.2,<=2.3.5"
 typing-extensions = ">=3.7.4"
+
+[package.extras]
+all = ["sentencepiece[sentencepiece] (>=0.1.95,<0.2.0)"]
 
 [package.source]
 type = "directory"
 url = "../camphr_core"
+
+[[package]]
+name = "camphr-test"
+version = "0.1.0"
+description = "test utility for camphr"
+category = "dev"
+optional = false
+python-versions = ">=3.7,<4"
+develop = true
+
+[package.source]
+type = "directory"
+url = "../camphr_test"
 
 [[package]]
 name = "catalogue"
@@ -757,7 +774,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "b916453876329f8107d6a0606bb4509af852e96c259f56774fea66272043bc3d"
+content-hash = "4fee97eca6e1baf10a088e68bfc119983e1ecfc672d3e79108824e0ad9b792c3"
 
 [metadata.files]
 atomicwrites = [
@@ -785,6 +802,7 @@ blis = [
 ]
 camphr = []
 camphr-core = []
+camphr-test = []
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
     {file = "catalogue-1.0.0.tar.gz", hash = "sha256:d74d1d856c6b36a37bf14aa6dbbc27d0582667b7ab979a6108e61a575e8723f5"},

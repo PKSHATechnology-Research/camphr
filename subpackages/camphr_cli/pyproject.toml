@@ -16,6 +16,7 @@ camphr = {path = "../..", develop=true}
 camphr_core = {path = "../camphr_core", develop=true}
 
 [tool.poetry.dev-dependencies]
+camphr_test = {path = "../camphr_test", develop=true}
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"

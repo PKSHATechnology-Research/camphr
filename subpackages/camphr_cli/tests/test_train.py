@@ -5,19 +5,20 @@ import subprocess
 import sys
 from typing import Any, Dict
 
-import dataclass_utils
-import pytest
-import yaml
-
 from camphr import __version__
 from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+from camphr_core.utils import merge_dicts
+import dataclass_utils
+from omegaconf import OmegaConf
+import pytest
+import yaml
+
 from camphr_cli.config import TrainConfig
 from camphr_cli.train import _main, set_seed, validate_data
-from camphr_core.utils import merge_dicts
-from omegaconf import OmegaConf
+from camphr_test.utils import check_mecab
 
-from .utils import BERT_DIR, BERT_JA_DIR, FIXTURE_DIR, XLNET_DIR, check_mecab
+from .utils import BERT_DIR, BERT_JA_DIR, FIXTURE_DIR, XLNET_DIR
 
 
 @pytest.fixture

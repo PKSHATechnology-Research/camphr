@@ -55,7 +55,7 @@ juman = [ "mojimoji", "pyknp",]
 mecab = [ "mecab-python3", "fugashi", "ipadic ",]
 
 [tool.poetry.dev-dependencies]
-camphr_test = {path = "../camphr_test", develop=true}
+camphr_test = {path = "subpackages/camphr_test", develop=true}
 camphr_core = {path="./subpackages/camphr_core", develop=true, extras=["all"]}
 pylint = "*"
 pytest = "<6.2.3"
