@@ -118,6 +118,24 @@ type = "directory"
 url = "subpackages/camphr_core"
 
 [[package]]
+name = "camphr-pipelines"
+version = "0.1.0"
+description = ""
+category = "main"
+optional = false
+python-versions = "^3.7"
+develop = true
+
+[package.dependencies]
+camphr = "0.8.9"
+camphr_core = "0.1.0"
+dataclass-utils = "^0.7.10"
+
+[package.source]
+type = "directory"
+url = "subpackages/camphr_pipelines"
+
+[[package]]
 name = "camphr-test"
 version = "0.1.0"
 description = "test utility for camphr"
@@ -1143,7 +1161,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "ba9137d3c3a3fc59498f79d03c1c7b7419a549f4177f6defe630df707bffac63"
+content-hash = "1823b340da91f85bce6254ba1b933e65e1699e4e205ec8c50dc2d3c0ffecf092"
 
 [metadata.files]
 alabaster = [
@@ -1190,6 +1208,7 @@ blis = [
     {file = "blis-0.7.4.tar.gz", hash = "sha256:7daa615a97d4f28db0f332b710bfe1900b15d0c25841c6d727965e4fd91e09cf"},
 ]
 camphr-core = []
+camphr-pipelines = []
 camphr-test = []
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},

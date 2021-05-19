@@ -8,7 +8,7 @@ from typing import Any, Dict
 from camphr import __version__
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 from camphr_core.utils import merge_dicts
-from camphr_pipelines.pipelines import create_model
+from camphr_pipelines.models import create_model
 from camphr_test.utils import check_mecab
 import dataclass_utils
 from omegaconf import OmegaConf

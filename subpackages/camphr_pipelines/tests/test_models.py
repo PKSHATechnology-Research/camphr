@@ -11,7 +11,7 @@ from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
-from camphr_pipelines.pipelines import (
+from camphr_pipelines.models import (
     ALIASES,
     LangConfig,
     NLPConfig,

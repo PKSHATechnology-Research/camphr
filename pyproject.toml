@@ -38,6 +38,7 @@ dataclass-utils = "^0.7.9"
 
 # TODO
 camphr_core = {path="./subpackages/camphr_core", develop=true}
+camphr_pipelines = {path="./subpackages/camphr_pipelines", develop=true}
 
 # light weight third party libraries
 PyYAML = "^5.4.1"

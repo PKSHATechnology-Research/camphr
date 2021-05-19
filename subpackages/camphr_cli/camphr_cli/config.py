@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
-from camphr_pipelines.pipelines import NLPConfig
+from camphr_pipelines.models import NLPConfig
 
 
 @dataclass

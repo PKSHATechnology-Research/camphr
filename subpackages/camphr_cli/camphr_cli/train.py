@@ -16,6 +16,7 @@ from camphr_core.utils import (
     merge_dicts,
     resolve_alias,
 )
+from camphr_pipelines.models import create_model
 import dataclass_utils
 import hydra
 import hydra.utils
@@ -37,7 +38,6 @@ from camphr_cli.utils import (
     report_fail,
     unzip2,
 )
-from camphr_pipelines.pipelines import create_model
 
 logger = logging.getLogger(__name__)
 

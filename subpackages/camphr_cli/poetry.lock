@@ -42,6 +42,7 @@ develop = true
 
 [package.dependencies]
 camphr_core = "0.1.0"
+camphr_pipelines = "0.1.0"
 catalogue = "^1.0.0"
 dataclass-utils = "^0.7.9"
 dataclasses = "^0.6"
