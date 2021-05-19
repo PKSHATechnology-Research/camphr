@@ -45,12 +45,10 @@ catalogue = "^1.0.0"
 dataclass-utils = "^0.7.9"
 dataclasses = "^0.6"
 more-itertools = "^8.7.0"
-pyahocorasick = "^1.4.0"
 pytextspan = ">=0.5.0,<1.0"
 pytokenizations = "^0.8.3"
 PyYAML = "^5.4.1"
 spacy = ">=2.2,<=2.3.5"
-srsly = "^1.0"
 toolz = ">=0.10,<0.12"
 torch = "^1.7.1"
 transformers = ">=3.0,<3.1"
@@ -352,14 +350,6 @@ description = "library with cross-python path, ini-parsing, io, code, log facili
 category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-
-[[package]]
-name = "pyahocorasick"
-version = "1.4.2"
-description = "pyahocorasick is a fast and memory efficient library for exact or approximate multi-pattern string search.  With the ahocorasick.Automaton class, you can find multiple key strings occurrences at once in some input text.  You can use it as a plain dict-like Trie or convert a Trie to an automaton for efficient Aho-Corasick search.  Implemented in C and tested on Python 2.7 and 3.4+.  Works on Linux, Mac and Windows. BSD-3-clause license."
-category = "main"
-optional = false
-python-versions = "*"
 
 [[package]]
 name = "pycodestyle"
@@ -969,9 +959,6 @@ preshed = [
 py = [
     {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
     {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
-]
-pyahocorasick = [
-    {file = "pyahocorasick-1.4.2.tar.gz", hash = "sha256:88f79307c74ae6a84f8d88c2522a082f1d21c425762aba7f7e4d14dd431d2fb7"},
 ]
 pycodestyle = [
     {file = "pycodestyle-2.7.0-py2.py3-none-any.whl", hash = "sha256:514f76d918fcc0b55c6680472f0a37970994e07bbb80725808c17089be302068"},

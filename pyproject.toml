@@ -43,7 +43,6 @@ toolz = ">=0.10,<0.12"
 
 # big third party libraries
 spacy = ">=2.2,<=2.3.5"
-srsly = "^1.0"
 catalogue = "^1.0.0"
 transformers = ">=3.0,<3.1"
 torch = "^1.7.1"

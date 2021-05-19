@@ -10,12 +10,12 @@ from camphr.models import create_model
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 from camphr.utils import merge_dicts
 import dataclass_utils
+from omegaconf import OmegaConf
 import pytest
 import yaml
 
 from camphr_cli.config import TrainConfig
 from camphr_cli.train import _main, set_seed, validate_data
-from omegaconf import OmegaConf
 
 from .utils import BERT_DIR, BERT_JA_DIR, FIXTURE_DIR, XLNET_DIR, check_mecab
 

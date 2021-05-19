@@ -1,5 +1,6 @@
 """The module torch_mixin defindes Language mixin for pytorch."""
 import itertools
+import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union, cast
@@ -12,7 +13,6 @@ from spacy.pipeline.pipes import Pipe
 from spacy.scorer import Scorer
 from spacy.tokens import Doc
 from spacy.util import minibatch
-import srsly
 import torch
 from torch.optim.optimizer import Optimizer
 
@@ -174,7 +174,7 @@ class TorchLanguage(Language):
         super().to_disk(path, exclude, disable)
         meta = self.meta
         meta["lang"] = self.lang
-        srsly.write_json(path / "meta.json", meta)
+        (path / "meta.json").write_text(json.dumps(meta))
 
 
 def get_torch_nlp(lang: str, **cfg):

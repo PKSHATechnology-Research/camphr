@@ -1,6 +1,6 @@
 import random
 
-import srsly
+from camphr.utils import dump_jsonl
 
 ALL_LABELS = [
     "ARTIFACT",
@@ -33,4 +33,6 @@ def main():
         cur, text = text[:length], text[length:]
         ners = gen_ner_span(length)
         lines.append([cur, {"entities": ners}])
-    srsly.write_jsonl("-", lines)
+
+    with open("-") as f:
+        dump_jsonl(f, lines)
