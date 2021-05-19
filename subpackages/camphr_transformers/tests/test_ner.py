@@ -1,24 +1,20 @@
 import json
 from typing import Dict, List
 
+from camphr_test.utils import check_mecab, check_serialization
 import pytest
 from spacy.language import Language
-import torch
 import yaml
 
 from camphr.ner_labels.labels_ene import ALL_LABELS as enes
 from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
 from camphr.ner_labels.utils import make_ner_labels
-from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
-from camphr.pipelines.transformers.ner import (
-    TRANSFORMERS_NER,
-    _convert_goldner,
-    _create_target,
-)
-from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr_pipelines.models import create_model, load
-from camphr_test.utils import check_mecab, check_serialization
+from camphr_transformers.model import TRANSFORMERS_MODEL
+from camphr_transformers.ner import TRANSFORMERS_NER, _convert_goldner, _create_target
+from camphr_transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from tests.utils import BERT_JA_DIR, DATA_DIR
+import torch
 
 label_types = ["ene", "irex"]
 

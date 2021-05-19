@@ -1,19 +1,19 @@
 from typing import Any, Dict
 
-import dataclass_utils
+from camphr_core.lang.torch import TorchLanguage
+from camphr_core.torch_utils import add_loss_to_docs
+from camphr_test.utils import check_serialization
 import numpy as np
 import pytest
 from spacy.language import Language
 from spacy.tokens import Doc
-import torch
-
-from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL, TrfModel
-from camphr.pipelines.transformers.utils import ATTRS, get_last_hidden_state_from_docs
-from camphr_core.lang.torch import TorchLanguage
-from camphr_core.torch_utils import add_loss_to_docs
-from camphr_pipelines.models import NLPConfig, create_model, load
-from camphr_test.utils import check_serialization
 from tests.utils import TRF_TESTMODEL_PATH
+
+from camphr_pipelines.models import NLPConfig, create_model, load
+from camphr_transformers.model import TRANSFORMERS_MODEL, TrfModel
+from camphr_transformers.utils import ATTRS, get_last_hidden_state_from_docs
+import dataclass_utils
+import torch
 
 TESTCASES = [
     "今日はいい天気です",
