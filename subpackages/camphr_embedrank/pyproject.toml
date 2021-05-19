@@ -29,7 +29,6 @@ python = "^3.7"
 typing-extensions = ">=3.7.4"
 
 # TODO
-camphr = {path = "../..", develop=true}
 camphr_core = {path = "../camphr_core", develop=true}
 
 scikit-learn = ">=0.22,<0.25"
