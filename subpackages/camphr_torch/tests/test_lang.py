@@ -1,9 +1,9 @@
-from camphr_test.utils import check_mecab
 import pytest
 import spacy
 import torch
 
-from camphr_core.lang.torch import TorchLanguage, get_torch_nlp
+from camphr_test.utils import check_mecab
+from camphr_torch.lang import TorchLanguage, get_torch_nlp
 
 
 @pytest.fixture
