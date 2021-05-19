@@ -49,8 +49,7 @@ pyahocorasick = "^1.4.0"
 pytextspan = ">=0.5.0,<1.0"
 pytokenizations = "^0.8.3"
 PyYAML = "^5.4.1"
-scikit-learn = ">=0.22,<0.25"
-spacy = ">=2.2,<3"
+spacy = ">=2.2,<=2.3.5"
 srsly = "^1.0"
 toolz = ">=0.10,<0.12"
 torch = "^1.7.1"
@@ -698,7 +697,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "082e4661dce658ca3a275bade197381a5f687a8a98392efda383c9220c2f9e0a"
+content-hash = "d74fa01a0d87aa209b87eefd1b85a334be9618825506e64932991a9e286789a8"
 
 [metadata.files]
 atomicwrites = [
