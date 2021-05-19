@@ -1,18 +1,11 @@
 """Defines pattern search pipeline based on ahocorasik."""
 import itertools
-from typing import (
-    Callable,
-    Iterable,
-    Iterator,
-    List,
-    Optional,
-    Tuple,
-)
+from typing import Callable, Iterable, Iterator, List, Optional, Tuple
 
 import ahocorasick
+from spacy.tokens import Doc, Span
 from spacy.tokens.token import Token
 import textspan
-from spacy.tokens import Doc, Span
 
 
 # Sometimes matched text is different from original text

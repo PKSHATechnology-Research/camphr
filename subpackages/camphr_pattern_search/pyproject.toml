@@ -3,12 +3,12 @@ requires = [ "poetry>=1.0.0",]
 build-backend = "poetry.masonry.api"
 
 [tool.versionup]
-files = [ "camphr_embedrank/VERSION.py",]
+files = [ "camphr_pattern_search/VERSION.py",]
 commit = true
 
 [tool.poetry]
 version = "0.1.0"
-name = "camphr_embedrank"
+name = "camphr_pattern_search"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = ""
 license = "Apache-2.0"
@@ -26,9 +26,9 @@ known_first_party = "camphr"
 [tool.poetry.dependencies]
 python = "^3.7"
 typing-extensions = ">=3.7.4"
-scikit-learn = ">=0.22,<0.25"
+pyahocorasick = "^1.4.0"
 camphr = {path = "../..", develop=true}
-numpy = "^1.20.3"
+pytextspan = "^0.5.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
