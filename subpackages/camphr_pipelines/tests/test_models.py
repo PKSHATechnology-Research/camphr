@@ -2,11 +2,16 @@ from contextlib import contextmanager
 import dataclasses
 from typing import Any, Dict, Optional, Set, Type, TypeVar
 
+from camphr_core.lang.torch import TorchLanguage
+from camphr_core.utils import resolve_alias
 import dataclass_utils
-import pytest
 import yaml
 
-from camphr.models import (
+from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
+from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
+from camphr_pipelines.pipelines import (
     ALIASES,
     LangConfig,
     NLPConfig,
@@ -17,12 +22,7 @@ from camphr.models import (
     create_lang,
     create_model,
 )
-from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
-from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
-from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
-from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
-from camphr_core.lang.torch import TorchLanguage
-from camphr_core.utils import resolve_alias
+import pytest
 
 from .utils import BERT_DIR
 
