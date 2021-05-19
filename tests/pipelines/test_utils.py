@@ -1,15 +1,15 @@
 import random
 from typing import List, Tuple
 
-import pytest
-import spacy
-import torch
 from hypothesis import given
 from hypothesis import strategies as st
+import pytest
+import spacy
 from spacy.gold import spans_from_biluo_tags
 from spacy.language import Language
 from spacy.pipeline import Sentencizer
 from spacy.tokens import Span
+import torch
 
 from camphr import __version__
 from camphr.pipelines.utils import (
@@ -26,8 +26,6 @@ from camphr.pipelines.utils import (
     correct_bio_tags,
     flatten_docs_to_sents,
 )
-
-
 @pytest.fixture
 def nlp():
     return Language()
@@ -158,22 +156,6 @@ def test_user_hooks_mixin():
     obj = DummyForUserHooks()
     obj.add_user_hook("foo", lambda x: 2 * x)
     assert obj.user_hooks["foo"](1) == 2
-
-
-@given(
-    st.integers(0, 200),
-    st.integers(1, 100),
-    st.integers(1, 10),
-    st.integers(-1000, 1000),
-)
-def test_beamsearch(n, m, k, s):
-    torch.manual_seed(s)
-    prob = torch.rand((n, m))
-    output = beamsearch(prob, k)
-    if n != 0:
-        assert output.shape == (min(m ** n, k), n)
-        assert all(output[0] == prob.argmax(1))
-        assert all(output[0] == beamsearch(prob, 1)[0])
 
 
 def test_flatten_docs_to_sens(vocab):

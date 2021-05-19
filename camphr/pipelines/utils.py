@@ -1,10 +1,9 @@
 import copy
-import warnings
 from itertools import chain
 from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union, overload
+import warnings
 
 import numpy as np
-import torch
 from spacy.gold import iob_to_biluo
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
@@ -181,35 +180,6 @@ class UserHooksMixin:
     def add_user_hook(self, k: str, fn: Callable):
         hooks = self.user_hooks
         hooks[k] = fn
-
-
-def beamsearch(probs: torch.Tensor, k: int) -> torch.Tensor:
-    """Beam search for sequential probabilities.
-
-    Args:
-        probs: tensor of shape (length, d). requires d > 0. Assumed all items in `probs` in range [0, 1].
-        k: beam width
-    Returns: (k, length) tensor
-    """
-    assert len(probs.shape) == 2
-    if len(probs) == 0:
-        return torch.zeros(k, 0)
-    if k == 1:
-        return probs.argmax(-1)[None, :]
-
-    # We calculate top k-th argmax of E = p0p1p2..pn-1.
-    # To avoid over(under)flow, evaluete log(E) instead of E.
-    # By doing this, E can be evaluated by addition.
-    data = probs.to(torch.double).log()
-    _, m = data.shape
-    scores, candidates = torch.topk(data[0], k=min(k, m))
-    candidates = candidates[:, None]
-    for row in data[1:]:
-        z = (scores[:, None] + row[None, :]).flatten()
-        scores, flat_idx = torch.topk(z, k=min(k, len(z)))
-        i, j = flat_idx // m, flat_idx % m
-        candidates = torch.cat([candidates[i], j[:, None]], dim=-1)
-    return candidates
 
 
 def flatten_docs_to_sents(docs: Iterable[Doc]) -> List[Span]:
