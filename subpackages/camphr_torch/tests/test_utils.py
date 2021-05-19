@@ -9,7 +9,9 @@ import torch
 import torch.nn as nn
 
 from camphr_torch.lang import TorchLanguage
-from camphr_torch.utils import TensorWrapper, TorchPipe
+from camphr_torch.utils import TensorWrapper, TorchPipe, beamsearch
+from hypothesis import given
+from hypothesis import strategies as st
 
 
 @pytest.fixture
@@ -62,3 +64,19 @@ def test_tensorwrapper(tmp_path: Path):
     doc.user_data["tensor"] = TensorWrapper(torch.zeros((2, 2)), 1)
     doc.to_disk(tmp_path / "doc.bin")
     spacy.load(tmp_path / "doc.bin")
+
+
+@given(
+    st.integers(0, 200),
+    st.integers(1, 100),
+    st.integers(1, 10),
+    st.integers(-1000, 1000),
+)
+def test_beamsearch(n, m, k, s):
+    torch.manual_seed(s)
+    prob = torch.rand((n, m))
+    output = beamsearch(prob, k)
+    if n != 0:
+        assert output.shape == (min(m ** n, k), n)
+        assert all(output[0] == prob.argmax(1))
+        assert all(output[0] == beamsearch(prob, 1)[0])
