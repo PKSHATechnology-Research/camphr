@@ -2,6 +2,7 @@
 import dataclasses
 from typing import Any, List, Optional, Tuple
 
+from camphr_torch.utils import TensorWrapper, TorchPipe, set_grad
 import numpy as np
 import spacy
 from spacy.gold import GoldParse
@@ -10,8 +11,7 @@ from spacy.tokens import Doc
 import torch
 import transformers
 
-from camphr.pipelines.utils import get_similarity
-from camphr_torch.utils import TensorWrapper, TorchPipe, set_grad
+from camphr_core.utils import get_similarity
 
 from .auto import get_trf_model_cls
 from .tokenizer import TrfTokenizer

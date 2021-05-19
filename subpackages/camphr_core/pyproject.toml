@@ -26,6 +26,7 @@ known_first_party = "camphr"
 [tool.poetry.dependencies]
 python = "^3.7"
 typing-extensions = ">=3.7.4"
+
 spacy = ">=2.2,<=2.3.5"
 more-itertools = "^8.7.0"
 PyYAML = "^5.4.1"
