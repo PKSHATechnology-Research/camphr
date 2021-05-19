@@ -16,7 +16,7 @@ from spacy.util import minibatch
 import torch
 from torch.optim.optimizer import Optimizer
 
-from camphr_core.torch_utils import TorchPipe, get_loss_from_docs
+from camphr.torch_utils import TorchPipe, get_loss_from_docs
 from camphr_core.utils import get_defaults, get_requirements_line, import_attr
 
 logger = logging.getLogger(__name__)

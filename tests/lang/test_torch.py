@@ -2,7 +2,7 @@ import pytest
 import spacy
 import torch
 
-from camphr_core.lang.torch import TorchLanguage, get_torch_nlp
+from camphr.lang.torch import TorchLanguage, get_torch_nlp
 from tests.utils import check_mecab
 
 
