@@ -13,6 +13,8 @@ def spiece_path():
 
 @pytest.fixture(scope="session")
 def spiece(spiece_path):
+    import sentencepiece as spm
+
     s = spm.SentencePieceProcessor()
     s.load(spiece_path)
     return s
