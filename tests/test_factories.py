@@ -8,6 +8,7 @@ from .utils import check_juman, check_knp, check_lang, check_serialization
 
 with (Path(__file__).parent / "../pyproject.toml") as f:
     conf = toml.load(f)
+
 LANGS = conf["tool"]["poetry"]["plugins"]["spacy_languages"]
 PIPES = conf["tool"]["poetry"]["plugins"]["spacy_factories"]
 

@@ -1,11 +1,11 @@
 import random
 
+from camphr_test.utils import check_juman
 from hypothesis import given
 from hypothesis import strategies as st
 import pytest
 
 from camphr_core.lang.juman import Japanese, _SEPS, _split_text_for_juman
-from tests.utils import check_juman
 
 pytestmark = pytest.mark.skipif(
     not check_juman(), reason="juman is not always necessary"

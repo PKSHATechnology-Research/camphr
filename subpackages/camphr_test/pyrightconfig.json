@@ -1,0 +1,29 @@
+{
+  "include": [
+    "camphr"
+  ],
+  "strict": [
+    "camphr"
+  ],
+  "reportMissingTypeStubs": false,
+  "reportUnknownMemberType": false,
+  "reportUnknownVariableType": "warning",
+  "reportUnnecessaryIsInstance": "warning",
+  "reportPrivateUsage": "warning",
+  "reportUnknownArgumentType": "warning",
+  "reportUnknownLambdaType": false,
+  "executionEnvironments": [
+    {
+      "root": "./subpackages/camphr_cli",
+      "extraPaths": [
+        "./subpackages/camphr_cli/camphr_cli"
+      ]
+    },
+    {
+      "root": "./subpackages/embedrank",
+      "extraPaths": [
+        "./subpackages/embedrank/camphr_embedrank"
+      ]
+    }
+  ]
+}

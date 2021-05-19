@@ -32,6 +32,19 @@ python-versions = "*"
 numpy = ">=1.15.0"
 
 [[package]]
+name = "camphr-test"
+version = "0.1.0"
+description = "test utility for camphr"
+category = "dev"
+optional = false
+python-versions = ">=3.7,<4"
+develop = true
+
+[package.source]
+type = "directory"
+url = "../camphr_test"
+
+[[package]]
 name = "catalogue"
 version = "1.0.0"
 description = "Super lightweight function registries for your library"
@@ -558,7 +571,7 @@ all = ["sentencepiece"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "8a18345dd25b57226233f2e36485ca860a022cf9a3782ea700dc186cb212f69a"
+content-hash = "dd3aa0bbe37ed06f133bebfaee661cad54726e2df6af35a1b5ebbc44cdc2d251"
 
 [metadata.files]
 atomicwrites = [
@@ -584,6 +597,7 @@ blis = [
     {file = "blis-0.7.4-cp39-cp39-win_amd64.whl", hash = "sha256:78a8e0ee72a42c3b2f5b9114500a781119995f76fa6c21d4b02c6fb9c21df2cc"},
     {file = "blis-0.7.4.tar.gz", hash = "sha256:7daa615a97d4f28db0f332b710bfe1900b15d0c25841c6d727965e4fd91e09cf"},
 ]
+camphr-test = []
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
     {file = "catalogue-1.0.0.tar.gz", hash = "sha256:d74d1d856c6b36a37bf14aa6dbbc27d0582667b7ab979a6108e61a575e8723f5"},

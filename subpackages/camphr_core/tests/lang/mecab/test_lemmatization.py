@@ -1,7 +1,7 @@
 """Copied from Spacy"""
 import pytest
 
-from ...utils import check_mecab
+from camphr_test.utils import check_mecab
 
 pytestmark = pytest.mark.skipif(
     not check_mecab(), reason="mecab is not always necessary"

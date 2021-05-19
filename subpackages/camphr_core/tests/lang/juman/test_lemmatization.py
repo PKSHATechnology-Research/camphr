@@ -1,7 +1,7 @@
 """Copied from Spacy"""
 import pytest
 
-from ...utils import check_juman
+from camphr_test.utils import check_juman
 
 
 @pytest.mark.parametrize(

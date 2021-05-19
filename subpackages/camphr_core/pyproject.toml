@@ -47,6 +47,7 @@ pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
 hypothesis = "^6.13.0"
+camphr_test = {path = "../camphr_test", develop=true}
 
 
 [tool.poetry.plugins.spacy_languages]

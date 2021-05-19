@@ -98,15 +98,20 @@ numpy = ">=1.15.0"
 name = "camphr-core"
 version = "0.1.0"
 description = ""
-category = "main"
+category = "dev"
 optional = false
 python-versions = "^3.7"
 develop = true
 
 [package.dependencies]
 more-itertools = "^8.7.0"
+PyYAML = "^5.4.1"
+sentencepiece = {version = "^0.1.95", extras = ["sentencepiece"], optional = true}
 spacy = ">=2.2,<=2.3.5"
 typing-extensions = ">=3.7.4"
+
+[package.extras]
+all = ["sentencepiece[sentencepiece] (>=0.1.95,<0.2.0)"]
 
 [package.source]
 type = "directory"
@@ -430,7 +435,7 @@ python-versions = "*"
 name = "more-itertools"
 version = "8.7.0"
 description = "More routines for operating on iterables, beyond itertools"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 
@@ -1125,7 +1130,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "b28034df872dbf274507029eaf5c1921d24ffb236056b56e9947afeb99f938cc"
+content-hash = "7e5efd860ba53f8022aa28e4e50159fb09221ed4cdec9ebf7b8587404c6de097"
 
 [metadata.files]
 alabaster = [
