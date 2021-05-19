@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "camphr_pipelines"
+version = "0.1.0"
+description = ""
+authors = ["Yohei Tamura <tamuhey@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+# TODO
+camphr_core = {path = "../camphr_core", develop=true}
+camphr = {path = "../..", develop=true}
+dataclass-utils = "^0.7.10"
+
+[tool.poetry.dev-dependencies]
+camphr_test = {path = "../camphr_test", develop=true}
+pytest = "^6.2.4"
+mypy = "^0.812"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

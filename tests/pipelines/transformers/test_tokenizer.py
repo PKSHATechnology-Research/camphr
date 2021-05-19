@@ -5,11 +5,10 @@ import pytest
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 
-from camphr.models import create_model
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer
 from camphr.pipelines.transformers.utils import ATTRS
-
-from ...utils import BERT_JA_DIR, XLNET_DIR
+from camphr_pipelines.models import create_model
+from tests.utils import BERT_JA_DIR, XLNET_DIR
 
 
 @pytest.fixture(scope="session")

@@ -4,14 +4,15 @@
 """
 from typing import Any, Callable, Dict, List, Optional, Union
 
-from camphr.utils import SerializationMixin
 import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
 import spacy
 import spacy.language
 from spacy.matcher import Matcher
 from spacy.tokens import Doc, Span
 from spacy.vocab import Vocab
+
+from camphr_core.utils import SerializationMixin
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True

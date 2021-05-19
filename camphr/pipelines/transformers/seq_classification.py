@@ -2,18 +2,19 @@
 import operator
 from typing import Any, Iterable, List, Optional, Sequence, Tuple, cast
 
+from camphr_core.consts import TOP_LABEL
+from camphr_core.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
 import spacy
+from spacy.gold import GoldParse
 import spacy.language
+from spacy.tokens import Doc
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from spacy.gold import GoldParse
-from spacy.tokens import Doc
 from transformers.modeling_utils import SequenceSummary
 
 from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
 
 from .auto import get_trf_config_cls
 from .utils import (
@@ -29,7 +30,6 @@ from .utils import (
 spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 NUM_SEQUENCE_LABELS = "num_sequence_labels"
 LABELS = "labels"
-TOP_LABEL = "top_label"
 TOPK_LABELS = "topk_labels"
 
 

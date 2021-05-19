@@ -7,7 +7,7 @@ from camphr.pipelines.transformers.maskedlm import (
     add_maskedlm_pipe,
     remove_maskedlm_pipe,
 )
-from camphr.torch_utils import get_loss_from_docs
+from camphr_core.torch_utils import get_loss_from_docs
 
 
 @pytest.fixture(scope="module")

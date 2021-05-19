@@ -1,0 +1,23 @@
+[build-system]
+requires = [ "poetry>=1.0.0",]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+version = "0.1.0"
+name = "camphr_test"
+authors = [ "tamuhey <tamuhey@gmail.com>",]
+description = "test utility for camphr"
+license = "Apache-2.0"
+homepage = "https://github.com/PKSHATechnology-Research/camphr"
+repository = "https://github.com/PKSHATechnology-Research/camphr"
+
+[tool.isort]
+skip = ".venv/**/*.py"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_first_party = "camphr"
+
+[tool.poetry.dependencies]
+python = ">=3.7,<4"
+

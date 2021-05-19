@@ -1,11 +1,11 @@
-import pytest
 from spacy.tokens.doc import Doc
 from spacy.tokens.span import Span
 
 import camphr.ner_labels.labels_ontonotes as L
-from camphr.lang.mecab import Japanese
 from camphr.pipelines.person_ner import create_person_ruler
-from tests.utils import check_mecab
+from camphr_core.lang.mecab import Japanese
+from camphr_test.utils import check_mecab
+import pytest
 
 TESTS = [("今日は高松隆と海に行った", "高松隆"), ("今日は田中と海に行った", "田中")]
 

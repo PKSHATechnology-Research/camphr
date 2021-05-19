@@ -25,9 +25,13 @@ known_first_party = "camphr"
 
 [tool.poetry.dependencies]
 python = "^3.7"
+
 typing-extensions = ">=3.7.4"
+
+# TODO
+camphr_core = {path = "../camphr_core", develop=true}
+
 scikit-learn = ">=0.22,<0.25"
-camphr = {path = "../..", develop=true}
 numpy = "^1.20.3"
 
 [tool.poetry.dev-dependencies]

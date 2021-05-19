@@ -5,7 +5,7 @@ import spacy
 from spacy.tokens import Doc, Span
 from spacy.util import filter_spans
 
-from camphr.utils import SerializationMixin, get_doc_char_spans_list, merge_spans
+from camphr_core.utils import SerializationMixin, get_doc_char_spans_list, merge_spans
 
 
 @spacy.component(

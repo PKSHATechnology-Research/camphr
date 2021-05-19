@@ -5,8 +5,7 @@ from pathlib import Path
 import random
 from typing import Any, Dict, List, Sequence, Tuple, TypeVar, Union, cast
 
-from camphr.utils import dump_jsonl
-from camphr.utils import get_by_dotkey
+from camphr_core.utils import dump_jsonl, get_by_dotkey
 import hydra
 from omegaconf import Config
 from sklearn.model_selection import train_test_split

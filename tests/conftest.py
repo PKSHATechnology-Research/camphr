@@ -8,13 +8,14 @@ from spacy.vocab import Vocab
 import torch
 import yaml
 
-from camphr.lang.juman import Japanese as Juman
-from camphr.lang.mecab import Japanese as Mecab
-from camphr.models import create_model
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
-from camphr.utils import yaml_to_dict
+from camphr_core.lang.juman import Japanese as Juman
+from camphr_core.lang.mecab import Japanese as Mecab
+from camphr_core.utils import yaml_to_dict
+from camphr_pipelines.models import create_model
+from camphr_test.utils import check_juman, check_lang, check_mecab
 
-from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
+from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH
 
 
 def pytest_addoption(parser):

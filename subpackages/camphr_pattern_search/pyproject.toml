@@ -26,12 +26,17 @@ known_first_party = "camphr"
 [tool.poetry.dependencies]
 python = "^3.7"
 typing-extensions = ">=3.7.4"
-pyahocorasick = "^1.4.0"
-camphr = {path = "../..", develop=true}
+
+# TODO
+camphr_core = {path = "../camphr_core", develop=true}
 pytextspan = "^0.5.4"
+
+pyahocorasick = "^1.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
+camphr_core = {path = "../camphr_core", develop=true, extras=["mecab"]}
+camphr_test = {path = "../camphr_test", develop=true}
 

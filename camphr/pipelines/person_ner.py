@@ -16,11 +16,11 @@ def create_person_ruler(nlp: Language) -> EntityRuler:
     """Create entity ruler that extracts person name with regex.
 
     Notes:
-        This component must be used with `camphr.lang.mecab.Japanese`.
+        This component must be used with `camphr_core.lang.mecab.Japanese`.
         In order to imporove accuracy, it is recommended to create a Mecab user dictionaly. See scripts/mecab_person_dictionary.
 
     Examples:
-        >>> nlp = camphr.lang.mecab.Japanes()
+        >>> nlp = camphr_core.lang.mecab.Japanes()
         >>> nlp.add_pipe(create_person_ruler(nlp))
         >>> doc = nlp("今日は田中と散歩に行った")
         >>> doc.ents

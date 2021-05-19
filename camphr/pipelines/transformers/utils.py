@@ -1,9 +1,9 @@
 """Defines utility functions, classes, mixins for transformers pipelines."""
+from contextlib import contextmanager
 import dataclasses
 import functools
-import pickle
-from contextlib import contextmanager
 from pathlib import Path
+import pickle
 from typing import (
     Any,
     Callable,
@@ -19,19 +19,19 @@ from typing import (
     TypeVar,
     cast,
 )
+from typing_extensions import Literal, Protocol
 
-import torch
-import torch.nn as nn
-import transformers
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 from tokenizations import get_alignments
-from typing_extensions import Literal, Protocol
+import torch
+import torch.nn as nn
+import transformers
 
 from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TensorWrapper, set_grad
+from camphr_core.torch_utils import TensorWrapper, set_grad
 
 from .auto import get_trf_config_cls, get_trf_name
 

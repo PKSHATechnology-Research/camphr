@@ -5,15 +5,15 @@ This module can be called directly to generete "labels_**.py" from yml file.
 Examples:
     $ python utils.py
 """
-import subprocess
 from pathlib import Path
-from typing import IO, Dict, Iterable, List, Optional, Union
-
-import yaml
+import subprocess
+from typing import Dict, IO, Iterable, List, Optional, Union
 from typing_extensions import Literal
 
-from camphr.types import Pathlike
-from camphr.utils import get_labels
+import yaml
+
+from camphr_core.types import Pathlike
+from camphr_core.utils import get_labels
 
 __dir__ = Path(__file__).parent
 

@@ -2,15 +2,15 @@
 import functools
 import re
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Tuple
+from typing_extensions import Literal
 
 import spacy
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 from toolz import curry
-from typing_extensions import Literal
 
-from camphr.consts import JUMAN_LINES
-from camphr.utils import get_juman_command
+from camphr_core.consts import JUMAN_LINES
+from camphr_core.utils import get_juman_command
 
 from .consts import KNP_USER_KEYS
 from .noun_chunker import knp_noun_chunker

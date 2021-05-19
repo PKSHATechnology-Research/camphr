@@ -36,9 +36,12 @@ pytokenizations = "^0.8.3"
 pytextspan = ">=0.5.0,<1.0"
 dataclass-utils = "^0.7.9"
 
+# TODO
+camphr_core = {path="./subpackages/camphr_core", develop=true}
+camphr_pipelines = {path="./subpackages/camphr_pipelines", develop=true}
+
 # light weight third party libraries
 PyYAML = "^5.4.1"
-more-itertools = "^8.7.0"
 toolz = ">=0.10,<0.12"
 
 # big third party libraries
@@ -53,16 +56,18 @@ juman = [ "mojimoji", "pyknp",]
 mecab = [ "mecab-python3", "fugashi", "ipadic ",]
 
 [tool.poetry.dev-dependencies]
+camphr_test = {path = "subpackages/camphr_test", develop=true}
+camphr_core = {path="./subpackages/camphr_core", develop=true, extras=["all"]}
 pylint = "*"
 pytest = "<6.2.3"
 flake8 = "*"
 pyyaml = "*"
-hypothesis = "*"
 pre-commit = "*"
 toml = "^0.10.0"
 sphinx = "*"
 doc8 = "*"
 mypy = "*"
+hypothesis = "^6.13.0"
 
 [tool.poetry.dependencies.mojimoji]
 version = "^0.0.11"
@@ -91,12 +96,6 @@ version = "^4.3.21"
 [tool.poetry.dev-dependencies.black]
 version = "*"
 allow-prereleases = true
-
-[tool.poetry.plugins.spacy_languages]
-ja_juman = "camphr.lang.juman:Japanese"
-ja_mecab = "camphr.lang.mecab:Japanese"
-sentencepiece = "camphr.lang.sentencepiece:SentencePieceLang"
-camphr_torch = "camphr.lang.torch:TorchLanguage"
 
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
