@@ -30,6 +30,14 @@ import yaml
 
 from camphr.VERSION import __version__
 from camphr.types import Pathlike
+import operator
+
+GoldCat = Dict[str, float]
+
+
+def goldcat_to_label(goldcat: GoldCat) -> str:
+    assert len(goldcat)
+    return max(goldcat.items(), key=operator.itemgetter(1))[0]
 
 
 def dump_jsonl(f: TextIO, dat: Iterable[Any]):

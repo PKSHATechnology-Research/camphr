@@ -1,14 +1,15 @@
 """Defines utilities for pytorch."""
 import contextlib
-import operator
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, Iterator, Optional, Sequence, Union, cast
 
-import torch
-import torch.nn as nn
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
-from torch._C import is_grad_enabled  # type: ignore
+import torch
+from torch._C import is_grad_enabled
+import torch.nn as nn
+
+from camphr.utils import GoldCat, goldcat_to_label
 
 # the type torch.optim.Optimizer uses
 OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]
@@ -52,14 +53,6 @@ class TensorWrapper:
         if self.length is not None:
             return self.batch_tensor[self.i, : self.length]
         return self.batch_tensor[self.i]
-
-
-GoldCat = Dict[str, float]
-
-
-def goldcat_to_label(goldcat: GoldCat) -> str:
-    assert len(goldcat)
-    return max(goldcat.items(), key=operator.itemgetter(1))[0]
 
 
 def goldcats_to_tensor(
