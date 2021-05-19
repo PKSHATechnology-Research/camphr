@@ -1,12 +1,9 @@
 """The package mecab defines Japanese spacy.Language with Mecab tokenizer."""
-import shutil
 from pathlib import Path
+import shutil
 from shutil import copytree
 from typing import Any, List, NamedTuple, Optional, TYPE_CHECKING, Type
 from typing_extensions import Literal, Protocol
-
-if TYPE_CHECKING:
-    from MeCab import Tagger
 
 from spacy.compat import copy_reg
 from spacy.language import Language
@@ -14,7 +11,10 @@ from spacy.tokens import Doc, Token
 
 from camphr.consts import KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
-from camphr.utils import RE_URL, SerializationMixin
+from camphr_core.utils import RE_URL, SerializationMixin
+
+if TYPE_CHECKING:
+    from MeCab import Tagger
 
 
 class ShortUnitWord(NamedTuple):

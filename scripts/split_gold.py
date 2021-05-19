@@ -1,10 +1,10 @@
 import json
-from typing import IO, Any, Dict, Tuple
+from typing import Any, Dict, IO, Tuple
 
-import fire
 import tqdm
 
-from camphr.utils import split_keepsep
+from camphr_core.utils import split_keepsep
+import fire
 
 
 class K:

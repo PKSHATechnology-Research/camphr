@@ -1,6 +1,6 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
-import itertools
 from collections import namedtuple
+import itertools
 from typing import Any, Callable, Dict, Iterator, List, Optional, Type
 
 from spacy.compat import copy_reg
@@ -9,7 +9,7 @@ from spacy.tokens import Doc, Token
 
 from camphr.consts import JUMAN_LINES, KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
-from camphr.utils import SerializationMixin, get_juman_command
+from camphr_core.utils import SerializationMixin, get_juman_command
 
 from .tag_map import TAG_MAP
 

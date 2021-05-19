@@ -1,6 +1,6 @@
 import random
 
-from camphr.utils import dump_jsonl
+from camphr_core.utils import dump_jsonl
 
 ALL_LABELS = [
     "ARTIFACT",

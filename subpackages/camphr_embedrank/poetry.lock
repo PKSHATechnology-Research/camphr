@@ -44,13 +44,10 @@ develop = true
 catalogue = "^1.0.0"
 dataclass-utils = "^0.7.9"
 dataclasses = "^0.6"
-more-itertools = "^8.7.0"
-pyahocorasick = "^1.4.0"
 pytextspan = ">=0.5.0,<1.0"
 pytokenizations = "^0.8.3"
 PyYAML = "^5.4.1"
 spacy = ">=2.2,<=2.3.5"
-srsly = "^1.0"
 toolz = ">=0.10,<0.12"
 torch = "^1.7.1"
 transformers = ">=3.0,<3.1"
@@ -64,6 +61,24 @@ mecab = ["mecab-python3 (>=1.0,<1.1)", "fugashi (>=1.0,<2.0)"]
 [package.source]
 type = "directory"
 url = "../.."
+
+[[package]]
+name = "camphr-core"
+version = "0.1.0"
+description = ""
+category = "main"
+optional = false
+python-versions = "^3.7"
+develop = true
+
+[package.dependencies]
+more-itertools = "^8.7.0"
+spacy = ">=2.2,<=2.3.5"
+typing-extensions = ">=3.7.4"
+
+[package.source]
+type = "directory"
+url = "../camphr_core"
 
 [[package]]
 name = "catalogue"
@@ -308,14 +323,6 @@ description = "library with cross-python path, ini-parsing, io, code, log facili
 category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-
-[[package]]
-name = "pyahocorasick"
-version = "1.4.2"
-description = "pyahocorasick is a fast and memory efficient library for exact or approximate multi-pattern string search.  With the ahocorasick.Automaton class, you can find multiple key strings occurrences at once in some input text.  You can use it as a plain dict-like Trie or convert a Trie to an automaton for efficient Aho-Corasick search.  Implemented in C and tested on Python 2.7 and 3.4+.  Works on Linux, Mac and Windows. BSD-3-clause license."
-category = "main"
-optional = false
-python-versions = "*"
 
 [[package]]
 name = "pycodestyle"
@@ -697,7 +704,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "d74fa01a0d87aa209b87eefd1b85a334be9618825506e64932991a9e286789a8"
+content-hash = "69017303ec5c74d39d5cce745a0fab553ac1ec3a3ae06b5e58850ddd1bad1789"
 
 [metadata.files]
 atomicwrites = [
@@ -724,6 +731,7 @@ blis = [
     {file = "blis-0.7.4.tar.gz", hash = "sha256:7daa615a97d4f28db0f332b710bfe1900b15d0c25841c6d727965e4fd91e09cf"},
 ]
 camphr = []
+camphr-core = []
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
     {file = "catalogue-1.0.0.tar.gz", hash = "sha256:d74d1d856c6b36a37bf14aa6dbbc27d0582667b7ab979a6108e61a575e8723f5"},
@@ -906,9 +914,6 @@ preshed = [
 py = [
     {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
     {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
-]
-pyahocorasick = [
-    {file = "pyahocorasick-1.4.2.tar.gz", hash = "sha256:88f79307c74ae6a84f8d88c2522a082f1d21c425762aba7f7e4d14dd431d2fb7"},
 ]
 pycodestyle = [
     {file = "pycodestyle-2.7.0-py2.py3-none-any.whl", hash = "sha256:514f76d918fcc0b55c6680472f0a37970994e07bbb80725808c17089be302068"},

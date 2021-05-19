@@ -9,7 +9,7 @@ import torch
 from torch._C import is_grad_enabled
 import torch.nn as nn
 
-from camphr.utils import GoldCat, goldcat_to_label
+from camphr_core.utils import GoldCat, goldcat_to_label
 
 # the type torch.optim.Optimizer uses
 OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]

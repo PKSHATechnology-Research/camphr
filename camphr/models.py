@@ -26,7 +26,7 @@ from camphr.pipelines.transformers.seq_classification import (
 )
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.pipelines.transformers.utils import LABELS
-from camphr.utils import get_labels, resolve_alias, yaml_to_dict
+from camphr_core.utils import get_labels, resolve_alias, yaml_to_dict
 
 __dir__ = Path(__file__).parent
 _MODEL_CFG_DIR = __dir__ / "model_config"
