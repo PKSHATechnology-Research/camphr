@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import dataclasses
 from typing import Any, Dict, Optional, Set, Type, TypeVar
 
-from camphr_core.lang.torch import TorchLanguage
+from camphr_torch.lang import TorchLanguage
 from camphr_core.utils import resolve_alias
 import dataclass_utils
 import yaml
