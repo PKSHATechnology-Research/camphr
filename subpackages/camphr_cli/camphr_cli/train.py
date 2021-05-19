@@ -14,7 +14,6 @@ import torch
 from torch.optim.optimizer import Optimizer
 import yaml
 
-from camphr.lang.torch import TorchLanguage
 from camphr.models import create_model
 from camphr.pipelines.transformers.seq_classification import TOP_LABEL
 from camphr_cli.config import TrainConfig
@@ -26,6 +25,7 @@ from camphr_cli.utils import (
     report_fail,
     unzip2,
 )
+from camphr_core.lang.torch import TorchLanguage
 from camphr_core.torch_utils import goldcat_to_label
 from camphr_core.utils import (
     create_dict_from_dotkey,

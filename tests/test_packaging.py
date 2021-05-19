@@ -4,7 +4,7 @@ import pytest
 from spacy.cli import package
 from spacy.language import Language
 
-from camphr.lang.torch import TorchLanguage
+from camphr_core.lang.torch import TorchLanguage
 
 
 @pytest.fixture(scope="session")

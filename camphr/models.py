@@ -16,7 +16,6 @@ from spacy.language import Language
 from spacy.pipeline import Pipe
 from toolz import merge
 
-from camphr.lang.torch import TorchLanguage
 from camphr.ner_labels.utils import get_ner_labels
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
@@ -26,6 +25,7 @@ from camphr.pipelines.transformers.seq_classification import (
 )
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
 from camphr.pipelines.transformers.utils import LABELS
+from camphr_core.lang.torch import TorchLanguage
 from camphr_core.utils import get_labels, resolve_alias, yaml_to_dict
 
 __dir__ = Path(__file__).parent

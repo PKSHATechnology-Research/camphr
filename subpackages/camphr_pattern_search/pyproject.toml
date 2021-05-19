@@ -37,4 +37,5 @@ pyahocorasick = "^1.4.0"
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
+camphr_core = {path = "../camphr_core", develop=true, extras=["mecab"]}
 

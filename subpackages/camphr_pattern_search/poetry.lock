@@ -46,6 +46,9 @@ PyYAML = "^5.4.1"
 spacy = ">=2.2,<=2.3.5"
 typing-extensions = ">=3.7.4"
 
+[package.extras]
+all = ["sentencepiece[sentencepiece] (>=0.1.95,<0.2.0)"]
+
 [package.source]
 type = "directory"
 url = "../camphr_core"
@@ -487,7 +490,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "af6b32fa5234913536de5b31715295689b5189d2d00e17b964c80288bb514cc3"
+content-hash = "059fdbfd7276746fe528d1ab498656b984d7aca5382db707a3df2dd1f69b6bd3"
 
 [metadata.files]
 atomicwrites = [

@@ -3,8 +3,8 @@ from spacy.tokens.doc import Doc
 from spacy.tokens.span import Span
 
 import camphr.ner_labels.labels_ontonotes as L
-from camphr.lang.mecab import Japanese
 from camphr.pipelines.person_ner import create_person_ruler
+from camphr_core.lang.mecab import Japanese
 from tests.utils import check_mecab
 
 TESTS = [("今日は高松隆と海に行った", "高松隆"), ("今日は田中と海に行った", "田中")]

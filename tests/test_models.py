@@ -6,7 +6,6 @@ import dataclass_utils
 import pytest
 import yaml
 
-from camphr.lang.torch import TorchLanguage
 from camphr.models import (
     ALIASES,
     LangConfig,
@@ -22,6 +21,7 @@ from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 from camphr.pipelines.transformers.seq_classification import TRANSFORMERS_SEQ_CLASSIFIER
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
+from camphr_core.lang.torch import TorchLanguage
 from camphr_core.utils import resolve_alias
 
 from .utils import BERT_DIR
