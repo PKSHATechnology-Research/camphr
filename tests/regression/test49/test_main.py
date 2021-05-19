@@ -4,9 +4,9 @@ from pathlib import Path
 import pytest
 import torch
 
-from camphr.models import create_model
 from camphr.ner_labels.labels_ene import ALL_LABELS
 from camphr_core.lang.torch import TorchLanguage
+from camphr_pipelines.models import create_model
 
 
 @pytest.fixture

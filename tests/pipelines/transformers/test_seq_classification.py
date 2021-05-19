@@ -1,8 +1,8 @@
 import random
 
+import pytest
 from spacy.language import Language
 
-from camphr.models import create_model
 from camphr.pipelines.transformers.seq_classification import (
     TOPK_LABELS,
     TOP_LABEL,
@@ -11,8 +11,8 @@ from camphr.pipelines.transformers.seq_classification import (
     TrfForSequenceClassification,
 )
 from camphr_core.torch_utils import get_loss_from_docs
+from camphr_pipelines.models import create_model
 from camphr_test.utils import check_serialization
-import pytest
 
 
 @pytest.fixture(scope="module")

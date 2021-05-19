@@ -3,7 +3,7 @@ from typing import List
 import pytest
 from spacy.language import Language
 
-from camphr.models import load
+from camphr_pipelines.models import load
 from camphr_test.utils import check_knp
 
 pytestmark = pytest.mark.skipif(not check_knp(), reason="knp is not always necessary")

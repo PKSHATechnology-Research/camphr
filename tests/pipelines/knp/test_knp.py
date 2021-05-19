@@ -5,8 +5,8 @@ import pytest
 from spacy.language import Language
 from spacy.tokens import Doc
 
-from camphr.models import load
 from camphr.pipelines.knp import BUNSETSU, KNP_USER_KEYS, TAG
+from camphr_pipelines.models import load
 from camphr_test.utils import check_knp
 
 pytestmark = pytest.mark.skipif(not check_knp(), reason="knp is not always necessary")
