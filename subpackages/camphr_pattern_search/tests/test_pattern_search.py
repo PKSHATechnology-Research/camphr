@@ -6,9 +6,17 @@ import spacy
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.tokens.span import Span
-from tests.utils import check_mecab
 
 from camphr_pattern_search.pattern_search import PatternSearcher
+
+
+def check_mecab() -> bool:
+    try:
+        import MeCab  # noqa
+    except ImportError:
+        return False
+    return True
+
 
 KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar", "走る", "頭痛", "BC", "AB ABC"]
 
