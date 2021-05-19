@@ -15,7 +15,7 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9]
         os: [ubuntu-latest, macos-latest]
-        subpackage: [camphr_cli]
+        subpackage: [camphr_cli, camphr_embedrank, camphr_pattern_search]
     defaults:
       run:
         working-directory: subpackages/${{ matrix.subpackage }}

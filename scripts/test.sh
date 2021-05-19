@@ -3,7 +3,7 @@
 set -e
 
 if [[ -z $1 ]]; then
-    >&2 echo "package name not specified"
+    >&2 echo "ERROR: package name not specified"
     exit 1
 fi
 
@@ -16,7 +16,7 @@ function test_package() {
 set -x
 
 if [[ $1 == "all" ]]; then
-    for subpackage in camphr_embedrank camphr_cli; do
+    for subpackage in camphr_embedrank camphr_cli camphr_pattern_search; do
         cd ./subpackages/${subpackage} && test_package ${subpackage} && cd ../..
     done;
     test_package camphr
