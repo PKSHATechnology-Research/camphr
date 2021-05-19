@@ -3,10 +3,10 @@ from typing import List
 
 import pytest
 import spacy
-import torch
-import torch.nn as nn
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
+import torch
+import torch.nn as nn
 
 from camphr.lang.torch import TorchLanguage
 from camphr_core.torch_utils import TensorWrapper, TorchPipe

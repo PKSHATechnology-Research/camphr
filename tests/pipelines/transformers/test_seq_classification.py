@@ -5,8 +5,8 @@ from spacy.language import Language
 
 from camphr.models import create_model
 from camphr.pipelines.transformers.seq_classification import (
-    TOP_LABEL,
     TOPK_LABELS,
+    TOP_LABEL,
     TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
     TRANSFORMERS_SEQ_CLASSIFIER,
     TrfForSequenceClassification,

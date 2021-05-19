@@ -3,13 +3,13 @@ import operator
 from typing import Any, Iterable, List, Optional, Sequence, Tuple, cast
 
 import spacy
+from spacy.gold import GoldParse
 import spacy.language
+from spacy.tokens import Doc
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from spacy.gold import GoldParse
-from spacy.tokens import Doc
 from transformers.modeling_utils import SequenceSummary
 
 from camphr.pipelines.utils import UserHooksMixin

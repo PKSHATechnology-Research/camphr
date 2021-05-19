@@ -4,11 +4,11 @@ from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import spacy
+from spacy.gold import GoldParse
 import spacy.language
+from spacy.tokens import Doc
 import torch
 import transformers
-from spacy.gold import GoldParse
-from spacy.tokens import Doc
 
 from camphr.pipelines.utils import get_similarity
 from camphr_core.torch_utils import TensorWrapper, TorchPipe, set_grad

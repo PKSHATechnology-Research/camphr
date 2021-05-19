@@ -1,6 +1,6 @@
 from typing import Any, Dict
-import dataclass_utils
 
+import dataclass_utils
 import numpy as np
 import pytest
 from spacy.language import Language

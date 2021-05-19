@@ -4,14 +4,14 @@ from typing import Any, Iterable, List, Optional, Tuple, cast
 
 import numpy as np
 import spacy
-import torch
-import torch.nn.functional as F
-import transformers.modeling_bert
 from spacy.gold import GoldParse
 from spacy.language import Language
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
+import torch
+import torch.nn.functional as F
 from transformers import BertConfig
+import transformers.modeling_bert
 
 from camphr_core.torch_utils import TorchPipe, add_loss_to_docs
 

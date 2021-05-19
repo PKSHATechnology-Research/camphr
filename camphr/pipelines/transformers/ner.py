@@ -2,19 +2,19 @@
 from typing import Dict, Iterable, Iterator, List, Sequence, Sized, cast
 
 import spacy
+from spacy.gold import GoldParse, iob_to_biluo, spans_from_biluo_tags
+from spacy.tokens import Doc
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from spacy.gold import GoldParse, iob_to_biluo, spans_from_biluo_tags
-from spacy.tokens import Doc
 
 from camphr.pipelines.utils import (
-    UNK,
     B,
     I,
     L,
     U,
+    UNK,
     UserHooksMixin,
     beamsearch,
     construct_biluo_tag,
@@ -26,9 +26,9 @@ from camphr_core.torch_utils import TorchPipe, add_loss_to_docs
 from .auto import get_trf_config_cls
 from .utils import (
     ATTRS,
-    LABELS,
     EstimatorMixin,
     FromNLPMixinForTrfTask,
+    LABELS,
     LabelsMixin,
     SerializationMixinForTrfTask,
     TrfModelForTaskBase,
