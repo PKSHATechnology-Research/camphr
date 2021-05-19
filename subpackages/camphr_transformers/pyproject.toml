@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "camphr_transformers"
+version = "0.1.0"
+description = ""
+authors = ["Yohei Tamura <tamuhey@gmail.com>"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+skip = ".venv/**/*.py"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_first_party = "camphr"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+typing-extensions = ">=3.7.4"
+
+# TODO
+camphr_core = {path = "../camphr_core", develop=true}
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+mypy = "^0.812"
+flake8 = "^3.9.2"
+camphr_core = {path = "../camphr_core", develop=true, extras=["mecab"]}
+camphr_test = {path = "../camphr_test", develop=true}
+
