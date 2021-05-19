@@ -5,7 +5,7 @@ import sentencepiece as spm
 import spacy
 from spacy.vocab import Vocab
 
-from camphr.lang.sentencepiece import EXTS, SentencePieceLang
+from camphr_core.lang.sentencepiece import EXTS, SentencePieceLang
 
 
 @pytest.fixture

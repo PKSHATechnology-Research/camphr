@@ -1,10 +1,10 @@
 import random
 
-import pytest
 from hypothesis import given
 from hypothesis import strategies as st
+import pytest
 
-from camphr.lang.juman import _SEPS, Japanese, _split_text_for_juman
+from camphr_core.lang.juman import Japanese, _SEPS, _split_text_for_juman
 
 from ...utils import check_juman
 

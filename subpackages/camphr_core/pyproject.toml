@@ -35,3 +35,10 @@ mypy = "^0.812"
 flake8 = "^3.9.2"
 hypothesis = "^6.13.0"
 
+[tool.poetry.extras]
+all = ["torch"]
+torch = ["torch"]
+
+[tool.poetry.dependencies.torch]
+version = "^1.7.1"
+optional = true
