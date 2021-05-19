@@ -6,25 +6,7 @@ from pathlib import Path
 import random
 from typing import Any, Callable, Dict, Tuple, Type, Union, cast
 
-import dataclass_utils
-import numpy as np
-from spacy.language import Language
-from spacy.util import minibatch
-import torch
-from torch.optim.optimizer import Optimizer
-import yaml
-
-from camphr.models import create_model
-from camphr.pipelines.transformers.seq_classification import TOP_LABEL
-from camphr_cli.config import TrainConfig
-from camphr_cli.utils import (
-    InputData,
-    check_nonempty,
-    convert_fullpath_if_path,
-    create_data,
-    report_fail,
-    unzip2,
-)
+from camphr_core.consts import TOP_LABEL
 from camphr_core.lang.torch import TorchLanguage
 from camphr_core.torch_utils import goldcat_to_label
 from camphr_core.utils import (
@@ -34,10 +16,28 @@ from camphr_core.utils import (
     merge_dicts,
     resolve_alias,
 )
+import dataclass_utils
 import hydra
 import hydra.utils
+import numpy as np
 from omegaconf import Config, OmegaConf
 from sklearn.metrics import classification_report
+from spacy.language import Language
+from spacy.util import minibatch
+import torch
+from torch.optim.optimizer import Optimizer
+import yaml
+
+from camphr_cli.config import TrainConfig
+from camphr_cli.utils import (
+    InputData,
+    check_nonempty,
+    convert_fullpath_if_path,
+    create_data,
+    report_fail,
+    unzip2,
+)
+from camphr_pipelines.pipelines import create_model
 
 logger = logging.getLogger(__name__)
 
