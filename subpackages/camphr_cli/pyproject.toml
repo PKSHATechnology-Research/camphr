@@ -10,7 +10,10 @@ python = "^3.7"
 fire = "^0.4.0"
 hydra-core = "0.11.3"
 scikit-learn = ">=0.22,<0.25"
+
+# TODO
 camphr = {path = "../..", develop=true}
+camphr_core = {path = "../camphr_core", develop=true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
