@@ -3,6 +3,7 @@ import bisect
 import distutils.spawn
 import importlib
 import json
+import operator
 from pathlib import Path
 import pickle
 import re
@@ -30,7 +31,6 @@ import yaml
 
 from camphr.VERSION import __version__
 from camphr.types import Pathlike
-import operator
 
 GoldCat = Dict[str, float]
 
