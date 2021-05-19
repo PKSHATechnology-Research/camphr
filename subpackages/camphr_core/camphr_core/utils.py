@@ -22,15 +22,15 @@ from typing import (
 )
 from typing_extensions import Literal
 
-from more_itertools import padded
 import spacy
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 import yaml
 
-from camphr.VERSION import __version__
-from camphr.types import Pathlike
+from camphr_core.VERSION import __version__
+from camphr_core.types import Pathlike
+from more_itertools import padded
 
 GoldCat = Dict[str, float]
 

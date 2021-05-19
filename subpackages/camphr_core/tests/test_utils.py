@@ -1,14 +1,20 @@
-from typing import Iterable, List
+from typing import Collection, List
 
-import pytest
 from hypothesis import given
 from hypothesis import strategies as st
+import pytest
 from spacy.tokens import Doc
+from spacy.vocab import Vocab
 
-from camphr.utils import get_doc_char_span, split_keepsep, zero_pad
+from camphr_core.utils import get_doc_char_span, split_keepsep, zero_pad
 
 
-def _zero_pad(a: Iterable[List[int]], pad_value: int = 0) -> List[List[int]]:
+@pytest.fixture(scope="session")
+def vocab():
+    return Vocab()
+
+
+def _zero_pad(a: Collection[List[int]], pad_value: int = 0) -> List[List[int]]:
     """for test"""
     if len(a) == 0:
         return []
