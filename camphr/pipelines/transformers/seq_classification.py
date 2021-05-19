@@ -13,7 +13,7 @@ from spacy.tokens import Doc
 from transformers.modeling_utils import SequenceSummary
 
 from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
+from camphr_core.torch_utils import TorchPipe, add_loss_to_docs, goldcat_to_label
 
 from .auto import get_trf_config_cls
 from .utils import (

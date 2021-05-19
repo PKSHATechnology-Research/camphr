@@ -11,7 +11,7 @@ from camphr.pipelines.transformers.seq_classification import (
     TRANSFORMERS_SEQ_CLASSIFIER,
     TrfForSequenceClassification,
 )
-from camphr.torch_utils import get_loss_from_docs
+from camphr_core.torch_utils import get_loss_from_docs
 from tests.utils import check_serialization
 
 

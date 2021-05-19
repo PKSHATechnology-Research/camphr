@@ -9,7 +9,7 @@ from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 from toolz import curry
 
-from camphr.consts import JUMAN_LINES
+from camphr_core.consts import JUMAN_LINES
 from camphr_core.utils import get_juman_command
 
 from .consts import KNP_USER_KEYS

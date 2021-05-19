@@ -21,7 +21,7 @@ from camphr.pipelines.utils import (
     correct_bio_tags,
     deconstruct_biluo_label,
 )
-from camphr.torch_utils import TorchPipe, add_loss_to_docs
+from camphr_core.torch_utils import TorchPipe, add_loss_to_docs
 
 from .auto import get_trf_config_cls
 from .utils import (

@@ -31,7 +31,7 @@ from tokenizations import get_alignments
 from typing_extensions import Literal, Protocol
 
 from camphr.pipelines.utils import UserHooksMixin
-from camphr.torch_utils import TensorWrapper, set_grad
+from camphr_core.torch_utils import TensorWrapper, set_grad
 
 from .auto import get_trf_config_cls, get_trf_name
 

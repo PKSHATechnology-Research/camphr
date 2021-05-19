@@ -11,7 +11,7 @@ from camphr.lang.torch import TorchLanguage
 from camphr.models import NLPConfig, create_model, load
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL, TrfModel
 from camphr.pipelines.transformers.utils import ATTRS, get_last_hidden_state_from_docs
-from camphr.torch_utils import add_loss_to_docs
+from camphr_core.torch_utils import add_loss_to_docs
 from tests.utils import TRF_TESTMODEL_PATH, check_serialization
 
 TESTCASES = [

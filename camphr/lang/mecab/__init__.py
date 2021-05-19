@@ -9,8 +9,8 @@ from spacy.compat import copy_reg
 from spacy.language import Language
 from spacy.tokens import Doc, Token
 
-from camphr.consts import KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
+from camphr_core.consts import KEY_FSTRING
 from camphr_core.utils import RE_URL, SerializationMixin
 
 if TYPE_CHECKING:

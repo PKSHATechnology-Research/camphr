@@ -13,7 +13,7 @@ from spacy.pipeline import Pipe
 from spacy.tokens import Doc
 from transformers import BertConfig
 
-from camphr.torch_utils import TorchPipe, add_loss_to_docs
+from camphr_core.torch_utils import TorchPipe, add_loss_to_docs
 
 from .model import TRANSFORMERS_MODEL
 from .tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer
