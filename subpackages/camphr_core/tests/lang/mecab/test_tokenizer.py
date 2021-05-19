@@ -1,6 +1,5 @@
-import pytest
-
 from camphr_test.utils import check_mecab
+import pytest
 
 pytestmark = pytest.mark.skipif(
     not check_mecab(), reason="mecab is not always necessary"

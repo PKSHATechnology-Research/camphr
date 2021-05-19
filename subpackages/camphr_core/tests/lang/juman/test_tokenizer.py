@@ -1,10 +1,10 @@
 import tempfile
 
+from camphr_test.utils import check_juman
 import pytest
 import spacy
 
 from camphr_core.lang.juman import Japanese as Juman
-from camphr_test.utils import check_juman
 
 pytestmark = pytest.mark.skipif(
     not check_juman(), reason="juman is not always necessary"
