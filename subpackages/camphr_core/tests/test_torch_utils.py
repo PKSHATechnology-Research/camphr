@@ -8,7 +8,7 @@ from spacy.vocab import Vocab
 import torch
 import torch.nn as nn
 
-from camphr.lang.torch import TorchLanguage
+from camphr_core.lang.torch import TorchLanguage
 from camphr_core.torch_utils import TensorWrapper, TorchPipe
 
 

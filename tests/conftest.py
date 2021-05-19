@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict
 
+from camphr_core.utils import yaml_to_dict
 import pytest
 import sentencepiece as spm
 from spacy.vocab import Vocab
@@ -12,7 +13,6 @@ from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
 from camphr.models import create_model
 from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
-from camphr_core.utils import yaml_to_dict
 
 from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
 
