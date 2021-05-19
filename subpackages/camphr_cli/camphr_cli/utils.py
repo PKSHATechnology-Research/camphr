@@ -5,12 +5,11 @@ from pathlib import Path
 import random
 from typing import Any, Dict, List, Sequence, Tuple, TypeVar, Union, cast
 
-from sklearn.model_selection import train_test_split
-import srsly
-
+from camphr.utils import dump_jsonl
 from camphr.utils import get_by_dotkey
 import hydra
 from omegaconf import Config
+from sklearn.model_selection import train_test_split
 
 GoldParsable = Dict[str, Any]
 InputData = List[Tuple[str, GoldParsable]]
@@ -18,15 +17,26 @@ InputData = List[Tuple[str, GoldParsable]]
 logger = logging.getLogger(__name__)
 
 
+def read_jsonl(path: Path) -> List[str]:
+    ret = []
+    with path.open("r") as f:
+        for line in f:
+            ret.append(json.loads(line))
+    return ret
+
+
 def create_data(cfg: Config) -> Tuple[InputData, InputData]:
-    data = list(srsly.read_jsonl(Path(cfg.path).expanduser()))
+    data = read_jsonl(Path(cfg.path).expanduser())
     if cfg.ndata > 0:
         data = random.sample(data, k=cfg.ndata)
     else:
         cfg.ndata = len(data)
     train, val = train_test_split(data, test_size=cfg.val_size)
-    srsly.write_jsonl(Path.cwd() / "train-data.jsonl", train)
-    srsly.write_jsonl(Path.cwd() / "val-data.jsonl", val)
+
+    with (Path().cwd() / "train-data.jsonl").open("w") as f:
+        dump_jsonl(f, train)
+    with (Path.cwd() / "val-data.jsonl").open("w") as f:
+        dump_jsonl(f, val)
     return train, val
 
 

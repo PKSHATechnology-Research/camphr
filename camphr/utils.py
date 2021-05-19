@@ -1,10 +1,10 @@
 """The utils module defines util functions used accross sub packages."""
 import bisect
-from collections import OrderedDict
 import distutils.spawn
 import importlib
 import json
 from pathlib import Path
+import pickle
 import re
 from typing import (
     Any,
@@ -12,6 +12,7 @@ from typing import (
     Iterable,
     List,
     Optional,
+    TextIO,
     Tuple,
     Type,
     TypeVar,
@@ -22,15 +23,18 @@ from typing_extensions import Literal
 
 from more_itertools import padded
 import spacy
-from spacy.errors import Errors
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
-import srsly
 import yaml
 
 from camphr.VERSION import __version__
 from camphr.types import Pathlike
+
+
+def dump_jsonl(f: TextIO, dat: Iterable[Any]):
+    for line in dat:
+        f.write(json.dumps(line))
 
 
 def zero_pad(a: List[List[int]], pad_value: int = 0) -> List[List[int]]:
@@ -268,16 +272,16 @@ class SerializationMixin:
     name: str
 
     def from_bytes(self, bytes_data: bytes, **kwargs: Any):
-        pkls = srsly.pickle_loads(bytes_data)
+        pkls = pickle.loads(bytes_data)
         for field in self.serialization_fields:
             setattr(self, field, pkls[field])
         return self
 
     def to_bytes(self, **kwargs: Any):
-        pkls = OrderedDict()
+        pkls: Dict[str, Any] = dict()
         for field in self.serialization_fields:
             pkls[field] = getattr(self, field, None)
-        return srsly.pickle_dumps(pkls)
+        return pickle.dumps(pkls)
 
     def from_disk(self, path: Path, **kwargs: Any):
         path.mkdir(exist_ok=True)
@@ -293,7 +297,7 @@ class SerializationMixin:
 
     def require_model(self):
         if getattr(self, "model", None) in (None, True, False):
-            raise ValueError(Errors.E109.format(name=self.name))
+            raise ValueError(spacy.errors.Errors.E109.format(name=self.name))
 
 
 T = TypeVar("T")
