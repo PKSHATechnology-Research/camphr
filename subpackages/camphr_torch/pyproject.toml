@@ -3,12 +3,12 @@ requires = [ "poetry>=1.0.0",]
 build-backend = "poetry.masonry.api"
 
 [tool.versionup]
-files = [ "camphr_core/VERSION.py",]
+files = [ "camphr_torch/VERSION.py",]
 commit = true
 
 [tool.poetry]
 version = "0.1.0"
-name = "camphr_core"
+name = "camphr_torch"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = ""
 license = "Apache-2.0"
@@ -26,21 +26,11 @@ known_first_party = "camphr"
 [tool.poetry.dependencies]
 python = "^3.7"
 typing-extensions = ">=3.7.4"
+
+camphr_core= {path = "../camphr_core", develop=true}
+
+torch = "^1.7.1"
 spacy = ">=2.2,<=2.3.5"
-more-itertools = "^8.7.0"
-PyYAML = "^5.4.1"
-
-# extras
-fugashi = {version = "^1.1.0", optional = true, extras = ["mecab"]}
-ipadic = {version = "^1.0.0", optional = true, extras = ["mecab"]}
-mecab-python3 = {version = "^1.0.3", optional = true, extras = ["mecab"]}
-sentencepiece = {version = "^0.1.95", optional = true, extras = ["sentencepiece"]}
-pyknp = {version = "^0.5.0", optional = true, extras = ["juman"]}
-mojimoji = {version = "^0.0.11", optional = true, extras = ["juman"]}
-
-[tool.poetry.extras]
-all = ["sentencepiece", "juman", "mecab"]
-
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
@@ -51,6 +41,4 @@ camphr_test = {path = "../camphr_test", develop=true}
 
 
 [tool.poetry.plugins.spacy_languages]
-ja_juman = "camphr_core.lang.juman:Japanese"
-ja_mecab = "camphr_core.lang.mecab:Japanese"
-sentencepiece = "camphr_core.lang.sentencepiece:SentencePieceLang"
+camphr_torch = "camphr_torch.lang:TorchLanguage"
