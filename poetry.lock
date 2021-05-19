@@ -98,7 +98,7 @@ numpy = ">=1.15.0"
 name = "camphr-core"
 version = "0.1.0"
 description = ""
-category = "dev"
+category = "main"
 optional = false
 python-versions = "^3.7"
 develop = true
@@ -116,6 +116,19 @@ all = ["sentencepiece[sentencepiece] (>=0.1.95,<0.2.0)"]
 [package.source]
 type = "directory"
 url = "subpackages/camphr_core"
+
+[[package]]
+name = "camphr-test"
+version = "0.1.0"
+description = "test utility for camphr"
+category = "dev"
+optional = false
+python-versions = ">=3.7,<4"
+develop = true
+
+[package.source]
+type = "directory"
+url = "subpackages/camphr_test"
 
 [[package]]
 name = "catalogue"
@@ -435,7 +448,7 @@ python-versions = "*"
 name = "more-itertools"
 version = "8.7.0"
 description = "More routines for operating on iterables, beyond itertools"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -1130,7 +1143,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "7e5efd860ba53f8022aa28e4e50159fb09221ed4cdec9ebf7b8587404c6de097"
+content-hash = "ba9137d3c3a3fc59498f79d03c1c7b7419a549f4177f6defe630df707bffac63"
 
 [metadata.files]
 alabaster = [
@@ -1177,6 +1190,7 @@ blis = [
     {file = "blis-0.7.4.tar.gz", hash = "sha256:7daa615a97d4f28db0f332b710bfe1900b15d0c25841c6d727965e4fd91e09cf"},
 ]
 camphr-core = []
+camphr-test = []
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
     {file = "catalogue-1.0.0.tar.gz", hash = "sha256:d74d1d856c6b36a37bf14aa6dbbc27d0582667b7ab979a6108e61a575e8723f5"},

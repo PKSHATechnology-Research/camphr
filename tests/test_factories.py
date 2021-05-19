@@ -4,25 +4,12 @@ import pytest
 import spacy
 import toml
 
-from .utils import check_juman, check_knp, check_lang, check_serialization
+from camphr_test.utils import check_juman, check_knp, check_lang, check_serialization
 
 with (Path(__file__).parent / "../pyproject.toml") as f:
     conf = toml.load(f)
 
-LANGS = conf["tool"]["poetry"]["plugins"]["spacy_languages"]
 PIPES = conf["tool"]["poetry"]["plugins"]["spacy_factories"]
-
-
-@pytest.fixture(params=LANGS)
-def lang(request):
-    name = request.param
-    if not check_lang(name):
-        pytest.skip(f"{name} is required")
-    return name
-
-
-def test_blank(lang):
-    spacy.blank(lang)
 
 
 @pytest.fixture

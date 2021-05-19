@@ -1,5 +1,5 @@
-import re
 from itertools import zip_longest
+import re
 
 import pytest
 import spacy
@@ -7,8 +7,7 @@ from spacy.language import Language
 from spacy.tokens import Doc
 
 from camphr.pipelines.regex_ruler import MultipleRegexRuler, RegexRuler
-
-from ..utils import check_mecab, check_serialization
+from camphr_test.utils import check_mecab, check_serialization
 
 TESTCASES = [
     (

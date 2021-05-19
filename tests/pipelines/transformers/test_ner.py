@@ -17,9 +17,8 @@ from camphr.pipelines.transformers.ner import (
     _create_target,
 )
 from camphr.pipelines.transformers.tokenizer import TRANSFORMERS_TOKENIZER
-
-from ...utils import BERT_JA_DIR, DATA_DIR, check_mecab, check_serialization
-
+from camphr_test.utils import check_mecab, check_serialization
+from tests.utils import BERT_JA_DIR, DATA_DIR
 label_types = ["ene", "irex"]
 
 
