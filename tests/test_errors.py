@@ -1,6 +1,6 @@
 import pytest
 
-from camphr.errors import Warnings
+from camphr_core.errors import Warnings
 
 
 def test_warning():
