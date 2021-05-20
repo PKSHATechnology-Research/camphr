@@ -491,7 +491,7 @@ name = "mecab-python3"
 version = "1.0.3"
 description = "Python wrapper for the MeCab morphological analyzer for Japanese"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.extras]
@@ -503,7 +503,7 @@ name = "mojimoji"
 version = "0.0.11"
 description = "A fast converter between Japanese hankaku and zenkaku characters"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -674,10 +674,10 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "pyknp"
-version = "0.4.6"
+version = "0.4.2"
 description = "Python module for JUMAN/KNP."
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.dependencies]
@@ -1205,7 +1205,7 @@ mecab = ["mecab-python3", "fugashi"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "c565c8d9785b0e76b86ad7949702f9e83e44bcbcc991878451223d8ddc078842"
+content-hash = "5244f991fb8a18ba8767b4f8dd85b62fd707b45b8e592e19ddb1c77481abf717"
 
 [metadata.files]
 alabaster = [
@@ -1617,7 +1617,7 @@ pygments = [
     {file = "Pygments-2.9.0.tar.gz", hash = "sha256:a18f47b506a429f6f4b9df81bb02beab9ca21d0a5fee38ed15aef65f0545519f"},
 ]
 pyknp = [
-    {file = "pyknp-0.4.6.zip", hash = "sha256:3406300592ae45814fc2e013f6a1eded9469cb774eed7f3d23dc198cb1267825"},
+    {file = "pyknp-0.4.2.zip", hash = "sha256:1714023c31c3834108c2e97a6c4c0202cdd17ab1f83bd839924b093490d279c3"},
 ]
 pylint = [
     {file = "pylint-2.8.2-py3-none-any.whl", hash = "sha256:f7e2072654a6b6afdf5e2fb38147d3e2d2d43c89f648637baab63e026481279b"},

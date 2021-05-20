@@ -67,6 +67,9 @@ sphinx = "*"
 doc8 = "*"
 mypy = "*"
 hypothesis = "^6.13.0"
+mecab-python3 = "^1.0.3"
+pyknp = "0.4.2"
+mojimoji = "^0.0.11"
 
 [tool.poetry.dependencies.mojimoji]
 version = "^0.0.11"
