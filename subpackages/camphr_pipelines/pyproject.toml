@@ -11,8 +11,8 @@ python = "^3.7"
 camphr_core = {path = "../camphr_core", develop=true}
 camphr_torch = {path = "../camphr_torch", develop=true}
 camphr_transformers = {path = "../camphr_transformers", develop=true}
-camphr = {path = "../..", develop=true}
 dataclass-utils = "^0.7.10"
+toolz = ">=0.10,<0.12"
 
 [tool.poetry.dev-dependencies]
 camphr_test = {path = "../camphr_test", develop=true}
