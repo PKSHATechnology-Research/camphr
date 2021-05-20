@@ -9,15 +9,14 @@ from spacy.gold import spans_from_biluo_tags
 from spacy.language import Language
 from spacy.pipeline import Sentencizer
 from spacy.tokens import Span
+from spacy.vocab import Vocab
 import torch
 
-from camphr import __version__
-from camphr.pipelines.utils import (
+from camphr_core.utils import (
     B,
     I,
     O,
     UserHooksMixin,
-    beamsearch,
     biluo_to_bio,
     bio_to_biluo,
     chunk,
@@ -26,6 +25,8 @@ from camphr.pipelines.utils import (
     correct_bio_tags,
     flatten_docs_to_sents,
 )
+
+
 @pytest.fixture
 def nlp():
     return Language()
@@ -82,7 +83,7 @@ def create_bio_tags_sample(length=10, tags=["LOC", "PERSON", "DATE"]) -> List[st
     return res
 
 
-@pytest.mark.xfail(__version__ >= "v0.8", reason="Deprecate bio_to_biluo", strict=True)
+@pytest.mark.xfail(reason="Deprecate bio_to_biluo", strict=True)
 def test_bio_to_biluo(recwarn):
     bio_to_biluo(["B-PERSON", "I-PERSON", "O", "B-DATE"])
 
@@ -156,6 +157,11 @@ def test_user_hooks_mixin():
     obj = DummyForUserHooks()
     obj.add_user_hook("foo", lambda x: 2 * x)
     assert obj.user_hooks["foo"](1) == 2
+
+
+@pytest.fixture
+def vocab():
+    return Vocab()
 
 
 def test_flatten_docs_to_sens(vocab):

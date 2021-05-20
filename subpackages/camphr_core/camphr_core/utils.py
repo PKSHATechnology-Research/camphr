@@ -11,18 +11,20 @@ import pickle
 import re
 from typing import (
     Any,
+    Callable,
     Dict,
     Iterable,
     List,
     Optional,
+    Sequence,
     TextIO,
     Tuple,
     Type,
     TypeVar,
     Union,
     cast,
+    overload,
 )
-from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union, overload
 from typing_extensions import Literal
 import warnings
 
@@ -32,8 +34,6 @@ import spacy
 from spacy.gold import iob_to_biluo
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
-from spacy.tokens import Doc, Span, Token
-from spacy.util import filter_spans
 from spacy.util import filter_spans
 import yaml
 
@@ -393,8 +393,7 @@ def construct_biluo_tag(biluo: str, body: str = "") -> str:
 
 
 def bio_to_biluo(tags: List[str]) -> List[str]:
-    warnings.warn("Use spacy.gold.iob_to_biluo instead", DeprecationWarning)
-    return iob_to_biluo(tags)
+    raise ValueError("Deprecated: Use spacy.gold.iob_to_biluo instead")
 
 
 def biluo_to_bio(tags: List[str]) -> List[str]:
@@ -515,9 +514,6 @@ class UserHooksMixin:
 
 def flatten_docs_to_sents(docs: Iterable[Doc]) -> List[Span]:
     return list(chain.from_iterable(list(doc.sents) for doc in docs))
-
-
-T = TypeVar("T")
 
 
 def chunk(seq: Sequence[T], nums: Sequence[int]) -> List[Sequence[T]]:
