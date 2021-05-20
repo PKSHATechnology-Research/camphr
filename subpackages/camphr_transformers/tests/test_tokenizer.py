@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Sized, cast
 
+from camphr_torch.lang import TorchLanguage
 import pytest
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
@@ -102,7 +103,7 @@ TEXTS = ["This is a teeeest text for multiple inputs.", "複数の文章を入�
 
 
 @pytest.fixture
-def nlp(trf_name_or_path):
+def nlp(trf_name_or_path: str, device):
     config = f"""
     lang:
         name: en
@@ -113,7 +114,14 @@ def nlp(trf_name_or_path):
         {TRANSFORMERS_TOKENIZER}:
           trf_name_or_path: {trf_name_or_path}
     """
-    return create_model(config)
+    _nlp = TorchLanguage(
+        Vocab(),
+        meta={"lang": "en"},
+        optimizer_config={"class": "torch.optim.SGD", "params": {"lr": 0.01}},
+    )
+    _nlp.add_pipe(TrfTokenizer.from_pretrained(_nlp.vocab, trf_name_or_path))
+    _nlp.to(device)
+    return _nlp
 
 
 def test_pipe(nlp):

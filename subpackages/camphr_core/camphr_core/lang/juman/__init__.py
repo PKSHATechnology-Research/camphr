@@ -3,13 +3,12 @@ from collections import namedtuple
 import itertools
 from typing import Any, Callable, Dict, Iterator, List, Optional, Type
 
-from spacy.compat import copy_reg
-from spacy.language import Language
-from spacy.tokens import Doc, Token
-
 from camphr_core.consts import JUMAN_LINES, KEY_FSTRING
 from camphr_core.lang.stop_words import STOP_WORDS
 from camphr_core.utils import SerializationMixin, get_juman_command
+from spacy.compat import copy_reg
+from spacy.language import Language
+from spacy.tokens import Doc, Token
 
 from .tag_map import TAG_MAP
 

@@ -1,18 +1,27 @@
 import json
 from typing import Dict, List
 
+from camphr_core.ner_labels.labels_ene import ALL_LABELS as enes
+from camphr_core.ner_labels.labels_irex import ALL_LABELS as irexes
+from camphr_core.ner_labels.utils import make_ner_labels
 from camphr_test.utils import check_mecab, check_serialization
+from camphr_torch.lang import TorchLanguage
 import pytest
 from spacy.language import Language
 import torch
 import yaml
 
-from camphr.ner_labels.labels_ene import ALL_LABELS as enes
-from camphr.ner_labels.labels_irex import ALL_LABELS as irexes
-from camphr.ner_labels.utils import make_ner_labels
-from camphr_transformers.model import TRANSFORMERS_MODEL
-from camphr_transformers.ner import TRANSFORMERS_NER, _convert_goldner, _create_target
-from camphr_transformers.tokenizer import TRANSFORMERS_TOKENIZER
+from camphr_transformers.model import TRANSFORMERS_MODEL, TrfModel
+from camphr_transformers.ner import _convert_goldner
+from camphr_transformers.ner import (
+    TRANSFORMERS_NER,
+    TrfForNamedEntityRecognition,
+    _convert_goldner,
+    _create_target,
+)
+from camphr_transformers.tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer
+from camphr_transformers.tokenizer import TRANSFORMERS_TOKENIZER, TrfTokenizer
+from tests.utils import BERT_JA_DIR, DATA_DIR
 from tests.utils import BERT_JA_DIR, DATA_DIR
 
 label_types = ["ene", "irex"]
@@ -35,31 +44,18 @@ def labels(label_type):
 
 
 @pytest.fixture(scope="module")
-def config(labels, lang, trf_name_or_path, device):
-    return yaml.safe_load(
-        f"""
-    lang:
-        name: {lang}
-        torch: true
-        optimizer:
-            class: torch.optim.SGD
-            params:
-                lr: 0.01
-    pipeline:
-        {TRANSFORMERS_TOKENIZER}:
-            trf_name_or_path: {trf_name_or_path}
-        {TRANSFORMERS_MODEL}:
-            trf_name_or_path: {trf_name_or_path}
-        {TRANSFORMERS_NER}:
-            trf_name_or_path: {trf_name_or_path}
-            labels: {labels}
-    """
+def nlp(labels, lang, trf_name_or_path: str, device):
+    _nlp = TorchLanguage(
+        meta={"lang": lang},
+        optimizer_config={"class": "torch.optim.SGD", "params": {"lr": 0.01}},
     )
-
-
-@pytest.fixture(scope="module")
-def nlp(config, device):
-    _nlp = create_model(config)
+    _nlp.add_pipe(TrfTokenizer.from_pretrained(_nlp.vocab, trf_name_or_path))
+    _nlp.add_pipe(TrfModel.from_pretrained(_nlp.vocab, trf_name_or_path))
+    _nlp.add_pipe(
+        TrfForNamedEntityRecognition.from_pretrained(
+            _nlp.vocab, trf_name_or_path, labels=labels
+        )
+    )
     _nlp.to(device)
     return _nlp
 
@@ -163,19 +159,19 @@ def test_create_target(ners: List[Dict[int, str]], length, dim):
 
 @pytest.mark.skipif(not check_mecab(), reason="mecab is required")
 def test_kbeam_config(labels):
-    nlp = load(
-        f"""
-    lang:
-        name: ja_mecab
-        optimizer: {{}}
-    pipeline:
-        {TRANSFORMERS_NER}:
-            k_beam: 111
-            labels: {labels}
-    pretrained: {BERT_JA_DIR}
-    """
+    k_beam = 111
+    _nlp = TorchLanguage(
+        meta={"lang": "ja_mecab"},
+        optimizer_config={},
     )
-    ner = nlp.get_pipe(TRANSFORMERS_NER)
+    _nlp.add_pipe(TrfTokenizer.from_pretrained(_nlp.vocab, str(BERT_JA_DIR)))
+    _nlp.add_pipe(TrfModel.from_pretrained(_nlp.vocab, str(BERT_JA_DIR)))
+    _nlp.add_pipe(
+        TrfForNamedEntityRecognition.from_pretrained(
+            _nlp.vocab, str(BERT_JA_DIR), labels=labels, k_beam=k_beam
+        )
+    )
+    ner = _nlp.get_pipe(TRANSFORMERS_NER)
     assert ner.k_beam == 111
 
 

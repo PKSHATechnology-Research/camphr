@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union, cast
 
+from camphr_core.utils import get_defaults, get_requirements_line, import_attr
 import spacy
 from spacy.gold import GoldParse
 import spacy.language
@@ -15,8 +16,6 @@ from spacy.tokens import Doc
 from spacy.util import minibatch
 import torch
 from torch.optim.optimizer import Optimizer
-
-from camphr_core.utils import get_defaults, get_requirements_line, import_attr
 
 from .utils import TorchPipe, get_loss_from_docs
 

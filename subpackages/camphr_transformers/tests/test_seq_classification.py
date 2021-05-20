@@ -1,17 +1,23 @@
 import random
 
 from camphr_test.utils import check_serialization
+from camphr_torch.lang import TorchLanguage
 from camphr_torch.utils import get_loss_from_docs
 import pytest
 from spacy.language import Language
+from spacy.vocab import Vocab
 
+from camphr_transformers.model import TrfModel
 from camphr_transformers.seq_classification import (
     TOPK_LABELS,
     TOP_LABEL,
     TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
     TRANSFORMERS_SEQ_CLASSIFIER,
+    TrfForMultiLabelSequenceClassification,
     TrfForSequenceClassification,
+    TrfSequenceClassifier,
 )
+from camphr_transformers.tokenizer import TrfTokenizer
 
 
 @pytest.fixture(scope="module")
@@ -39,7 +45,26 @@ def nlp(trf_name_or_path, labels, lang, device, textcat_type):
             trf_name_or_path: {trf_name_or_path}
             labels: {labels}
     """
-    return create_model(config)
+    _nlp = TorchLanguage(
+        meta={"lang": lang},
+        optimizer_config={"class": "torch.optim.SGD", "params": {"lr": 0.01}},
+    )
+    _nlp.add_pipe(TrfTokenizer.from_pretrained(_nlp.vocab, trf_name_or_path))
+    _nlp.add_pipe(TrfModel.from_pretrained(_nlp.vocab, trf_name_or_path))
+    if textcat_type == "single":
+        _nlp.add_pipe(
+            TrfForSequenceClassification.from_pretrained(
+                _nlp.vocab, trf_name_or_path, labels=labels
+            )
+        )
+    else:
+        _nlp.add_pipe(
+            TrfForMultiLabelSequenceClassification.from_pretrained(
+                _nlp.vocab, trf_name_or_path, labels=labels
+            )
+        )
+    _nlp.to(device)
+    return _nlp
 
 
 @pytest.fixture(scope="module")
@@ -111,8 +136,10 @@ def test_eval(nlp: Language, docs_golds):
     assert score.textcat_per_cat
 
 
-def test_weights(vocab, labels):
+def test_weights(labels):
     weights = range(len(labels))
     weights_map = dict(zip(labels, weights))
-    pipe = TrfForSequenceClassification(vocab, labels=labels, label_weights=weights_map)
+    pipe = TrfForSequenceClassification(
+        Vocab(), labels=labels, label_weights=weights_map
+    )
     assert pipe.label_weights.sum() == sum(weights)
