@@ -21,6 +21,7 @@ camphr_test = {path = "../camphr_test", develop=true}
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
+mecab-python3 = "^1.0.3"
 
 [tool.poetry.scripts]
 camphr = "camphr_cli.__main__:main"
