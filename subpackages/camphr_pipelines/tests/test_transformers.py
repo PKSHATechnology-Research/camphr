@@ -1,10 +1,11 @@
 from typing import Any, Dict
 
-from camphr_pipelines.models import NLPConfig, create_model, load
+from camphr_test.utils import check_lang
 import dataclass_utils
-import pytest
 
+from camphr_pipelines.models import NLPConfig, create_model, load
 from camphr_transformers.model import TRANSFORMERS_MODEL
+import pytest
 
 
 def test_freeze_model(trf_name_or_path, trf_model_config: Dict[str, Any]):
@@ -21,8 +22,19 @@ def test_load_transformers(name):
     cfg = f"""
     lang:
         name: en
+        optimizer: {{}}
     pipeline:
         transformers_model:
             trf_name_or_path: {name}
     """
     load(cfg)
+
+
+ALL_LANGS = ["ja_mecab", "ja_juman"]
+
+
+@pytest.fixture(scope="session", params=ALL_LANGS)
+def lang(request):
+    if not check_lang(request.param):
+        pytest.skip(f"No requirements for {request.param}")
+    return request.param

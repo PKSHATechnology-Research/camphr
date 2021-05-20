@@ -38,3 +38,9 @@ mecab-python3 = "^1.0.3"
 pyknp = "0.4.2"
 mojimoji = "^0.0.11"
 
+[tool.poetry.plugins.spacy_factories]
+transformers_model = "camphr_transformers:TrfModel.from_nlp"
+transformers_ner = "camphr_transformers:TrfForNamedEntityRecognition.from_nlp"
+transformers_sequece_classifier = "camphr_transformers:TrfForSequenceClassification.from_nlp"
+transformers_sequence_classifier = "camphr_transformers:TrfForSequenceClassification.from_nlp"
+transformers_tokenizer = "camphr_transformers:TrfTokenizer.from_nlp"
