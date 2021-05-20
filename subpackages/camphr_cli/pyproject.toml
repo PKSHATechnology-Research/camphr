@@ -14,6 +14,7 @@ scikit-learn = ">=0.22,<0.25"
 # TODO
 camphr_core = {path = "../camphr_core", develop=true}
 camphr_pipelines = {path = "../camphr_pipelines", develop=true}
+camphr_torch = {path = "../camphr_torch", develop=true}
 
 [tool.poetry.dev-dependencies]
 camphr_test = {path = "../camphr_test", develop=true}
