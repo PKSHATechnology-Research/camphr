@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from camphr.ner_labels.utils import get_ner_labels
+from camphr_core.ner_labels.utils import get_ner_labels
 
 
 @pytest.mark.parametrize(
