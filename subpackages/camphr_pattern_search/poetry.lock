@@ -37,24 +37,19 @@ version = "0.1.0"
 description = ""
 category = "main"
 optional = false
-python-versions = "^3.7"
-develop = true
+python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
-more-itertools = "^8.7.0"
-PyYAML = "^5.4.1"
+more-itertools = ">=8.7.0,<9.0.0"
+PyYAML = ">=5.4.1,<6.0.0"
 spacy = ">=2.2,<=2.3.5"
 typing-extensions = ">=3.7.4"
 
 [package.extras]
-all = ["sentencepiece (>=0.1.95,<0.2.0)", "mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)", "pyknp (>=0.5.0,<0.6.0)", "mojimoji (>=0.0.11,<0.0.12)", "sentencepiece (>=0.1.95,<0.2.0)"]
-mecab = ["mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)"]
-juman = ["pyknp (>=0.5.0,<0.6.0)", "mojimoji (>=0.0.11,<0.0.12)"]
+all = ["fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)", "mecab-python3 (>=1.0.3,<2.0.0)", "sentencepiece (>=0.1.95,<0.2.0)", "pyknp (>=0.4.2,<0.5.0)", "mojimoji (>=0.0.11,<0.0.12)"]
+mecab = ["fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)", "mecab-python3 (>=1.0.3,<2.0.0)"]
 sentencepiece = ["sentencepiece (>=0.1.95,<0.2.0)"]
-
-[package.source]
-type = "directory"
-url = "../camphr_core"
+juman = ["pyknp (>=0.4.2,<0.5.0)", "mojimoji (>=0.0.11,<0.0.12)"]
 
 [[package]]
 name = "camphr-test"
@@ -506,7 +501,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "4f0b377d8fa0724190605f93cfdc8670a5a9acb5cdb963949d38aefc0070410f"
+content-hash = "81379e3957f717286a006102bcd87e25ad04b316c291a0f97c3571acbe807488"
 
 [metadata.files]
 atomicwrites = [
@@ -532,7 +527,10 @@ blis = [
     {file = "blis-0.7.4-cp39-cp39-win_amd64.whl", hash = "sha256:78a8e0ee72a42c3b2f5b9114500a781119995f76fa6c21d4b02c6fb9c21df2cc"},
     {file = "blis-0.7.4.tar.gz", hash = "sha256:7daa615a97d4f28db0f332b710bfe1900b15d0c25841c6d727965e4fd91e09cf"},
 ]
-camphr-core = []
+camphr-core = [
+    {file = "camphr_core-0.1.0-py3-none-any.whl", hash = "sha256:aa2adb71394e7c46a6e53a2f81a4030b27dc6f9d8e75ce9167b6944aa7656f6e"},
+    {file = "camphr_core-0.1.0.tar.gz", hash = "sha256:6b7170a6830c4d0373de2e3d852d9f9bb56e1f19fc8962f81325d6f85d0713e3"},
+]
 camphr-test = []
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},

@@ -28,7 +28,7 @@ python = "^3.7"
 typing-extensions = ">=3.7.4"
 
 # TODO
-camphr_core = {path = "../camphr_core", develop=true}
+camphr_core = "^0.1.0"
 pytextspan = "^0.5.4"
 
 pyahocorasick = "^1.4.0"
