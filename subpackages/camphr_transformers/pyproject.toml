@@ -1,12 +1,16 @@
+[build-system]
+requires = [ "poetry-core>=1.0.0",]
+build-backend = "poetry.core.masonry.api"
+
+[tool.versionup]
+files = [ "camphr_transformers/VERSION.py",]
+commit = true
+
 [tool.poetry]
 name = "camphr_transformers"
 version = "0.1.0"
 description = ""
-authors = ["Yohei Tamura <tamuhey@gmail.com>"]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 
 [tool.isort]
 skip = ".venv/**/*.py"
@@ -18,10 +22,7 @@ known_first_party = "camphr"
 [tool.poetry.dependencies]
 python = "^3.7"
 typing-extensions = ">=3.7.4"
-
-# TODO
-camphr_torch = {path = "../camphr_torch", develop=true}
-
+camphr_torch = "^0.1.0"
 transformers = ">=3.0,<3.1"
 pytokenizations = "^0.8.3"
 dataclass-utils = "^0.7.10"
@@ -32,7 +33,10 @@ dataclass-utils = "^0.7.10"
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
-camphr_test = {path = "../camphr_test", develop=true}
+
+[tool.poetry.dev-dependencies.camphr_test]
+path = "../camphr_test"
+develop = true
 
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr_transformers:TrfModel.from_nlp"
