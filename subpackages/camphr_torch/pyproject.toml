@@ -26,9 +26,7 @@ known_first_party = "camphr"
 [tool.poetry.dependencies]
 python = "^3.7"
 typing-extensions = ">=3.7.4"
-
-camphr_core= {path = "../camphr_core", develop=true}
-
+camphr_core = "^0.1.0"
 torch = "^1.7.1"
 
 [tool.poetry.dev-dependencies]
@@ -36,8 +34,10 @@ pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
 hypothesis = "^6.13.0"
-camphr_test = {path = "../camphr_test", develop=true}
 
+[tool.poetry.dev-dependencies.camphr_test]
+path = "../camphr_test"
+develop = true
 
 [tool.poetry.plugins.spacy_languages]
 camphr_torch = "camphr_torch.lang:TorchLanguage"
