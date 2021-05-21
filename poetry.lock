@@ -110,9 +110,9 @@ spacy = ">=2.2,<=2.3.5"
 typing-extensions = ">=3.7.4"
 
 [package.extras]
-all = ["sentencepiece (>=0.1.95,<0.2.0)", "mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)", "pyknp (>=0.4.2,<=0.5.0)", "mojimoji (>=0.0.11,<0.0.12)", "sentencepiece (>=0.1.95,<0.2.0)"]
+all = ["sentencepiece (>=0.1.95,<0.2.0)", "mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)", "pyknp (>=0.4.2,<0.5.0)", "mojimoji (>=0.0.11,<0.0.12)", "sentencepiece (>=0.1.95,<0.2.0)"]
 mecab = ["mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)"]
-juman = ["pyknp (>=0.4.2,<=0.5.0)", "mojimoji (>=0.0.11,<0.0.12)"]
+juman = ["pyknp (>=0.4.2,<0.5.0)", "mojimoji (>=0.0.11,<0.0.12)"]
 sentencepiece = ["sentencepiece (>=0.1.95,<0.2.0)"]
 
 [package.source]
@@ -126,7 +126,7 @@ description = ""
 category = "main"
 optional = false
 python-versions = "^3.7"
-develop = true
+develop = false
 
 [package.dependencies]
 camphr_transformers = "0.1.0"
@@ -1073,7 +1073,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4"
-content-hash = "e0a17a72708b52029e4a761bef011e5e8ab914ea544b62e75e94e35aeaca7839"
+content-hash = "46241a09df5ebeb2dae070b24be0412be8c4ee2189fb1c292f527f7e9bfc64fa"
 
 [metadata.files]
 alabaster = [
