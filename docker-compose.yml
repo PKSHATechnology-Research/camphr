@@ -1,17 +1,22 @@
 version: "3"
 services: 
+    test:
+        build:
+          dockerfile: ./dockerfiles/Dockerfile
+          context: .
+        command: ./scripts/test.sh all "camphr_core[sentencepiece]"
+        volumes:
+            - cache:/root/.cache
+
     mecab:
         build:
             dockerfile: dockerfiles/mecab/Dockerfile
             context: .
-        command: poetry run pytest tests
+        command: make all
         volumes:
           - type: bind
-            source: ./camphr
-            target: /app/camphr
-          - type: bind
-            source: ./tests
-            target: /app/tests
+            source: .
+            target: /app
 
     juman:
         build:
@@ -20,8 +25,8 @@ services:
         command: poetry run pytest tests
         volumes:
           - type: bind
-            source: ./camphr
-            target: /app/camphr
-          - type: bind
-            source: ./tests
-            target: /app/tests
+            source: .
+            target: /app
+volumes:
+    cache:
+

@@ -37,9 +37,7 @@ pytextspan = ">=0.5.0,<1.0"
 dataclass-utils = "^0.7.9"
 
 # TODO
-camphr_core = {path="./subpackages/camphr_core", develop=true}
 camphr_pipelines = {path="./subpackages/camphr_pipelines", develop=true}
-camphr_transformers = {path="./subpackages/camphr_transformers", develop=true}
 
 # light weight third party libraries
 PyYAML = "^5.4.1"
@@ -49,44 +47,17 @@ toolz = ">=0.10,<0.12"
 spacy = ">=2.2,<=2.3.5"
 catalogue = "^1.0.0"
 
-[tool.poetry.extras]
-all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic",]
-juman = [ "mojimoji", "pyknp",]
-mecab = [ "mecab-python3", "fugashi", "ipadic ",]
-
 [tool.poetry.dev-dependencies]
 camphr_test = {path = "subpackages/camphr_test", develop=true}
-camphr_core = {path="./subpackages/camphr_core", develop=true, extras=["all"]}
 pylint = "*"
 pytest = "<6.2.3"
 flake8 = "*"
 pyyaml = "*"
-pre-commit = "*"
 toml = "^0.10.0"
 sphinx = "*"
 doc8 = "*"
 mypy = "*"
 hypothesis = "^6.13.0"
-
-[tool.poetry.dependencies.mojimoji]
-version = "^0.0.11"
-optional = true
-
-[tool.poetry.dependencies.ipadic]
-version = ">=1.0,<2.0"
-optional = true
-
-[tool.poetry.dependencies.fugashi]
-version = ">=1.0,<2.0"
-optional = true
-
-[tool.poetry.dependencies.pyknp]
-version = ">=0.4.2,<0.5"
-optional = true
-
-[tool.poetry.dependencies.mecab-python3]
-version = ">=1.0,<1.1"
-optional = true
 
 [tool.poetry.dev-dependencies.isort]
 extras = [ "toml",]
