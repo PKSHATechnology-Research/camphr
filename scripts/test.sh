@@ -21,6 +21,7 @@ set -x
 if [[ $1 == "all" ]]; then
     for subpackage in camphr_embedrank camphr_cli camphr_pattern_search; do
         cd ./subpackages/${subpackage} 
+        poetry install
         if [[ "$extras" ]]; then
           poetry update $extras
         fi

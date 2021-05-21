@@ -5,18 +5,10 @@ services:
             dockerfile: dockerfiles/mecab/Dockerfile
             context: .
         command: ./scripts/test.sh all "camphr_core[mecab]"
-        volumes:
-          - type: bind
-            source: .
-            target: /app
 
     juman:
         build:
             dockerfile: dockerfiles/juman/Dockerfile
             context: .
         command: ./scripts/test.sh all "camphr_core[mecab]"
-        volumes:
-          - type: bind
-            source: .
-            target: /app
 
