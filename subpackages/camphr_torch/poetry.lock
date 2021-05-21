@@ -47,7 +47,10 @@ spacy = ">=2.2,<=2.3.5"
 typing-extensions = ">=3.7.4"
 
 [package.extras]
-all = ["sentencepiece[sentencepiece] (>=0.1.95,<0.2.0)"]
+all = ["sentencepiece (>=0.1.95,<0.2.0)", "mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)", "pyknp (>=0.5.0,<0.6.0)", "mojimoji (>=0.0.11,<0.0.12)", "sentencepiece (>=0.1.95,<0.2.0)"]
+mecab = ["mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)"]
+juman = ["pyknp (>=0.5.0,<0.6.0)", "mojimoji (>=0.0.11,<0.0.12)"]
+sentencepiece = ["sentencepiece (>=0.1.95,<0.2.0)"]
 
 [package.source]
 type = "directory"
@@ -125,7 +128,7 @@ pyflakes = ">=2.3.0,<2.4.0"
 
 [[package]]
 name = "hypothesis"
-version = "6.13.0"
+version = "6.13.1"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -535,7 +538,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "e5eaf16b5f3f864ccbbb0c2debd91f83dff799ec520e8e48fdf135754a5cbcd2"
+content-hash = "3bc15e07e97285ede345e1be5e7739bce3d981c78bbc1a64f2f91ff3c5e0273b"
 
 [metadata.files]
 atomicwrites = [
@@ -599,8 +602,8 @@ flake8 = [
     {file = "flake8-3.9.2.tar.gz", hash = "sha256:07528381786f2a6237b061f6e96610a4167b226cb926e2aa2b6b1d78057c576b"},
 ]
 hypothesis = [
-    {file = "hypothesis-6.13.0-py3-none-any.whl", hash = "sha256:98c59e8defec5f93a3588b83a1ae6bb44fb453a8db56c9875c574f234a95c8fa"},
-    {file = "hypothesis-6.13.0.tar.gz", hash = "sha256:a6c7974419b73d78d808bc4ae43937c29a0c05a628fafccceff03aa0337dd6f4"},
+    {file = "hypothesis-6.13.1-py3-none-any.whl", hash = "sha256:c703a8c274ce72f0bf87a2a1e2c24c41087ede2c4a340b9396bace758e4062fb"},
+    {file = "hypothesis-6.13.1.tar.gz", hash = "sha256:074e27e514b305ba0b0c6bc0037faad1abbe2ea641ab4a8ec90e12a5e3238009"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},

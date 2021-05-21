@@ -30,7 +30,6 @@ typing-extensions = ">=3.7.4"
 camphr_core= {path = "../camphr_core", develop=true}
 
 torch = "^1.7.1"
-spacy = ">=2.2,<=2.3.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
