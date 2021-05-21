@@ -47,7 +47,10 @@ spacy = ">=2.2,<=2.3.5"
 typing-extensions = ">=3.7.4"
 
 [package.extras]
-all = ["sentencepiece[sentencepiece] (>=0.1.95,<0.2.0)"]
+all = ["sentencepiece (>=0.1.95,<0.2.0)", "mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)", "pyknp (>=0.5.0,<0.6.0)", "mojimoji (>=0.0.11,<0.0.12)", "sentencepiece (>=0.1.95,<0.2.0)"]
+mecab = ["mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)"]
+juman = ["pyknp (>=0.5.0,<0.6.0)", "mojimoji (>=0.0.11,<0.0.12)"]
+sentencepiece = ["sentencepiece (>=0.1.95,<0.2.0)"]
 
 [package.source]
 type = "directory"
@@ -503,7 +506,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "bfe14c9b6bfab16c7703b936fbfa17ae0b284e52a1fce75ae0f3d98141efe6c6"
+content-hash = "4f0b377d8fa0724190605f93cfdc8670a5a9acb5cdb963949d38aefc0070410f"
 
 [metadata.files]
 atomicwrites = [
