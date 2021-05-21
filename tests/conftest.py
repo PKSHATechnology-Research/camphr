@@ -8,12 +8,12 @@ from spacy.vocab import Vocab
 import torch
 import yaml
 
-from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 from camphr_core.lang.juman import Japanese as Juman
 from camphr_core.lang.mecab import Japanese as Mecab
 from camphr_core.utils import yaml_to_dict
 from camphr_pipelines.models import create_model
 from camphr_test.utils import check_juman, check_lang, check_mecab
+from camphr_transformers.model import TRANSFORMERS_MODEL
 
 from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH
 

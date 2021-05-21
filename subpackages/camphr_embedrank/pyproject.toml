@@ -33,6 +33,7 @@ camphr_core = {path = "../camphr_core", develop=true}
 
 scikit-learn = ">=0.22,<0.25"
 numpy = "^1.20.3"
+camphr = {version = "^0.8.9", extras = ["sentencepiece"]}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"

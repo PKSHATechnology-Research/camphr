@@ -12,7 +12,6 @@ hydra-core = "0.11.3"
 scikit-learn = ">=0.22,<0.25"
 
 # TODO
-camphr_core = {path = "../camphr_core", develop=true}
 camphr_pipelines = {path = "../camphr_pipelines", develop=true}
 
 [tool.poetry.dev-dependencies]
@@ -20,6 +19,8 @@ camphr_test = {path = "../camphr_test", develop=true}
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
+
+[tool.poetry.extras]
 
 [tool.poetry.scripts]
 camphr = "camphr_cli.__main__:main"

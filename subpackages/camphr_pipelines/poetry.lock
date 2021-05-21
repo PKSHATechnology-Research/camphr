@@ -32,38 +32,6 @@ python-versions = "*"
 numpy = ">=1.15.0"
 
 [[package]]
-name = "camphr"
-version = "0.8.9"
-description = "spaCy plugin for Transformers, Udify, Elmo, etc."
-category = "main"
-optional = false
-python-versions = ">=3.7,<4"
-develop = true
-
-[package.dependencies]
-camphr_core = "0.1.0"
-catalogue = "^1.0.0"
-dataclass-utils = "^0.7.9"
-dataclasses = "^0.6"
-pytextspan = ">=0.5.0,<1.0"
-pytokenizations = "^0.8.3"
-PyYAML = "^5.4.1"
-spacy = ">=2.2,<=2.3.5"
-toolz = ">=0.10,<0.12"
-torch = "^1.7.1"
-transformers = ">=3.0,<3.1"
-typing-extensions = ">=3.7.4"
-
-[package.extras]
-all = ["fugashi (>=1.0,<2.0)", "mojimoji (>=0.0.11,<0.0.12)", "pyknp (>=0.4.2,<0.5)", "mecab-python3 (>=1.0,<1.1)", "ipadic (>=1.0,<2.0)"]
-juman = ["mojimoji (>=0.0.11,<0.0.12)", "pyknp (>=0.4.2,<0.5)"]
-mecab = ["mecab-python3 (>=1.0,<1.1)", "fugashi (>=1.0,<2.0)"]
-
-[package.source]
-type = "directory"
-url = "../.."
-
-[[package]]
 name = "camphr-core"
 version = "0.1.0"
 description = ""
@@ -79,7 +47,10 @@ spacy = ">=2.2,<=2.3.5"
 typing-extensions = ">=3.7.4"
 
 [package.extras]
-all = ["sentencepiece[sentencepiece] (>=0.1.95,<0.2.0)"]
+all = ["sentencepiece (>=0.1.95,<0.2.0)", "mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)", "pyknp (>=0.5.0,<0.6.0)", "mojimoji (>=0.0.11,<0.0.12)", "sentencepiece (>=0.1.95,<0.2.0)"]
+mecab = ["mecab-python3 (>=1.0.3,<2.0.0)", "fugashi (>=1.1.0,<2.0.0)", "ipadic (>=1.0.0,<2.0.0)"]
+juman = ["pyknp (>=0.5.0,<0.6.0)", "mojimoji (>=0.0.11,<0.0.12)"]
+sentencepiece = ["sentencepiece (>=0.1.95,<0.2.0)"]
 
 [package.source]
 type = "directory"
@@ -97,6 +68,44 @@ develop = true
 [package.source]
 type = "directory"
 url = "../camphr_test"
+
+[[package]]
+name = "camphr-torch"
+version = "0.1.0"
+description = ""
+category = "main"
+optional = false
+python-versions = "^3.7"
+develop = true
+
+[package.dependencies]
+camphr_core = "0.1.0"
+torch = "^1.7.1"
+typing-extensions = ">=3.7.4"
+
+[package.source]
+type = "directory"
+url = "../camphr_torch"
+
+[[package]]
+name = "camphr-transformers"
+version = "0.1.0"
+description = ""
+category = "main"
+optional = false
+python-versions = "^3.7"
+develop = true
+
+[package.dependencies]
+camphr_torch = "0.1.0"
+dataclass-utils = "^0.7.10"
+pytokenizations = "^0.8.3"
+transformers = ">=3.0,<3.1"
+typing-extensions = ">=3.7.4"
+
+[package.source]
+type = "directory"
+url = "../camphr_transformers"
 
 [[package]]
 name = "catalogue"
@@ -127,7 +136,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "click"
-version = "8.0.0"
+version = "8.0.1"
 description = "Composable command line interface toolkit"
 category = "main"
 optional = false
@@ -135,6 +144,7 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
+importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 
 [[package]]
 name = "colorama"
@@ -162,14 +172,6 @@ python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
 typing-extensions = ">=3.10.0,<4.0.0"
-
-[[package]]
-name = "dataclasses"
-version = "0.6"
-description = "A backport of the dataclasses module for Python 3.6"
-category = "main"
-optional = false
-python-versions = "*"
 
 [[package]]
 name = "filelock"
@@ -387,14 +389,6 @@ toml = "*"
 
 [package.extras]
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
-
-[[package]]
-name = "pytextspan"
-version = "0.5.4"
-description = ""
-category = "main"
-optional = false
-python-versions = "^3.6"
 
 [[package]]
 name = "pytokenizations"
@@ -683,7 +677,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "4cda070247b4ab0b563420991f4239228005b99eb4f8c98d38f2db0dfa1c29c2"
+content-hash = "036bc38c973b85440453aa9e43cb7a5d3268557d3837f327ac6b6e5e97116c02"
 
 [metadata.files]
 atomicwrites = [
@@ -709,9 +703,10 @@ blis = [
     {file = "blis-0.7.4-cp39-cp39-win_amd64.whl", hash = "sha256:78a8e0ee72a42c3b2f5b9114500a781119995f76fa6c21d4b02c6fb9c21df2cc"},
     {file = "blis-0.7.4.tar.gz", hash = "sha256:7daa615a97d4f28db0f332b710bfe1900b15d0c25841c6d727965e4fd91e09cf"},
 ]
-camphr = []
 camphr-core = []
 camphr-test = []
+camphr-torch = []
+camphr-transformers = []
 catalogue = [
     {file = "catalogue-1.0.0-py2.py3-none-any.whl", hash = "sha256:584d78e7f4c3c6e2fd498eb56dfc8ef1f4ff738480237de2ccd26cbe2cf47172"},
     {file = "catalogue-1.0.0.tar.gz", hash = "sha256:d74d1d856c6b36a37bf14aa6dbbc27d0582667b7ab979a6108e61a575e8723f5"},
@@ -725,8 +720,8 @@ chardet = [
     {file = "chardet-4.0.0.tar.gz", hash = "sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa"},
 ]
 click = [
-    {file = "click-8.0.0-py3-none-any.whl", hash = "sha256:e90e62ced43dc8105fb9a26d62f0d9340b5c8db053a814e25d95c19873ae87db"},
-    {file = "click-8.0.0.tar.gz", hash = "sha256:7d8c289ee437bcb0316820ccee14aefcb056e58d31830ecab8e47eda6540e136"},
+    {file = "click-8.0.1-py3-none-any.whl", hash = "sha256:fba402a4a47334742d782209a7c79bc448911afe1149d07bdabdf480b3e2f4b6"},
+    {file = "click-8.0.1.tar.gz", hash = "sha256:8c04c11192119b1ef78ea049e0a6f0463e4c48ef00a30160c704337586f3ad7a"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
@@ -750,10 +745,6 @@ cymem = [
 dataclass-utils = [
     {file = "dataclass_utils-0.7.10-py3-none-any.whl", hash = "sha256:d245cc27a3cce8b9abcfc4b7ded5353f853e319482d93b2f859f68c90c74c40f"},
     {file = "dataclass_utils-0.7.10.tar.gz", hash = "sha256:5a06bacf67b828928ccf335354a432356824c0f438ecca1621a11439b162b1a4"},
-]
-dataclasses = [
-    {file = "dataclasses-0.6-py3-none-any.whl", hash = "sha256:454a69d788c7fda44efd71e259be79577822f5e3f53f029a22d08004e951dc9f"},
-    {file = "dataclasses-0.6.tar.gz", hash = "sha256:6988bd2b895eef432d562370bb707d540f32f7360ab13da45340101bc2307d84"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
@@ -910,21 +901,6 @@ pyparsing = [
 pytest = [
     {file = "pytest-6.2.4-py3-none-any.whl", hash = "sha256:91ef2131a9bd6be8f76f1f08eac5c5317221d6ad1e143ae03894b862e8976890"},
     {file = "pytest-6.2.4.tar.gz", hash = "sha256:50bcad0a0b9c5a72c8e4e7c9855a3ad496ca6a881a3641b4260605450772c54b"},
-]
-pytextspan = [
-    {file = "pytextspan-0.5.4-cp36-cp36m-macosx_10_7_x86_64.whl", hash = "sha256:d9b0f0fa45ef96a39cd648fc3503388ee480d853e825a48dbddb18ac69cd2399"},
-    {file = "pytextspan-0.5.4-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:a521e7d0734fc5cdc887d5fe5f9e28e2ee0e4da47e993eb323be774f8a1b36ff"},
-    {file = "pytextspan-0.5.4-cp36-none-win_amd64.whl", hash = "sha256:e2d8130b64c2b085eb069824c46624d322a6c9abf25a71e51255a715da0ce71f"},
-    {file = "pytextspan-0.5.4-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:2a2ca93901c12ba67c04c0807fe8cd4c2c5be275bf8cfc92284819b5ed6adc27"},
-    {file = "pytextspan-0.5.4-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:87e3d935ec3d9d9ef56aac437afefc1b21541ecf909cd5bd2a4aa8aab1bb4688"},
-    {file = "pytextspan-0.5.4-cp37-none-win_amd64.whl", hash = "sha256:61f3d0c733b002f7a95c89800d3ffa02aa689df94d409b650818f4a27ab0582c"},
-    {file = "pytextspan-0.5.4-cp38-cp38-macosx_10_7_x86_64.whl", hash = "sha256:b415949a5eac17f0bcfa6a954dc0fa89397651022b99d2807fcf5609c1a52b43"},
-    {file = "pytextspan-0.5.4-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:be460d8db26afacafce544bccc2603573322a1358ee560fb95801ab3e4c874fe"},
-    {file = "pytextspan-0.5.4-cp38-none-win_amd64.whl", hash = "sha256:946a42799b837739f7b688a87e8be90b053e0ee0789080944a3d9e437073ac9f"},
-    {file = "pytextspan-0.5.4-cp39-cp39-macosx_10_7_x86_64.whl", hash = "sha256:b0b659dbdbca578c7596fdb3df0a6016f5d698a2e6e596cc3354f725c0a08c23"},
-    {file = "pytextspan-0.5.4-cp39-cp39-manylinux2010_x86_64.whl", hash = "sha256:f26acb826e0d2b67dd403f9592dc7a5a236dfa31568df57a56251037285019c1"},
-    {file = "pytextspan-0.5.4-cp39-none-win_amd64.whl", hash = "sha256:959b68674f460d184ca117dfc0da50d052a6e02420ec16d6666d17fd377e2682"},
-    {file = "pytextspan-0.5.4.tar.gz", hash = "sha256:2e7fbe04f3d20a761d0211e65a075208d5bffcbc2a07ad998ceaef0fdce000cf"},
 ]
 pytokenizations = [
     {file = "pytokenizations-0.8.3-cp37-cp37m-macosx_10_7_x86_64.whl", hash = "sha256:7ecdd8e2a58e76194a226f30dc16f918fa0e59b110eef53f622bde833e9637b9"},

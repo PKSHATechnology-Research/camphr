@@ -1,7 +1,7 @@
 from spacy.language import Language
 from spacy.pipeline.entityruler import EntityRuler
 
-import camphr.ner_labels.labels_ontonotes as L
+import camphr_core.ner_labels.labels_ontonotes as L
 
 person_patterns = [
     {"label": L.PERSON, "pattern": [{"TAG": "名詞,固有名詞,人名,姓"}, {"TAG": "名詞,固有名詞,人名,名"}]},

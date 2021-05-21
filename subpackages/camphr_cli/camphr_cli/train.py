@@ -7,8 +7,6 @@ import random
 from typing import Any, Callable, Dict, Tuple, Type, Union, cast
 
 from camphr_core.consts import TOP_LABEL
-from camphr_core.lang.torch import TorchLanguage
-from camphr_core.torch_utils import goldcat_to_label
 from camphr_core.utils import (
     create_dict_from_dotkey,
     get_by_dotkey,
@@ -38,6 +36,8 @@ from camphr_cli.utils import (
     report_fail,
     unzip2,
 )
+from camphr_torch.lang import TorchLanguage
+from camphr_torch.utils import goldcat_to_label
 
 logger = logging.getLogger(__name__)
 

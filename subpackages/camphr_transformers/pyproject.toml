@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "camphr_transformers"
+version = "0.1.0"
+description = ""
+authors = ["Yohei Tamura <tamuhey@gmail.com>"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+skip = ".venv/**/*.py"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_first_party = "camphr"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+typing-extensions = ">=3.7.4"
+
+# TODO
+camphr_torch = {path = "../camphr_torch", develop=true}
+
+transformers = ">=3.0,<3.1"
+pytokenizations = "^0.8.3"
+dataclass-utils = "^0.7.10"
+
+[tool.poetry.extras]
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+mypy = "^0.812"
+flake8 = "^3.9.2"
+camphr_test = {path = "../camphr_test", develop=true}
+
+[tool.poetry.plugins.spacy_factories]
+transformers_model = "camphr_transformers:TrfModel.from_nlp"
+transformers_ner = "camphr_transformers:TrfForNamedEntityRecognition.from_nlp"
+transformers_sequece_classifier = "camphr_transformers:TrfForSequenceClassification.from_nlp"
+transformers_sequence_classifier = "camphr_transformers:TrfForSequenceClassification.from_nlp"
+transformers_tokenizer = "camphr_transformers:TrfTokenizer.from_nlp"

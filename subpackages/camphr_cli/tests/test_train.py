@@ -5,11 +5,10 @@ import subprocess
 import sys
 from typing import Any, Dict
 
-from camphr import __version__
-from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
 from camphr_core.utils import merge_dicts
 from camphr_pipelines.models import create_model
 from camphr_test.utils import check_mecab
+from camphr_transformers.ner import TRANSFORMERS_NER
 import dataclass_utils
 from omegaconf import OmegaConf
 import pytest
@@ -66,7 +65,7 @@ def default_config() -> Dict[str, Any]:
                     path: {FIXTURE_DIR / "multi-textcat"/ "train.jsonl"}
                 niter: 1
             """,
-            (__version__ <= "0.5.3"),
+            False,
         ),
     ]
 )

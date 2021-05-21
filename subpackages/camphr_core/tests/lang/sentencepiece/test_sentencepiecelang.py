@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-import sentencepiece as spm
 import spacy
 from spacy.vocab import Vocab
 
@@ -21,7 +20,7 @@ TESTCASE = [
 
 
 @pytest.mark.parametrize("text,tokens", TESTCASE)
-def test_sentencepiece(nlp, text: str, tokens, spiece: spm.SentencePieceProcessor):
+def test_sentencepiece(nlp, text: str, tokens, spiece):
     doc = nlp(text)
     assert doc.text == text.replace("　", " ").replace("\t", " ").strip()
     for token, expected in zip(doc, tokens):

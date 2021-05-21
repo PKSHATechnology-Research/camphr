@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-import torch
 
 FIXTURE_DIR = (Path(__file__).parent / "fixtures/").absolute()
 
@@ -18,12 +17,3 @@ def spiece(spiece_path):
     s = spm.SentencePieceProcessor()
     s.load(spiece_path)
     return s
-
-
-@pytest.fixture(scope="session", params=["cuda", "cpu"])
-def device(request):
-    if request.param == "cpu":
-        return torch.device("cpu")
-    if not torch.cuda.is_available():
-        pytest.skip("cuda is required")
-    return torch.device("cuda")

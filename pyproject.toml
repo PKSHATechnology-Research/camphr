@@ -37,7 +37,6 @@ pytextspan = ">=0.5.0,<1.0"
 dataclass-utils = "^0.7.9"
 
 # TODO
-camphr_core = {path="./subpackages/camphr_core", develop=true}
 camphr_pipelines = {path="./subpackages/camphr_pipelines", develop=true}
 
 # light weight third party libraries
@@ -47,47 +46,18 @@ toolz = ">=0.10,<0.12"
 # big third party libraries
 spacy = ">=2.2,<=2.3.5"
 catalogue = "^1.0.0"
-transformers = ">=3.0,<3.1"
-torch = "^1.7.1"
-
-[tool.poetry.extras]
-all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic",]
-juman = [ "mojimoji", "pyknp",]
-mecab = [ "mecab-python3", "fugashi", "ipadic ",]
 
 [tool.poetry.dev-dependencies]
 camphr_test = {path = "subpackages/camphr_test", develop=true}
-camphr_core = {path="./subpackages/camphr_core", develop=true, extras=["all"]}
 pylint = "*"
 pytest = "<6.2.3"
 flake8 = "*"
 pyyaml = "*"
-pre-commit = "*"
 toml = "^0.10.0"
 sphinx = "*"
 doc8 = "*"
 mypy = "*"
 hypothesis = "^6.13.0"
-
-[tool.poetry.dependencies.mojimoji]
-version = "^0.0.11"
-optional = true
-
-[tool.poetry.dependencies.ipadic]
-version = ">=1.0,<2.0"
-optional = true
-
-[tool.poetry.dependencies.fugashi]
-version = ">=1.0,<2.0"
-optional = true
-
-[tool.poetry.dependencies.pyknp]
-version = ">=0.4.2,<0.5"
-optional = true
-
-[tool.poetry.dependencies.mecab-python3]
-version = ">=1.0,<1.1"
-optional = true
 
 [tool.poetry.dev-dependencies.isort]
 extras = [ "toml",]
@@ -98,11 +68,6 @@ version = "*"
 allow-prereleases = true
 
 [tool.poetry.plugins.spacy_factories]
-transformers_model = "camphr.pipelines.transformers:TrfModel.from_nlp"
-transformers_ner = "camphr.pipelines.transformers:TrfForNamedEntityRecognition.from_nlp"
-transformers_sequece_classifier = "camphr.pipelines.transformers:TrfForSequenceClassification.from_nlp"
-transformers_sequence_classifier = "camphr.pipelines.transformers:TrfForSequenceClassification.from_nlp"
-transformers_tokenizer = "camphr.pipelines.transformers:TrfTokenizer.from_nlp"
 juman_sentencizer = "camphr.pipelines.knp:juman_sentencizer_factory"
 knp = "camphr.pipelines.knp:KNP.from_nlp"
 knp_dependency_parser = "camphr.pipelines.knp.dependency_parser:knp_dependency_parser_factory"

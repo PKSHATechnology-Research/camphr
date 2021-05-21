@@ -1,11 +1,17 @@
 import os
-import shutil
 from pathlib import Path
+import shutil
 from typing import Optional, Type
 
-import sentencepiece as spm
 from spacy.language import Language
 from spacy.tokens import Doc
+
+try:
+    import sentencepiece as spm
+except:
+    raise ImportError(
+        "'sentencepiece' is not installed. Try 'pip install camphr_core[sentencepiece]'"
+    )
 
 
 class EXTS:
