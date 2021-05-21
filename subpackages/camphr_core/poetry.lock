@@ -115,7 +115,7 @@ unidic-lite = ["unidic-lite"]
 
 [[package]]
 name = "hypothesis"
-version = "6.13.0"
+version = "6.13.1"
 description = "A library for property-based testing"
 category = "dev"
 optional = false
@@ -566,12 +566,15 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [extras]
-all = ["sentencepiece"]
+all = ["sentencepiece", "mecab-python3", "fugashi", "ipadic", "pyknp", "mojimoji", "sentencepiece"]
+juman = ["pyknp", "mojimoji"]
+mecab = ["mecab-python3", "fugashi", "ipadic"]
+sentencepiece = ["sentencepiece"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "dd3aa0bbe37ed06f133bebfaee661cad54726e2df6af35a1b5ebbc44cdc2d251"
+content-hash = "ad3de1ca50e1f26e9ff1ec0aee9ec1ed98fa0ecc0515318e361045616e10c3d8"
 
 [metadata.files]
 atomicwrites = [
@@ -652,8 +655,8 @@ fugashi = [
     {file = "fugashi-1.1.0.tar.gz", hash = "sha256:073c529f777affadf91b7cd59f8ed6d2a9cdfa728a5aeb54e9b64a48b5114cbd"},
 ]
 hypothesis = [
-    {file = "hypothesis-6.13.0-py3-none-any.whl", hash = "sha256:98c59e8defec5f93a3588b83a1ae6bb44fb453a8db56c9875c574f234a95c8fa"},
-    {file = "hypothesis-6.13.0.tar.gz", hash = "sha256:a6c7974419b73d78d808bc4ae43937c29a0c05a628fafccceff03aa0337dd6f4"},
+    {file = "hypothesis-6.13.1-py3-none-any.whl", hash = "sha256:c703a8c274ce72f0bf87a2a1e2c24c41087ede2c4a340b9396bace758e4062fb"},
+    {file = "hypothesis-6.13.1.tar.gz", hash = "sha256:074e27e514b305ba0b0c6bc0037faad1abbe2ea641ab4a8ec90e12a5e3238009"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},

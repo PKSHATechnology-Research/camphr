@@ -20,7 +20,7 @@ python = "^3.7"
 typing-extensions = ">=3.7.4"
 
 # TODO
-camphr_core = {path = "../camphr_core", develop=true}
+# camphr_core = {path = "../camphr_core", develop=true}
 camphr_torch = {path = "../camphr_torch", develop=true}
 
 transformers = ">=3.0,<3.1"
@@ -32,11 +32,7 @@ dataclass-utils = "^0.7.10"
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
-camphr_core = {path = "../camphr_core", develop=true, extras=["mecab"]}
 camphr_test = {path = "../camphr_test", develop=true}
-mecab-python3 = "^1.0.3"
-pyknp = "0.4.2"
-mojimoji = "^0.0.11"
 
 [tool.poetry.plugins.spacy_factories]
 transformers_model = "camphr_transformers:TrfModel.from_nlp"

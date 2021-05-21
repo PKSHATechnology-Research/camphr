@@ -12,16 +12,24 @@ hydra-core = "0.11.3"
 scikit-learn = ">=0.22,<0.25"
 
 # TODO
-camphr_core = {path = "../camphr_core", develop=true}
+# camphr_core = {path = "../camphr_core", develop=true}
 camphr_pipelines = {path = "../camphr_pipelines", develop=true}
 camphr_torch = {path = "../camphr_torch", develop=true}
 
+# Extras
+# camphr_core = {path = "../camphr_core", develop=true, optional=true, extras=["mecab"]}
+# camphr-core = {path = "../camphr_core", extras = ["all"]}
+# camphr_core = {path = "../camphr_core", develop=true, optional=true, extras=["sentencepiece"]}
+# camphr_core = {path = "../camphr_core", develop=true, optional=true, extras=["juman"]}
+ 
 [tool.poetry.dev-dependencies]
 camphr_test = {path = "../camphr_test", develop=true}
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
-mecab-python3 = "^1.0.3"
+
+[tool.poetry.extras]
+all = ["sentencepiece", "juman", "mecab"]
 
 [tool.poetry.scripts]
 camphr = "camphr_cli.__main__:main"
