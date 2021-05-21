@@ -11,4 +11,10 @@ services:
             dockerfile: dockerfiles/juman/Dockerfile
             context: .
         command: ./scripts/test.sh all "camphr_core[juman]"
+    sentencepiece:
+        build:
+            dockerfile: dockerfiles/Dockerfile
+            context: .
+        command: ./scripts/test.sh all "camphr_core[sentencepiece]"
+
 

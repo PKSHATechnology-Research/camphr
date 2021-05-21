@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        extras: [mecab, juman]
+        extras: [mecab, juman, sentencepiece]
     steps:
     - uses: actions/checkout@v1
     - name: Log into registry
