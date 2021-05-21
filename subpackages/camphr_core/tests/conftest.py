@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-import torch
 
 FIXTURE_DIR = (Path(__file__).parent / "fixtures/").absolute()
 

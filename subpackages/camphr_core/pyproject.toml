@@ -47,6 +47,7 @@ sentencepiece = ["sentencepiece"]
 
 
 [tool.poetry.dev-dependencies]
+sentencepiece = {version = "^0.1.95"}
 pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"

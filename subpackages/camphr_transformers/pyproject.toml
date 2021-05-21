@@ -20,13 +20,16 @@ python = "^3.7"
 typing-extensions = ">=3.7.4"
 
 # TODO
-# camphr_core = {path = "../camphr_core", develop=true}
+camphr_core = {path = "../camphr_core", develop=true}
 camphr_torch = {path = "../camphr_torch", develop=true}
 
 transformers = ">=3.0,<3.1"
 torch = "^1.7.1"
 pytokenizations = "^0.8.3"
 dataclass-utils = "^0.7.10"
+camphr-core = {path = "../camphr_core", extras = ["foo"]}
+
+[tool.poetry.extras]
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"

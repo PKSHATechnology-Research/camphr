@@ -29,7 +29,6 @@ mypy = "^0.812"
 flake8 = "^3.9.2"
 
 [tool.poetry.extras]
-all = ["sentencepiece", "juman", "mecab"]
 
 [tool.poetry.scripts]
 camphr = "camphr_cli.__main__:main"

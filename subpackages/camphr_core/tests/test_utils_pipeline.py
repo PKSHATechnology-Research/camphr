@@ -10,7 +10,6 @@ from spacy.language import Language
 from spacy.pipeline import Sentencizer
 from spacy.tokens import Span
 from spacy.vocab import Vocab
-import torch
 
 from camphr_core.utils import (
     B,

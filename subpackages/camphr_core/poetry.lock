@@ -398,7 +398,7 @@ name = "sentencepiece"
 version = "0.1.95"
 description = "SentencePiece python wrapper"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [[package]]
@@ -574,7 +574,7 @@ sentencepiece = ["sentencepiece"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "ad3de1ca50e1f26e9ff1ec0aee9ec1ed98fa0ecc0515318e361045616e10c3d8"
+content-hash = "4aa5bf9788bc4328f8d51aeb10a4a3e03d947319504c901d3cb70cfc6186c04c"
 
 [metadata.files]
 atomicwrites = [
