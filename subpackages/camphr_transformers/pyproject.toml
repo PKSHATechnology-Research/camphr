@@ -20,7 +20,6 @@ python = "^3.7"
 typing-extensions = ">=3.7.4"
 
 # TODO
-camphr_core = {path = "../camphr_core", develop=true}
 camphr_torch = {path = "../camphr_torch", develop=true}
 
 transformers = ">=3.0,<3.1"

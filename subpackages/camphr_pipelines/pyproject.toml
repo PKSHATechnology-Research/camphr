@@ -10,7 +10,6 @@ python = "^3.7"
 toolz = ">=0.10,<0.12"
 
 # TODO
-camphr_core = {path = "../camphr_core", develop=true}
 camphr_transformers = {path = "../camphr_transformers", develop=true}
 
 [tool.poetry.dev-dependencies]
