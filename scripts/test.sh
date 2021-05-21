@@ -16,18 +16,23 @@ function test_package() {
     poetry run pytest tests
 }
 
+function install_packages() {
+    poetry install
+    if [[ "$1" ]]; then
+        poetry update $1
+    fi
+}
+
 set -x
 
 if [[ $1 == "all" ]]; then
     for subpackage in camphr_embedrank camphr_cli camphr_pattern_search; do
         cd ./subpackages/${subpackage} 
-        poetry install
-        if [[ "$extras" ]]; then
-          poetry update $extras
-        fi
+        install_packages $extras
         test_package ${subpackage} 
         cd ../..
     done;
+    install_packages $extras
     test_package camphr
 else
     test_package $1
