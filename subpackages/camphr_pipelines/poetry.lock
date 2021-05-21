@@ -97,7 +97,6 @@ python-versions = "^3.7"
 develop = true
 
 [package.dependencies]
-camphr_core = "0.1.0"
 camphr_torch = "0.1.0"
 dataclass-utils = "^0.7.10"
 pytokenizations = "^0.8.3"
@@ -678,7 +677,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "84b8956b0004a99f65e04912711a84e08eba0f3478ff2b1288da8a29fdd93bf6"
+content-hash = "036bc38c973b85440453aa9e43cb7a5d3268557d3837f327ac6b6e5e97116c02"
 
 [metadata.files]
 atomicwrites = [

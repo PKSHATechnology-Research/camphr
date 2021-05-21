@@ -66,7 +66,6 @@ python-versions = "^3.7"
 develop = true
 
 [package.dependencies]
-camphr_core = "0.1.0"
 camphr_transformers = "0.1.0"
 toolz = ">=0.10,<0.12"
 
@@ -115,7 +114,6 @@ python-versions = "^3.7"
 develop = true
 
 [package.dependencies]
-camphr_core = "0.1.0"
 camphr_torch = "0.1.0"
 dataclass-utils = "^0.7.10"
 pytokenizations = "^0.8.3"
