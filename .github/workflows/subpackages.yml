@@ -8,6 +8,9 @@ on:
     branches:
       - master
 
+env:
+  POETRY_VERSION: 1.1.5
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -34,7 +37,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
         
     - name: Install poetry
-      run: python -m pip install -U pip setuptools poetry
+      run: python -m pip install -U pip setuptools poetry==${POETRY_VERSION}
     - name: Cache Poetry virtualenv
       uses: actions/cache@v1
       id: cache
