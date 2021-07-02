@@ -22,7 +22,6 @@ from typing import (
     TypeVar,
     Union,
     cast,
-    overload,
 )
 from typing_extensions import Literal
 
@@ -32,7 +31,6 @@ import numpy as np
 
 from camphr_core.doc import Doc, T_Span, T_Token, Token, Span
 
-#  from spacy.tokens import Doc, Span, Token
 import yaml
 
 from camphr_core.VERSION import __version__
@@ -69,16 +67,6 @@ RE_URL = re.compile(
 def token_from_char_pos(doc: Doc[T_Token, T_Span], i: int) -> T_Token:
     token_idxs = [t.idx for t in doc]
     return doc[bisect.bisect(token_idxs, i) - 1]
-
-
-def _get_covering_span(
-    doc: Doc[T_Token, T_Span], i: int, j: int, **kwargs: Any
-) -> T_Span:
-    token_idxs = [t.idx for t in doc]
-    i = bisect.bisect(token_idxs, i) - 1
-    j = bisect.bisect_left(token_idxs, j)
-    span_cls = type(doc[:])
-    return span_cls(doc, i, j, **kwargs)
 
 
 def split_keepsep(text: str, sep: str):
@@ -388,20 +376,13 @@ def correct_bio_tags(tags: List[str]) -> Tuple[List[str], bool]:
     return tags, is_correct
 
 
-@overload
-def set_heads(doc: Span, heads: List[int]) -> Span:
-    ...
+T_Docs = TypeVar("T_Docs", Doc, Span)
 
 
-@overload
-def set_heads(doc: Doc, heads: List[int]) -> Doc:
-    ...
-
-
-def set_heads(doc, heads):
+def set_heads(doc: T_Docs, heads: List[int]):
     """Set heads to doc in UD annotation style.
 
-    If fail to set, return doc without doing anything.
+    If fail to set, return doc without modifying anything.
     """
     if max(heads) > len(doc) or min(heads) < 0:
         return doc
