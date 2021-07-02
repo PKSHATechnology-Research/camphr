@@ -7,21 +7,18 @@ from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.tokens.span import Span
 
-from camphr.pipelines.pattern_search import PatternSearcher
-from tests.utils import check_mecab
+from camphr_pattern_search import PatternSearcher
 
 KEYWORDS = ["今日", "は", "明日", "lower", "mouse", "foobar", "走る", "頭痛", "BC", "AB ABC"]
 
 
-@pytest.fixture(scope="module", params=["en", "ja_mecab"])
+@pytest.fixture(scope="module", params=["en", "ja"])
 def lang(request):
     return request.param
 
 
 @pytest.fixture(scope="module")
 def nlp(lang: str):
-    if lang == "ja_mecab" and not check_mecab():
-        pytest.skip()
     _nlp = spacy.blank(lang)
     model = PatternSearcher.get_model_from_words(KEYWORDS)
     pipe = PatternSearcher(
@@ -36,12 +33,12 @@ def nlp(lang: str):
 
 TESTCASES = [
     ("I live in AB ABC", ["AB ABC"], ["AB ABC"], "en", None),
-    ("今日はいい天気だ", ["今日", "は"], None, "ja_mecab", None),
+    ("今日はいい天気だ", ["今日", "は"], None, "ja", None),
     ("Mice is a plural form of mouse", ["mouse"], None, "en", None),
     ("foo-bar", ["foo-bar"], ["foobar"], "en", None),
-    ("たくさん走った", ["走っ"], ["走る"], "ja_mecab", None),
-    ("走れ", ["走れ"], ["走る"], "ja_mecab", None),
-    ("頭痛", ["頭痛"], ["ズツウ"], "ja_mecab", ["matched"]),
+    ("たくさん走った", ["走っ"], ["走る"], "ja", None),
+    ("走れ", ["走れ"], ["走る"], "ja", None),
+    ("頭痛", ["頭痛"], ["ズツウ"], "ja", ["matched"]),
 ]
 
 
