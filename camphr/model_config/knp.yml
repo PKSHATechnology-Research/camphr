@@ -1,9 +1,0 @@
-name: knp
-lang:
-    name: ja_juman
-pipeline:
-    sentencizer:
-        punct_chars: ["。","？", "!"]
-    juman_sentencizer:
-    knp:
-    knp_dependency_parser:

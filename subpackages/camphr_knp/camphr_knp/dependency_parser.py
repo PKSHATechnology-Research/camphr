@@ -18,7 +18,7 @@ from spacy.symbols import (
 )
 from spacy.tokens import Doc, Span, Token
 
-from camphr.pipelines.knp import KNP_USER_KEYS
+from camphr_knp import KNP_USER_KEYS
 
 
 @spacy.component("knp_dependency_parser", requires=("doc._.knp_tag_parent",))

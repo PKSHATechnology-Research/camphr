@@ -39,7 +39,7 @@ def test_juman_tokenizer_difficult(juman_tokenizer, text, foo, bar):
 
 
 def test_serialization():
-    nlp = Juman(meta={"tokenizer": {"juman_kwargs": {"jumanpp": False}}})
+    nlp = Juman(meta={"tokenizer": {"juman_kwargs": {"jumanpp": True}}})
     with tempfile.TemporaryDirectory() as tmpd:
         nlp.to_disk(tmpd)
         nlp2 = spacy.load(tmpd)
