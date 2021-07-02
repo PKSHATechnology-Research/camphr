@@ -1,8 +1,5 @@
 import tempfile
 
-from spacy.tests.util import assert_docs_equal
-from spacy.vocab import Vocab
-
 
 def check_juman() -> bool:
     try:
@@ -46,6 +43,7 @@ def check_lang(lang: str):
 
 def check_serialization(nlp, text: str = "It is a serialization set. 今日はとてもいい天気だった！"):
     import spacy
+    from spacy.tests.util import assert_docs_equal
 
     with tempfile.TemporaryDirectory() as d:
         nlp.to_disk(str(d))
