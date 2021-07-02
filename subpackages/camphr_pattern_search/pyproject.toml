@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "camphr_pattern_search"
+version = "0.1.0"
+description = ""
+authors = ["Yohei Tamura <tamuhey@gmail.com>"]
+
+[tool.poetry.dependencies]
+spacy = "^2.3"
+python = "^3.8"
+pyahocorasick = "^1.4.2"
+pytextspan = "^0.5.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+SudachiPy = "^0.5.2"
+SudachiDict-core = "^20210608"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

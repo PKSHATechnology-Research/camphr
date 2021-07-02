@@ -28,7 +28,6 @@ known_first_party = "camphr"
 python = ">=3.6.1,<4"
 fire = ">=0.2.1,<1.0"
 typing-extensions = ">=3.7.4"
-pyahocorasick = "^1.4.0"
 catalogue = "^1.0.0"
 more-itertools = "*"
 scikit-learn = ">=0.22,<0.25"
@@ -43,9 +42,9 @@ toolz = ">=0.10,<0.12"
 spacy = ">=2.2,<3"
 
 [tool.poetry.extras]
-all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic",]
+all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic"]
 juman = [ "mojimoji", "pyknp",]
-mecab = [ "mecab-python3", "fugashi", "ipadic ",]
+mecab = [ "mecab-python3", "fugashi", "ipadic"]
 
 [tool.poetry.dev-dependencies]
 pylint = "*"
