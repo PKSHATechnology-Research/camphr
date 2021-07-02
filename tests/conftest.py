@@ -42,11 +42,11 @@ def mecab_tokenizer():
     return Mecab.Defaults.create_tokenizer()
 
 
-@pytest.fixture(scope="session", params=[True, False])
+@pytest.fixture(scope="session")
 def juman_tokenizer(request):
     if not check_juman():
         pytest.skip()
-    return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": request.param})
+    return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": True})
 
 
 @pytest.fixture(scope="session")
