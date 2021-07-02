@@ -32,6 +32,10 @@ TRANSFORMERS_MODEL = "transformers_model"
 
 
 @Language.factory(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
+def create_model_pipe(nlp: Language, name: str):
+    return TrfModel
+
+
 class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
     """Transformers Model component."""
 

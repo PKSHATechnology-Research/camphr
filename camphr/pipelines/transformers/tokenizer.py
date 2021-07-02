@@ -14,17 +14,18 @@ TRANSFORMERS_TOKENIZER = "transformers_tokenizer"
 
 
 @Language.factory(TRANSFORMERS_TOKENIZER)
-class TrfTokenizer(TrfAutoMixin, Pipe):
+def create_pipe(nlp: Language, name: str):
+    return TrfTokenizer()
+
+
+class TrfTokenizer(TrfAutoMixin):
     _TRF_NAME = "trf_name"
     _MODEL_CLS_GETTER = get_trf_tokenizer_cls
 
-    def __init__(self, vocab: Vocab, model=True, **cfg):
-        self.vocab = vocab
-        self.model: transformers.PreTrainedTokenizer = model
-        self.cfg = cfg
+    def __init__(self):
+        self.model: transformers.PreTrainedTokenizer = None
 
     def predict(self, docs: Sequence[Doc]) -> TransformersInput:
-        self.require_model()
         output = self.model.batch_encode_plus(
             [doc.text for doc in docs],
             add_special_tokens=True,

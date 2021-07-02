@@ -15,9 +15,8 @@ OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]
 
 
 class TorchPipe(Pipe):
-    def __init__(self, vocab, model=True, **cfg):
-        self.vocab = vocab
-        self.model = model
+    def __init__(self, **cfg: Any):
+        self.model: torch.nn.Module = None
         self._device = torch.device("cpu")
         self.cfg = cfg
 
