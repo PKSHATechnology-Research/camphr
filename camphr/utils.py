@@ -34,6 +34,16 @@ from camphr.types import Pathlike
 from camphr.VERSION import __version__
 
 
+def yaml_to_dict(yaml_string: str) -> Dict[Any, Any]:
+    try:
+        ret = yaml.safe_load(yaml_string)
+    except Exception as e:
+        raise ValueError(f"Failed to parse yaml string: {yaml_string}") from e
+    if not isinstance(ret, dict):
+        raise ValueError(f"Not dictionary format: {yaml_string}")
+    return ret  # type: ignore
+
+
 def zero_pad(a: List[List[int]], pad_value: int = 0) -> List[List[int]]:
     """Padding the input so that the lengths of the inside lists are all equal."""
     if len(a) == 0:
@@ -180,13 +190,38 @@ def create_dict_from_dotkey(dotkey: str, value: Any) -> Dict[str, Any]:
     return result
 
 
-@curry
-def resolve_alias(aliases: Dict[str, str], cfg: Config) -> Config:
+def merge_dicts(dict_a: Dict[Any, Any], dict_b: Dict[Any, Any]) -> Dict[Any, Any]:
+    """dict_b has precedens
+
+    >>> a = {1: 2, "a": {"x": 1, "y": {"z": 3}}}
+    >>> b = {1: 3, "a": {"x": 2, "y": 10}}
+    >>> expected = {1: 3, "a": {"x": 2, "y": 10}}
+    """
+    keys = set(dict_a.keys()) | set(dict_b.keys())
+    ret: Dict[Any, Any] = {}
+    for k in keys:
+        if k in dict_a and k not in dict_b:
+            ret[k] = dict_a[k]
+        elif k not in dict_a and k in dict_b:
+            ret[k] = dict_b[k]
+        elif k in dict_a and k in dict_b:
+            va = dict_a[k]
+            vb = dict_b[k]
+            if isinstance(va, dict) and isinstance(vb, dict):
+                ret[k] = merge_dicts(va, vb)  # type: ignore
+            else:
+                ret[k] = vb
+        else:
+            raise ValueError("Unreachable")
+    return ret
+
+
+def resolve_alias(aliases: Dict[str, str], cfg: Dict[str, Any]) -> Dict[str, Any]:
     for alias, name in aliases.items():
         v = get_by_dotkey(cfg, alias)
         if v is None:
             continue
-        cfg = OmegaConf.merge(cfg, OmegaConf.create(create_dict_from_dotkey(name, v)))
+        cfg = merge_dicts(cfg, create_dict_from_dotkey(name, v))
     return cfg
 
 
