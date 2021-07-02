@@ -34,8 +34,6 @@ pytest = "^6.2.4"
 mypy = "^0.812"
 flake8 = "^3.9.2"
 hypothesis = "^6.13.0"
-
-[tool.poetry.dev-dependencies.camphr_test]
-path = "../camphr_test"
-develop = true
+spacy = "^2.3"
+camphr_test = { path = "../camphr_test", develop = true }
 
