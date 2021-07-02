@@ -9,7 +9,7 @@ KNP_PARALLEL_NOUN_CHUNKS = "knp_parallel_noun_chunks"
 
 
 def _install_extensions():
-    Doc.set_extension(KNP_PARALLEL_NOUN_CHUNKS, default=None)
+    Doc.set_extension(KNP_PARALLEL_NOUN_CHUNKS, default=None, force=True)
 
 
 _install_extensions()
