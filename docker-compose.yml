@@ -4,17 +4,17 @@ services:
         build:
             dockerfile: dockerfiles/mecab/Dockerfile
             context: .
-        command: ./scripts/test.sh all "camphr_core[mecab]"
+        command: ./scripts/test.sh all "camphr_lang[mecab]"
 
     juman:
         build:
             dockerfile: dockerfiles/juman/Dockerfile
             context: .
-        command: ./scripts/test.sh all "camphr_core[juman]"
+        command: ./scripts/test.sh all "camphr_lang[juman]"
     sentencepiece:
         build:
             dockerfile: dockerfiles/Dockerfile
             context: .
-        command: ./scripts/test.sh all "camphr_core[sentencepiece]"
+        command: ./scripts/test.sh all "camphr_lang[sentencepiece]"
 
 
