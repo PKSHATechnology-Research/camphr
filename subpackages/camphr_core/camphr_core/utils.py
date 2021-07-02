@@ -26,12 +26,10 @@ from typing import (
     overload,
 )
 from typing_extensions import Literal
-import warnings
 
 from more_itertools import padded
 import numpy as np
 import spacy
-from spacy.gold import iob_to_biluo
 from spacy.language import BaseDefaults
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
