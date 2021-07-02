@@ -1,4 +1,4 @@
-from typing import Any, Iterator, TypeVar, Union, overload
+from typing import Any, Iterable, Iterator, TypeVar, Union, overload
 from typing_extensions import Protocol
 
 
@@ -20,6 +20,8 @@ class Span(Protocol):
 
 class Doc(Protocol[T_Token, T_Span]):
     """Interface for spacy.Doc"""
+
+    sents: Iterable[T_Span]
 
     def __iter__(self) -> Iterator[T_Token]:
         ...

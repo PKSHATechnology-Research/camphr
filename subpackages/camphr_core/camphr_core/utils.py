@@ -413,24 +413,6 @@ def set_heads(doc, heads):
     return doc
 
 
-def get_doc_vector_via_tensor(doc: Doc) -> np.ndarray:
-    return doc.tensor.sum(0)
-
-
-def get_span_vector_via_tensor(span: Span) -> np.ndarray:
-    return span.doc.tensor[span.start : span.end].sum(0)
-
-
-def get_token_vector_via_tensor(token: Token) -> np.ndarray:
-    return token.doc.tensor[token.i]
-
-
-def get_similarity(o1: Union[Doc, Span, Token], o2: Union[Doc, Span, Token]) -> float:
-    v1: np.ndarray = o1.vector
-    v2: np.ndarray = o2.vector
-    return (v1.dot(v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))).item()
-
-
 USER_HOOKS = "user_hooks"
 
 

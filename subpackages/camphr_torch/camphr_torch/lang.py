@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union, cast
 
-from camphr_core.utils import get_defaults, get_requirements_line, import_attr
+from camphr_core.utils import get_requirements_line, import_attr
 import spacy
 from spacy.gold import GoldParse
 import spacy.language
@@ -20,6 +20,14 @@ from torch.optim.optimizer import Optimizer
 from .utils import TorchPipe, get_loss_from_docs
 
 logger = logging.getLogger(__name__)
+
+
+def get_defaults(lang: str) -> Type[BaseDefaults]:
+    try:
+        lang_cls = spacy.util.get_lang_class(lang)  # type: ignore
+    except Exception:
+        return BaseDefaults
+    return getattr(lang_cls, "Defaults", BaseDefaults)
 
 
 class TorchLanguage(Language):
