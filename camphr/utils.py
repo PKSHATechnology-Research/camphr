@@ -3,6 +3,7 @@ import bisect
 import distutils.spawn
 import importlib
 import re
+from camphr.doc import Doc, Token, Span
 from collections import OrderedDict
 from pathlib import Path
 from typing import (
@@ -18,15 +19,9 @@ from typing import (
     cast,
 )
 
-import spacy
-import srsly
 import yaml
 from more_itertools import padded
 from omegaconf import Config, OmegaConf
-from spacy.errors import Errors
-from spacy.language import BaseDefaults
-from spacy.tokens import Doc, Span, Token
-from spacy.util import filter_spans
 from toolz import curry
 from typing_extensions import Literal
 
@@ -136,14 +131,6 @@ def import_attr(import_path: str) -> Any:
 
 def get_requirements_line():
     return f"camphr>={__version__}"
-
-
-def get_defaults(lang: str) -> Type[BaseDefaults]:
-    try:
-        lang_cls = spacy.util.get_lang_class(lang)
-    except Exception:
-        return BaseDefaults
-    return getattr(lang_cls, "Defaults", BaseDefaults)
 
 
 def get_labels(labels_or_path: Union[List[str], Pathlike]) -> List[str]:

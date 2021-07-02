@@ -9,11 +9,8 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union, cast
 
 import omegaconf
-import spacy
 import toolz
 from omegaconf import OmegaConf
-from spacy.language import Language
-from spacy.pipeline import Pipe
 from toolz import merge
 from typing_extensions import Literal
 

@@ -4,11 +4,12 @@ from typing import Dict, List, Optional, Pattern, Union
 import spacy
 from spacy.tokens import Doc, Span
 from spacy.util import filter_spans
+from spacy.language import Language
 
 from camphr.utils import SerializationMixin, get_doc_char_spans_list, merge_spans
 
 
-@spacy.component(
+@Language.component(
     "multiple_regex_ruler", assigns=["doc.ents", "token.ent_type"], retokenizes=True
 )
 class MultipleRegexRuler(SerializationMixin):
@@ -59,7 +60,7 @@ class MultipleRegexRuler(SerializationMixin):
         return cls()
 
 
-@spacy.component(
+@Language.component(
     "regex_ruler", assigns=["doc.ents", "token.ent_type"], retokenizes=True
 )
 class RegexRuler(MultipleRegexRuler):

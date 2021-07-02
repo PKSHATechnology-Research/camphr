@@ -6,15 +6,14 @@ from typing import Any, Dict, Iterable, Iterator, Optional, Sequence, Union, cas
 
 import torch
 import torch.nn as nn
-from spacy.pipeline import Pipe
-from spacy.tokens import Doc
 from torch._C import is_grad_enabled  # type: ignore
+from camphr.doc import Doc
 
 # the type torch.optim.Optimizer uses
 OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]
 
 
-class TorchPipe(Pipe):
+class TorchPipe:
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
         self.model = model

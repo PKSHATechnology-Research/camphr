@@ -7,7 +7,7 @@ import spacy
 import torch
 import torch.nn.functional as F
 import transformers.modeling_bert
-from spacy.gold import GoldParse
+from spacy.training import Example
 from spacy.language import Language
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
@@ -132,7 +132,7 @@ class BertForMaskedLM(SerializationMixinForTrfTask, TorchPipe):
             doc.user_data[MASKEDLM_PREDICTION] = torch.max(pred)
 
     def update(  # type: ignore
-        self, docs: List[Doc], golds: Iterable[GoldParse], **kwargs
+        self, docs: List[Doc], golds: Iterable[Example], **kwargs
     ):
         self.require_model()
         self.model.train()

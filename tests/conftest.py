@@ -5,7 +5,6 @@ import omegaconf
 import pytest
 import sentencepiece as spm
 import torch
-from spacy.vocab import Vocab
 
 from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
