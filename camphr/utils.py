@@ -2,6 +2,7 @@
 import bisect
 import distutils.spawn
 import importlib
+import pickle
 import re
 from collections import OrderedDict
 from pathlib import Path
@@ -18,8 +19,6 @@ from typing import (
     cast,
 )
 
-import spacy
-import srsly
 import yaml
 from more_itertools import padded
 from omegaconf import Config, OmegaConf
@@ -269,16 +268,16 @@ class SerializationMixin:
     name: str
 
     def from_bytes(self, bytes_data: bytes, **kwargs: Any):
-        pkls = srsly.pickle_loads(bytes_data)
+        pkls = pickle.loads(bytes_data)
         for field in self.serialization_fields:
             setattr(self, field, pkls[field])
         return self
 
     def to_bytes(self, **kwargs: Any):
-        pkls = OrderedDict()
+        pkls: Dict[str, Any] = OrderedDict()
         for field in self.serialization_fields:
             pkls[field] = getattr(self, field, None)
-        return srsly.pickle_dumps(pkls)
+        return pickle.dumps(pkls)
 
     def from_disk(self, path: Path, **kwargs: Any):
         path.mkdir(exist_ok=True)
@@ -291,10 +290,6 @@ class SerializationMixin:
         data = self.to_bytes(**kwargs)
         with (path / "data.pkl").open("wb") as file_:
             file_.write(data)
-
-    def require_model(self):
-        if getattr(self, "model", None) in (None, True, False):
-            raise ValueError(Errors.E109.format(name=self.name))
 
 
 T = TypeVar("T")

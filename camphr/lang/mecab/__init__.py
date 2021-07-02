@@ -8,10 +8,6 @@ from typing_extensions import Literal, Protocol
 if TYPE_CHECKING:
     from MeCab import Tagger
 
-from spacy.compat import copy_reg
-from spacy.language import Language
-from spacy.tokens import Doc, Token
-
 from camphr.consts import KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
 from camphr.utils import RE_URL, SerializationMixin
@@ -48,10 +44,6 @@ class Tokenizer(SerializationMixin):
     USERDIC = "user.dic"  # used when saving
     ASSETS = "assets"  # used when saving
     key_fstring = KEY_FSTRING
-
-    @classmethod
-    def install_extensions(cls):
-        Token.set_extension(cls.key_fstring, default=None, force=True)
 
     def __init__(
         self,
