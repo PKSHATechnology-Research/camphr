@@ -96,7 +96,7 @@ TrfForTokenClassificationBase.install_extensions()
 TRANSFORMERS_NER = "transformers_ner"
 
 
-@Language.component(
+@Language.factory(
     TRANSFORMERS_NER,
     requires=[f"doc._.{ATTRS.last_hidden_state}"],
     assigns=["doc.ents"],

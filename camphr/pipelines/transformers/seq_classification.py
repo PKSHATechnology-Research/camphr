@@ -121,7 +121,7 @@ class TrfForSequenceClassification(TrfForSequenceClassificationBase):
 TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER = "transformers_multilabel_sequence_classifier"
 
 
-@Language.component(
+@Language.factory(
     TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
     requires=[f"doc._.{ATTRS.last_hidden_state}"],
     assigns=["doc.cats"],

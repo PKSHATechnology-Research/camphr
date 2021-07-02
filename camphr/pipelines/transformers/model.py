@@ -31,7 +31,7 @@ class TrfModelInputs:
 TRANSFORMERS_MODEL = "transformers_model"
 
 
-@Language.component(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
+@Language.factory(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
 class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
     """Transformers Model component."""
 

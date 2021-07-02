@@ -44,7 +44,7 @@ class PIPES:
     bert_for_maskedlm = "bert_for_maskedlm"
 
 
-@Language.component(PIPES.bert_for_maskedlm_preprocessor)
+@Language.factory(PIPES.bert_for_maskedlm_preprocessor)
 class BertForMaskedLMPreprocessor(Pipe):
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
@@ -114,7 +114,7 @@ class BertForMaskedLMPreprocessor(Pipe):
         pass
 
 
-@Language.component(PIPES.bert_for_maskedlm)
+@Language.factory(PIPES.bert_for_maskedlm)
 class BertForMaskedLM(SerializationMixinForTrfTask, TorchPipe):
     model_cls = BertOnlyMLMHead
     trf_config_cls = BertConfig

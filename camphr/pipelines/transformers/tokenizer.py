@@ -13,7 +13,7 @@ from .utils import ATTRS, TransformersInput, TrfAutoMixin
 TRANSFORMERS_TOKENIZER = "transformers_tokenizer"
 
 
-@Language.component(TRANSFORMERS_TOKENIZER)
+@Language.factory(TRANSFORMERS_TOKENIZER)
 class TrfTokenizer(TrfAutoMixin, Pipe):
     _TRF_NAME = "trf_name"
     _MODEL_CLS_GETTER = get_trf_tokenizer_cls
