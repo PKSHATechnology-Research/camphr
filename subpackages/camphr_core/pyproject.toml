@@ -31,7 +31,7 @@ more-itertools = "^8.7.0"
 PyYAML = "^5.4.1"
 
 [tool.poetry.extras]
-all = [ "sentencepiece", "mecab-python3", "fugashi", "ipadic", "pyknp", "mojimoji", "sentencepiece",]
+all = [ "sentencepiece", "mecab-python3", "fugashi", "ipadic", "pyknp", "mojimoji", "sentencepiece"]
 mecab = [ "mecab-python3", "fugashi", "ipadic",]
 juman = [ "pyknp", "mojimoji",]
 sentencepiece = [ "sentencepiece",]
