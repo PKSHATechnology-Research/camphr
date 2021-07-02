@@ -11,5 +11,6 @@
   "reportUnnecessaryIsInstance": "warning",
   "reportPrivateUsage": "warning",
   "reportUnknownArgumentType": "warning",
-  "reportUnknownLambdaType": false
+  "reportUnknownLambdaType": false,
+  "reportUnknownMemberType": "warning"
 }

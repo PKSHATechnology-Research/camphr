@@ -10,6 +10,7 @@ from typing import (
     Any,
     Dict,
     Iterable,
+    Iterator,
     List,
     Optional,
     Tuple,
@@ -27,6 +28,20 @@ from typing_extensions import Literal
 
 from camphr.types import Pathlike
 from camphr.VERSION import __version__
+import json
+
+
+def read_jsonl(path: Path) -> Iterator[Any]:
+    with path.open() as f:
+        for line in f:
+            yield json.loads(line)
+
+
+def write_jsonl(data: Iterable[Any], path: Path):
+    with path.open() as f:
+        for line in data:
+            s = json.dumps(line) + "\n"
+            f.write(s)
 
 
 def yaml_to_dict(yaml_string: str) -> Dict[Any, Any]:

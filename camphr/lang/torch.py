@@ -14,8 +14,8 @@ from camphr.utils import get_requirements_line, import_attr
 logger = logging.getLogger(__name__)
 
 
-class TorchLanguage:
-    """spacy.Language for pytorch.
+class TorchLanguageMixin:
+    """Torch support.
 
     This class manages all `TorchPipe` components for the sake of training.
 
@@ -30,22 +30,15 @@ class TorchLanguage:
 
     def __init__(
         self,
-        vocab=True,
-        make_doc=True,
-        max_length=10 ** 6,
-        meta={},
+        meta: Dict[str, str] = {},
         optimizer_config: Dict[str, Any] = {},
-        **kwargs,
+        **_kwargs: Any,
     ):
         meta = dict(meta)
         meta[
             "lang_factory"
         ] = self.LANG_FACTORY  # lang_factory is necessary when restoring.
-        meta.setdefault("requirements", []).append(get_requirements_line())
-        self.lang = meta.get("lang", "")
-        self.Defaults = get_defaults(self.lang)
         self.optimizer_config = optimizer_config
-        super().__init__(vocab, make_doc, max_length, meta=meta, **kwargs)
 
     def update(  # type: ignore
         self,

@@ -10,16 +10,15 @@ import srsly
 from omegaconf import Config
 from sklearn.model_selection import train_test_split
 
-from camphr.utils import get_by_dotkey
+from camphr.utils import get_by_dotkey, read_jsonl
 
-GoldParsable = Dict[str, Any]
-InputData = List[Tuple[str, GoldParsable]]
+InputData = List[Tuple[str, Dict[str, Any]]]
 
 logger = logging.getLogger(__name__)
 
 
 def create_data(cfg: Config) -> Tuple[InputData, InputData]:
-    data = list(srsly.read_jsonl(Path(cfg.path).expanduser()))
+    data = list(read_jsonl(Path(cfg.path).expanduser()))
     if cfg.ndata > 0:
         data = random.sample(data, k=cfg.ndata)
     else:
