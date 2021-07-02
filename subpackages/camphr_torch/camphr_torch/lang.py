@@ -3,13 +3,24 @@ import itertools
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union, cast
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+    cast,
+)
 
 from camphr_core.utils import get_requirements_line, import_attr
 import spacy
 from spacy.gold import GoldParse
 import spacy.language
-from spacy.language import Language
+from spacy.language import BaseDefaults, Language
 from spacy.pipeline.pipes import Pipe
 from spacy.scorer import Scorer
 from spacy.tokens import Doc
