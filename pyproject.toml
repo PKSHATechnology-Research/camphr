@@ -25,7 +25,7 @@ include_trailing_comma = true
 known_first_party = "camphr"
 
 [tool.poetry.dependencies]
-python = ">=3.6.1,<4"
+python = "^3.7"
 fire = ">=0.2.1,<1.0"
 typing-extensions = ">=3.7.4"
 catalogue = "^1.0.0"
@@ -40,6 +40,8 @@ hydra_colorlog = "^0.1.4"
 dataclasses = "^0.6"
 toolz = ">=0.10,<0.12"
 spacy = ">=2.2,<3"
+pyyaml = "^5.4.1"
+dataclass-utils = "^0.7.12"
 
 [tool.poetry.extras]
 all = [ "fugashi", "mojimoji", "pyknp", "mecab-python3", "ipadic",]
@@ -50,7 +52,6 @@ mecab = [ "mecab-python3", "fugashi", "ipadic",]
 pylint = "*"
 pytest = "<6.2.3"
 flake8 = "*"
-pyyaml = "*"
 hypothesis = "*"
 pre-commit = "*"
 toml = "^0.10.0"

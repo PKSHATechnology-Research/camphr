@@ -1,35 +1,38 @@
+from contextlib import contextmanager
 import json
+from pathlib import Path
 import subprocess
 import sys
-from contextlib import contextmanager
-from pathlib import Path
+from typing import Any, Dict
 
-import pytest
-from omegaconf import Config, OmegaConf
-
-from camphr import __version__
-from camphr.cli.train import _main, set_seed, validate_data
+from camphr.utils import merge_dicts
 from camphr.models import create_model
+from ..utils import check_mecab
 from camphr.pipelines.transformers.ner import TRANSFORMERS_NER
+import dataclass_utils
+from omegaconf import OmegaConf
+import pytest
+import yaml
 
-from ..utils import BERT_DIR, BERT_JA_DIR, XLNET_DIR, check_mecab
+from camphr.cli.config import TrainConfig
+from camphr.cli.train import _main, set_seed, validate_data
 
-DATA_DIR = Path(__file__).parent / "fixtures"
+from ..utils import BERT_DIR, BERT_JA_DIR, XLNET_DIR
+
+FIXTURE_DIR = (Path(__file__).parent / "fixtures/").absolute()
 
 
 @pytest.fixture
-def default_config() -> Config:
-    return OmegaConf.load(
-        str(
-            Path(__file__).parent
-            / ".."
-            / ".."
+def default_config() -> Dict[str, Any]:
+    return yaml.safe_load(
+        Path(
+            Path(__file__).parent.parent.parent
             / "camphr"
             / "cli"
             / "conf"
             / "train"
             / "config.yaml"
-        )
+        ).read_text()
     )
 
 
@@ -43,10 +46,10 @@ def default_config() -> Config:
                     name: ja_mecab
                 task: ner
                 pretrained: {BERT_JA_DIR}
-                labels: {DATA_DIR/"irex.json"}
+                labels: {FIXTURE_DIR/"irex.json"}
             train:
                 data:
-                    path: {DATA_DIR / "test_ner_irex_ja.jsonl"}
+                    path: {FIXTURE_DIR / "test_ner_irex_ja.jsonl"}
                 niter: 1
             """,
             not check_mecab(),
@@ -59,13 +62,13 @@ def default_config() -> Config:
                     name: en
                 pretrained: {BERT_DIR}
                 task: multilabel_textcat
-                labels: {DATA_DIR/"multi-textcat"/"label.json"}
+                labels: {FIXTURE_DIR/"multi-textcat"/"label.json"}
             train:
                 data:
-                    path: {DATA_DIR / "multi-textcat"/ "train.jsonl"}
+                    path: {FIXTURE_DIR / "multi-textcat"/ "train.jsonl"}
                 niter: 1
             """,
-            (__version__ <= "0.5.3"),
+            False,
         ),
     ]
 )
@@ -73,8 +76,8 @@ def config(request, default_config):
     ident, diff, skip = request.param
     if skip:
         pytest.skip()
-    diff = OmegaConf.create(diff)
-    _config = OmegaConf.merge(default_config, diff)
+    diff = yaml.safe_load(diff)
+    _config = merge_dicts(default_config, diff)
     return _config
 
 
@@ -82,9 +85,9 @@ def test_main(config, chdir):
     _main(config)
 
 
-def test_cli(config: Config, chdir):
+def test_cli(config: Dict[str, Any], chdir):
     cfgpath = Path("user.yaml").absolute()
-    cfgpath.write_text(json.dumps(OmegaConf.to_container(config)))
+    cfgpath.write_text(json.dumps(config))
     res = subprocess.run(
         [sys.executable, "-m", "camphr.cli", "train", f"user_config={cfgpath}"],
         stderr=subprocess.PIPE,
@@ -100,16 +103,18 @@ def test_seed(chdir, default_config):
         pipeline:
             {TRANSFORMERS_NER}:
                 trf_name_or_path: {XLNET_DIR}
-                labels: {DATA_DIR/"irex.json"}
+                labels: {FIXTURE_DIR/"irex.json"}
     seed: 0
     """
 
-    def get_model_value(cfg):
+    def get_model_value(cfg: TrainConfig):
         nlp = create_model(cfg.model)
         pipe = nlp.get_pipe(TRANSFORMERS_NER)
         return sum(p.sum().cpu().item() for p in pipe.model.parameters())
 
-    cfg = OmegaConf.merge(default_config, OmegaConf.create(cfg))
+    cfg_dict = merge_dicts(default_config, yaml.safe_load(cfg))
+    cfg = dataclass_utils.into(cfg_dict, TrainConfig)
+    assert cfg.seed is not None
     set_seed(cfg.seed)
     first = get_model_value(cfg)
     set_seed(cfg.seed)
