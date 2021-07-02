@@ -12,7 +12,6 @@ from typing_extensions import Literal
 
 import yaml
 
-from camphr_core.types import Pathlike
 from camphr_core.utils import get_labels
 
 __dir__ = Path(__file__).parent
@@ -35,7 +34,7 @@ def make_ner_labels(
     return list(dict.fromkeys(labels))  # unique while keep ordering
 
 
-def get_ner_labels(labels: Union[List[str], Pathlike], type_="BIO"):
+def get_ner_labels(labels: Union[List[str], Path], type_="BIO"):
     labels = get_labels(labels)
     if all(label[:2] in {"-", "O", "I-", "B-", "L-", "U-"} for label in labels):
         return labels

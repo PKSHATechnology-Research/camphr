@@ -19,7 +19,6 @@ from typing import (
     Sequence,
     TextIO,
     Tuple,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -27,18 +26,17 @@ from typing import (
 )
 from typing_extensions import Literal
 
+
 from more_itertools import padded
 import numpy as np
-import spacy
-from spacy.language import BaseDefaults
-from spacy.tokens import Doc, Span, Token
-from spacy.util import filter_spans
+
+from camphr_core.doc import Doc, T_Span, T_Token, Token, Span
+
+#  from spacy.tokens import Doc, Span, Token
 import yaml
 
 from camphr_core.VERSION import __version__
-from camphr_core.types import Pathlike
 
-from .errors import Warnings
 
 GoldCat = Dict[str, float]
 
@@ -68,69 +66,19 @@ RE_URL = re.compile(
 )
 
 
-def token_from_char_pos(doc: Doc, i: int) -> Token:
+def token_from_char_pos(doc: Doc[T_Token, T_Span], i: int) -> T_Token:
     token_idxs = [t.idx for t in doc]
     return doc[bisect.bisect(token_idxs, i) - 1]
 
 
-def _get_covering_span(doc: Doc, i: int, j: int, **kwargs: Any) -> Span:
+def _get_covering_span(
+    doc: Doc[T_Token, T_Span], i: int, j: int, **kwargs: Any
+) -> T_Span:
     token_idxs = [t.idx for t in doc]
     i = bisect.bisect(token_idxs, i) - 1
     j = bisect.bisect_left(token_idxs, j)
-    return Span(doc, i, j, **kwargs)
-
-
-def destruct_token(doc: Doc, *char_pos: int) -> Doc:
-    for i in char_pos:
-        with doc.retokenize() as retokenizer:
-            token = token_from_char_pos(doc, i)
-            heads = [token] * len(token)
-            retokenizer.split(doc[token.i], list(token.text), heads=heads)
-    return doc
-
-
-def get_doc_char_span(
-    doc: Doc,
-    i: int,
-    j: int,
-    destructive: bool = True,
-    covering: bool = False,
-    **kwargs: Any,
-) -> Optional[Span]:
-    """Get Span from Doc with char position, similar to doc.char_span.
-
-    Args:
-        i: The index of the first character of the span
-        j: The index of the first character after the span
-        destructive: If True, tokens in [i,j) will be splitted and make sure to return span.
-        covering: If True, [i,j) will be adjusted to match the existing token boundaries. It precedes `destructive`.
-        kwargs: passed to Doc.char_span
-    """
-    span = doc.char_span(i, j, **kwargs)
-    if not span and covering:
-        span = _get_covering_span(doc, i, j, **kwargs)
-    if not span and destructive:
-        destruct_token(doc, i, j)
-        span = doc.char_span(i, j, **kwargs)
-    return span
-
-
-def get_doc_char_spans_list(
-    doc: Doc, spans: Iterable[Tuple[int, int]], destructive: bool = True, **kwargs: Any
-) -> List[Span]:
-    res: List[Span] = []
-    for i, j in spans:
-        span = get_doc_char_span(doc, i, j, destructive=destructive, **kwargs)
-        if span:
-            res.append(span)
-    return res
-
-
-def merge_spans(doc: Doc, spans: Iterable[Span]):
-    spans = filter_spans(spans)
-    with doc.retokenize() as retokenizer:
-        for span in spans:
-            retokenizer.merge(span)
+    span_cls = type(doc[:])
+    return span_cls(doc, i, j, **kwargs)
 
 
 def split_keepsep(text: str, sep: str):
@@ -157,15 +105,7 @@ def get_requirements_line():
     return f"camphr>={__version__}"
 
 
-def get_defaults(lang: str) -> Type[BaseDefaults]:
-    try:
-        lang_cls = spacy.util.get_lang_class(lang)  # type: ignore
-    except Exception:
-        return BaseDefaults
-    return getattr(lang_cls, "Defaults", BaseDefaults)
-
-
-def get_labels(labels_or_path: Union[List[str], Pathlike]) -> List[str]:
+def get_labels(labels_or_path: Union[List[str], Path]) -> List[str]:
     if isinstance(labels_or_path, (str, Path)):
         path = Path(labels_or_path)
         if path.suffix == ".json":
@@ -313,7 +253,7 @@ class SerializationMixin:
 
     def require_model(self):
         if getattr(self, "model", None) in (None, True, False):
-            raise ValueError(spacy.errors.Errors.E109.format(name=self.name))
+            raise ValueError("self.model is not instantiated")
 
 
 T = TypeVar("T")
@@ -446,12 +386,6 @@ def correct_bio_tags(tags: List[str]) -> Tuple[List[str], bool]:
         if tr == I and not (tl in {B, I} and bl == br):
             tags[i + 1] = construct_biluo_tag(B, br)
     return tags, is_correct
-
-
-def merge_entities(ents0: Iterable[Span], ents1: Iterable[Span]) -> List[Span]:
-    """Merge two ents. ents1 is prior to ents0"""
-    Warnings.W0("merge_entities", "spacy.util.filter_spans")
-    return filter_spans(list(ents1) + list(ents0))
 
 
 @overload

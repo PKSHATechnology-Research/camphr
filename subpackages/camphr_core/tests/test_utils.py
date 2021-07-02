@@ -6,7 +6,7 @@ import pytest
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
 
-from camphr_core.utils import get_doc_char_span, split_keepsep, zero_pad
+from camphr_core.utils import split_keepsep, zero_pad
 
 
 @pytest.fixture(scope="session")
@@ -45,23 +45,3 @@ def test_zero_pad(a):
 )
 def test_split_keepsep(text, sep, expected):
     assert split_keepsep(text, sep) == expected
-
-
-@pytest.mark.parametrize(
-    "tokens,i,j,destructive,covering,expected,label",
-    [
-        (["Foo", "bar", "baz"], 0, 2, True, False, "Fo", None),
-        (["Foo", "bar", "baz"], 0, 5, True, False, "Foo b", None),
-        (["Foo", "bar", "baz"], 0, 5, False, True, "Foo bar", None),
-        (["Foo", "bar", "baz"], 0, 3, False, True, "Foo", None),
-        (["Foo", "bar", "baz"], 1, 5, False, True, "Foo bar", "LABEL"),
-    ],
-)
-def test_get_doc_char_span(vocab, tokens, i, j, destructive, covering, expected, label):
-    doc = Doc(vocab, tokens)
-    span = get_doc_char_span(
-        doc, i, j, destructive=destructive, covering=covering, label=label or ""
-    )
-    assert span.text == expected
-    if label is not None:
-        assert span.label_ == label
