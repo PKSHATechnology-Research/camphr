@@ -7,7 +7,7 @@ files = [ "camphr/VERSION.py",]
 commit = true
 
 [tool.poetry]
-version = "0.9.1"
+version = "0.9.2"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
@@ -102,9 +102,3 @@ transformers_ner = "camphr.pipelines.transformers:TrfForNamedEntityRecognition.f
 transformers_sequece_classifier = "camphr.pipelines.transformers:TrfForSequenceClassification.from_nlp"
 transformers_sequence_classifier = "camphr.pipelines.transformers:TrfForSequenceClassification.from_nlp"
 transformers_tokenizer = "camphr.pipelines.transformers:TrfTokenizer.from_nlp"
-juman_sentencizer = "camphr.pipelines.knp:juman_sentencizer_factory"
-knp = "camphr.pipelines.knp:KNP.from_nlp"
-knp_dependency_parser = "camphr.pipelines.knp.dependency_parser:knp_dependency_parser_factory"
-knp_parallel_noun_chunker = "camphr.pipelines.knp.noun_chunker:knp_parallel_noun_chunker_factory"
-multiple_regex_ruler = "camphr.pipelines:MultipleRegexRuler.from_nlp"
-regex_ruler = "camphr.pipelines:RegexRuler.from_nlp"

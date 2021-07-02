@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-import omegaconf
+import yaml
 import pytest
 import sentencepiece as spm
 import torch
@@ -42,11 +42,11 @@ def mecab_tokenizer():
     return Mecab.Defaults.create_tokenizer()
 
 
-@pytest.fixture(scope="session", params=[True, False])
+@pytest.fixture(scope="session")
 def juman_tokenizer(request):
     if not check_juman():
         pytest.skip()
-    return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": request.param})
+    return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": True})
 
 
 @pytest.fixture(scope="session")
@@ -100,7 +100,7 @@ def trf_name_or_path(request):
 
 @pytest.fixture(scope="session")
 def trf_model_config(lang, trf_name_or_path, device):
-    return omegaconf.OmegaConf.create(
+    return yaml.safe_load(
         f"""
     lang:
         name: {lang}

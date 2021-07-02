@@ -1,3 +1,4 @@
+from camphr_knp import create_knp_nlp
 import itertools
 from typing import List, Tuple
 
@@ -5,21 +6,20 @@ import pytest
 from spacy.language import Language
 from spacy.tokens import Doc
 
-from camphr.models import load
-from camphr.pipelines.knp import BUNSETSU, KNP_USER_KEYS, TAG
+from camphr_knp import BUNSETSU, KNP_USER_KEYS, TAG
 
-from ...utils import check_knp
+from .utils import check_knp
 
 pytestmark = pytest.mark.skipif(not check_knp(), reason="knp is not always necessary")
 
 
 @pytest.fixture
 def nlp():
-    return load("knp")
+    return create_knp_nlp()
 
 
-TEXTS = ["今日は\u3000いい天気だったので山田太郎と散歩に行きました。帰りni富士山が見えた。"]
-TESTCASES = [(TEXTS[0], [("今日", "DATE"), ("山田太郎", "PERSON"), ("富士山", "LOCATION")])]
+TEXTS = ["今日は\u3000いい天気だったので山田太郎と散歩に行きました。"]
+TESTCASES = [(TEXTS[0], [("今日", "DATE"), ("山田太郎", "PERSON")])]
 
 
 @pytest.mark.parametrize("text,ents", TESTCASES)
@@ -28,7 +28,7 @@ def test_knp_entity_extractor(nlp: Language, text: str, ents: Tuple[str]):
     for _ in range(2):  # loop 2 times to validate cache
         assert len(doc.ents) == len(ents)
         for s, expected_ent in zip(doc.ents, ents):
-            assert s.text == expected_ent[0]
+            assert s.text == expected_ent[0], (s, expected_ent)
             assert s.label_ == expected_ent[1]
 
 

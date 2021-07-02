@@ -4,6 +4,7 @@ import re
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Tuple
 
 import spacy
+from spacy.language import Language
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 from toolz import curry
@@ -86,9 +87,8 @@ class KNP:
                 sent._.set(getattr(KNP_USER_KEYS, comp).list_, label)
             for m, token in zip(mlist, sent):
                 token._.set(KNP_USER_KEYS.morph.element, m)
-        doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))  # type: ignore
-        doc.noun_chunks_iterator = knp_noun_chunker  # type: ignore
-        # TODO: https://github.com/python/mypy/issues/3004
+        doc.ents = filter_spans(doc.ents + tuple(_extract_knp_ent(doc)))
+        doc.noun_chunks_iterator = knp_noun_chunker
         return doc
 
 
@@ -232,7 +232,9 @@ def _install_extensions():
     for k in ["bunsetsu", "morph", "tag"]:
         for feature in ["spans", "list_"]:
             key = getattr(getattr(K, k), feature)
-            Doc.set_extension(key, getter=get_all_knp_features_from_sents(k, feature))
+            Doc.set_extension(
+                key, getter=get_all_knp_features_from_sents(k, feature), force=True
+            )
     for k in [BUNSETSU, TAG]:
         Span.set_extension(getattr(KNP_USER_KEYS, k).spans, getter=get_knp_span(k))
         Span.set_extension(getattr(KNP_USER_KEYS, k).parent, getter=get_knp_parent(k))
@@ -242,3 +244,12 @@ def _install_extensions():
 
 
 _install_extensions()
+
+
+def create_knp_nlp() -> Language:
+    nlp = spacy.blank("ja_juman")
+    nlp.add_pipe(nlp.create_pipe("sentencizer", {"punct_chars": ["。", "？", "!"]}))
+    nlp.add_pipe(nlp.create_pipe("juman_sentencizer"))
+    nlp.add_pipe(nlp.create_pipe("knp"))
+    nlp.add_pipe(nlp.create_pipe("knp_dependency_parser"))
+    return nlp

@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "camphr_knp"
+version = "0.1.0"
+description = ""
+authors = ["Yohei Tamura <tamuhey@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+spacy = "^2.3"
+toolz = "^0.11.1"
+typing-extensions = "^3.10.0"
+# TODO
+camphr = { path = "../../", develop = true}
+pyknp = "^0.4.2"
+mojimoji = "^0.0.11"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins.spacy_factories]
+juman_sentencizer = "camphr_knp:juman_sentencizer_factory"
+knp = "camphr_knp:KNP.from_nlp"
+knp_dependency_parser = "camphr_knp.dependency_parser:knp_dependency_parser_factory"
+knp_parallel_noun_chunker = "camphr_knp.noun_chunker:knp_parallel_noun_chunker_factory"
+
