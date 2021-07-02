@@ -26,7 +26,7 @@ function install_packages() {
 set -x
 
 if [[ $1 == "all" ]]; then
-    for subpackage in camphr_embedrank camphr_cli camphr_pattern_search; do
+    for subpackage in camphr_embedrank camphr_cli camphr_pattern_search camphr_lang; do
         cd ./subpackages/${subpackage} 
         install_packages $extras
         test_package ${subpackage} 

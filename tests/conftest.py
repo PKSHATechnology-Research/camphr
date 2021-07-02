@@ -8,7 +8,6 @@ from spacy.vocab import Vocab
 import torch
 import yaml
 
-from camphr_core.lang.juman import Japanese as Juman
 from camphr_core.lang.mecab import Japanese as Mecab
 from camphr_core.utils import yaml_to_dict
 from camphr_pipelines.models import create_model
@@ -43,13 +42,6 @@ def mecab_tokenizer():
     if not check_mecab():
         pytest.skip("mecab is required")
     return Mecab.Defaults.create_tokenizer()
-
-
-@pytest.fixture(scope="session", params=[True, False])
-def juman_tokenizer(request):
-    if not check_juman():
-        pytest.skip()
-    return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": request.param})
 
 
 @pytest.fixture(scope="session")

@@ -1,0 +1,3 @@
+[submodule "subpackages/camphr_lang/typings/spacy"]
+	path = subpackages/camphr_lang/typings/spacy
+	url = https://github.com/tamuhey/typeshed_spacy

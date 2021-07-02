@@ -1,0 +1,10 @@
+FROM python:3.8-slim
+RUN apt update && apt install build-essential -y
+ENV POETRY_VERSION=1.1.5
+RUN pip install -U poetry==${POETRY_VERSION}
+
+WORKDIR /app
+COPY camphr_lang/pyproject.toml .
+COPY camphr_core ../camphr_core
+COPY camphr_test ../camphr_test
+RUN poetry config virtualenvs.create false && poetry install -E sentencepiece

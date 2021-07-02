@@ -16,6 +16,14 @@ def check_knp() -> bool:
     return check_juman()
 
 
+def check_sentencepiece() -> bool:
+    try:
+        import sentencepiece
+    except ImportError:
+        return False
+    return True
+
+
 def check_mecab() -> bool:
     try:
         import MeCab  # noqa

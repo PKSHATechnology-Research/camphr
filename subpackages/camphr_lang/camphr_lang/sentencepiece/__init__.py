@@ -8,9 +8,10 @@ from spacy.tokens import Doc
 
 try:
     import sentencepiece as spm
-except:
+except ImportError:
+    pkgname = __name__.split(".")[0]
     raise ImportError(
-        "'sentencepiece' is not installed. Try 'pip install camphr_core[sentencepiece]'"
+        f"'sentencepiece' is not installed. Try 'pip install {pkgname}[sentencepiece]'"
     )
 
 

@@ -1,0 +1,30 @@
+# For testing
+version: "3"
+services: 
+    mecab:
+        build:
+            dockerfile: camphr_lang/dockerfiles/Dockerfile.mecab
+            context: ..
+        command: &test ./scripts/test.sh
+        volumes:
+          - .:/app/
+          - ../camphr_test/:/camphr_test/
+
+    juman:
+        build:
+            dockerfile: camphr_lang/dockerfiles/Dockerfile.juman
+            context: ..
+        command: *test
+        volumes:
+          - .:/app/
+          - ../camphr_test/:/camphr_test/
+    sentencepiece:
+        build:
+            dockerfile: camphr_lang/dockerfiles/Dockerfile.sentencepiece
+            context: ..
+        command: *test
+        volumes:
+          - .:/app/
+          - ../camphr_test/:/camphr_test/
+
+
