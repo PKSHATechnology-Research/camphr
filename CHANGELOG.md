@@ -1,9 +1,6 @@
 # Changelog
 
 ## 0.7.0 (21/08/2020)
-- [**closed**] Pattern searcher becomes able to search with lemma and lower [#65](https://github.com/PKSHATechnology-Research/camphr/pull/65)
-- [**closed**] 形容詞接頭辞 into PART [#63](https://github.com/PKSHATechnology-Research/camphr/pull/63)
-- [**closed**] fix deps [#62](https://github.com/PKSHATechnology-Research/camphr/pull/62)
 - [**dependencies**] Bump pyknp from 0.4.4 to 0.4.5 [#80](https://github.com/PKSHATechnology-Research/camphr/pull/80)
 - [**dependencies**] Bump spacy from 2.2.4 to 2.3.2 [#81](https://github.com/PKSHATechnology-Research/camphr/pull/81)
 - [**dependencies**] Bump torch from 1.5.1 to 1.6.0 [#82](https://github.com/PKSHATechnology-Research/camphr/pull/82)
@@ -17,6 +14,9 @@
 - [**closed**] improve beamsearch performance for k ==1 [#75](https://github.com/PKSHATechnology-Research/camphr/pull/75)
 - [**closed**] use pyknp [#71](https://github.com/PKSHATechnology-Research/camphr/pull/71)
 - [**closed**] add normalizer to pattern search [#70](https://github.com/PKSHATechnology-Research/camphr/pull/70)
+- [**closed**] Pattern searcher becomes able to search with lemma and lower [#65](https://github.com/PKSHATechnology-Research/camphr/pull/65)
+- [**closed**] 形容詞接頭辞 into PART [#63](https://github.com/PKSHATechnology-Research/camphr/pull/63)
+- [**closed**] fix deps [#62](https://github.com/PKSHATechnology-Research/camphr/pull/62)
 
 ---
 
