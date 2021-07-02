@@ -28,6 +28,7 @@ python = "^3.7"
 typing-extensions = ">=3.7.4"
 camphr_core = "^0.1.0"
 torch = "^1.7.1"
+spacy = "^2.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
