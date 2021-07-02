@@ -1,8 +1,10 @@
 """The package mecab defines Japanese spacy.Language with Mecab tokenizer."""
+from camphr.doc import Doc
 import shutil
 from pathlib import Path
 from shutil import copytree
-from typing import Any, List, NamedTuple, Optional, TYPE_CHECKING, Type
+from typing import Any, List, NamedTuple, Optional, TYPE_CHECKING
+from camphr.language import LanguageProto
 from typing_extensions import Literal, Protocol
 
 if TYPE_CHECKING:
@@ -10,7 +12,6 @@ if TYPE_CHECKING:
 
 from camphr.consts import KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
-from camphr.utils import RE_URL, SerializationMixin
 
 
 class ShortUnitWord(NamedTuple):
@@ -31,6 +32,15 @@ def get_dictionary_type(
     raise ValueError(f"Unsupported dictionary type: {filename}")
 
 
+def get_mecab():
+    """Create `MeCab.Tagger` instance"""
+    import MeCab  # type: ignore
+
+    tokenizer = MeCab.Tagger()
+    tokenizer.parseToNode("")  # type: ignore # see https://github.com/explosion/spaCy/issues/2901
+    return tokenizer
+
+
 class MecabNodeProto(Protocol):
     next: "MecabNodeProto"
     surface: str
@@ -40,46 +50,25 @@ class MecabNodeProto(Protocol):
     rlength: int
 
 
-class Tokenizer(SerializationMixin):
+class Tokenizer:
     USERDIC = "user.dic"  # used when saving
     ASSETS = "assets"  # used when saving
     key_fstring = KEY_FSTRING
 
-    def __init__(
-        self,
-        cls: Type["Defaults"],
-        nlp: Optional[Language] = None,
-        dicdir: Optional[str] = None,
-        userdic: Optional[str] = None,
-        assets: Optional[str] = None,
-    ):
-        """
-
-        Args:
-            dicdir: Mecab dictionary path. If `None`, use system configuration (~/.mecabrc or /usr/local/etc/mecabrc).
-            userdic: Mecab user dictionary path. If `None`, use system configuration (~/.mecabrc or /usr/local/etc/mecabrc).
-            assets: Other assets path saved with tokenizer. e.g. userdic definition csv path
-        """
-        self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
-        self.tokenizer = self.get_mecab(dicdir=dicdir, userdic=userdic)
+    def __init__(self):
+        self.tokenizer = get_mecab()
         self.dictionary_type = get_dictionary_type(self.tokenizer)
-        self.assets = assets
 
     def __call__(self, text: str) -> Doc:
         dtokens = self.detailed_tokens(text)
         words = [x.surface for x in dtokens]
         spaces = [x.space for x in dtokens]
-        doc = Doc(self.vocab, words=words, spaces=spaces)
+        doc = Doc.from_words(words=words, spaces=spaces)
         for token, dtoken in zip(doc, dtokens):
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma if dtoken.lemma != "*" else token.text
-            token._.set(self.key_fstring, dtoken.fstring)
+            token.user_data[self.key_fstring] = dtoken.fstring
 
-        with doc.retokenize() as retokenizer:
-            for match in RE_URL.finditer(doc.text):
-                span = doc.char_span(*match.span())
-                if span:
-                    retokenizer.merge(span)
         doc.is_tagged = True
         return doc
 
@@ -112,21 +101,6 @@ class Tokenizer(SerializationMixin):
             node = nextnode
         return words
 
-    def get_mecab(self, dicdir: Optional[str] = None, userdic: Optional[str] = None):
-        """Create `MeCab.Tagger` instance"""
-        import MeCab
-
-        opt = ""
-        if userdic:
-            opt += f"-u {userdic} "
-        if dicdir:
-            opt += f"-d {dicdir} "
-        self.userdic = userdic
-        self.dicdir = dicdir
-        tokenizer = MeCab.Tagger(opt.strip())
-        tokenizer.parseToNode("")  # see https://github.com/explosion/spaCy/issues/2901
-        return tokenizer
-
     def to_disk(self, path: Path, **kwargs: Any):
         path.mkdir(exist_ok=True)
         if self.userdic:
@@ -139,7 +113,7 @@ class Tokenizer(SerializationMixin):
         userdic = (path / self.USERDIC).absolute()
         if userdic.exists():
             self.userdic = str(userdic)
-        self.tokenizer = self.get_mecab(userdic=self.userdic)
+        self.tokenizer = get_mecab()
 
         assets = (path / self.ASSETS).absolute()
         if assets.exists():
@@ -147,41 +121,18 @@ class Tokenizer(SerializationMixin):
         return self
 
 
-# for pickling. see https://spacy.io/usage/adding-languages
-class Defaults(Language.Defaults):  # type: ignore
-    lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    stop_words = STOP_WORDS
-    writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
-
-    @classmethod
-    def create_tokenizer(
-        cls,
-        nlp: Optional[Language] = None,
-        dicdir: Optional[str] = None,
-        userdic: Optional[str] = None,
-        assets: Optional[str] = None,
-    ):
-        return Tokenizer(cls, nlp, dicdir=dicdir, userdic=userdic, assets=assets)
-
-
-class Japanese(Language):
+class Japanese(LanguageProto):
     lang = "ja_mecab"
-    Defaults = Defaults
 
-    def make_doc(self, text: str) -> Doc:
-        return self.tokenizer(text)
+    def __init__(self):
+        self.tokenizer = Tokenizer()
+        self.pipeline = []
 
-
-# avoid pickling problem (see https://github.com/explosion/spaCy/issues/3191)
-def pickle_japanese(instance: Any):
-    return Japanese, tuple()
-
-
-copy_reg.pickle(Japanese, pickle_japanese)
-Language.factories[Japanese.lang] = Japanese
-
-Tokenizer.install_extensions()
+    def __call__(self, text: str) -> Doc:
+        doc = self.make_doc(text)
+        for pipe in self.pipeline:
+            doc = pipe(doc)
+        return doc
 
 
-# for lazy loading. see https://spacy.io/usage/adding-languages
 __all__ = ["Japanese"]
