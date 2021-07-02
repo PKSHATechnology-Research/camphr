@@ -1,3 +1,5 @@
+import dataclasses
+from typing import Dict
 import numpy as np
 import omegaconf
 import pytest
@@ -17,7 +19,6 @@ TESTCASES = [
     "今日は　いい天気です",
     "1月16日(木)18時36分頃、沖縄県で最大震度4を観測する地震がありました。",
     "",
-    "\n",
 ]
 
 
@@ -106,7 +107,7 @@ def test_update(nlp: TorchLanguage):
 
 
 def test_freeze_model(trf_name_or_path, trf_model_config: NLPConfig):
-    config = omegaconf.OmegaConf.to_container(trf_model_config)
+    config = trf_model_config
     config["pipeline"][TRANSFORMERS_MODEL]["freeze"] = True
     nlp = create_model(config)
     pipe = nlp.pipeline[-1][1]

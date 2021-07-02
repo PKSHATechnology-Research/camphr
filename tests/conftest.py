@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-import omegaconf
+import yaml
 import pytest
 import sentencepiece as spm
 import torch
@@ -100,7 +100,7 @@ def trf_name_or_path(request):
 
 @pytest.fixture(scope="session")
 def trf_model_config(lang, trf_name_or_path, device):
-    return omegaconf.OmegaConf.create(
+    return yaml.safe_load(
         f"""
     lang:
         name: {lang}
