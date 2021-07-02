@@ -23,7 +23,7 @@ from typing import (
 import torch
 import torch.nn as nn
 import transformers
-from spacy.gold import GoldParse
+from spacy.training import Example
 from spacy.language import Language
 from spacy.tokens import Doc
 from spacy.vocab import Vocab
@@ -310,16 +310,16 @@ class EstimatorMixin(Generic[T]):
         raise NotImplementedError
 
     def compute_loss(
-        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: T
+        self, docs: Sequence[Doc], golds: Sequence[Example], outputs: T
     ) -> None:
         raise NotImplementedError
 
-    def update(self, docs: Sequence[Doc], golds: Sequence[GoldParse], **kwargs) -> None:
+    def update(self, docs: Sequence[Doc], golds: Sequence[Example], **kwargs) -> None:
         with self.switch("train"):
             outputs = self.proc_model(docs)
             self.compute_loss(docs, golds, outputs)
 
-    def eval(self, docs: List[Doc], golds: List[GoldParse]) -> None:
+    def eval(self, docs: List[Doc], golds: List[Example]) -> None:
         with self.switch("eval"):
             outputs = self.proc_model(docs)
             self.compute_loss(docs, golds, outputs)

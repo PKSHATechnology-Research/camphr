@@ -8,9 +8,9 @@ import spacy
 import spacy.language
 import srsly
 import torch
-from spacy.gold import GoldParse  # pylint: disable=no-name-in-module
+from spacy.training import Example
 from spacy.language import Language
-from spacy.pipeline.pipes import Pipe
+from spacy.pipeline import Pipe
 from spacy.scorer import Scorer
 from spacy.tokens import Doc
 from spacy.util import minibatch
@@ -58,7 +58,7 @@ class TorchLanguage(Language):
     def update(  # type: ignore
         self,
         docs: Sequence[Union[str, Doc]],
-        golds: Sequence[Union[Dict[str, Any], GoldParse]],
+        golds: Sequence[Union[Dict[str, Any], Example]],
         optimizer: Optimizer,
         verbose: bool = False,
     ):
@@ -67,7 +67,7 @@ class TorchLanguage(Language):
         self._update_pipes(_docs, _golds)
         self._update_params(_docs, optimizer, verbose)
 
-    def _update_pipes(self, docs: Sequence[Doc], golds: Sequence[GoldParse]) -> None:
+    def _update_pipes(self, docs: Sequence[Doc], golds: Sequence[Example]) -> None:
         for _, pipe in self.pipeline:
             pipe.update(docs, golds)
 
@@ -83,7 +83,7 @@ class TorchLanguage(Language):
 
     def evaluate(  # type: ignore
         self,
-        docs_golds: Sequence[Tuple[Union[str, Doc], Union[Dict[str, Any], GoldParse]]],
+        docs_golds: Sequence[Tuple[Union[str, Doc], Union[Dict[str, Any], Example]]],
         batch_size: int = 16,
         scorer: Optional[Scorer] = None,
     ) -> Dict[str, Any]:
@@ -107,7 +107,7 @@ class TorchLanguage(Language):
         self,
         pipe: Pipe,
         docs: Sequence[Doc],
-        golds: Sequence[GoldParse],
+        golds: Sequence[Example],
         batch_size: int,
     ) -> Sequence[Doc]:
         if not hasattr(pipe, "pipe"):

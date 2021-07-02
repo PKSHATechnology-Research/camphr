@@ -4,10 +4,11 @@ from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import spacy
+from spacy.language import Language
 import spacy.language
 import torch
 import transformers
-from spacy.gold import GoldParse
+from spacy.training import Example
 from spacy.tokens import Doc
 
 from camphr.pipelines.utils import get_similarity
@@ -30,7 +31,7 @@ class TrfModelInputs:
 TRANSFORMERS_MODEL = "transformers_model"
 
 
-@spacy.component(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
+@Language.component(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
 class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
     """Transformers Model component."""
 
@@ -93,7 +94,7 @@ class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
             return True
         return False
 
-    def update(self, docs: List[Doc], golds: List[GoldParse]):  # type: ignore
+    def update(self, docs: List[Doc], golds: List[Example]):  # type: ignore
         """Simply forward `docs` in training mode."""
         if self.freeze:
             self.model.eval()

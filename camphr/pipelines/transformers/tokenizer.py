@@ -1,7 +1,7 @@
 """Defines transformers tokenizer pipe."""
 from typing import List, Optional, Sequence, Sized, cast
 
-import spacy
+from spacy.language import Language
 import transformers
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
@@ -13,7 +13,7 @@ from .utils import ATTRS, TransformersInput, TrfAutoMixin
 TRANSFORMERS_TOKENIZER = "transformers_tokenizer"
 
 
-@spacy.component(TRANSFORMERS_TOKENIZER)
+@Language.component(TRANSFORMERS_TOKENIZER)
 class TrfTokenizer(TrfAutoMixin, Pipe):
     _TRF_NAME = "trf_name"
     _MODEL_CLS_GETTER = get_trf_tokenizer_cls

@@ -7,10 +7,11 @@ import spacy
 import torch
 import torch.nn.functional as F
 import transformers.modeling_bert
-from spacy.gold import GoldParse
+from spacy.training import Example
 from spacy.language import Language
 from spacy.pipeline import Pipe
 from spacy.tokens import Doc
+from spacy.language import Language
 from transformers import BertConfig
 
 from camphr.torch_utils import TorchPipe, add_loss_to_docs
@@ -43,7 +44,7 @@ class PIPES:
     bert_for_maskedlm = "bert_for_maskedlm"
 
 
-@spacy.component(PIPES.bert_for_maskedlm_preprocessor)
+@Language.component(PIPES.bert_for_maskedlm_preprocessor)
 class BertForMaskedLMPreprocessor(Pipe):
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
@@ -113,7 +114,7 @@ class BertForMaskedLMPreprocessor(Pipe):
         pass
 
 
-@spacy.component(PIPES.bert_for_maskedlm)
+@Language.component(PIPES.bert_for_maskedlm)
 class BertForMaskedLM(SerializationMixinForTrfTask, TorchPipe):
     model_cls = BertOnlyMLMHead
     trf_config_cls = BertConfig
@@ -132,7 +133,7 @@ class BertForMaskedLM(SerializationMixinForTrfTask, TorchPipe):
             doc.user_data[MASKEDLM_PREDICTION] = torch.max(pred)
 
     def update(  # type: ignore
-        self, docs: List[Doc], golds: Iterable[GoldParse], **kwargs
+        self, docs: List[Doc], golds: Iterable[Example], **kwargs
     ):
         self.require_model()
         self.model.train()

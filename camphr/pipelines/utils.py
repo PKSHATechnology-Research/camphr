@@ -5,7 +5,7 @@ from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union, ov
 
 import numpy as np
 import torch
-from spacy.gold import iob_to_biluo
+from spacy.training import iob_to_biluo
 from spacy.tokens import Doc, Span, Token
 from spacy.util import filter_spans
 

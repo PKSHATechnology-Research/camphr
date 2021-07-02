@@ -3,12 +3,13 @@ import operator
 from typing import Any, Iterable, List, Optional, Sequence, Tuple, cast
 
 import spacy
+from spacy.language import Language
 import spacy.language
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from spacy.gold import GoldParse
+from spacy.training import Example
 from spacy.tokens import Doc
 from transformers.modeling_utils import SequenceSummary
 
@@ -88,7 +89,7 @@ class TrfForSequenceClassificationBase(
 TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequence_classifier"
 
 
-@spacy.component(
+@Language.factory(
     TRANSFORMERS_SEQ_CLASSIFIER,
     requires=[f"doc._.{ATTRS.last_hidden_state}"],
     assigns=["doc.cats"],
@@ -96,14 +97,14 @@ TRANSFORMERS_SEQ_CLASSIFIER = "transformers_sequence_classifier"
 class TrfForSequenceClassification(TrfForSequenceClassificationBase):
     """Sequence classification task (e.g. sentiment analysis)."""
 
-    def golds_to_tensor(self, golds: Iterable[GoldParse]) -> torch.Tensor:
+    def golds_to_tensor(self, golds: Iterable[Example]) -> torch.Tensor:
         labels = (goldcat_to_label(gold.cats) for gold in golds)
         labels = (self.convert_label(label) for label in labels)
         targets = [self.label2id[label] for label in labels]
         return torch.tensor(targets, device=self.device)
 
     def compute_loss(
-        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
+        self, docs: Sequence[Doc], golds: Sequence[Example], outputs: torch.Tensor
     ) -> None:
         self.require_model()
         targets = self.golds_to_tensor(golds)
@@ -120,7 +121,7 @@ class TrfForSequenceClassification(TrfForSequenceClassificationBase):
 TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER = "transformers_multilabel_sequence_classifier"
 
 
-@spacy.component(
+@Language.component(
     TRANSFORMERS_MULTILABEL_SEQ_CLASSIFIER,
     requires=[f"doc._.{ATTRS.last_hidden_state}"],
     assigns=["doc.cats"],
@@ -129,7 +130,7 @@ class TrfForMultiLabelSequenceClassification(TrfForSequenceClassificationBase):
     """Multi labels sequence classification task (e.g. sentiment analysis)."""
 
     def compute_loss(
-        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
+        self, docs: Sequence[Doc], golds: Sequence[Example], outputs: torch.Tensor
     ) -> None:
         self.require_model()
         targets = outputs.new_tensor(
