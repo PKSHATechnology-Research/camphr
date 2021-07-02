@@ -25,6 +25,7 @@ known_first_party = "camphr"
 
 [tool.poetry.dependencies]
 python = "^3.7"
+spacy = "^2.3"
 typing-extensions = ">=3.7.4"
 camphr_core = "^0.1.0"
 scikit-learn = ">=0.22,<0.25"

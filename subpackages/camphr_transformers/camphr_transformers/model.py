@@ -1,13 +1,13 @@
 """Module trf_model defines pytorch-transformers components."""
 import dataclasses
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, Union
 
 from camphr_torch.utils import TensorWrapper, TorchPipe, set_grad
 import numpy as np
 import spacy
 from spacy.gold import GoldParse
 import spacy.language
-from spacy.tokens import Doc
+from spacy.tokens import Doc, Token, Span
 import torch
 import transformers
 

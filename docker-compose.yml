@@ -5,16 +5,25 @@ services:
             dockerfile: dockerfiles/mecab/Dockerfile
             context: .
         command: ./scripts/test.sh all "camphr_lang[mecab]"
-
     juman:
         build:
             dockerfile: dockerfiles/juman/Dockerfile
             context: .
         command: ./scripts/test.sh all "camphr_lang[juman]"
+        volumes:
+          - .:/app/
     sentencepiece:
+        build:
+            dockerfile: dockerfiles/Dockerfile.sentencepiece
+            context: .
+        command: ./scripts/test.sh all "camphr_lang[sentencepiece]"
+        volumes:
+          - .:/app/
+    plain:
         build:
             dockerfile: dockerfiles/Dockerfile
             context: .
         command: ./scripts/test.sh all "camphr_lang[sentencepiece]"
-
+        volumes:
+          - .:/app/
 
