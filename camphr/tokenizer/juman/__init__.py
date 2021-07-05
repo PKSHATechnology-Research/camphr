@@ -1,23 +1,27 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
-from camphr.doc import Doc
+from dataclasses import dataclass
+from camphr.doc import Doc, DocProto
 import itertools
-from collections import namedtuple
 from typing import Any, Callable, Dict, Iterator, List, Optional, Type
 
 
-from camphr.consts import JUMAN_LINES, KEY_FSTRING
-from camphr.lang.stop_words import STOP_WORDS
-from camphr.utils import SerializationMixin, get_juman_command
+from camphr.utils import get_juman_command
+from camphr.serde import SerializationMixin
 
-from .tag_map import TAG_MAP
 
-ShortUnitWord = namedtuple(
-    "ShortUnitWord", ["surface", "lemma", "pos", "fstring", "space"]
-)
+@dataclass
+class ShortUnitWord:
+    surface: str
+    lemma: str
+    pos: str
+    fstring: str
+    space: str
+
+
 _REPLACE_STRINGS = {"\t": "　", "\r": "", "\n": "　"}
 
 
-def han_to_zen_normalize(text):
+def han_to_zen_normalize(text: str):
     try:
         import mojimoji
     except ImportError:
@@ -36,17 +40,16 @@ class Tokenizer(SerializationMixin):
     """
 
     serialization_fields = ["preprocessor", "juman_kwargs"]
-    key_fstring = KEY_FSTRING
+    KEY_FSTRING = "juman_fstring"
 
     @classmethod
-    def install_extensions(cls):
-        """See https://github.com/explosion/spacy-pytorch-transformers#extension-attributes."""
-        Token.set_extension(cls.key_fstring, default=None, force=True)
+    def get_juman_fstring(cls, doc: DocProto[Any]) -> str:
+        if cls.KEY_FSTRING not in doc.user_data:
+            raise ValueError("`doc` is not parsed by juman.")
+        return doc.user_data[cls.KEY_FSTRING]
 
     def __init__(
         self,
-        cls: Type["Defaults"],
-        nlp: Optional[Any] = None,
         juman_kwargs: Optional[Dict[str, str]] = None,
         preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalize,
     ):
@@ -104,7 +107,7 @@ class Tokenizer(SerializationMixin):
         for token, dtoken in zip(doc, dtokens):
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma
-            token._.set(self.key_fstring, dtoken.fstring)
+            token._.set(self.KEY_FSTRING, dtoken.fstring)
         doc.is_tagged = True
         return doc
 
