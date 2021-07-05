@@ -48,6 +48,10 @@ class Tokenizer(SerializationMixin):
             raise ValueError("`doc` is not parsed by juman.")
         return doc.user_data[cls.KEY_FSTRING]
 
+    @classmethod
+    def set_juman_fstring(cls, doc: DocProto[Any], fstring: str):
+        doc.user_data[cls.KEY_FSTRING] = fstring
+
     def __init__(
         self,
         juman_kwargs: Optional[Dict[str, str]] = None,
