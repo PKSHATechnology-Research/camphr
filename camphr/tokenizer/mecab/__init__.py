@@ -1,24 +1,20 @@
 """The package mecab defines Japanese spacy.Language with Mecab tokenizer."""
-from camphr.doc import Doc
-import shutil
-from pathlib import Path
-from shutil import copytree
-from typing import Any, List, NamedTuple, Optional, TYPE_CHECKING
-from camphr.language import LanguageProto
+from camphr.doc import Doc, DocProto
+from typing import List, NamedTuple, TYPE_CHECKING
+from camphr.serde import SerDe
 from typing_extensions import Literal, Protocol
 
 if TYPE_CHECKING:
     from MeCab import Tagger
 
 from camphr.consts import KEY_FSTRING
-from camphr.lang.stop_words import STOP_WORDS
 
 
 class ShortUnitWord(NamedTuple):
     surface: str
     lemma: str
     pos: str
-    space: bool
+    space: str
     fstring: str
 
 
@@ -41,8 +37,8 @@ def get_mecab():
     return tokenizer
 
 
-class MecabNodeProto(Protocol):
-    next: "MecabNodeProto"
+class _MecabNode(Protocol):
+    next: "_MecabNode"
     surface: str
     posid: int
     feature: str
@@ -50,7 +46,7 @@ class MecabNodeProto(Protocol):
     rlength: int
 
 
-class Tokenizer:
+class Tokenizer(SerDe):
     USERDIC = "user.dic"  # used when saving
     ASSETS = "assets"  # used when saving
     key_fstring = KEY_FSTRING
@@ -59,22 +55,20 @@ class Tokenizer:
         self.tokenizer = get_mecab()
         self.dictionary_type = get_dictionary_type(self.tokenizer)
 
-    def __call__(self, text: str) -> Doc:
+    def __call__(self, text: str) -> DocProto:
         dtokens = self.detailed_tokens(text)
-        words = [x.surface for x in dtokens]
-        spaces = [x.space for x in dtokens]
-        doc = Doc.from_words(words=words, spaces=spaces)
+        words = [x.surface + x.space for x in dtokens]
+        doc = Doc.from_words(words)
         for token, dtoken in zip(doc, dtokens):
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma if dtoken.lemma != "*" else token.text
             token.user_data[self.key_fstring] = dtoken.fstring
 
-        doc.is_tagged = True
         return doc
 
     def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
         """Tokenize text with Mecab and format the outputs for further processing"""
-        node: MecabNodeProto = self.tokenizer.parseToNode(text)
+        node: _MecabNode = self.tokenizer.parseToNode(text)
         node = node.next
         if self.dictionary_type == "unidic":
             lemma_idx = 10
@@ -89,50 +83,17 @@ class Tokenizer:
             surface = node.surface
             base = parts[lemma_idx] if len(parts) > lemma_idx else surface
             nextnode = node.next
+            # TODO: make non-destructive
             if nextnode.length != nextnode.rlength:
                 # next node contains space, so attach it to this node.
-                words.append(ShortUnitWord(surface, base, pos, True, node.feature))
+                words.append(ShortUnitWord(surface, base, pos, " ", node.feature))
             elif nextnode.surface == "\u3000":
                 # next node is full space, so attatch it to this node and skip the nextnode.
-                words.append(ShortUnitWord(surface, base, pos, True, node.feature))
+                words.append(
+                    ShortUnitWord(surface, base, pos, nextnode.surface, node.feature)
+                )
                 nextnode = nextnode.next
             else:
-                words.append(ShortUnitWord(surface, base, pos, False, node.feature))
+                words.append(ShortUnitWord(surface, base, pos, "", node.feature))
             node = nextnode
         return words
-
-    def to_disk(self, path: Path, **kwargs: Any):
-        path.mkdir(exist_ok=True)
-        if self.userdic:
-            shutil.copy(self.userdic, path / self.USERDIC)
-        if self.assets:
-            copytree(self.assets, path / self.ASSETS)
-
-    def from_disk(self, path: Path, **kwargs: Any):
-        """TODO: is userdic portable?"""
-        userdic = (path / self.USERDIC).absolute()
-        if userdic.exists():
-            self.userdic = str(userdic)
-        self.tokenizer = get_mecab()
-
-        assets = (path / self.ASSETS).absolute()
-        if assets.exists():
-            self.assets = str(assets)
-        return self
-
-
-class Japanese(LanguageProto):
-    lang = "ja_mecab"
-
-    def __init__(self):
-        self.tokenizer = Tokenizer()
-        self.pipeline = []
-
-    def __call__(self, text: str) -> Doc:
-        doc = self.make_doc(text)
-        for pipe in self.pipeline:
-            doc = pipe(doc)
-        return doc
-
-
-__all__ = ["Japanese"]

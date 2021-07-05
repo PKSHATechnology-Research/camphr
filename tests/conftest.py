@@ -7,7 +7,7 @@ import sentencepiece as spm
 import torch
 
 #  from camphr.lang.juman import Japanese as Juman
-from camphr.lang.mecab import Japanese as Mecab
+import camphr.tokenizer.mecab as mecab
 
 from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
 
@@ -33,10 +33,10 @@ def pytest_collection_modifyitems(config, items):
 
 
 @pytest.fixture(scope="session")
-def mecab_tokenizer():
+def mecab_tokenizer() -> mecab.Tokenizer:
     if not check_mecab():
         pytest.skip("mecab is required")
-    return Mecab.Defaults.create_tokenizer()
+    return mecab.Tokenizer()
 
 
 @pytest.fixture(scope="session")

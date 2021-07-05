@@ -2,6 +2,7 @@
   "include": [
     "camphr"
   ],
+  "strict": ["camphr"],
   "reportMissingTypeStubs": false,
   "reportUnknownVariableType": "warning",
   "reportUnnecessaryIsInstance": "warning",

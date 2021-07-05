@@ -1,11 +1,27 @@
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Protocol, TypeVar
 from dataclasses import dataclass, field
 
 
-@dataclass
-class Doc:
+T_Token = TypeVar("T_Token", bound="TokenProto", covariant=True)
+
+
+class DocProto(Protocol[T_Token]):
+    """Doc interface"""
+
     text: str
-    is_tagged: bool = False
+    tokens: Optional[List[T_Token]]
+    user_data: Dict[str, Any]
+
+    def __iter__(self) -> Iterator[T_Token]:
+        if self.tokens is None:
+            raise ValueError("doc.tokens is None")
+        for token in self.tokens:
+            yield token
+
+
+@dataclass
+class Doc(DocProto["Token"]):
+    text: str
     tokens: Optional[List["Token"]] = None
     user_data: Dict[str, Any] = field(default_factory=dict)
 
@@ -21,17 +37,14 @@ class Doc:
         doc.tokens = tokens
         return doc
 
-    def __iter__(self) -> Iterator["Token"]:
-        for token in self.tokens:
-            yield token
 
+class SpanProto(Protocol):
+    """Span interface"""
 
-@dataclass
-class Span:
     l: int  # left boundary in doc
     r: int  # right boundary in doc
     doc: Doc
-    user_data: Dict[str, Any] = field(default_factory=dict)
+    user_data: Dict[str, Any]
 
     @property
     def text(self) -> str:
@@ -39,6 +52,21 @@ class Span:
 
 
 @dataclass
-class Token(Span):
+class Span(SpanProto):
+    l: int  # left boundary in doc
+    r: int  # right boundary in doc
+    doc: Doc
+    user_data: Dict[str, Any] = field(default_factory=dict)
+
+
+class TokenProto(SpanProto):
+    """Token interface"""
+
+    tag_: Optional[str]
+    lemma_: Optional[str]
+
+
+@dataclass
+class Token(Span, TokenProto):
     tag_: Optional[str] = None
     lemma_: Optional[str] = None
