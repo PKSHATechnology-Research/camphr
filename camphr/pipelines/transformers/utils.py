@@ -1,4 +1,5 @@
 """Defines utility functions, classes, mixins for transformers pipelines."""
+from camphr.doc import Doc
 import dataclasses
 import functools
 import pickle
@@ -23,10 +24,6 @@ from typing import (
 import torch
 import torch.nn as nn
 import transformers
-from spacy.gold import GoldParse
-from spacy.language import Language
-from spacy.tokens import Doc
-from spacy.vocab import Vocab
 from tokenizations import get_alignments
 from typing_extensions import Literal, Protocol
 
@@ -65,9 +62,6 @@ def _set_extensions():
     ]:
         Doc.set_extension(attr, default=None)
     Doc.set_extension(ATTRS.align, getter=_get_transformers_align)
-
-
-_set_extensions()
 
 
 TRF_CONFIG = "trf_config"
@@ -158,7 +152,7 @@ class FromNLPMixinForTrfTask:
     """
 
     @classmethod
-    def from_pretrained(cls, vocab: Vocab, trf_name_or_path: str, **cfg):
+    def from_pretrained(cls, vocab, trf_name_or_path: str, **cfg):
         """Load pretrained model."""
         name = get_trf_name(trf_name_or_path)
         return cls(  # type: ignore
@@ -169,7 +163,7 @@ class FromNLPMixinForTrfTask:
         )
 
     @classmethod
-    def from_nlp(cls, nlp: Language, **cfg):
+    def from_nlp(cls, nlp, **cfg):
         if cfg.get("trf_name_or_path"):
             return cls.from_pretrained(nlp.vocab, **cfg)
         return cls(nlp.vocab)  # type: ignore
@@ -256,7 +250,7 @@ class TrfAutoMixin(_TrfSavePathGetter, Generic[T_TrfObj]):
         return _cls.from_pretrained(trf_name_or_path, **cfg)
 
     @classmethod
-    def from_pretrained(cls, vocab: Vocab, trf_name_or_path: str, **cfg):
+    def from_pretrained(cls, vocab, trf_name_or_path: str, **cfg):
         """Load pretrained model."""
         name = get_trf_name(trf_name_or_path)
         model = cls(  # type: ignore
@@ -265,7 +259,7 @@ class TrfAutoMixin(_TrfSavePathGetter, Generic[T_TrfObj]):
         return model
 
     @classmethod
-    def from_nlp(cls, nlp: Language, **cfg):
+    def from_nlp(cls, nlp, **cfg):
         if cfg.get("trf_name_or_path"):
             return cls.from_pretrained(nlp.vocab, **cfg)
         return cls(nlp.vocab)  # type: ignore
@@ -310,16 +304,16 @@ class EstimatorMixin(Generic[T]):
         raise NotImplementedError
 
     def compute_loss(
-        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: T
+        self, docs: Sequence[Doc], golds: Sequence[Any], outputs: T
     ) -> None:
         raise NotImplementedError
 
-    def update(self, docs: Sequence[Doc], golds: Sequence[GoldParse], **kwargs) -> None:
+    def update(self, docs: Sequence[Doc], golds: Sequence[Any], **kwargs) -> None:
         with self.switch("train"):
             outputs = self.proc_model(docs)
             self.compute_loss(docs, golds, outputs)
 
-    def eval(self, docs: List[Doc], golds: List[GoldParse]) -> None:
+    def eval(self, docs: List[Doc], golds: List[Any]) -> None:
         with self.switch("eval"):
             outputs = self.proc_model(docs)
             self.compute_loss(docs, golds, outputs)

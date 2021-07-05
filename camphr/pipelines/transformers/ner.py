@@ -1,13 +1,11 @@
 """Defines transformers NER pipe"""
-from typing import Dict, Iterable, Iterator, List, Sequence, Sized, cast
+from typing import Dict, Iterable, Iterator, List, Sequence, Sized, cast, Any
 
-import spacy
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import transformers
-from spacy.gold import GoldParse, iob_to_biluo, spans_from_biluo_tags
-from spacy.tokens import Doc
+from camphr.doc import Doc
 
 from camphr.pipelines.utils import (
     UNK,
@@ -91,15 +89,9 @@ class TrfForTokenClassificationBase(
         Doc.set_extension("tokens_logit", default=None, force=True)
 
 
-TrfForTokenClassificationBase.install_extensions()
 TRANSFORMERS_NER = "transformers_ner"
 
 
-@spacy.component(
-    TRANSFORMERS_NER,
-    requires=[f"doc._.{ATTRS.last_hidden_state}"],
-    assigns=["doc.ents"],
-)
 class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
     """Named entity recognition component with pytorch-transformers."""
 
@@ -113,7 +105,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         return -1
 
     def compute_loss(
-        self, docs: Sequence[Doc], golds: Sequence[GoldParse], outputs: torch.Tensor
+        self, docs: Sequence[Doc], golds: Sequence[Any], outputs: torch.Tensor
     ) -> None:
         target = self._create_target_from_docs_golds(docs, golds, outputs)
         loss = F.cross_entropy(
@@ -140,7 +132,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         return docs
 
     def _create_target_from_docs_golds(
-        self, docs: Sequence[Doc], golds: Sequence[GoldParse], logits: torch.Tensor
+        self, docs: Sequence[Doc], golds: Sequence[Any], logits: torch.Tensor
     ) -> torch.Tensor:
         all_aligns = (doc._.get(ATTRS.align) for doc in docs)
         new_ners = (
@@ -149,7 +141,7 @@ class TrfForNamedEntityRecognition(TrfForTokenClassificationBase):
         )
         return _create_target(new_ners, logits, self.ignore_label_index, self.label2id)
 
-    def _get_nerlabel_from_gold(self, gold: GoldParse) -> Iterator[int]:
+    def _get_nerlabel_from_gold(self, gold: Any) -> Iterator[int]:
         if gold.ner is not None:
             for ner in gold.ner:
                 yield self.label2id[self.convert_label(ner)]

@@ -6,10 +6,8 @@ import pytest
 import sentencepiece as spm
 import torch
 
-from camphr.lang.juman import Japanese as Juman
+#  from camphr.lang.juman import Japanese as Juman
 from camphr.lang.mecab import Japanese as Mecab
-from camphr.models import create_model
-from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
 
 from .utils import FIXTURE_DIR, TRF_TESTMODEL_PATH, check_juman, check_lang, check_mecab
 
@@ -99,6 +97,8 @@ def trf_name_or_path(request):
 
 @pytest.fixture(scope="session")
 def trf_model_config(lang, trf_name_or_path, device):
+    from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+
     return yaml.safe_load(
         f"""
     lang:
@@ -116,6 +116,8 @@ def trf_model_config(lang, trf_name_or_path, device):
 
 @pytest.fixture(scope="module")
 def nlp_trf_model(trf_model_config, device):
+    from camphr.models import create_model
+
     _nlp = create_model(trf_model_config)
     _nlp.to(device)
     return _nlp

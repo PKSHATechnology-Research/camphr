@@ -5,9 +5,6 @@ from itertools import zip_longest
 from pathlib import Path
 from typing import Any, Tuple
 
-import spacy
-from spacy.tests.util import assert_docs_equal
-
 
 def check_juman() -> bool:
     try:

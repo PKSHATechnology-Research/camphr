@@ -1,24 +1,21 @@
 """Defines transformers tokenizer pipe."""
+from camphr.doc import Doc
 from typing import List, Optional, Sequence, Sized, cast
 
-import spacy
 import transformers
-from spacy.pipeline import Pipe
-from spacy.tokens import Doc
-from spacy.vocab import Vocab
 
 from .auto import get_trf_tokenizer_cls
 from .utils import ATTRS, TransformersInput, TrfAutoMixin
+from camphr.pipe import Pipe
 
 TRANSFORMERS_TOKENIZER = "transformers_tokenizer"
 
 
-@spacy.component(TRANSFORMERS_TOKENIZER)
 class TrfTokenizer(TrfAutoMixin, Pipe):
     _TRF_NAME = "trf_name"
     _MODEL_CLS_GETTER = get_trf_tokenizer_cls
 
-    def __init__(self, vocab: Vocab, model=True, **cfg):
+    def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
         self.model: transformers.PreTrainedTokenizer = model
         self.cfg = cfg

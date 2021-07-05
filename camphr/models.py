@@ -7,15 +7,13 @@ from dataclasses import dataclass
 import dataclasses
 import functools
 from pathlib import Path
+from camphr.pipe import Pipe
 from typing import Any, Callable, Dict, List, Optional, Union, cast
 from typing_extensions import Literal
 
 from camphr.ner_labels.utils import get_ner_labels
 from camphr.utils import get_labels, resolve_alias, yaml_to_dict
 import dataclass_utils
-import spacy
-from spacy.language import Language
-from spacy.pipeline import Pipe
 from toolz import merge
 
 from camphr.lang.torch import TorchLanguage
@@ -34,7 +32,7 @@ _PREDEFINED_CONFS = {"knp": _MODEL_CFG_DIR / "knp.yml"}
 CFG_SRC = Union[str, Dict[str, Any]]
 
 
-def load(cfg: Union[str, CFG_SRC]) -> Language:
+def load(cfg: Union[str, CFG_SRC]):
     if isinstance(cfg, str) and cfg in _PREDEFINED_CONFS:
         cfg = _PREDEFINED_CONFS[cfg].read_text()
     return create_model(cfg)
@@ -67,7 +65,7 @@ class NLPConfig:
     optimizer: Optional[Dict[str, Any]] = None
 
 
-def create_model(cfg: Union[Dict[str, Any], str, NLPConfig]) -> Language:
+def create_model(cfg: Union[Dict[str, Any], str, NLPConfig]):
     if isinstance(cfg, str):
         cfg_dict = yaml_to_dict(cfg)
     elif isinstance(cfg, dict):
@@ -89,7 +87,7 @@ def create_model(cfg: Union[Dict[str, Any], str, NLPConfig]) -> Language:
     return nlp
 
 
-def create_lang(cfg: LangConfig) -> Language:
+def create_lang(cfg: LangConfig):
     kwargs = cfg.kwargs or {}
     if cfg.torch:
         kwargs["meta"] = merge(kwargs.get("meta", {}), {"lang": cfg.name})  # type: ignore
@@ -99,7 +97,7 @@ def create_lang(cfg: LangConfig) -> Language:
     return spacy.blank(cfg.name, **kwargs)
 
 
-def create_pipeline(nlp: Language, cfg: Dict[str, Any]) -> List[Pipe]:
+def create_pipeline(nlp, cfg: Dict[str, Any]) -> List[Pipe]:
     pipes: List[Pipe] = []
     for name, pipe_config in cfg.items():
         pipes.append(nlp.create_pipe(name, config=pipe_config or {}))

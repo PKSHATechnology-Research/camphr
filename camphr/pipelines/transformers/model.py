@@ -1,14 +1,11 @@
 """Module trf_model defines pytorch-transformers components."""
+from camphr.doc import Doc
 import dataclasses
 from typing import Any, List, Optional, Tuple
 
 import numpy as np
-import spacy
-import spacy.language
 import torch
 import transformers
-from spacy.gold import GoldParse
-from spacy.tokens import Doc
 
 from camphr.pipelines.utils import get_similarity
 from camphr.torch_utils import TensorWrapper, TorchPipe, set_grad
@@ -16,8 +13,6 @@ from camphr.torch_utils import TensorWrapper, TorchPipe, set_grad
 from .auto import get_trf_model_cls
 from .tokenizer import TrfTokenizer
 from .utils import ATTRS, TrfAutoMixin
-
-spacy.language.ENABLE_PIPELINE_ANALYSIS = True
 
 
 @dataclasses.dataclass
@@ -30,7 +25,6 @@ class TrfModelInputs:
 TRANSFORMERS_MODEL = "transformers_model"
 
 
-@spacy.component(TRANSFORMERS_MODEL, assigns=[f"doc._.{ATTRS.last_hidden_state}"])
 class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
     """Transformers Model component."""
 
@@ -93,7 +87,7 @@ class TrfModel(TrfAutoMixin[transformers.PreTrainedModel], TorchPipe):
             return True
         return False
 
-    def update(self, docs: List[Doc], golds: List[GoldParse]):  # type: ignore
+    def update(self, docs: List[Doc], golds: List[Any]):  # type: ignore
         """Simply forward `docs` in training mode."""
         if self.freeze:
             self.model.eval()

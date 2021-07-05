@@ -3,7 +3,6 @@ from typing import Iterable, List
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
-from spacy.tokens import Doc
 
 from camphr.utils import get_doc_char_span, split_keepsep, zero_pad
 

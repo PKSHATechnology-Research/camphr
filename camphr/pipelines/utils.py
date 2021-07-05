@@ -1,3 +1,4 @@
+from camphr.doc import Doc, Span, Token
 import copy
 import warnings
 from itertools import chain
@@ -5,9 +6,6 @@ from typing import Callable, Iterable, List, Sequence, Tuple, TypeVar, Union, ov
 
 import numpy as np
 import torch
-from spacy.gold import iob_to_biluo
-from spacy.tokens import Doc, Span, Token
-from spacy.util import filter_spans
 
 from camphr.errors import Warnings
 

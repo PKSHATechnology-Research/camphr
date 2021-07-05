@@ -1,11 +1,9 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
+from camphr.doc import Doc
 import itertools
 from collections import namedtuple
 from typing import Any, Callable, Dict, Iterator, List, Optional, Type
 
-from spacy.compat import copy_reg
-from spacy.language import Language
-from spacy.tokens import Doc, Token
 
 from camphr.consts import JUMAN_LINES, KEY_FSTRING
 from camphr.lang.stop_words import STOP_WORDS
@@ -48,7 +46,7 @@ class Tokenizer(SerializationMixin):
     def __init__(
         self,
         cls: Type["Defaults"],
-        nlp: Optional[Language] = None,
+        nlp: Optional[Any] = None,
         juman_kwargs: Optional[Dict[str, str]] = None,
         preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalize,
     ):
@@ -146,42 +144,3 @@ def _split_text_for_juman(text: str) -> Iterator[str]:
     # If any separator is not found in text, split roughly
     yield text[:n]
     yield from _split_text_for_juman(text[n:])
-
-
-# for pickling. see https://spacy.io/usage/adding-languages
-class Defaults(Language.Defaults):  # type: ignore
-    lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-    tag_map = TAG_MAP
-    stop_words = STOP_WORDS
-    writing_system = {"direction": "ltr", "has_case": False, "has_letters": False}
-
-    @classmethod
-    def create_tokenizer(
-        cls,
-        nlp=None,
-        juman_kwargs: Optional[Dict[str, Any]] = None,
-        preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalize,
-    ):
-        return Tokenizer(cls, nlp, juman_kwargs=juman_kwargs, preprocessor=preprocessor)
-
-
-class Japanese(Language):
-    lang = "ja_juman"
-    Defaults = Defaults
-
-    def make_doc(self, text: str) -> Doc:
-        return self.tokenizer(text)
-
-
-# avoid pickling problem (see https://github.com/explosion/spaCy/issues/3191)
-def pickle_japanese(instance):
-    return Japanese, tuple()
-
-
-copy_reg.pickle(Japanese, pickle_japanese)
-Language.factories[Japanese.lang] = Japanese
-
-# for lazy loading. see https://spacy.io/usage/adding-languages
-__all__ = ["Japanese"]
-
-Tokenizer.install_extensions()

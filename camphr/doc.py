@@ -1,21 +1,25 @@
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 from dataclasses import dataclass, field
-from typing_extensions import Protocol
-from itertools import zip_longest
 
 
 @dataclass
 class Doc:
-    tokens: List["Token"]
+    text: str
     is_tagged: bool = False
+    tokens: Optional[List["Token"]] = None
     user_data: Dict[str, Any] = field(default_factory=dict)
 
     @classmethod
-    def from_words(cls, words: List[str], spaces: List[bool]) -> "Doc":
+    def from_words(cls, words: List[str]) -> "Doc":
+        doc = cls("".join(words))
         tokens: List[Token] = []
-        for w, s in zip_longest(words, spaces):
-            tokens.append(Token(text=w, whitespace_=s))
-        return cls(tokens)
+        l = 0
+        for w in words:
+            r = l + len(w)
+            tokens.append(Token(l, r, doc))
+            l = r
+        doc.tokens = tokens
+        return doc
 
     def __iter__(self) -> Iterator["Token"]:
         for token in self.tokens:
@@ -23,15 +27,18 @@ class Doc:
 
 
 @dataclass
-class Token:
-    text: str
-    # trailing whitespce if present
-    whitespace_: str
-    tag_: Optional[str] = None
-    lemma_: Optional[str] = None
+class Span:
+    l: int  # left boundary in doc
+    r: int  # right boundary in doc
+    doc: Doc
     user_data: Dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def text(self) -> str:
+        return self.doc.text[self.l : self.r]
 
 
 @dataclass
-class Span:
-    user_data: Dict[str, Any] = field(default_factory=dict)
+class Token(Span):
+    tag_: Optional[str] = None
+    lemma_: Optional[str] = None

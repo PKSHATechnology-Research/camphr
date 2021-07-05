@@ -1,4 +1,5 @@
 """Defines utilities for pytorch."""
+from camphr.doc import Doc
 import contextlib
 import operator
 from dataclasses import dataclass
@@ -6,15 +7,13 @@ from typing import Any, Dict, Iterable, Iterator, Optional, Sequence, Union, cas
 
 import torch
 import torch.nn as nn
-from spacy.pipeline import Pipe
-from spacy.tokens import Doc
 from torch._C import is_grad_enabled  # type: ignore
 
 # the type torch.optim.Optimizer uses
 OptimizerParameters = Union[Iterable[torch.Tensor], Iterable[Dict[str, Any]]]
 
 
-class TorchPipe(Pipe):
+class TorchPipe:
     def __init__(self, vocab, model=True, **cfg):
         self.vocab = vocab
         self.model = model
