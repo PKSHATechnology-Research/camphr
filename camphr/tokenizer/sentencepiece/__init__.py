@@ -1,60 +1,52 @@
-import os
 import shutil
 from pathlib import Path
-from typing import Optional, Type
+from typing import Any, List, Optional, TYPE_CHECKING, Type
+from camphr.doc import DocProto, Doc
 
-import sentencepiece as spm
-from spacy.language import Language
-from spacy.tokens import Doc
+if TYPE_CHECKING:
+    import sentencepiece as spm  # type: ignore
 
-
-class EXTS:
-    """For spacy.Underscore"""
-
-    pieces_ = "spm_pieces_"
+from camphr.serde import SerializationMixin
 
 
-def install_extensions():
-    Doc.set_extension(EXTS.pieces_, default=None, force=True)
-
-
-class Tokenizer:
+class Tokenizer(SerializationMixin):
     SPACE_CHAR = "▁"
     SPIECE_MODEL = "spiece.model"
+    KEY_PIECES = "spm_pieces"
+    serialization_fields = ["model_path"]
 
     def __init__(
         self,
-        cls: Type["Defaults"],
-        nlp: Optional[Language] = None,
-        model_path: str = "",
+        model_path: str,
     ):
-        self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
-        self.tokenizer = spm.SentencePieceProcessor()
         self.model_path = model_path
+        self.tokenizer = self.load_spm_tokenizer()
+
+    @classmethod
+    def get_spm_pieces(cls, doc: DocProto[Any]) -> List[str]:
+        return doc.user_data[cls.KEY_PIECES]
+
+    @classmethod
+    def set_spm_pieces(cls, doc: DocProto[Any], pieces: List[str]):
+        doc.user_data[cls.KEY_PIECES] = pieces
 
     def __call__(self, text: str) -> Doc:
-        _tokens = self.tokenizer.EncodeAsPieces(text)
-        spaces = [
-            True if next_token.startswith(self.SPACE_CHAR) else False
-            for token, next_token in zip(_tokens, _tokens[1:])
-            if token != self.SPACE_CHAR
-        ] + [False]
-        tokens = [
-            token.lstrip(self.SPACE_CHAR)
-            for token in _tokens
-            if token != self.SPACE_CHAR
-        ]
-        doc = Doc(self.vocab, tokens, spaces)
-        doc._.set(EXTS.pieces_, _tokens)
+        pieces: List[str] = self.tokenizer.EncodeAsPieces(text)  # type: ignore
+        if pieces and pieces[0] == self.SPACE_CHAR:
+            _tokens = pieces[1:]
+        else:
+            _tokens = pieces
+        tokens = [token.replace(self.SPACE_CHAR, " ") for token in _tokens]
+        doc = Doc.from_words(tokens)
+        self.set_spm_pieces(doc, pieces)
         return doc
 
-    def load_spm_tokenizer(self):
-        if os.path.isdir(self.model_path):
-            self.model_path = os.path.join(self.model_path, self.SPIECE_MODEL)
-        try:
-            self.tokenizer.load(self.model_path)
-        except OSError:
-            pass
+    def load_spm_tokenizer(self) -> "spm.SentencePieceProcessor":
+        import sentencepiece as spm  # type: ignore
+
+        tokenizer = spm.SentencePieceProcessor()
+        tokenizer.load(self.model_path)  # type: ignore
+        return tokenizer
 
     @property
     def model_path(self):
@@ -66,33 +58,3 @@ class Tokenizer:
         self._model_path = model_path
         if model_path:
             self.load_spm_tokenizer()
-
-    def to_disk(self, path: Path, **kwargs):
-        path.mkdir(exist_ok=True)
-        if self.model_path:
-            shutil.copy(self.model_path, path / self.SPIECE_MODEL)
-
-    def from_disk(self, path: Path, **kwargs):
-        self.model_path = str((path / self.SPIECE_MODEL).absolute())
-
-
-class Defaults(Language.Defaults):  # type: ignore
-    lex_attr_getters = dict(Language.Defaults.lex_attr_getters)
-
-    @classmethod
-    def create_tokenizer(cls, nlp=None, model_path: str = ""):
-        return Tokenizer(cls, nlp, model_path=model_path)
-
-
-class SentencePieceLang(Language):
-    lang = "sentencepiece"
-    Defaults = Defaults
-
-    def make_doc(self, text: str) -> Doc:
-        return self.tokenizer(text)
-
-
-install_extensions()
-Language.factories[SentencePieceLang.lang] = SentencePieceLang
-
-__all__ = ["SentencePieceLang"]
