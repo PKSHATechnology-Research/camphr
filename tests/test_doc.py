@@ -12,3 +12,12 @@ def test_doc(words: List[str]):
     assert doc.tokens is not None
     for word, token in zip(words, doc.tokens):
         assert word == doc.text[token.l : token.r]
+
+
+@given(st.lists(st.text()))
+def test_doc_hyp(words: List[str]):
+    doc = Doc.from_words(words)
+    assert doc.text == "".join(words)
+    assert doc.tokens is not None
+    for word, token in zip(words, doc.tokens):
+        assert word == doc.text[token.l : token.r]
