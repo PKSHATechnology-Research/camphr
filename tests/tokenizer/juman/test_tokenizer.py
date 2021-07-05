@@ -1,9 +1,9 @@
+from pathlib import Path
 import tempfile
 
 import pytest
-import spacy
 
-from camphr.lang.juman import Japanese as Juman
+from camphr.tokenizer.juman import Tokenizer
 
 from ...utils import check_juman
 
@@ -21,32 +21,35 @@ TEST_SPACE = ["今日は\u3000\u3000いい天気だ"]
 
 
 @pytest.mark.parametrize("text,expected_tokens", TOKENIZER_TESTS)
-def test_juman_tokenizer(juman_tokenizer, text, expected_tokens):
+def test_juman_tokenizer(juman_tokenizer: Tokenizer, text: str, expected_tokens):
     tokens = [token.text for token in juman_tokenizer(text)]
     assert tokens == expected_tokens
 
 
 @pytest.mark.parametrize("text,expected_tags", TAG_TESTS)
-def test_juman_tokenizer_tags(juman_tokenizer, text, expected_tags):
+def test_juman_tokenizer_tags(juman_tokenizer: Tokenizer, text: str, expected_tags):
     tags = [token.tag_ for token in juman_tokenizer(text)]
     assert tags == expected_tags
 
 
-@pytest.mark.parametrize("text,foo,bar", TOKENIZER_TESTS_DIFFICULT)
-def test_juman_tokenizer_difficult(juman_tokenizer, text, foo, bar):
+@pytest.mark.parametrize("text,expected0,expected1", TOKENIZER_TESTS_DIFFICULT)
+def test_juman_tokenizer_difficult(
+    juman_tokenizer: Tokenizer, text: str, expected0, expected1
+):
     tokens = [token.text for token in juman_tokenizer(text)]
-    assert tokens == foo or tokens == bar
+    assert tokens == expected0 or tokens == expected1
 
 
 def test_serialization():
-    nlp = Juman(meta={"tokenizer": {"juman_kwargs": {"jumanpp": True}}})
+    nlp = Tokenizer(juman_kwargs={"jumanpp": True})
     with tempfile.TemporaryDirectory() as tmpd:
-        nlp.to_disk(tmpd)
-        nlp2 = spacy.load(tmpd)
-    assert nlp2.tokenizer.tokenizer.command == "juman"
+        path = Path(tmpd)
+        nlp.to_disk(path)
+        nlp2 = Tokenizer.from_disk(path)
+    assert nlp2.tokenizer.command == "jumanpp"
 
 
 @pytest.mark.parametrize("text", TEST_SPACE)
-def test_spaces(juman_tokenizer, text):
+def test_spaces(juman_tokenizer: Tokenizer, text: str):
     doc = juman_tokenizer(text)
     assert doc.text == text

@@ -3,7 +3,6 @@ from pathlib import Path
 
 import yaml
 import pytest
-import sentencepiece as spm
 import torch
 
 #  from camphr.lang.juman import Japanese as Juman
@@ -40,10 +39,12 @@ def mecab_tokenizer() -> mecab.Tokenizer:
 
 
 @pytest.fixture(scope="session")
-def juman_tokenizer(request):
+def juman_tokenizer():
     if not check_juman():
         pytest.skip()
-    return Juman.Defaults.create_tokenizer(juman_kwargs={"jumanpp": True})
+    from camphr.tokenizer.juman import Tokenizer
+
+    return Tokenizer()
 
 
 @pytest.fixture(scope="session")
@@ -53,6 +54,8 @@ def spiece_path():
 
 @pytest.fixture(scope="session")
 def spiece(spiece_path):
+    import sentencepiece as spm
+
     s = spm.SentencePieceProcessor()
     s.load(spiece_path)
     return s

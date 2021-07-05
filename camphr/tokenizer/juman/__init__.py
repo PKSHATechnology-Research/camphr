@@ -1,8 +1,8 @@
 """The package juman defines Japanese spacy.Language with JUMAN tokenizer."""
 from dataclasses import dataclass
-from camphr.doc import Doc, DocProto
+from camphr.doc import Doc, UserDataProto
 import itertools
-from typing import Any, Callable, Dict, Iterator, List, Optional, Type
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 
 from camphr.utils import get_juman_command
@@ -43,18 +43,18 @@ class Tokenizer(SerializationMixin):
     KEY_FSTRING = "juman_fstring"
 
     @classmethod
-    def get_juman_fstring(cls, doc: DocProto[Any]) -> str:
-        if cls.KEY_FSTRING not in doc.user_data:
-            raise ValueError("`doc` is not parsed by juman.")
-        return doc.user_data[cls.KEY_FSTRING]
+    def get_juman_fstring(cls, e: UserDataProto) -> str:
+        if cls.KEY_FSTRING not in e.user_data:
+            raise ValueError(f"{cls.KEY_FSTRING} is not set in {e}")
+        return e.user_data[cls.KEY_FSTRING]
 
     @classmethod
-    def set_juman_fstring(cls, doc: DocProto[Any], fstring: str):
-        doc.user_data[cls.KEY_FSTRING] = fstring
+    def set_juman_fstring(cls, e: UserDataProto, fstring: str):
+        e.user_data[cls.KEY_FSTRING] = fstring
 
     def __init__(
         self,
-        juman_kwargs: Optional[Dict[str, str]] = None,
+        juman_kwargs: Optional[Dict[str, Any]] = None,
         preprocessor: Optional[Callable[[str], str]] = han_to_zen_normalize,
     ):
         """
@@ -63,19 +63,17 @@ class Tokenizer(SerializationMixin):
             juman_kwargs: passed to `pyknp.Juman.__init__`
             preprocessor: applied to text before tokenizing. `mojimoji.han_to_zen` is often used.
         """
-        from pyknp import Juman
 
         juman_kwargs = juman_kwargs or {}
         default_command = get_juman_command()
         assert default_command
         juman_kwargs.setdefault("command", default_command)
 
-        self.vocab = nlp.vocab if nlp is not None else cls.create_vocab(nlp)
-        self.tokenizer = Juman(**juman_kwargs) if juman_kwargs else Juman()
         self.juman_kwargs = juman_kwargs
         self.preprocessor = preprocessor
+        self.set_tokenizer()
 
-    def reset_tokenizer(self):
+    def set_tokenizer(self):
         from pyknp import Juman
 
         self.tokenizer = Juman(**self.juman_kwargs) if self.juman_kwargs else Juman()
@@ -84,48 +82,47 @@ class Tokenizer(SerializationMixin):
         """Make doc from text. Juman's `fstring` is stored in `Token._.fstring`"""
         if self.preprocessor:
             text = self.preprocessor(text)
-        juman_lines = self._juman_string(text)
+        juman_lines = self._juman_parse(text)
         dtokens = self._detailed_tokens(juman_lines)
         doc = self._dtokens_to_doc(dtokens)
-        doc.user_data[JUMAN_LINES] = juman_lines
+        self.set_juman_fstring(doc, juman_lines)
         return doc
 
-    def _juman_string(self, text: str) -> str:
-        try:
-            texts = _split_text_for_juman(text)
-            lines: str = "".join(
-                itertools.chain.from_iterable(
-                    self.tokenizer.juman_lines(text) for text in texts
+    def _juman_parse(self, text: str) -> str:
+        texts = _split_text_for_juman(text)
+        while True:
+            try:
+                lines: str = "".join(
+                    itertools.chain.from_iterable(
+                        self.tokenizer.juman_lines(text) for text in texts  # type: ignore
+                    )
                 )
-            )
-        except BrokenPipeError:
-            # Juman is sometimes broken due to its subprocess management.
-            self.reset_tokenizer()
-            lines = self.tokenizer.juman_lines(text)
+                break
+            except BrokenPipeError:
+                # Juman is sometimes broken due to its subprocess management.
+                self.set_tokenizer()
         return lines
 
     def _dtokens_to_doc(self, dtokens: List[ShortUnitWord]) -> Doc:
-        words = [x.surface for x in dtokens]
-        spaces = [x.space for x in dtokens]
-        doc = Doc(self.vocab, words=words, spaces=spaces)
+        words = [x.surface + x.space for x in dtokens]
+        doc = Doc.from_words(words)
         for token, dtoken in zip(doc, dtokens):
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma
-            token._.set(self.KEY_FSTRING, dtoken.fstring)
-        doc.is_tagged = True
+            self.set_juman_fstring(token, dtoken.fstring)
         return doc
 
     def _detailed_tokens(self, juman_lines: str) -> List[ShortUnitWord]:
         """Tokenize text with Juman and format the outputs for further processing"""
-        from pyknp import MList
+        from pyknp import MList, Morpheme  # type: ignore
 
-        ml = MList(juman_lines).mrph_list()
+        ml: List[Morpheme] = MList(juman_lines).mrph_list()
         words: List[ShortUnitWord] = []
         for m in ml:
-            surface = m.midasi
-            pos = m.hinsi + "," + m.bunrui
-            lemma = m.genkei or surface
-            words.append(ShortUnitWord(surface, lemma, pos, m.fstring, False))
+            surface: str = m.midasi  # type: ignore
+            pos: str = m.hinsi + "," + m.bunrui  # type: ignore
+            lemma: str = m.genkei or surface  # type: ignore
+            words.append(ShortUnitWord(surface, lemma, pos, m.fstring, ""))  # type: ignore
         return words
 
 

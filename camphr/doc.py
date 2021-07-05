@@ -5,12 +5,15 @@ from dataclasses import dataclass, field
 T_Token = TypeVar("T_Token", bound="TokenProto", covariant=True)
 
 
-class DocProto(Protocol[T_Token]):
+class UserDataProto(Protocol):
+    user_data: Dict[str, Any]
+
+
+class DocProto(UserDataProto, Protocol[T_Token]):
     """Doc interface"""
 
     text: str
     tokens: Optional[List[T_Token]]
-    user_data: Dict[str, Any]
 
     def __iter__(self) -> Iterator[T_Token]:
         if self.tokens is None:
@@ -38,13 +41,12 @@ class Doc(DocProto["Token"]):
         return doc
 
 
-class SpanProto(Protocol):
+class SpanProto(UserDataProto, Protocol):
     """Span interface"""
 
     l: int  # left boundary in doc
     r: int  # right boundary in doc
     doc: Doc
-    user_data: Dict[str, Any]
 
     @property
     def text(self) -> str:

@@ -4,7 +4,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from camphr.lang.juman import _SEPS, Japanese, _split_text_for_juman
+from camphr.tokenizer.juman import _SEPS, Tokenizer, _split_text_for_juman
 
 from ...utils import check_juman
 
@@ -15,7 +15,7 @@ pytestmark = pytest.mark.skipif(
 
 @pytest.fixture(scope="session")
 def nlp():
-    return Japanese()
+    return Tokenizer()
 
 
 @pytest.mark.parametrize(

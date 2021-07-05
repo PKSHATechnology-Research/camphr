@@ -1002,7 +1002,7 @@ mecab = ["mecab-python3"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "8616f3dc4fa94a276759c74fd29d124015df6a58b421bf83a8452cf53b80d3f7"
+content-hash = "0ddb1ed9156d40531b85cd879de4cc6eedd230af1b37acd6eb484718e2b9fc74"
 
 [metadata.files]
 alabaster = [

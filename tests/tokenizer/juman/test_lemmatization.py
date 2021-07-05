@@ -10,5 +10,5 @@ from ...utils import check_juman
 )
 @pytest.mark.skipif(not check_juman(), reason="Is juman necessary?")
 def test_lemmatizer_assigns(juman_tokenizer, word, lemma):
-    test_lemma = juman_tokenizer(word)[0].lemma_
+    test_lemma = list(juman_tokenizer(word))[0].lemma_
     assert test_lemma == lemma

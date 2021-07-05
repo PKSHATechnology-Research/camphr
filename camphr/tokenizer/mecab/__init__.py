@@ -1,13 +1,11 @@
 """The package mecab defines Japanese spacy.Language with Mecab tokenizer."""
-from camphr.doc import Doc, DocProto
+from camphr.doc import Doc, DocProto, TokenProto
 from typing import List, NamedTuple, TYPE_CHECKING
 from camphr.serde import SerDe
 from typing_extensions import Literal, Protocol
 
 if TYPE_CHECKING:
     from MeCab import Tagger
-
-from camphr.consts import KEY_FSTRING
 
 
 class ShortUnitWord(NamedTuple):
@@ -28,7 +26,7 @@ def get_dictionary_type(
     raise ValueError(f"Unsupported dictionary type: {filename}")
 
 
-def get_mecab():
+def get_mecab_tagger():
     """Create `MeCab.Tagger` instance"""
     import MeCab  # type: ignore
 
@@ -49,26 +47,33 @@ class _MecabNode(Protocol):
 class Tokenizer(SerDe):
     USERDIC = "user.dic"  # used when saving
     ASSETS = "assets"  # used when saving
-    key_fstring = KEY_FSTRING
+    KEY_FSTRING = "mecab_fstring"
+
+    @classmethod
+    def get_mecab_fstring(cls, token: TokenProto) -> str:
+        return token.user_data[cls.KEY_FSTRING]
+
+    @classmethod
+    def set_mecab_fstring(cls, token: TokenProto, fstring: str):
+        token.user_data[cls.KEY_FSTRING] = fstring
 
     def __init__(self):
-        self.tokenizer = get_mecab()
+        self.tokenizer = get_mecab_tagger()
         self.dictionary_type = get_dictionary_type(self.tokenizer)
 
-    def __call__(self, text: str) -> DocProto:
+    def __call__(self, text: str) -> DocProto[TokenProto]:
         dtokens = self.detailed_tokens(text)
         words = [x.surface + x.space for x in dtokens]
         doc = Doc.from_words(words)
         for token, dtoken in zip(doc, dtokens):
             token.tag_ = dtoken.pos
             token.lemma_ = dtoken.lemma if dtoken.lemma != "*" else token.text
-            token.user_data[self.key_fstring] = dtoken.fstring
-
+            self.set_mecab_fstring(token, dtoken.fstring)
         return doc
 
     def detailed_tokens(self, text: str) -> List[ShortUnitWord]:
         """Tokenize text with Mecab and format the outputs for further processing"""
-        node: _MecabNode = self.tokenizer.parseToNode(text)
+        node: _MecabNode = self.tokenizer.parseToNode(text)  # type: ignore
         node = node.next
         if self.dictionary_type == "unidic":
             lemma_idx = 10
