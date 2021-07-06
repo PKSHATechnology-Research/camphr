@@ -18,10 +18,10 @@ T = TypeVar("T")
 class SerDe(Protocol):
     @classmethod
     def from_disk(cls: Type[T], path: Path) -> T:
-        ...
+        raise ValueError("Not implemented")
 
-    def to_disk(self, path: Path):
-        ...
+    def to_disk(self, path: Path) -> None:
+        raise ValueError("Not implemented")
 
 
 def to_disk(obj: "SerDe", path: Path):
@@ -33,7 +33,7 @@ def to_disk(obj: "SerDe", path: Path):
     # write metadata so that `from_disk` can get class name of `obj`
     module_name, class_name = _get_fullname(obj.__class__)
     meta = Meta(module_name, class_name)
-    meta.dump(path)
+    meta.to_disk(path)
     # delegate to obj
     obj.to_disk(path)
 
@@ -41,7 +41,7 @@ def to_disk(obj: "SerDe", path: Path):
 def from_disk(path: Path) -> "SerDe":
     """Load obj from `path` directory"""
     # load metadata
-    meta = Meta.load(path)
+    meta = Meta.from_disk(path)
     kls = _get_class(meta.module_name, meta.class_name)
     if not isinstance(kls, SerDe):
         raise ValueError(f"Invalid class loaded: `{kls}` doesn't implement SerDe")
@@ -60,26 +60,33 @@ def _get_class(module_name: str, class_name: str) -> Type[Any]:
     return getattr(importlib.import_module(module_name), class_name)
 
 
+T_SerdeDataclass = TypeVar("T_SerdeDataclass", bound="SerDeDataclassMixin")
+
+
+class SerDeDataclassMixin(SerDe):
+    FILENAME: ClassVar[str]
+
+    def to_disk(self, path: Path):
+        meta_path = path / self.FILENAME
+        meta_path.write_text(json.dumps(asdict(self)))
+
+    @classmethod
+    def from_disk(cls: Type[T_SerdeDataclass], path: Path) -> T_SerdeDataclass:
+        meta_path = path / cls.FILENAME
+        try:
+            data = dataclass_utils.into(json.loads(meta_path.read_text()), cls)
+        except dataclass_utils.error.Error as e:
+            raise ValueError(f"Invalid metadata content. ") from e
+        return data
+
+
 @dataclass
-class Meta:
+class Meta(SerDeDataclassMixin):
     """Metadata for `to_disk` and `from_disk`"""
 
     module_name: str
     class_name: str
-    META_FILENAME: ClassVar[str] = "meta.json"
-
-    def dump(self, path: Path):
-        meta_path = path / self.META_FILENAME
-        meta_path.write_text(json.dumps(asdict(self)))
-
-    @classmethod
-    def load(cls, path: Path) -> "Meta":
-        meta_path = path / cls.META_FILENAME
-        try:
-            meta = dataclass_utils.into(json.loads(meta_path.read_text()), Meta)
-        except dataclass_utils.error.Error as e:
-            raise ValueError(f"Invalid metadata content. ") from e
-        return meta
+    FILENAME: ClassVar[str] = "camphr_serialization_meta.json"
 
 
 T_Ser = TypeVar("T_Ser", bound="SerializationMixin")

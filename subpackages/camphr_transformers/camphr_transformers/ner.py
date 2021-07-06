@@ -1,7 +1,9 @@
 # Named entity recognition pipe component for transformers
 from typing import Any, Dict, TypedDict, List, cast
+from attr import dataclass
 from camphr.pipe import Pipe
 from camphr.serde import SerDe
+from pathlib import Path
 from camphr.doc import Doc, DocProto, Ent, EntProto
 from transformers.models.auto import AutoTokenizer, AutoModelForTokenClassification
 from transformers.pipelines.token_classification import TokenClassificationPipeline
@@ -24,20 +26,32 @@ class Ner(Nlp, SerDe):
         tokenizer_kwargs: Dict[str, Any] = {},
         model_kwargs: Dict[str, Any] = {},
     ):
-        self.tokenizer = AutoTokenizer.from_pretrained(
+        self.pipeline = self._create_pipeline(
+            pretrained_model_name_or_path, tokenizer_kwargs, model_kwargs
+        )
+        self.tokenizer_kwargs = tokenizer_kwargs
+        self.model_kwargs = model_kwargs
+
+    @staticmethod
+    def _create_pipeline(
+        pretrained_model_name_or_path: str,
+        tokenizer_kwargs: Dict[str, Any],
+        model_kwargs: Dict[str, Any],
+    ) -> "TokenClassificationPipeline":
+        tokenizer = AutoTokenizer.from_pretrained(
             pretrained_model_name_or_path, **tokenizer_kwargs
         )
-        self.model = AutoModelForTokenClassification.from_pretrained(
+        model = AutoModelForTokenClassification.from_pretrained(
             pretrained_model_name_or_path, **model_kwargs
         )
         pipeline = trf_pipeline(  # type: ignore
-            "ner", model=self.model, tokenizer=self.tokenizer  # type: ignore
+            "ner", model=model, tokenizer=tokenizer  # type: ignore
         )
         if not isinstance(pipeline, TokenClassificationPipeline):
             raise ValueError(
                 f"Internal Error: expected `TokenClassificationPipeline`, got {type(pipeline)}"
             )
-        self.pipeline = pipeline
+        return pipeline
 
     def __call__(self, text: str) -> DocProto:
         ents_raw = self.pipeline(text)
@@ -54,3 +68,16 @@ class Ner(Nlp, SerDe):
             )
             doc.ents.append(e)
         return doc
+
+    # ser/de
+    @dataclass
+    class _SerdeMeta:
+        tokenizer_kwargs: Dict[str, Any]
+        model_kwargs: Dict[str, Any]
+
+    def to_disk(self, path: Path):
+        self.pipeline.save_pretrained(str(path))
+
+    @classmethod
+    def from_disk(cls, path: Path) -> "Ner":
+        return cls(str(path))
