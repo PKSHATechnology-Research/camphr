@@ -145,3 +145,4 @@ user.yaml
 /.vscode
 
 /camphr_models/
+poetry.lock
