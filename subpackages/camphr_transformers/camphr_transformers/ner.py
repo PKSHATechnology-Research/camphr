@@ -3,10 +3,10 @@ from typing import Any, Dict, TypedDict, List, cast
 from camphr.pipe import Pipe
 from camphr.serde import SerDe
 from camphr.doc import Doc, DocProto, Ent, EntProto
-from transformers import AutoTokenizer, AutoModelForTokenClassification
-from transformers.pipelines import TokenClassificationPipeline
+from transformers.models.auto import AutoTokenizer, AutoModelForTokenClassification
+from transformers.pipelines.token_classification import TokenClassificationPipeline
+from transformers.pipelines import pipeline as trf_pipeline
 from camphr.nlp import Nlp
-import transformers
 
 
 class TrfEnt(TypedDict):
@@ -24,11 +24,13 @@ class Ner(Nlp, SerDe):
         tokenizer_kwargs: Dict[str, Any] = {},
         model_kwargs: Dict[str, Any] = {},
     ):
-        self.tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
-        self.model = AutoModelForTokenClassification.from_pretrained(
-            pretrained_model_name_or_path
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            pretrained_model_name_or_path, **tokenizer_kwargs
         )
-        pipeline = transformers.pipeline(  # type: ignore
+        self.model = AutoModelForTokenClassification.from_pretrained(
+            pretrained_model_name_or_path, **model_kwargs
+        )
+        pipeline = trf_pipeline(  # type: ignore
             "ner", model=self.model, tokenizer=self.tokenizer  # type: ignore
         )
         if not isinstance(pipeline, TokenClassificationPipeline):
