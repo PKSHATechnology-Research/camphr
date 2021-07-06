@@ -1,60 +1,59 @@
 """The utils module defines util functions used accross sub packages."""
 import bisect
-from camphr.doc import Doc, Span, Token
+from camphr.doc import Doc, DocProto, Span, TokenProto
 import distutils.spawn
 import importlib
-import pickle
-import re
-from collections import OrderedDict
 from pathlib import Path
 from typing import (
     Any,
+    Callable,
     Dict,
     Iterable,
     List,
     Optional,
+    Protocol,
     Tuple,
-    Type,
     TypeVar,
     Union,
     cast,
 )
 
-from more_itertools import padded
-from toolz import curry
 from typing_extensions import Literal
 
 from camphr.VERSION import __version__
 
 
-def yaml_to_dict(yaml_string: str) -> Dict[Any, Any]:
-    try:
-        ret = yaml.safe_load(yaml_string)
-    except Exception as e:
-        raise ValueError(f"Failed to parse yaml string: {yaml_string}") from e
-    if not isinstance(ret, dict):
-        raise ValueError(f"Not dictionary format: {yaml_string}")
-    return ret  # type: ignore
+T = TypeVar("T")
 
 
-def zero_pad(a: List[List[int]], pad_value: int = 0) -> List[List[int]]:
-    """Padding the input so that the lengths of the inside lists are all equal."""
-    if len(a) == 0:
-        return []
-    max_length = max(len(el) for el in a)
-    if max_length == 0:
-        return a
-    return [list(padded(el, fillvalue=pad_value, n=max_length)) for el in a]
+class _SequenceLike(Protocol[T]):
+    """Only for type annotation in `binary_search`"""
+
+    def __getitem__(self, idx: int) -> T:
+        ...
+
+    def __len__(self) -> int:
+        ...
 
 
-RE_URL = re.compile(
-    r"https?://(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&/=]*)"
-)
+def binary_search(arr: _SequenceLike[T], predicate: Callable[[T], bool]) -> int:
+    """Returns minimum index of arr item which satisfies  `predicate`"""
+    if not arr or predicate(arr[0]):
+        return 0
+    ng: int = 0
+    ok = len(arr)
+    while ok - ng > 1:
+        m = (ok + ng) // 2
+        if predicate(arr[m]):
+            ok = m
+        else:
+            ng = m
+    return ok
 
 
-def token_from_char_pos(doc: Doc, i: int) -> Token:
-    token_idxs = [t.idx for t in doc]
-    return doc[bisect.bisect(token_idxs, i) - 1]
+def token_from_char_pos(doc: DocProto, i: int) -> TokenProto:
+    idx = binary_search(doc, lambda token: token.l <= i)
+    return doc[idx]
 
 
 def _get_covering_span(doc: Doc, i: int, j: int, **kwargs: Any) -> Span:

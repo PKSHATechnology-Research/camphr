@@ -17,9 +17,19 @@ class DocProto(UserDataProto, Protocol):
     tokens: Optional[List["TokenProto"]]
     ents: Optional[List["EntProto"]]
 
+    def __getitem__(self, idx: int) -> "TokenProto":
+        if self.tokens is None:
+            raise ValueError("Doc is not tokenized")
+        return self.tokens[idx]
+
+    def __len__(self) -> int:
+        if self.tokens is None:
+            raise ValueError("Doc is not tokenized")
+        return len(self.tokens)
+
     def __iter__(self) -> Iterator["TokenProto"]:
         if self.tokens is None:
-            raise ValueError("doc.tokens is None")
+            raise ValueError("Doc is not tokenized")
         for token in self.tokens:
             yield token
 
