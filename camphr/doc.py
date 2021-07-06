@@ -3,19 +3,21 @@ from dataclasses import dataclass, field
 
 
 T_Token = TypeVar("T_Token", bound="TokenProto", covariant=True)
+T_Span = TypeVar("T_Span", bound="SpanProto", covariant=True)
 
 
 class UserDataProto(Protocol):
     user_data: Dict[str, Any]
 
 
-class DocProto(UserDataProto, Protocol[T_Token]):
+class DocProto(UserDataProto, Protocol):
     """Doc interface"""
 
     text: str
-    tokens: Optional[List[T_Token]]
+    tokens: Optional[List["TokenProto"]]
+    ents: Optional[List["EntProto"]]
 
-    def __iter__(self) -> Iterator[T_Token]:
+    def __iter__(self) -> Iterator["TokenProto"]:
         if self.tokens is None:
             raise ValueError("doc.tokens is None")
         for token in self.tokens:
@@ -23,15 +25,16 @@ class DocProto(UserDataProto, Protocol[T_Token]):
 
 
 @dataclass
-class Doc(DocProto["Token"]):
+class Doc(DocProto):
     text: str
-    tokens: Optional[List["Token"]] = None
+    tokens: Optional[List["TokenProto"]] = None
+    ents: Optional[List["EntProto"]] = None
     user_data: Dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_words(cls, words: List[str]) -> "Doc":
         doc = cls("".join(words))
-        tokens: List[Token] = []
+        tokens: List[TokenProto] = []
         l = 0
         for w in words:
             r = l + len(w)
@@ -46,7 +49,7 @@ class SpanProto(UserDataProto, Protocol):
 
     l: int  # left boundary in doc
     r: int  # right boundary in doc
-    doc: Doc
+    doc: DocProto
 
     @property
     def text(self) -> str:
@@ -54,10 +57,10 @@ class SpanProto(UserDataProto, Protocol):
 
 
 @dataclass
-class Span(SpanProto):
+class Span(SpanProto, UserDataProto):
     l: int  # left boundary in doc
     r: int  # right boundary in doc
-    doc: Doc
+    doc: DocProto
     user_data: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -72,3 +75,18 @@ class TokenProto(SpanProto):
 class Token(Span, TokenProto):
     tag_: Optional[str] = None
     lemma_: Optional[str] = None
+
+
+class EntProto(SpanProto):
+    label: str
+    score: Optional[float]
+
+
+@dataclass
+class Ent(EntProto):
+    l: int
+    r: int
+    doc: DocProto
+    label: str
+    score: float
+    user_data: Dict[str, Any] = field(default_factory=dict)
