@@ -12,6 +12,7 @@ import json
 
 
 T = TypeVar("T")
+
 # use runtime_checkable here for `from_disk`
 @runtime_checkable
 class SerDe(Protocol):
@@ -21,28 +22,6 @@ class SerDe(Protocol):
 
     def to_disk(self, path: Path):
         ...
-
-
-@dataclass
-class Meta:
-    """Metadata for `to_disk` and `from_disk`"""
-
-    module_name: str
-    class_name: str
-    META_FILENAME: ClassVar[str] = "meta.json"
-
-    def dump(self, path: Path):
-        meta_path = path / self.META_FILENAME
-        meta_path.write_text(json.dumps(asdict(self)))
-
-    @classmethod
-    def load(cls, path: Path) -> "Meta":
-        meta_path = path / cls.META_FILENAME
-        try:
-            meta = dataclass_utils.into(json.loads(meta_path.read_text()), Meta)
-        except dataclass_utils.error.Error as e:
-            raise ValueError(f"Invalid metadata content. ") from e
-        return meta
 
 
 def to_disk(obj: "SerDe", path: Path):
@@ -79,6 +58,28 @@ def _get_fullname(kls: Type[Any]) -> Tuple[str, str]:
 
 def _get_class(module_name: str, class_name: str) -> Type[Any]:
     return getattr(importlib.import_module(module_name), class_name)
+
+
+@dataclass
+class Meta:
+    """Metadata for `to_disk` and `from_disk`"""
+
+    module_name: str
+    class_name: str
+    META_FILENAME: ClassVar[str] = "meta.json"
+
+    def dump(self, path: Path):
+        meta_path = path / self.META_FILENAME
+        meta_path.write_text(json.dumps(asdict(self)))
+
+    @classmethod
+    def load(cls, path: Path) -> "Meta":
+        meta_path = path / cls.META_FILENAME
+        try:
+            meta = dataclass_utils.into(json.loads(meta_path.read_text()), Meta)
+        except dataclass_utils.error.Error as e:
+            raise ValueError(f"Invalid metadata content. ") from e
+        return meta
 
 
 T_Ser = TypeVar("T_Ser", bound="SerializationMixin")
