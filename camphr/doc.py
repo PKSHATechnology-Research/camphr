@@ -1,3 +1,4 @@
+from camphr.utils import unwrap
 from typing import Any, Dict, Iterator, List, Optional, Protocol, TypeVar
 from dataclasses import dataclass, field
 
@@ -18,19 +19,14 @@ class DocProto(UserDataProto, Protocol):
     ents: Optional[List["EntProto"]]
 
     def __getitem__(self, idx: int) -> "TokenProto":
-        if self.tokens is None:
-            raise ValueError("Doc is not tokenized")
-        return self.tokens[idx]
+        return unwrap(self.tokens)[idx]
 
     def __len__(self) -> int:
-        if self.tokens is None:
-            raise ValueError("Doc is not tokenized")
-        return len(self.tokens)
+        return len(unwrap(self.tokens))
 
     def __iter__(self) -> Iterator["TokenProto"]:
-        if self.tokens is None:
-            raise ValueError("Doc is not tokenized")
-        for token in self.tokens:
+        tokens = unwrap(self.tokens)
+        for token in tokens:
             yield token
 
 

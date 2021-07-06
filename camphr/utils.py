@@ -51,3 +51,12 @@ def get_juman_command() -> Optional[Literal["juman", "jumanpp"]]:
         if distutils.spawn.find_executable(cmd):
             return cmd  # type: ignore
     return None
+
+
+T = TypeVar("T")
+
+
+def unwrap(v: Optional[T]) -> T:
+    if v is None:
+        raise ValueError(f"{v} is None")
+    return v
