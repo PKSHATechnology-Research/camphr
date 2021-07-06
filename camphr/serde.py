@@ -10,7 +10,17 @@ import dataclass_utils
 from typing_extensions import Protocol
 import json
 
+
 T = TypeVar("T")
+# use runtime_checkable here for `from_disk`
+@runtime_checkable
+class SerDe(Protocol):
+    @classmethod
+    def from_disk(cls: Type[T], path: Path) -> T:
+        ...
+
+    def to_disk(self, path: Path):
+        ...
 
 
 @dataclass
@@ -69,17 +79,6 @@ def _get_fullname(kls: Type[Any]) -> Tuple[str, str]:
 
 def _get_class(module_name: str, class_name: str) -> Type[Any]:
     return getattr(importlib.import_module(module_name), class_name)
-
-
-# use runtime_checkable here for `from_disk`
-@runtime_checkable
-class SerDe(Protocol):
-    @classmethod
-    def from_disk(cls: Type[T], path: Path) -> T:
-        ...
-
-    def to_disk(self, path: Path):
-        ...
 
 
 T_Ser = TypeVar("T_Ser", bound="SerializationMixin")
