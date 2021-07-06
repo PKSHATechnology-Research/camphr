@@ -1,21 +1,11 @@
 """The utils module defines util functions used accross sub packages."""
-import bisect
-from camphr.doc import Doc, DocProto, Span, TokenProto
+from camphr.doc import DocProto, TokenProto
 import distutils.spawn
-import importlib
-from pathlib import Path
 from typing import (
-    Any,
     Callable,
-    Dict,
-    Iterable,
-    List,
     Optional,
     Protocol,
-    Tuple,
     TypeVar,
-    Union,
-    cast,
 )
 
 from typing_extensions import Literal
@@ -23,20 +13,20 @@ from typing_extensions import Literal
 from camphr.VERSION import __version__
 
 
-T = TypeVar("T")
+T_Co = TypeVar("T_Co", covariant=True)
 
 
-class _SequenceLike(Protocol[T]):
+class _SequenceLike(Protocol[T_Co]):
     """Only for type annotation in `binary_search`"""
 
-    def __getitem__(self, idx: int) -> T:
+    def __getitem__(self, idx: int) -> T_Co:
         ...
 
     def __len__(self) -> int:
         ...
 
 
-def binary_search(arr: _SequenceLike[T], predicate: Callable[[T], bool]) -> int:
+def binary_search(arr: _SequenceLike[T_Co], predicate: Callable[[T_Co], bool]) -> int:
     """Returns minimum index of arr item which satisfies  `predicate`"""
     if not arr or predicate(arr[0]):
         return 0
