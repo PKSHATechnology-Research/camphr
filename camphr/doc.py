@@ -1,8 +1,20 @@
 from dataclasses import dataclass, field
-from typing import Any, Dict, Iterator, List, Optional, Protocol, TypeVar
+from typing import (
+    Any,
+    Dict,
+    Iterator,
+    List,
+    Optional,
+    Protocol,
+    TypeVar,
+    runtime_checkable,
+)
 
 
 T = TypeVar("T")
+T_Co = TypeVar("T_Co", covariant=True)
+T_Span = TypeVar("T_Span", bound="SpanProto")
+T_Doc = TypeVar("T_Doc", bound=DocProto)  # type: ignore
 
 
 class UserDataProto(Protocol):
@@ -15,8 +27,22 @@ def unwrap(v: Optional[T]) -> T:
     return v
 
 
+@runtime_checkable
+class DocProto(Protocol[T_Co]):
+    text: str
+
+    def __getitem__(self, idx: int) -> T_Co:
+        ...
+
+    def __len__(self) -> int:
+        ...
+
+    def __iter__(self) -> Iterator[T_Co]:
+        ...
+
+
 @dataclass
-class Doc:
+class Doc(DocProto["Token"]):
     text: str
     tokens: Optional[List["Token"]] = None
     ents: Optional[List["Ent"]] = None
