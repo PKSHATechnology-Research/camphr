@@ -42,7 +42,7 @@ def to_disk(obj: "SerDe", path: Path):
 
     path.mkdir(exist_ok=True)
     # write metadata so that `from_disk` can get class name of `obj`
-    module_name, class_name = get_fullname(obj.__class__)
+    module_name, class_name = _get_fullname(obj.__class__)
     meta = Meta(module_name, class_name)
     meta.dump(path)
     # delegate to obj
@@ -60,7 +60,7 @@ def from_disk(path: Path) -> "SerDe":
     return kls.from_disk(path)
 
 
-def get_fullname(kls: Type[Any]) -> Tuple[str, str]:
+def _get_fullname(kls: Type[Any]) -> Tuple[str, str]:
     """Get fully qualified name of a class for ser/deserialization"""
     mod = kls.__module__
     class_name = kls.__name__

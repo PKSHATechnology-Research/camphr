@@ -1,4 +1,4 @@
-from camphr.serde import from_disk, get_fullname, SerDe, Path, to_disk
+from camphr.serde import from_disk, _get_fullname, SerDe, Path, to_disk
 import pytest
 from typing import Any, Tuple, Type
 from .utils import Dummy, DummySerde
@@ -13,7 +13,7 @@ from .utils import Dummy, DummySerde
     ],
 )
 def test_get_fullname(kls: Type[Any], expected: Tuple[str, str]):
-    assert get_fullname(kls) == expected
+    assert _get_fullname(kls) == expected
 
 
 @pytest.mark.parametrize("obj", [DummySerde()])
