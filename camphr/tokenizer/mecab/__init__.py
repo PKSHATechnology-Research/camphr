@@ -61,7 +61,7 @@ class Tokenizer(SerDe):
         self.tokenizer = get_mecab_tagger()
         self.dictionary_type = get_dictionary_type(self.tokenizer)
 
-    def __call__(self, text: str) -> DocProto[TokenProto]:
+    def __call__(self, text: str) -> DocProto:
         dtokens = self.detailed_tokens(text)
         words = [x.surface + x.space for x in dtokens]
         doc = Doc.from_words(words)

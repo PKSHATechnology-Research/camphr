@@ -1,9 +1,7 @@
 import os
 from pathlib import Path
 
-import yaml
 import pytest
-import torch
 
 #  from camphr.lang.juman import Japanese as Juman
 import camphr.tokenizer.mecab as mecab
@@ -68,6 +66,7 @@ def vocab():
 
 @pytest.fixture
 def cuda():
+
     return torch.device("cuda")
 
 
@@ -101,6 +100,8 @@ def trf_name_or_path(request):
 @pytest.fixture(scope="session")
 def trf_model_config(lang, trf_name_or_path, device):
     from camphr.pipelines.transformers.model import TRANSFORMERS_MODEL
+
+    import yaml
 
     return yaml.safe_load(
         f"""

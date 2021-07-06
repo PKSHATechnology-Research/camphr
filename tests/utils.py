@@ -6,6 +6,12 @@ from pathlib import Path
 from typing import Any, Tuple
 
 
+class Dummy:
+    """Dummy class for testing"""
+
+    ...
+
+
 def check_juman() -> bool:
     try:
         import pyknp  # noqa

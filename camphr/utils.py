@@ -20,13 +20,10 @@ from typing import (
     cast,
 )
 
-import yaml
 from more_itertools import padded
-from omegaconf import Config, OmegaConf
 from toolz import curry
 from typing_extensions import Literal
 
-from camphr.types import Pathlike
 from camphr.VERSION import __version__
 
 
@@ -144,7 +141,7 @@ def get_requirements_line():
     return f"camphr>={__version__}"
 
 
-def get_labels(labels_or_path: Union[List[str], Pathlike]) -> List[str]:
+def get_labels(labels_or_path: Union[List[str], Path]) -> List[str]:
     if isinstance(labels_or_path, (str, Path)):
         path = Path(labels_or_path)
         if path.suffix == ".json":

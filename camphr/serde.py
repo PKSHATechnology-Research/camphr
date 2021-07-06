@@ -2,10 +2,16 @@
 import pickle
 
 from pathlib import Path
-from typing import List, Type, TypeVar
+from typing import Any, List, Tuple, Type, TypeVar
 from typing_extensions import Protocol
 
 T = TypeVar("T")
+
+
+def get_fullname(obj: Type[Any]) -> Tuple[str, str]:
+    mod = obj.__module__
+    class_name = obj.__name__
+    return mod, class_name
 
 
 class SerDe(Protocol):
