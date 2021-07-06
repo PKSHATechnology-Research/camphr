@@ -1,46 +1,31 @@
-from camphr.utils import unwrap
-from typing import Any, Dict, Iterator, List, Optional, Protocol, TypeVar
 from dataclasses import dataclass, field
+from typing import Any, Dict, Iterator, List, Optional, Protocol, TypeVar
 
 
-T_Token = TypeVar("T_Token", bound="TokenProto", covariant=True)
-T_Span = TypeVar("T_Span", bound="SpanProto", covariant=True)
+T = TypeVar("T")
 
 
 class UserDataProto(Protocol):
     user_data: Dict[str, Any]
 
 
-class DocProto(UserDataProto, Protocol):
-    """Doc interface"""
-
-    text: str
-    tokens: Optional[List["TokenProto"]]
-    ents: Optional[List["EntProto"]]
-
-    def __getitem__(self, idx: int) -> "TokenProto":
-        return unwrap(self.tokens)[idx]
-
-    def __len__(self) -> int:
-        return len(unwrap(self.tokens))
-
-    def __iter__(self) -> Iterator["TokenProto"]:
-        tokens = unwrap(self.tokens)
-        for token in tokens:
-            yield token
+def unwrap(v: Optional[T]) -> T:
+    if v is None:
+        raise ValueError(f"{v} is None")
+    return v
 
 
 @dataclass
-class Doc(DocProto):
+class Doc:
     text: str
-    tokens: Optional[List["TokenProto"]] = None
-    ents: Optional[List["EntProto"]] = None
+    tokens: Optional[List["Token"]] = None
+    ents: Optional[List["Ent"]] = None
     user_data: Dict[str, Any] = field(default_factory=dict)
 
     @classmethod
     def from_words(cls, words: List[str]) -> "Doc":
         doc = cls("".join(words))
-        tokens: List[TokenProto] = []
+        tokens: List[Token] = []
         l = 0
         for w in words:
             r = l + len(w)
@@ -49,13 +34,30 @@ class Doc(DocProto):
         doc.tokens = tokens
         return doc
 
+    def __getitem__(self, idx: int) -> "Token":
+        return unwrap(self.tokens)[idx]
 
-class SpanProto(UserDataProto, Protocol):
-    """Span interface"""
+    def __len__(self) -> int:
+        return len(unwrap(self.tokens))
 
+    def __iter__(self) -> Iterator["Token"]:
+        tokens = unwrap(self.tokens)
+        for token in tokens:
+            yield token
+
+
+class SpanProto(Protocol):
     l: int  # left boundary in doc
     r: int  # right boundary in doc
-    doc: DocProto
+    doc: Doc
+
+
+@dataclass
+class Span(UserDataProto, SpanProto):
+    l: int  # left boundary in doc
+    r: int  # right boundary in doc
+    doc: Doc
+    user_data: Dict[str, Any] = field(default_factory=dict)
 
     @property
     def text(self) -> str:
@@ -63,36 +65,16 @@ class SpanProto(UserDataProto, Protocol):
 
 
 @dataclass
-class Span(SpanProto, UserDataProto):
-    l: int  # left boundary in doc
-    r: int  # right boundary in doc
-    doc: DocProto
-    user_data: Dict[str, Any] = field(default_factory=dict)
-
-
-class TokenProto(SpanProto):
-    """Token interface"""
-
-    tag_: Optional[str]
-    lemma_: Optional[str]
-
-
-@dataclass
-class Token(Span, TokenProto):
+class Token(Span):
     tag_: Optional[str] = None
     lemma_: Optional[str] = None
 
 
-class EntProto(SpanProto):
-    label: str
-    score: Optional[float]
-
-
 @dataclass
-class Ent(EntProto):
+class Ent(UserDataProto, SpanProto):
     l: int
     r: int
-    doc: DocProto
+    doc: Doc
     label: str
     score: float
     user_data: Dict[str, Any] = field(default_factory=dict)

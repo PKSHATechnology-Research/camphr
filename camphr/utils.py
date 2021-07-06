@@ -54,9 +54,3 @@ def get_juman_command() -> Optional[Literal["juman", "jumanpp"]]:
 
 
 T = TypeVar("T")
-
-
-def unwrap(v: Optional[T]) -> T:
-    if v is None:
-        raise ValueError(f"{v} is None")
-    return v
