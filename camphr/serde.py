@@ -21,8 +21,11 @@ class Meta:
 
 
 def to_disk(obj: "SerDe", path: Path):
+    if not isinstance(obj, SerDe) or isinstance(obj, type):  # type: ignore
+        raise ValueError(f"{obj} doesn't implement `SerDe`")
+
     path.mkdir(exist_ok=True)
-    # write metadata
+    # write metadata so that `from_disk` can get class name of `obj`
     meta_path = path / META_FILENAME
     module_name, class_name = get_fullname(obj.__class__)
     meta = Meta(module_name, class_name)

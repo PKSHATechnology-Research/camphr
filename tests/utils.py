@@ -1,3 +1,4 @@
+from camphr.serde import SerDe
 import json
 import os
 import tempfile
@@ -10,6 +11,17 @@ class Dummy:
     """Dummy class for testing"""
 
     ...
+
+
+class DummySerde:
+    """Dummy class for testing"""
+
+    @classmethod
+    def from_disk(cls, path: Path) -> "DummySerde":
+        return DummySerde()
+
+    def to_disk(self, path: Path):
+        ...
 
 
 def check_juman() -> bool:
