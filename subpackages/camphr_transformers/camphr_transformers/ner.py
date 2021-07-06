@@ -1,8 +1,8 @@
 # Named entity recognition pipe component for transformers
-from typing import Any, Dict, TypedDict, List, cast
-from attr import dataclass
+from typing import Any, Dict, TypedDict, List, cast, ClassVar
+from dataclasses import dataclass, asdict
 from camphr.pipe import Pipe
-from camphr.serde import SerDe
+from camphr.serde import SerDe, SerDeDataclassMixin
 from pathlib import Path
 from camphr.doc import Doc, DocProto, Ent, EntProto
 from transformers.models.auto import AutoTokenizer, AutoModelForTokenClassification
@@ -71,13 +71,17 @@ class Ner(Nlp, SerDe):
 
     # ser/de
     @dataclass
-    class _SerdeMeta:
+    class _SerdeMeta(SerDeDataclassMixin):
         tokenizer_kwargs: Dict[str, Any]
         model_kwargs: Dict[str, Any]
+        FILENAME: ClassVar[str] = "camphr_meta.json"
 
     def to_disk(self, path: Path):
+        meta = self._SerdeMeta(self.tokenizer_kwargs, self.model_kwargs)
+        meta.to_disk(path)
         self.pipeline.save_pretrained(str(path))
 
     @classmethod
     def from_disk(cls, path: Path) -> "Ner":
-        return cls(str(path))
+        meta = cls._SerdeMeta.from_disk(path)
+        return cls(str(path), **asdict(meta))
