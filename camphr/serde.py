@@ -5,42 +5,54 @@ import dataclass_utils.error
 import pickle
 
 from pathlib import Path
-from typing import Any, List, Tuple, Type, TypeVar, runtime_checkable
+from typing import Any, ClassVar, List, Tuple, Type, TypeVar, runtime_checkable
 import dataclass_utils
 from typing_extensions import Protocol
 import json
 
 T = TypeVar("T")
-META_FILENAME = "meta.json"
 
 
 @dataclass
 class Meta:
+    """Metadata for `to_disk` and `from_disk`"""
+
     module_name: str
     class_name: str
+    META_FILENAME: ClassVar[str] = "meta.json"
+
+    def dump(self, path: Path):
+        meta_path = path / self.META_FILENAME
+        meta_path.write_text(json.dumps(asdict(self)))
+
+    @classmethod
+    def load(cls, path: Path) -> "Meta":
+        meta_path = path / cls.META_FILENAME
+        try:
+            meta = dataclass_utils.into(json.loads(meta_path.read_text()), Meta)
+        except dataclass_utils.error.Error as e:
+            raise ValueError(f"Invalid metadata content. ") from e
+        return meta
 
 
 def to_disk(obj: "SerDe", path: Path):
+    """Dump obj into `path` directory"""
     if not isinstance(obj, SerDe) or isinstance(obj, type):  # type: ignore
         raise ValueError(f"{obj} doesn't implement `SerDe`")
 
     path.mkdir(exist_ok=True)
     # write metadata so that `from_disk` can get class name of `obj`
-    meta_path = path / META_FILENAME
     module_name, class_name = get_fullname(obj.__class__)
     meta = Meta(module_name, class_name)
-    meta_path.write_text(json.dumps(asdict(meta)))
+    meta.dump(path)
     # delegate to obj
     obj.to_disk(path)
 
 
 def from_disk(path: Path) -> "SerDe":
+    """Load obj from `path` directory"""
     # load metadata
-    meta_path = path / META_FILENAME
-    try:
-        meta = dataclass_utils.into(json.loads(meta_path.read_text()), Meta)
-    except dataclass_utils.error.Error as e:
-        raise ValueError(f"Invalid metadata content. ") from e
+    meta = Meta.load(path)
     kls = _get_class(meta.module_name, meta.class_name)
     if not isinstance(kls, SerDe):
         raise ValueError(f"Invalid class loaded: `{kls}` doesn't implement SerDe")
