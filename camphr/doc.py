@@ -14,7 +14,7 @@ from typing import (
 T = TypeVar("T")
 T_Co = TypeVar("T_Co", covariant=True)
 T_Span = TypeVar("T_Span", bound="SpanProto")
-T_Doc = TypeVar("T_Doc", bound=DocProto)  # type: ignore
+T_Doc = TypeVar("T_Doc", bound="DocProto")  # type: ignore
 
 
 class UserDataProto(Protocol):

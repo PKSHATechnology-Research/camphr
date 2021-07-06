@@ -1,5 +1,5 @@
 """The package mecab defines Japanese spacy.Language with Mecab tokenizer."""
-from camphr.doc import Doc, DocProto, TokenProto
+from camphr.doc import Doc, UserDataProto
 from typing import List, NamedTuple, TYPE_CHECKING
 from camphr.serde import SerDe
 from typing_extensions import Literal, Protocol
@@ -50,18 +50,18 @@ class Tokenizer(SerDe):
     KEY_FSTRING = "mecab_fstring"
 
     @classmethod
-    def get_mecab_fstring(cls, token: TokenProto) -> str:
+    def get_mecab_fstring(cls, token: UserDataProto) -> str:
         return token.user_data[cls.KEY_FSTRING]
 
     @classmethod
-    def set_mecab_fstring(cls, token: TokenProto, fstring: str):
+    def set_mecab_fstring(cls, token: UserDataProto, fstring: str):
         token.user_data[cls.KEY_FSTRING] = fstring
 
     def __init__(self):
         self.tokenizer = get_mecab_tagger()
         self.dictionary_type = get_dictionary_type(self.tokenizer)
 
-    def __call__(self, text: str) -> DocProto:
+    def __call__(self, text: str) -> Doc:
         dtokens = self.detailed_tokens(text)
         words = [x.surface + x.space for x in dtokens]
         doc = Doc.from_words(words)
