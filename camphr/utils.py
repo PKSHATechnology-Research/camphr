@@ -30,20 +30,26 @@ def binary_search(arr: _SequenceLike[T_Co], predicate: Callable[[T_Co], bool]) -
     """Returns minimum index of arr item which satisfies  `predicate`"""
     if not arr or predicate(arr[0]):
         return 0
-    ng: int = 0
-    ok = len(arr)
-    while ok - ng > 1:
-        m = (ok + ng) // 2
+    l: int = 0
+    r = len(arr)
+    while r - l > 1:
+        m = (r + l) // 2
         if predicate(arr[m]):
-            ok = m
+            r = m
         else:
-            ng = m
-    return ok
+            l = m
+    return r
 
 
-def token_from_char_pos(doc: DocProto[T_Span], i: int) -> T_Span:
-    idx = binary_search(doc, lambda token: token.l <= i)
-    return doc[idx]
+def token_from_char_pos(doc: DocProto[T_Span], i: int) -> Optional[T_Span]:
+    idx = binary_search(doc, lambda token: token.r > i)
+    if idx < len(doc):
+        token = doc[idx]
+        if token.l <= i < token.r:
+            return token
+        else:
+            return None
+    return None
 
 
 def get_juman_command() -> Optional[Literal["juman", "jumanpp"]]:
