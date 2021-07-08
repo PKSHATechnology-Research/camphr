@@ -1,5 +1,5 @@
 from hypothesis.strategies._internal.strategies import SearchStrategy
-from camphr.doc import Doc, DocProto, T_Span
+from camphr.doc import Doc, DocProto, T_Ent, T_Span, T_Token
 from camphr.utils import token_from_char_pos
 from typing import Callable, List, Optional, Tuple, TypeVar
 
@@ -22,10 +22,13 @@ def test_get_doc_char_pos(tokens: List[str], i: int, expected: Optional[str]):
     if expected is None:
         assert token is None
     else:
+        assert token is not None
         token.text == expected
 
 
-def _simple_get_doc_char_pos(doc: DocProto[T_Span], i: int) -> Optional[T_Span]:
+def _simple_get_doc_char_pos(
+    doc: DocProto[T_Token, T_Ent], i: int
+) -> Optional[T_Token]:
     for token in doc:
         if token.l <= i < token.r:
             return token

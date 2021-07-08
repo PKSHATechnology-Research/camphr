@@ -1,15 +1,14 @@
-import shutil
 from pathlib import Path
-from typing import Any, List, Optional, TYPE_CHECKING, Type
+from camphr.serde import SerDe
+import shutil
+from typing import Any, List, TYPE_CHECKING
 from camphr.doc import DocProto, Doc
 
 if TYPE_CHECKING:
     import sentencepiece as spm  # type: ignore
 
-from camphr.serde import SerializationMixin
 
-
-class Tokenizer(SerializationMixin):
+class Tokenizer(SerDe):
     SPACE_CHAR = "▁"
     SPIECE_MODEL = "spiece.model"
     KEY_PIECES = "spm_pieces"
@@ -23,11 +22,11 @@ class Tokenizer(SerializationMixin):
         self.tokenizer = self.load_spm_tokenizer()
 
     @classmethod
-    def get_spm_pieces(cls, doc: DocProto[Any]) -> List[str]:
+    def get_spm_pieces(cls, doc: DocProto[Any, Any]) -> List[str]:
         return doc.user_data[cls.KEY_PIECES]
 
     @classmethod
-    def set_spm_pieces(cls, doc: DocProto[Any], pieces: List[str]):
+    def set_spm_pieces(cls, doc: DocProto[Any, Any], pieces: List[str]):
         doc.user_data[cls.KEY_PIECES] = pieces
 
     def __call__(self, text: str) -> Doc:
@@ -58,3 +57,11 @@ class Tokenizer(SerializationMixin):
         self._model_path = model_path
         if model_path:
             self.load_spm_tokenizer()
+
+    def to_disk(self, path: Path) -> None:
+        path.mkdir(exist_ok=True)
+        shutil.copy(self.model_path, path / self.SPIECE_MODEL)
+
+    @classmethod
+    def from_disk(cls, path: Path) -> "Tokenizer":
+        return cls(str(path / cls.SPIECE_MODEL))

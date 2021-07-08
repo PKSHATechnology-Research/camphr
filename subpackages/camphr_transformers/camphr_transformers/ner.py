@@ -1,10 +1,9 @@
 # Named entity recognition pipe component for transformers
 from typing import Any, Dict, TypedDict, List, cast, ClassVar
 from dataclasses import dataclass, asdict
-from camphr.pipe import Pipe
 from camphr.serde import SerDe, SerDeDataclassMixin
 from pathlib import Path
-from camphr.doc import Doc, DocProto, Ent, EntProto
+from camphr.doc import Doc, DocProto, Ent
 from transformers.models.auto import AutoTokenizer, AutoModelForTokenClassification
 from transformers.pipelines.token_classification import TokenClassificationPipeline
 from transformers.pipelines import pipeline as trf_pipeline

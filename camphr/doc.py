@@ -12,8 +12,10 @@ from typing import (
 
 
 T = TypeVar("T")
-T_Co = TypeVar("T_Co", covariant=True)
+T_Co = TypeVar("T_Co")
 T_Span = TypeVar("T_Span", bound="SpanProto")
+T_Ent = TypeVar("T_Ent", bound="EntProto")
+T_Token = TypeVar("T_Token", bound="TokenProto")
 T_Doc = TypeVar("T_Doc", bound="DocProto")  # type: ignore
 
 
@@ -28,8 +30,11 @@ def unwrap(v: Optional[T]) -> T:
 
 
 @runtime_checkable
-class DocProto(Protocol[T_Co]):
+class DocProto(UserDataProto, Protocol[T_Co, T_Ent]):
     text: str
+    tokens: Optional[List[T_Co]]
+    ents: Optional[List[T_Ent]]
+    user_data: Dict[str, Any] = field(default_factory=dict)
 
     def __getitem__(self, idx: int) -> T_Co:
         ...
@@ -42,7 +47,7 @@ class DocProto(Protocol[T_Co]):
 
 
 @dataclass
-class Doc(DocProto["Token"]):
+class Doc(DocProto["Token", "Ent"]):
     text: str
     tokens: Optional[List["Token"]] = None
     ents: Optional[List["Ent"]] = None
@@ -72,14 +77,18 @@ class Doc(DocProto["Token"]):
             yield token
 
 
-class SpanProto(Protocol):
+class SpanProto(UserDataProto, Protocol):
     l: int  # left boundary in doc
     r: int  # right boundary in doc
     doc: Doc
 
+    @property
+    def text(self) -> str:
+        ...
+
 
 @dataclass
-class Span(UserDataProto, SpanProto):
+class Span(SpanProto):
     l: int  # left boundary in doc
     r: int  # right boundary in doc
     doc: Doc
@@ -90,17 +99,24 @@ class Span(UserDataProto, SpanProto):
         return self.doc.text[self.l : self.r]
 
 
+class TokenProto(SpanProto):
+    tag_: Optional[str]
+    lemma_: Optional[str]
+
+
 @dataclass
-class Token(Span):
+class Token(TokenProto, Span):
+    doc: Doc
     tag_: Optional[str] = None
     lemma_: Optional[str] = None
 
 
+class EntProto(SpanProto):
+    label: Optional[str]
+    score: Optional[float]
+
+
 @dataclass
-class Ent(UserDataProto, SpanProto):
-    l: int
-    r: int
-    doc: Doc
-    label: str
-    score: float
-    user_data: Dict[str, Any] = field(default_factory=dict)
+class Ent(EntProto, Span):
+    label: Optional[str] = None
+    score: Optional[float] = None

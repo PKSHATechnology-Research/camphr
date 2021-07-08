@@ -71,3 +71,9 @@ black = { version = "*", allow-prereleases = true }
 camphr = "camphr.cli.__main__:main"
 
 
+[tool.pyright]
+include = ["camphr"]
+exclude = [ "**/__pycache__" ]
+
+# diagnostic settings
+# basically strict mode from (https://github.com/microsoft/pyright/blob/main/packages/pyright-internal/src/common/configOptions.ts), but some options is disabled

@@ -1,5 +1,5 @@
 """The utils module defines util functions used accross sub packages."""
-from camphr.doc import DocProto, T_Span
+from camphr.doc import DocProto, T_Ent, T_Token
 import distutils.spawn
 from typing import (
     Callable,
@@ -41,7 +41,7 @@ def binary_search(arr: _SequenceLike[T_Co], predicate: Callable[[T_Co], bool]) -
     return r
 
 
-def token_from_char_pos(doc: DocProto[T_Span], i: int) -> Optional[T_Span]:
+def token_from_char_pos(doc: DocProto[T_Token, T_Ent], i: int) -> Optional[T_Token]:
     idx = binary_search(doc, lambda token: token.r > i)
     if idx < len(doc):
         token = doc[idx]
