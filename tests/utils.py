@@ -44,6 +44,14 @@ def check_mecab() -> bool:
     return True
 
 
+def check_spm() -> bool:
+    try:
+        import sentencepiece
+    except ImportError:
+        return False
+    return True
+
+
 checks = {
     "ja_mecab": check_mecab,
     "ja_juman": check_juman,

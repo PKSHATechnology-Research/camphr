@@ -1,10 +1,18 @@
 from pathlib import Path
-from typing import List, Tuple
+from tests.utils import check_spm
+from typing import List, TYPE_CHECKING, Tuple
 
 import pytest
-import sentencepiece as spm
+
 
 from camphr.tokenizer.sentencepiece import Tokenizer
+
+if TYPE_CHECKING:
+    import sentencepiece as spm
+
+pytestmark = pytest.mark.skipif(
+    not check_spm(), reason="sentencepiece is not always necessary"
+)
 
 
 @pytest.fixture
@@ -21,7 +29,7 @@ TESTCASE: List[Tuple[str, List[str]]] = [
 
 @pytest.mark.parametrize("text,tokens", TESTCASE)
 def test_sentencepiece(
-    nlp: Tokenizer, text: str, tokens: List[str], spiece: spm.SentencePieceProcessor
+    nlp: Tokenizer, text: str, tokens: List[str], spiece: "spm.SentencePieceProcessor"
 ):
     doc = nlp(text)
     assert doc.text.strip() == text.replace("　", " ").replace("\t", " ").strip()
