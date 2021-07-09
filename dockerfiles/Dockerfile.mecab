@@ -19,8 +19,7 @@ RUN cd /tmp && \
 WORKDIR /app
 COPY pyproject.toml /app
 RUN pip install -U poetry && \
-    poetry config virtualenvs.in-project false && \
-    poetry config virtualenvs.path ~/.virtualenvs
+    poetry config virtualenvs.create false
 RUN poetry update && poetry install --no-root -E mecab
 
 # install source

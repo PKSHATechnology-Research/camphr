@@ -6,7 +6,7 @@ WORKDIR /app
 COPY pyproject.toml /app
 RUN pip install -U poetry && \
     poetry config virtualenvs.create false
-RUN poetry update && poetry install --no-root
+RUN poetry update && poetry install --no-root -E sentencepiece 
 
 # install source
 COPY . /app
