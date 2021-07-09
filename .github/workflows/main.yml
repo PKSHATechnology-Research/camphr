@@ -30,7 +30,7 @@ jobs:
     - name: Build image
       run: |
         docker build --build-arg PYTHON_VERSION=${{ matrix.PYTHON_VERSION }} \
-          -f Dockerfile.${{ matrix.extra }} \
+          -f dockerfiles/Dockerfile.${{ matrix.extra }} \
           --build-arg INSTALL_CMD="poetry install -E ${{ matrix.extra }}" \
           -t test .
     - name: Run test
