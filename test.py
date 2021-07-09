@@ -72,6 +72,8 @@ def main(
             workdir=workdir or ".",
             install_cmd=install_cmd,
         )
+    else:
+        print("Build skipped")
     test(tagname, test_cmd)
 
 

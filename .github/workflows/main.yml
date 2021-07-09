@@ -16,8 +16,7 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9]
         os: [ubuntu-latest, macos-latest]
-        extra: ["None", "mecab", "sentencepiece", "juman"]
-        package: ["None", "camphr_transformers"]
+        extra: ["base", "mecab", "sentencepiece", "juman"]
     steps:
     - uses: actions/checkout@v2
     - name: Checkout submodules
@@ -27,14 +26,14 @@ jobs:
         auth_header="$(git config --local --get http.https://github.com/.extraheader)"
         git submodule sync --recursive
         git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install fire
-      run: python -m pip install -U pip setuptools fire
+
+    - name: Build image
+      run: |
+        docker build --build-arg PYTHON_VERSION=${{ matrix.PYTHON_VERSION }} \
+          --build-arg INSTALL_CMD="poetry install -E ${{ matrix.extra }}" \
+          -t test .
     - name: Run test
-      run: python test.py ${{ matrix.python-version }} --extra ${{ matrix.extras }} --package ${{ matrix.package }}
+      run: docker run test /root/test_local.sh camphr
 
   publish:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')

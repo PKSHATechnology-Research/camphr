@@ -1,5 +1,7 @@
 ARG PYTHON_VERSION
 FROM python:${PYTHON_VERSION}-buster
+ENV HOME=/root
+ARG WORKDIR
 
 # install poetry
 RUN pip install -U poetry && \

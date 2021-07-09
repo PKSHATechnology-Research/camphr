@@ -1,5 +1,7 @@
 ARG PYTHON_VERSION
 FROM python:${PYTHON_VERSION}-buster
+ENV HOME=/root
+ARG WORKDIR
 
 ENV MECAB_URL "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE"
 ENV IPADIC_URL "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7MWVlSDBCSXZMTXM"
