@@ -50,6 +50,15 @@ def spiece_path():
     return str(FIXTURE_DIR / "spiece.model")
 
 
+@pytest.fixture(scope="session")
+def spiece(spiece_path):
+    import sentencepiece as spm
+
+    s = spm.SentencePieceProcessor()
+    s.load(spiece_path)
+    return s
+
+
 @pytest.fixture
 def chdir(tmp_path: Path):
     tmp_path.mkdir(exist_ok=True)

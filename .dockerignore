@@ -9,5 +9,9 @@ eggs/**/*
 .tox
 .outputs
 .venv
-**/*/.venv
-**/*/.env
+**/.venv
+**/.env
+**/__pycache__
+dist/
+**/.mypy_cache
+
