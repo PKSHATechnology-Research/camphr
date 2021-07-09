@@ -11,11 +11,10 @@ on:
 jobs:
   test:
     if: contains(github.event.head_commit.message, '[skip ci]') == false
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.7, 3.8, 3.9]
-        os: ubuntu-latest
         extra: ["None", "mecab", "sentencepiece", "juman"]
         package: ["None", "camphr_transformers"]
     steps:
