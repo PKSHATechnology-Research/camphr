@@ -16,8 +16,8 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9]
         os: [ubuntu-latest, macos-latest]
-        extra: ["", "mecab", "sentencepiece", "juman"]
-        package: ["", "camphr_transformers"]
+        extra: ["None", "mecab", "sentencepiece", "juman"]
+        package: ["None", "camphr_transformers"]
     steps:
     - uses: actions/checkout@v2
     - name: Checkout submodules
