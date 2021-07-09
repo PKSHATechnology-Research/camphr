@@ -15,8 +15,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8, 3.9]
-        extra: ["None", "mecab", "sentencepiece", "juman"]
-        package: ["None", "camphr_transformers"]
+        extra: ["base", "mecab", "sentencepiece", "juman"]
     steps:
     - uses: actions/checkout@v2
     - name: Checkout submodules
@@ -37,7 +36,6 @@ jobs:
         python test.py ${{ matrix.python-version }} \
           --dockerfile-ext ${{ matrix.extra }} \
           --install-cmd "poetry install -E ${{ matrix.extra }}"
-
 
   publish:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
