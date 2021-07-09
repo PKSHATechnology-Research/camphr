@@ -1,3 +1,4 @@
+import time
 import subprocess
 import sys
 from typing import Dict
@@ -21,7 +22,7 @@ stats: Dict[str, bool] = {}
 for version in PYTHON_VERSIONS:
     for package in PACKAGES:
         for dockerfile_ext, poetry_arg in EXTRAS[package]:
-            install_cmd = f"poetry init {poetry_arg}"
+            install_cmd = f"poetry install {poetry_arg}"
             cmd = [
                 "python",
                 "test.py",
@@ -55,3 +56,4 @@ while True:
             else:
                 terminate()
                 raise ValueError(f"Failed: {key}")
+    time.sleep(1)
