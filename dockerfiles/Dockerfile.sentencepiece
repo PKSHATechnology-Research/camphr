@@ -12,7 +12,8 @@ RUN mkdir ${HOME}/camphr && \
 WORKDIR ${HOME}/${WORKDIR}
 COPY ${WORKDIR}/pyproject.toml .
 COPY pyproject.toml ${HOME}/
-run poetry update && poetry install
+ARG INSTALL_CMD
+run ${INSTALL_CMD}
 
 # install source
 COPY . ${HOME}
