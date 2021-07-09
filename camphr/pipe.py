@@ -1,5 +1,5 @@
 from camphr.doc import T_Doc
-from typing import Protocol
+from typing_extensions import Protocol
 
 
 class Pipe(Protocol):

@@ -30,7 +30,7 @@ def _simple_get_doc_char_pos(
     doc: DocProto[T_Token, T_Ent], i: int
 ) -> Optional[T_Token]:
     for token in doc:
-        if token.l <= i < token.r:
+        if token.start_char <= i < token.end_char:
             return token
     return None
 

@@ -10,3 +10,4 @@ eggs/**/*
 .outputs
 .venv
 **/*/.venv
+**/*/.env

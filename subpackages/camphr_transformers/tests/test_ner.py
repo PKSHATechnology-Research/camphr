@@ -3,17 +3,18 @@ from typing import Tuple, Set
 from camphr.serde import from_disk, to_disk
 import pytest
 from camphr_transformers.ner import Ner
+from .utils import FIXTURE_DIR
 
 
 @pytest.fixture(scope="session")
 def nlp() -> Ner:
-    return Ner("dslim/bert-base-NER")
+    return Ner(str(FIXTURE_DIR / "ner_bert"))
 
 
 TESTCASES_EN = [
     (
-        "My name is Wolfgang and I live in Berlin",
-        {("Wolfgang", "PER"), ("Berlin", "LOC")},
+        "This is a test",
+        {("This", "MISC"), ("is", "PER"), ("a", "ORG"), ("test", "PER")},
     )
 ]
 
@@ -26,7 +27,8 @@ def test_ner(nlp: Ner, text: str, expected: Set[Tuple[str, str]]):
 def run_ner(nlp: Ner, text: str, expected: Set[Tuple[str, str]]):
     doc = nlp(text)
     assert doc.ents is not None
-    print(doc.ents)
+    for e in doc.ents:
+        print(e.text, e.label)
     for e in doc.ents:
         entry = (e.text, e.label)
         assert entry in expected

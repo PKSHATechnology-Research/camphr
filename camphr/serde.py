@@ -5,15 +5,15 @@ import dataclass_utils.error
 import pickle
 
 from pathlib import Path
-from typing import Any, ClassVar, List, Tuple, Type, TypeVar, runtime_checkable
+from typing import Any, ClassVar, List, Tuple, Type, TypeVar
 import dataclass_utils
-from typing_extensions import Protocol
+from typing_extensions import Protocol, runtime_checkable
 import json
 
 
 T = TypeVar("T")
 
-# use runtime_checkable here for `from_disk`
+
 @runtime_checkable
 class SerDe(Protocol):
     @classmethod
@@ -76,7 +76,7 @@ class SerDeDataclassMixin(SerDe):
         try:
             data = dataclass_utils.into(json.loads(meta_path.read_text()), cls)
         except dataclass_utils.error.Error as e:
-            raise ValueError(f"Invalid metadata content. ") from e
+            raise ValueError("Invalid metadata content.") from e
         return data
 
 

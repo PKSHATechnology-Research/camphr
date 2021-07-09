@@ -4,7 +4,7 @@ from dataclasses import dataclass, asdict
 from camphr.serde import SerDe, SerDeDataclassMixin
 from pathlib import Path
 from camphr.doc import Doc, DocProto, Ent
-from transformers.models.auto import AutoTokenizer, AutoModelForTokenClassification
+from transformers import AutoTokenizer, AutoModelForTokenClassification
 from transformers.pipelines.token_classification import TokenClassificationPipeline
 from transformers.pipelines import pipeline as trf_pipeline
 from camphr.nlp import Nlp
@@ -43,7 +43,7 @@ class Ner(Nlp, SerDe):
         model = AutoModelForTokenClassification.from_pretrained(
             pretrained_model_name_or_path, **model_kwargs
         )
-        pipeline = trf_pipeline(  # type: ignore
+        pipeline: TokenClassificationPipeline = trf_pipeline(  # type: ignore
             "ner", model=model, tokenizer=tokenizer  # type: ignore
         )
         if not isinstance(pipeline, TokenClassificationPipeline):

@@ -15,9 +15,14 @@ RUN cd /tmp && \
     tar xzvf ipadic.tar.gz && cd mecab-ipadic-2.7.0-20070801 && ./configure --with-charset=utf8 && ldconfig && make && make install && \
     rm -rf /tmp/*
 
+# install python dependencies
 WORKDIR /app
 COPY pyproject.toml /app
-RUN pip install -U poetry && poetry update && poetry install --no-root -E mecab
+RUN pip install -U poetry && \
+    poetry config virtualenvs.in-project false && \
+    poetry config virtualenvs.path ~/.virtualenvs
+RUN poetry update && poetry install --no-root -E mecab
 
+# install source
 COPY . /app
 RUN poetry install

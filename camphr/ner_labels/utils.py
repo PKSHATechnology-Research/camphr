@@ -65,7 +65,7 @@ def _yml_to_py(yml_path: Union[str, Path], py_path: Union[str, Path]):
         _generate_py(fw, keys)
 
 
-_LABEL_DICT = Dict[str, Optional["_LABEL_DICT"]]
+_LABEL_DICT = Dict[str, Optional["_LABEL_DICT"]]  # type: ignore
 
 
 def _extract_keys(d: _LABEL_DICT, prefix: str = "") -> List[str]:

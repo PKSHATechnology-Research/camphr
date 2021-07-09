@@ -5,10 +5,9 @@ from typing import (
     Iterator,
     List,
     Optional,
-    Protocol,
     TypeVar,
-    runtime_checkable,
 )
+from typing_extensions import Protocol, runtime_checkable
 
 
 T = TypeVar("T")
@@ -57,11 +56,11 @@ class Doc(DocProto["Token", "Ent"]):
     def from_words(cls, words: List[str]) -> "Doc":
         doc = cls("".join(words))
         tokens: List[Token] = []
-        l = 0
+        left = 0
         for w in words:
-            r = l + len(w)
-            tokens.append(Token(l, r, doc))
-            l = r
+            right = left + len(w)
+            tokens.append(Token(left, right, doc))
+            left = right
         doc.tokens = tokens
         return doc
 
@@ -78,8 +77,8 @@ class Doc(DocProto["Token", "Ent"]):
 
 
 class SpanProto(UserDataProto, Protocol):
-    l: int  # left boundary in doc
-    r: int  # right boundary in doc
+    start_char: int  # left boundary in doc
+    end_char: int  # right boundary in doc
     doc: Doc
 
     @property
@@ -89,14 +88,14 @@ class SpanProto(UserDataProto, Protocol):
 
 @dataclass
 class Span(SpanProto):
-    l: int  # left boundary in doc
-    r: int  # right boundary in doc
+    start_char: int  # left boundary in doc
+    end_char: int  # right boundary in doc
     doc: Doc
     user_data: Dict[str, Any] = field(default_factory=dict)
 
     @property
     def text(self) -> str:
-        return self.doc.text[self.l : self.r]
+        return self.doc.text[self.start_char : self.end_char]
 
 
 class TokenProto(SpanProto):

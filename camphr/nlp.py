@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing_extensions import Protocol
 from camphr.doc import DocProto, T_Ent, T_Token
 
 
