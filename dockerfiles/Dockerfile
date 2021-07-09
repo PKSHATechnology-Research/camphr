@@ -1,13 +1,22 @@
 ARG PYTHON_VERSION
-FROM python:${PYTHON_VERSION}-buster
 
-# install python dependencies
-WORKDIR /app
-COPY pyproject.toml /app
+FROM python:${PYTHON_VERSION}-buster
+ENV HOME=/root
+ARG WORKDIR
+
+# install poetry
 RUN pip install -U poetry && \
     poetry config virtualenvs.create false
-RUN poetry update && poetry install --no-root
+
+# install python dependencies
+RUN mkdir ${HOME}/camphr && \
+    touch ${HOME}/camphr/__init__.py && \
+    touch ${HOME}/README.md
+WORKDIR ${HOME}/${WORKDIR}
+COPY ${WORKDIR}/pyproject.toml .
+COPY pyproject.toml ${HOME}/
+run poetry update && poetry install
 
 # install source
-COPY . /app
+COPY . ${HOME}
 RUN poetry install

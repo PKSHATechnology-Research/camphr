@@ -1,5 +1,6 @@
 # Named entity recognition pipe component for transformers
-from typing import Any, Dict, TypedDict, List, cast, ClassVar
+from typing import Any, Dict, List, cast, ClassVar
+from typing_extensions import TypedDict
 from dataclasses import dataclass, asdict
 from camphr.serde import SerDe, SerDeDataclassMixin
 from pathlib import Path

@@ -1,5 +1,6 @@
 ARG PYTHON_VERSION
 FROM python:${PYTHON_VERSION}-buster
+ARG WORKDIR
 
 ENV JUMAN_VERSION 7.01
 ENV JUMAN_URL "http://nlp.ist.i.kyoto-u.ac.jp/DLcounter/lime.cgi?down=http://nlp.ist.i.kyoto-u.ac.jp/nl-resource/juman/juman-7.01.tar.bz2&name=juman-7.01.tar.bz2"
@@ -15,13 +16,19 @@ RUN cd /tmp && \
     rm -rf /tmp/*
 RUN ldconfig
 
-# install python dependencies
-WORKDIR /app
-COPY pyproject.toml /app
+# install poetry
 RUN pip install -U poetry && \
     poetry config virtualenvs.create false
-RUN poetry update && poetry install --no-root -E juman
+
+# install python dependencies
+RUN mkdir ${HOME}/camphr && \
+    touch ${HOME}/camphr/__init__.py && \
+    touch ${HOME}/README.md
+WORKDIR ${HOME}/${WORKDIR}
+COPY ${WORKDIR}/pyproject.toml .
+COPY pyproject.toml ${HOME}/
+run poetry update && poetry install
 
 # install source
-COPY . /app
+COPY . ${HOME}
 RUN poetry install

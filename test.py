@@ -6,7 +6,7 @@ import fire
 import subprocess
 
 
-def build(dockerfile: str, tagname: str, python_version: str):
+def build(dockerfile: str, tagname: str, python_version: str, workdir: str):
     cmd = [
         "docker",
         "build",
@@ -14,17 +14,18 @@ def build(dockerfile: str, tagname: str, python_version: str):
         dockerfile,
         "--build-arg",
         f"PYTHON_VERSION={python_version}",
+        "--build-arg",
+        f"WORKDIR={workdir}",
         "-t",
         tagname,
         ".",
     ]
+    print("Build: ", " ".join(cmd))
     subprocess.run(cmd, check=True)
 
 
-def test(tagname: str, cmd: List[str], workdir: Optional[str] = None):
+def test(tagname: str, cmd: List[str]):
     run_cmd = ["docker", "run"]
-    if workdir:
-        run_cmd.extend(["-w", workdir])
     run_cmd.append(tagname)
     run_cmd.extend(cmd)
     subprocess.run(run_cmd, check=True)
@@ -46,18 +47,17 @@ def main(
     if extra:
         tagname += "_" + extra
 
-    # build
-    if not no_build:
-        build(dockerfile, tagname, python_version)
-
-    # test
     if package:
         workdir = os.path.join("subpackages", package)
-        cmd = ["../../test_local.sh", package]
+        test_cmd = ["../../test_local.sh", package]
     else:
         workdir = None
-        cmd = ["./test_local.sh", "camphr"]
-    test(tagname, cmd, workdir)
+        test_cmd = ["./test_local.sh", "camphr"]
+
+    # build
+    if not no_build:
+        build(dockerfile, tagname, python_version, workdir=workdir or ".")
+    test(tagname, test_cmd)
 
 
 if __name__ == "__main__":
