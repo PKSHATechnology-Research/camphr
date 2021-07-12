@@ -61,7 +61,7 @@ def main(
         test_cmd.append(package)
     else:
         workdir = None
-        test_cmd.append("camphr")
+        test_cmd.append("camphr")  # main package
 
     # build
     if not no_build:
