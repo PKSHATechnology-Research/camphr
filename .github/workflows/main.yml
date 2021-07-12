@@ -61,6 +61,9 @@ jobs:
           package: ["camphr", "camphr_transformers"]
       runs-on: ubuntu-latest
       steps:
+      - name: test
+        run: |
+          echo ${{ format('refs/tags/{0}', ${{ matrix.package }}) }}
       - uses: actions/checkout@v1
         # TODO: refactor `if` condition
         if: startsWith(github.event.ref, format('refs/tags/{0}', ${{ matrix.package }}))
