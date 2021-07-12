@@ -60,6 +60,7 @@ jobs:
         matrix:
           package: ["camphr", "camphr_transformers"]
       runs-on: ubuntu-latest
+      steps:
       - id: check
         run: echo "::set-output name=is-target::${{ startsWith(github.event.ref, format('refs/tags/{0}', matrix.package)) }}"
       - name: test
