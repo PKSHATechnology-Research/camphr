@@ -14,7 +14,7 @@ python = "^3.7"
 transformers = "^4.8"
 
 # TODO: change to published version
-camphr = { path = "../../",  develop = true}
+camphr = { version="0.10.0rc1" }
 
 # Optionals
 torch = { version="^1.8.0", optional = true}

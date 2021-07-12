@@ -28,7 +28,7 @@ for version in PYTHON_VERSIONS:
             install_cmd = f"poetry install {poetry_arg}"
             cmd = [
                 "python",
-                "test.py",
+                "test_docker.py",
                 version,
                 "--package",
                 package,

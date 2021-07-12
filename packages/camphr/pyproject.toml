@@ -5,6 +5,8 @@ build-backend = "poetry.masonry.api"
 [tool.versionup]
 files = [ "camphr/VERSION.py",]
 commit = true
+tag = true
+tag_prefix = "camphr"
 
 [tool.poetry]
 version = "0.10.0rc1"
