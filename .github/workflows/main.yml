@@ -54,7 +54,7 @@ jobs:
           --package ${{ matrix.package }}
 
   check_publish:
-      if: github.event_name == 'push' && startsWith(github.event.ref, "refs/tags/")
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
       needs: test
       runs-on: ubuntu-latest
       strategy:
