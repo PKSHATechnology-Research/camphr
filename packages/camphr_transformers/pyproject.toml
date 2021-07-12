@@ -9,7 +9,7 @@ description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 
 [tool.versionup]
-files = [ "camphr/VERSION.py",]
+files = [ "camphr_transformers/VERSION.py",]
 commit = true
 tag_prefix = "camphr_transformers"
 
