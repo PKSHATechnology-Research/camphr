@@ -53,13 +53,24 @@ jobs:
           --install-cmd "poetry install -E ${{ matrix.extra }}" \
           --package ${{ matrix.package }}
 
-
-  publish:
-      if: github.event_name == 'push' && startsWith(github.event.ref, "refs/tags/${{ matrix.package }}")
+  check_publish:
+      if: github.event_name == 'push' && startsWith(github.event.ref, "refs/tags/")
       needs: test
       runs-on: ubuntu-latest
       matrix:
-        package: ["camphr", "camphr_transformers"]
+        package: ["camphr/", "camphr_transformers/"]
+      outputs:
+        publish: ${{ steps.step1.outputs.ret }}
+        package: ${{ matrix.package }}
+      steps:
+        - id: step1
+          if: contains(github.event.ref, ${{ matrix.package }})
+          run: echo "::set-output name=ret::true"
+
+  publish:
+      needs: check_publish
+      if: needs.check_publish.outputs.publish == "true"
+      runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
@@ -70,5 +81,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry
       - name: Publish pypi package
-        working-directory: packages/${{ matrix.package }}
+        working-directory: packages/${{ needs.check_publish.outputs.package }}
         run: poetry publish -p '${{ secrets.PYPI_PASS }}' -u '${{ secrets.PYPI_USER }}' --build
