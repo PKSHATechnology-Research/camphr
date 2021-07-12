@@ -16,7 +16,7 @@ jobs:
       matrix:
         python-version: [3.7, 3.8, 3.9]
         include:
-          - package: camphr_transformer
+          - package: camphr_transformers
             extra: torch
             dockerfile: base
     steps:
