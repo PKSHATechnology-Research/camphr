@@ -60,13 +60,12 @@ jobs:
         matrix:
           package: ["camphr", "camphr_transformers"]
       runs-on: ubuntu-latest
-      outputs:
-        is-target: ${{ startsWith(github.event.ref, format('refs/tags/{0}', matrix.package)) }}
-      steps:
+      - id: check
+        run: |
+          echo "::set-output name=is-target::${{ startsWith(github.event.ref, format('refs/tags/{0}', matrix.package)) }}"
       - name: test
         run: |
-          echo ${{ job.publish.outputs.is-target }}
-          echo ${{ format('refs/tags/{0}', matrix.package) }}
+          echo ${{ steps.check.is-target }}
       - uses: actions/checkout@v1
         # TODO: refactor `if` condition
         if: job.publish.outputs.is-target
