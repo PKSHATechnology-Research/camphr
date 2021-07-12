@@ -13,7 +13,6 @@ tag_prefix = "camphr_transformers"
 python = "^3.7"
 transformers = "^4.8"
 
-# TODO: change to published version
 camphr = { version="0.10.0rc1" }
 
 # Optionals

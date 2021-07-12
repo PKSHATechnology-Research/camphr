@@ -55,9 +55,11 @@ jobs:
 
 
   publish:
-      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/${{ matrix.package }}')
       needs: test
       runs-on: ubuntu-latest
+      matrix:
+        package: ["camphr", "camphr_transformers"]
       steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-python@v1
