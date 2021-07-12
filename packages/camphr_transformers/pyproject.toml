@@ -12,7 +12,7 @@ authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 files = [ "camphr_transformers/VERSION.py",]
 commit = true
 tag = true
-tag_prefix = "camphr_transformers"
+tag_prefix = "camphr_transformers/"
 
 [tool.poetry.dependencies]
 python = "^3.7"
