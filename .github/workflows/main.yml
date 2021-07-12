@@ -62,7 +62,7 @@ jobs:
       runs-on: ubuntu-latest
       outputs:
         is-target:
-          description: determine this package must be published
+          description: 'determine this package must be published'
           value: ${{ startsWith(github.event.ref, format('refs/tags/{0}', matrix.package)) }}
       steps:
       - uses: actions/checkout@v1
