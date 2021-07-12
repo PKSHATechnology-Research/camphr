@@ -1,0 +1,86 @@
+[build-system]
+requires = [ "poetry>=1.0.0",]
+build-backend = "poetry.masonry.api"
+
+[tool.versionup]
+files = [ "camphr/VERSION.py",]
+commit = true
+tag = true
+tag_prefix = "camphr/"
+
+[tool.poetry]
+version = "0.10.0rc1"
+name = "camphr"
+authors = [ "tamuhey <tamuhey@gmail.com>",]
+description = "spaCy plugin for Transformers, Udify, Elmo, etc."
+readme = "README.md"
+license = "Apache-2.0"
+homepage = "https://github.com/PKSHATechnology-Research/camphr"
+repository = "https://github.com/PKSHATechnology-Research/camphr"
+keywords = [ "spaCy", "nlp", "natural language processing", "transformers",]
+
+[tool.isort]
+skip = ".venv/**/*.py"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_first_party = "camphr"
+
+[tool.pyright]
+include = [ "camphr",]
+exclude = [ "**/__pycache__",]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+more-itertools = "^8.8"
+toolz = ">=0.10,<0.12"
+pytokenizations = ">=0.4.8,<1.0"
+pytextspan = ">=0.5.0,<1.0"
+dataclass-utils = "^0.7.12"
+dataclasses = "^0.6"
+typing-extensions = ">=3.7.4"
+PyYAML = "^5.4.1"
+
+[tool.poetry.extras]
+base = []
+all = [ "mojimoji", "pyknp", "mecab-python3", "sentencepiece",]
+juman = [ "mojimoji", "pyknp",]
+mecab = [ "mecab-python3", "fugashi", "ipadic",]
+sentencepiece = [ "sentencepiece",]
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.9.3"
+pytest = "<6.2.3"
+flake8 = "^3.5"
+hypothesis = "^6.14.0"
+sphinx = "4"
+doc8 = "^0.8.0"
+mypy = "^0.910"
+fire = "^0.4.0"
+
+[tool.poetry.scripts]
+camphr = "camphr.cli.__main__:main"
+
+[tool.poetry.dependencies.sentencepiece]
+version = "^0.1.96"
+optional = true
+
+[tool.poetry.dependencies.mojimoji]
+version = "^0.0.11"
+optional = true
+
+[tool.poetry.dependencies.pyknp]
+version = ">=0.4.2,<0.5"
+optional = true
+
+[tool.poetry.dependencies.mecab-python3]
+version = ">=1.0,<1.1"
+optional = true
+
+[tool.poetry.dev-dependencies.isort]
+extras = [ "toml",]
+version = "^4.3.21"
+
+[tool.poetry.dev-dependencies.black]
+version = "*"
+allow-prereleases = true

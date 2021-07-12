@@ -9,4 +9,10 @@ eggs/**/*
 .tox
 .outputs
 .venv
-**/*/.venv
+**/.venv
+**/.env
+**/__pycache__
+dist/
+**/.mypy_cache
+**/poetry.lock
+
