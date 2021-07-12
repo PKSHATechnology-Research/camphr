@@ -57,8 +57,9 @@ jobs:
       if: github.event_name == 'push' && startsWith(github.event.ref, "refs/tags/")
       needs: test
       runs-on: ubuntu-latest
-      matrix:
-        package: ["camphr/", "camphr_transformers/"]
+      strategy:
+        matrix:
+          package: ["camphr/", "camphr_transformers/"]
       outputs:
         publish: ${{ steps.step1.outputs.ret }}
         package: ${{ matrix.package }}
