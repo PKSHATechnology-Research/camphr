@@ -3,7 +3,7 @@ requires = [ "poetry>=1.0.0",]
 build-backend = "poetry.masonry.api"
 
 [tool.versionup]
-files = [ "camphr/VERSION.py",]
+files = [ "camphr_transformers/VERSION.py",]
 commit = true
 tag = true
 tag_prefix = "camphr"
