@@ -11,7 +11,7 @@ def build(
     tagname: str,
     python_version: str,
     workdir: str,
-    install_cmd: str = "poetry install",
+    install_cmd: str,
 ):
     cmd = [
         "docker",
@@ -28,8 +28,13 @@ def build(
         tagname,
         ".",
     ]
-    print("Build: ", " ".join(cmd))
-    subprocess.run(cmd, check=True)
+
+    cmd_str = " ".join(cmd)
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        raise ValueError(f"{cmd_str} failed.") from e
+    print("Build Finished: ", cmd_str)
 
 
 def test(tagname: str, cmd: List[str]):
@@ -41,27 +46,19 @@ def test(tagname: str, cmd: List[str]):
 
 def main(
     python_version: str,
-    package: Optional[str] = None,
-    dockerfile_ext: Optional[str] = None,
+    package: str,
+    dockerfile_ext: str,
     install_cmd: str = "poetry install",
     no_build: bool = False,
 ):
-    dockerfile = "dockerfiles/Dockerfile"
-    if dockerfile_ext:
-        dockerfile += "." + dockerfile_ext
-    tagname = f"camphr_{python_version}"
-    if package:
-        tagname += "_" + package
-    if dockerfile_ext:
-        tagname += "_" + dockerfile_ext
+    """Running test with docker"""
+    dockerfile = f"dockerfiles/Dockerfile.{dockerfile_ext}"
+    tagname = f"camphr_{python_version}_{package}_{dockerfile_ext}"
+    test_cmd = ["/root/test_local.sh", package]
+    workdir = os.path.join("packages", package)
 
-    test_cmd = ["/root/test_local.sh"]
-    if package:
-        workdir = os.path.join("subpackages", package)
-        test_cmd.append(package)
-    else:
-        workdir = None
-        test_cmd.append("camphr")  # main package
+    if not os.path.exists(workdir):
+        raise ValueError(f"{workdir} not exist")
 
     # build
     if not no_build:
@@ -69,7 +66,7 @@ def main(
             dockerfile,
             tagname,
             python_version,
-            workdir=workdir or ".",
+            workdir=workdir,
             install_cmd=install_cmd,
         )
     else:

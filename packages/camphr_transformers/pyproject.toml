@@ -7,7 +7,7 @@ authors = ["Yohei Tamura <tamuhey@gmail.com>"]
 [tool.versionup]
 files = [ "camphr/VERSION.py",]
 commit = true
-tag_prefix = "subpackages/camphr_transformers"
+tag_prefix = "camphr_transformers"
 
 [tool.poetry.dependencies]
 python = "^3.7"

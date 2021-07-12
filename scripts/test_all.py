@@ -1,3 +1,6 @@
+# For local testing
+# Run all test combinations
+
 import time
 import subprocess
 import sys
@@ -5,15 +8,15 @@ from typing import Dict
 
 
 PYTHON_VERSIONS = ["3.7", "3.8", "3.9"]
-PACKAGES = ["None", "camphr_transformers"]
+PACKAGES = ["camphr", "camphr_transformers"]
 EXTRAS = {
-    "None": [
-        ("None", ""),
+    "camphr": [
+        ("base", ""),
         ("mecab", "-E mecab"),
         ("juman", "-E juman"),
         ("sentencepiece", "-E sentencepiece"),
     ],
-    "camphr_transformers": [("None", "-E torch")],
+    "camphr_transformers": [("base", "-E torch")],
 }
 
 

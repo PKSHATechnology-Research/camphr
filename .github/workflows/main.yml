@@ -19,16 +19,16 @@ jobs:
           - package: camphr_transformers
             extra: torch
             dockerfile: base
-          - package: None # None indicates `camphr` main package
+          - package: camphr
             extra: base
             dockerfile: base
-          - package: None
+          - package: camphr
             extra: mecab
             dockerfile: mecab
-          - package: None
+          - package: camphr
             extra: juman
             dockerfile: juman
-          - package: None
+          - package: camphr
             extra: sentencepiece
             dockerfile: sentencepiece
     steps:
