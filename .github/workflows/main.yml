@@ -61,9 +61,7 @@ jobs:
           package: ["camphr", "camphr_transformers"]
       runs-on: ubuntu-latest
       outputs:
-        is-target:
-          description: 'determine this package must be published'
-          value: ${{ startsWith(github.event.ref, format('refs/tags/{0}', matrix.package)) }}
+        is-target: ${{ startsWith(github.event.ref, format('refs/tags/{0}', matrix.package)) }}
       steps:
       - uses: actions/checkout@v1
         # TODO: refactor `if` condition
