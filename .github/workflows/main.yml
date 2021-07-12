@@ -63,6 +63,10 @@ jobs:
       outputs:
         is-target: ${{ startsWith(github.event.ref, format('refs/tags/{0}', matrix.package)) }}
       steps:
+      - name: test
+        run: |
+          echo ${{ job.publish.outputs.is-target }}
+          echo ${{ format('refs/tags/{0}', matrix.package)) }}
       - uses: actions/checkout@v1
         # TODO: refactor `if` condition
         if: job.publish.outputs.is-target
