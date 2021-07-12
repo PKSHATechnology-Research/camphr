@@ -65,17 +65,17 @@ jobs:
       steps:
       - uses: actions/checkout@v1
         # TODO: refactor `if` condition
-        if: outputs.is-target
+        if: job.publish.outputs.is-target
       - uses: actions/setup-python@v1
-        if: outputs.is-target
+        if: job.publish.outputs.is-target
         with:
           python-version: 3.8
       - name: Install publishment tool
-        if: outputs.is-target
+        if: job.publish.outputs.is-target
         run: |
           python -m pip install --upgrade pip
           pip install poetry
       - name: Publish pypi package
-        if: outputs.is-target
+        if: job.publish.outputs.is-target
         working-directory: packages/${{ matrix.package }}
         run: poetry publish -p '${{ secrets.PYPI_PASS }}' -u '${{ secrets.PYPI_USER }}' --build
