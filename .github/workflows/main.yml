@@ -70,7 +70,7 @@ jobs:
 
   publish:
       needs: check_publish
-      if: needs.check_publish.outputs.publish == "true"
+      if: needs.check_publish.outputs.publish == 'true'
       runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v1
