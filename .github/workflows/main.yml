@@ -9,7 +9,7 @@ on:
       - "docs/**"
 
 jobs:
-  test_subpackages:
+  test:
     if: contains(github.event.head_commit.message, '[skip ci]') == false
     runs-on: ubuntu-latest
     strategy:
@@ -19,6 +19,18 @@ jobs:
           - package: camphr_transformers
             extra: torch
             dockerfile: base
+          - package: None # None indicates `camphr` main package
+            extra: base
+            dockerfile: base
+          - package: None
+            extra: mecab
+            dockerfile: mecab
+          - package: None
+            extra: juman
+            dockerfile: juman
+          - package: None
+            extra: sentencepiece
+            dockerfile: sentencepiece
     steps:
     - uses: actions/checkout@v2
     - name: Checkout submodules
@@ -42,33 +54,33 @@ jobs:
           --package ${{ matrix.package }}
 
 
-  test:
-    if: contains(github.event.head_commit.message, '[skip ci]') == false
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.7, 3.8, 3.9]
-        extra: ["base", "mecab", "sentencepiece", "juman"]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Checkout submodules
-      shell: bash
-      run: |
-        git config --global url."https://github.com/".insteadOf "git@github.com:"
-        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-        git submodule sync --recursive
-        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-    - name: Set up Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install fire
-      run: python -m pip install -U pip setuptools fire
-    - name: Run test
-      run: |
-        python test.py ${{ matrix.python-version }} \
-          --dockerfile-ext ${{ matrix.extra }} \
-          --install-cmd "poetry install -E ${{ matrix.extra }}"
+  # test:
+  #   if: contains(github.event.head_commit.message, '[skip ci]') == false
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       python-version: [3.7, 3.8, 3.9]
+  #       extra: ["base", "mecab", "sentencepiece", "juman"]
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Checkout submodules
+  #     shell: bash
+  #     run: |
+  #       git config --global url."https://github.com/".insteadOf "git@github.com:"
+  #       auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+  #       git submodule sync --recursive
+  #       git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v1
+  #     with:
+  #       python-version: ${{ matrix.python-version }}
+  #   - name: Install fire
+  #     run: python -m pip install -U pip setuptools fire
+  #   - name: Run test
+  #     run: |
+  #       python test.py ${{ matrix.python-version }} \
+  #         --dockerfile-ext ${{ matrix.extra }} \
+  #         --install-cmd "poetry install -E ${{ matrix.extra }}"
 
   publish:
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
