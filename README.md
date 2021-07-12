@@ -5,9 +5,6 @@
 [![Documentation Status](https://readthedocs.org/projects/camphr/badge/?version=latest)](https://camphr.readthedocs.io/en/latest/?badge=latest)
 [![Gitter](https://badges.gitter.im/camphr/community.svg)](https://gitter.im/camphr/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![PyPI version](https://badge.fury.io/py/camphr.svg)](https://badge.fury.io/py/camphr)
-![test and publish](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20and%20publish/badge.svg)
-![](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20extras/badge.svg)
-![](https://github.com/PKSHATechnology-Research/camphr/workflows/test%20package/badge.svg)
 
 Camphr is a *Natural Language Processing* library that helps in seamless integration for a wide variety of techniques from state-of-the-art to conventional ones.
 You can use [Transformers](https://huggingface.co/transformers/) ,  [Udify](https://github.com/Hyperparticle/udify), [ELmo](https://allennlp.org/elmo), etc. on [spaCy](https://github.com/explosion/spaCy).
