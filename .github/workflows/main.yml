@@ -61,24 +61,22 @@ jobs:
           package: ["camphr", "camphr_transformers"]
       runs-on: ubuntu-latest
       steps:
-      - id: check
-        run: echo "::set-output name=is-target::${{ startsWith(github.event.ref, format('refs/tags/{0}', matrix.package)) }}"
       - name: test
         run: |
-          echo ${{ steps.check.is-target }}
+          echo ${{ format('refs/tags/{0}', matrix.package) }}
       - uses: actions/checkout@v1
         # TODO: refactor `if` condition
-        if: job.publish.outputs.is-target
+        if: startsWith(github.event.ref, format('refs/tags/{0}', matrix.package))
       - uses: actions/setup-python@v1
-        if: job.publish.outputs.is-target
+        if: startsWith(github.event.ref, format('refs/tags/{0}', matrix.package))
         with:
           python-version: 3.8
       - name: Install publishment tool
-        if: job.publish.outputs.is-target
+        if: startsWith(github.event.ref, format('refs/tags/{0}', matrix.package))
         run: |
           python -m pip install --upgrade pip
           pip install poetry
       - name: Publish pypi package
-        if: job.publish.outputs.is-target
+        if: startsWith(github.event.ref, format('refs/tags/{0}', matrix.package))
         working-directory: packages/${{ matrix.package }}
         run: poetry publish -p '${{ secrets.PYPI_PASS }}' -u '${{ secrets.PYPI_USER }}' --build
