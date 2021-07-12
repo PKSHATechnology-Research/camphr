@@ -4,13 +4,14 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "camphr_transformers"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 
 [tool.versionup]
 files = [ "camphr_transformers/VERSION.py",]
 commit = true
+tag = true
 tag_prefix = "camphr_transformers"
 
 [tool.poetry.dependencies]
