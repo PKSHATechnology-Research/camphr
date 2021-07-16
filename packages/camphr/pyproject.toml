@@ -9,7 +9,7 @@ tag = true
 tag_prefix = "camphr/"
 
 [tool.poetry]
-version = "0.10.0rc1"
+version = "0.10.0rc2"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
@@ -32,8 +32,6 @@ exclude = [ "**/__pycache__",]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-more-itertools = "^8.8"
-toolz = ">=0.10,<0.12"
 pytokenizations = ">=0.4.8,<1.0"
 pytextspan = ">=0.5.0,<1.0"
 dataclass-utils = "^0.7.12"
