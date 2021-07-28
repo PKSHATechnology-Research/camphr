@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "camphr_transformers"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 
@@ -17,6 +17,7 @@ tag_prefix = "camphr_transformers/"
 [tool.poetry.dependencies]
 python = "^3.7"
 transformers = "^4.8"
+camphr = "^0.10.0"
 
 [tool.poetry.extras]
 torch = [ "torch",]
@@ -25,9 +26,6 @@ torch = [ "torch",]
 pytest = "^6.2.4"
 flake8 = "^3.9.2"
 mypy = "^0.910"
-
-[tool.poetry.dependencies.camphr]
-version = "0.10.0rc1"
 
 [tool.poetry.dependencies.torch]
 version = "^1.8.0"
