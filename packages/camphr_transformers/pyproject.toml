@@ -18,6 +18,7 @@ tag_prefix = "camphr_transformers/"
 python = "^3.7"
 transformers = "^4.8"
 camphr = "^0.10.0"
+pytextspan = "^0.5.4"
 
 [tool.poetry.extras]
 torch = [ "torch",]
@@ -26,6 +27,7 @@ torch = [ "torch",]
 pytest = "^6.2.4"
 flake8 = "^3.9.2"
 mypy = "^0.910"
+black = "^21.7b0"
 
 [tool.poetry.dependencies.torch]
 version = "^1.8.0"
