@@ -9,7 +9,7 @@ tag = true
 tag_prefix = "camphr/"
 
 [tool.poetry]
-version = "0.10.0rc2"
+version = "0.10.0"
 name = "camphr"
 authors = [ "tamuhey <tamuhey@gmail.com>",]
 description = "spaCy plugin for Transformers, Udify, Elmo, etc."
