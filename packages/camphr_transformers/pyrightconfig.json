@@ -47,7 +47,7 @@
   "reportUnknownArgumentType": "error",
   "reportUnknownLambdaType": "error",
   "reportUnknownVariableType": "warning",
-  "reportUnknownMemberType": "warning",
+  "reportUnknownMemberType": "error",
   "reportMissingTypeArgument": "error",
   "reportInvalidTypeVarUse": "warning",
   "reportCallInDefaultInitializer": "none",

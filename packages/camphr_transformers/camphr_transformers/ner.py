@@ -13,6 +13,7 @@ from transformers.pipelines import pipeline as trf_pipeline
 from camphr.nlp import Nlp
 
 _SPECIAL_TOKENS_MASK = "special_tokens_mask"
+_DUMMY = "\u2581"
 
 logger = logging.getLogger(__name__)
 
