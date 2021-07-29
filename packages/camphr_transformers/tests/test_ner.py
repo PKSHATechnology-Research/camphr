@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from hypothesis import strategies as st, given
 from pathlib import Path
 from typing import Dict, List, Literal, Tuple, Union
 from typing_extensions import TypeAlias
@@ -89,6 +90,14 @@ def test_serde(nlp: Ner, case: T_TESTCASE, tmpdir: str):
     nlp2 = from_disk(path)
     assert isinstance(nlp2, Ner)
     run_ner(nlp2, *case)
+
+
+@given(st.text())
+@pytest.mark.parametrize("nlp", [SMALL_MODEL], indirect=True)
+def test_fuzzy_ner(nlp: Ner, text: str):
+    doc = nlp(text)
+    assert doc.ents is not None
+    assert doc.tokens is None
 
 
 @pytest.mark.parametrize(
