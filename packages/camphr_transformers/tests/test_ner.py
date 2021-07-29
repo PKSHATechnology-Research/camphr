@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Literal, Tuple
+from typing import Dict, List, Literal, Tuple, Union
 from typing_extensions import TypeAlias
 from camphr.serde import from_disk, to_disk
 import pytest
-from camphr_transformers.ner import Ner, _decode_bio
+from camphr_transformers.ner import Ner, _decode_bio, _DUMMY
 from .utils import FIXTURE_DIR
 
 
@@ -99,14 +99,21 @@ def test_serde(nlp: Ner, case: T_TESTCASE, tmpdir: str):
             ["foo", "bar", "baz"],
             ["O", "B-FOO", "I-FOO"],
             [0, 0, 0],
-            ["bar baz"],
+            [("bar baz", "FOO")],
         ),
         (
             "foo bar baz",
             ["foo", "bar", "baz"],
             ["O", "B-FOO", "I-BAR"],
             [0, 0, 0],
-            ["bar", "baz"],
+            [("bar", "FOO"), ("baz", "BAR")],
+        ),
+        (
+            "foo bar baz",
+            ["foo", "bar", "baz"],
+            ["B-FOO", "I-BAR", "I-BAR"],
+            [0, 0, 0],
+            ["foo", "bar baz"],
         ),
         (
             "foo bar baz",
@@ -129,6 +136,20 @@ def test_serde(nlp: Ner, case: T_TESTCASE, tmpdir: str):
             [0, 1, 1, 0],
             ["foo bar baz"],
         ),
+        (
+            "foo bar baz",
+            ["[CLS]", "foo", "[UNK]", "[UNK]", "baz", "[SEP]"],
+            ["O", "B-FOO", "I-FOO", "I-FOO", "I-FOO", "I-FOO"],
+            [1, 0, 1, 1, 0, 1],
+            ["foo bar baz"],
+        ),
+        (
+            "foo " + _DUMMY + "  baz",
+            ["_DUMMY", "foo", "[UNK]", "[UNK]", "baz", "[SEP]"],
+            ["O", "B-FOO", "I-FOO", "I-FOO", "I-FOO", "I-FOO"],
+            [1, 0, 1, 1, 0, 1],
+            ["foo " + _DUMMY + "  baz"],
+        ),
     ],
 )
 def test_decode_bio(
@@ -136,9 +157,12 @@ def test_decode_bio(
     tokens: List[str],
     mask: List[int],
     labels: List[str],
-    expected: List[str],
+    expected: Union[List[str], List[Tuple[str, str]]],
 ):
     ret = _decode_bio(text, tokens, mask, labels)
     assert ret.tokens is None
     assert ret.ents is not None
-    assert [e.text for e in ret.ents] == expected
+
+    a = [e.text for e in ret.ents]
+    b = [(e.text, e.label) for e in ret.ents]
+    assert a == expected or b == expected

@@ -1,11 +1,11 @@
 """Named entity recognition pipe component for transformers"""
-from typing import Any, ClassVar, Dict, List, Optional, Sequence, Tuple
+from typing import Any, ClassVar, Dict, List, Optional, Tuple
 import textspan
 from typing_extensions import TypedDict
 from dataclasses import dataclass, asdict
 from camphr.serde import SerDe, SerDeDataclassMixin
 from pathlib import Path
-from camphr.doc import Doc, DocProto, Ent, Token
+from camphr.doc import Doc, Ent
 import logging
 from transformers import AutoTokenizer, AutoModelForTokenClassification
 from camphr.nlp import Nlp
