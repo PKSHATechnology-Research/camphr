@@ -32,7 +32,11 @@ TESTCASES_LARGE0: List[T_TESTCASE] = [
     (
         "Hugging Face Inc. is a company based in New York City.",
         [("Hugging Face Inc", "ORG"), ("New York City", "LOC")],
-    )
+    ),
+    (
+        "Hugging Face Inc. 熱厚暑 is a company based in New York City.",
+        [("Hugging Face Inc", "ORG"), ("New York City", "LOC")],
+    ),
 ]
 
 
