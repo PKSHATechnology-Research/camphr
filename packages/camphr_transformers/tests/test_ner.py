@@ -4,7 +4,7 @@ from typing import Dict, List, Literal, Tuple
 from typing_extensions import TypeAlias
 from camphr.serde import from_disk, to_disk
 import pytest
-from camphr_transformers.ner import Ner
+from camphr_transformers.ner import Ner, _decode_bio
 from .utils import FIXTURE_DIR
 
 
@@ -89,3 +89,56 @@ def test_serde(nlp: Ner, case: T_TESTCASE, tmpdir: str):
     nlp2 = from_disk(path)
     assert isinstance(nlp2, Ner)
     run_ner(nlp2, *case)
+
+
+@pytest.mark.parametrize(
+    ["text", "tokens", "labels", "mask", "expected"],
+    [
+        (
+            "foo bar baz",
+            ["foo", "bar", "baz"],
+            ["O", "B-FOO", "I-FOO"],
+            [0, 0, 0],
+            ["bar baz"],
+        ),
+        (
+            "foo bar baz",
+            ["foo", "bar", "baz"],
+            ["O", "B-FOO", "I-BAR"],
+            [0, 0, 0],
+            ["bar", "baz"],
+        ),
+        (
+            "foo bar baz",
+            ["foo", "[UNK]", "baz"],
+            ["O", "B-FOO", "I-FOO"],
+            [0, 1, 0],
+            ["baz"],
+        ),
+        (
+            "foo bar baz",
+            ["foo", "[UNK]", "baz"],
+            ["B-FOO", "I-FOO", "I-FOO"],
+            [0, 1, 0],
+            ["foo bar baz"],
+        ),
+        (
+            "foo bar baz",
+            ["foo", "[UNK]", "[UNK]", "baz"],
+            ["B-FOO", "I-FOO", "I-FOO", "I-FOO"],
+            [0, 1, 1, 0],
+            ["foo bar baz"],
+        ),
+    ],
+)
+def test_decode_bio(
+    text: str,
+    tokens: List[str],
+    mask: List[int],
+    labels: List[str],
+    expected: List[str],
+):
+    ret = _decode_bio(text, tokens, mask, labels)
+    assert ret.tokens is None
+    assert ret.ents is not None
+    assert [e.text for e in ret.ents] == expected

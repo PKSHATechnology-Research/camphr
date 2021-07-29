@@ -60,8 +60,9 @@ class Ner(Nlp, SerDe):
                 ),
             )
         )
-        output = list(map(int, self.model(**inputs).logits[0].argmax(1)))
-        doc = _decode_bio(text, tokens, mask, output, self.model.config.id2label)
+        output = self.model(**inputs).logits[0].argmax(1)
+        labels: List[str] = [self.model.config.id2label[int(i)] for i in output]
+        doc = _decode_bio(text, tokens, mask, labels)
         return doc
 
     # ser/de
@@ -86,8 +87,9 @@ class Ner(Nlp, SerDe):
 _DUMMY = "\u2581"
 
 
-def _norm_tokens(tokens: List[str], mask: Sequence[int]) -> List[str]:
+def _norm_tokens(tokens: List[str], mask: List[int]) -> List[str]:
     """Replace special characters to _DUMMY to prevent incrrectly matching"""
+    assert len(tokens) == len(mask)
     ret: List[str] = []
     for token, mi in zip(tokens, mask):
         if int(mi):
@@ -100,13 +102,13 @@ def _norm_tokens(tokens: List[str], mask: Sequence[int]) -> List[str]:
 def _decode_bio(
     text: str,
     tokens: List[str],
-    mask: Sequence[int],
-    output: Sequence[int],
-    id2label: Dict[int, str],
+    mask: List[int],
+    labels: List[str],
 ) -> Doc:
-    assert len(output) == len(tokens)
+    assert len(labels) == len(tokens)
     doc = Doc(text)
-    labels = [id2label[i] for i in output]
+
+    # get Ent
     ents: List[Ent] = []
     cur_ent: Optional[Ent] = None
     tokens = _norm_tokens(tokens, mask)
