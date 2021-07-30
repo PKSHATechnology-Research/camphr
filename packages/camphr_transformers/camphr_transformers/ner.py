@@ -1,15 +1,16 @@
 """Named entity recognition pipe component for transformers"""
-from typing import Any, ClassVar, Dict, List, Optional, Tuple
-import textspan
-from typing_extensions import TypedDict
-from dataclasses import dataclass, asdict
-from camphr.serde import SerDe, SerDeDataclassMixin
-from pathlib import Path
-from camphr.doc import Doc, Ent
 import logging
-from transformers import AutoTokenizer, AutoModelForTokenClassification
-from camphr.nlp import Nlp
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, ClassVar, Dict, List, Optional, Tuple
 
+import textspan
+import torch
+from camphr.doc import Doc, Ent
+from camphr.nlp import Nlp
+from camphr.serde import SerDe, SerDeDataclassMixin
+from transformers import AutoModelForTokenClassification, AutoTokenizer
+from typing_extensions import TypedDict
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class Ner(Nlp, SerDe):
         self.tokenizer, self.model = self._create_pipeline(
             pretrained_model_name_or_path, tokenizer_kwargs, model_kwargs
         )
+        self.model.eval()
         self.tokenizer_kwargs = tokenizer_kwargs
         self.model_kwargs = model_kwargs
 
@@ -60,7 +62,8 @@ class Ner(Nlp, SerDe):
                 ),
             )
         )
-        output = self.model(**inputs).logits[0].argmax(1)
+        with torch.no_grad():
+            output = self.model(**inputs).logits[0].argmax(1)
         labels: List[str] = [self.model.config.id2label[int(i)] for i in output]
         doc = _decode_bio(text, tokens, mask, labels)
         return doc
