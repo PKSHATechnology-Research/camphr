@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "camphr_transformers"
-version = "0.1.4"
+version = "0.1.5"
 description = ""
 authors = [ "Yohei Tamura <tamuhey@gmail.com>",]
 
