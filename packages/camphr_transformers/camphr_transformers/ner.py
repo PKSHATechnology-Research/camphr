@@ -63,7 +63,12 @@ class Ner(Nlp, SerDe):
             )
         )
         with torch.no_grad():
-            output = self.model(**inputs).logits[0].argmax(1)
+            try:
+                output = self.model(**inputs).logits[0].argmax(1)
+            except RuntimeError as e:
+                raise ValueError(
+                    "Error in transformers. Maybe text is too long?"
+                ) from e
         labels: List[str] = [self.model.config.id2label[int(i)] for i in output]
         doc = _decode_bio(text, tokens, mask, labels)
         return doc

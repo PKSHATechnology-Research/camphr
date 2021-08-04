@@ -38,6 +38,10 @@ TESTCASES_LARGE0: List[T_TESTCASE] = [
         "Hugging Face Inc. 熱厚暑 is a company based in New York City.",
         [("Hugging Face Inc", "ORG"), ("New York City", "LOC")],
     ),
+    (
+        "a " * 1000,
+        [],
+    ),
 ]
 
 
@@ -65,6 +69,13 @@ for k, info in SCENARIOS.items():
 @pytest.mark.parametrize("nlp,text,expected", PARAMS_RUN_NER, indirect=["nlp"])
 def test_ner(nlp: Ner, text: str, expected: List[Tuple[str, str]]):
     run_ner(nlp, text, expected)
+
+
+@pytest.mark.parametrize("nlp", [SMALL_MODEL], indirect=["nlp"])
+def test_long(nlp: Ner):
+    text = "a " * 1000
+    with pytest.raises(ValueError):
+        nlp(text)
 
 
 def run_ner(nlp: Ner, text: str, expected: List[Tuple[str, str]]):
