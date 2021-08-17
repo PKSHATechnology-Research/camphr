@@ -1,6 +1,8 @@
 omegaconf
 spacy
 sphinx>=2.2
+../packages/camphr
+../packages/camphr_transformers
 # toolz
 # torch
 # more-itertools

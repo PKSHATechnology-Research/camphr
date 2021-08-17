@@ -60,6 +60,7 @@ html_static_path = ["_static"]
 
 # -autodoc
 add_module_names = False
+autodoc_member_order = "groupwise"
 
 rst_prolog = """
 """
