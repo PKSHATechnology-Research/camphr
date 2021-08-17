@@ -1,12 +1,1 @@
-omegaconf
-spacy
-sphinx>=2.2
-../packages/camphr
-../packages/camphr_transformers
-# toolz
-# torch
-# more-itertools
-# typing_extensions
-# pyahocorasick
-# transformers
-# pytokenizations
+sphinx

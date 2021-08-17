@@ -24,10 +24,11 @@ Just pip install:
 
 Camphr requires Python3.7 or newer.
 
-Packages
+Packages 
 ~~~~~~~~
 
 .. toctree::
     :maxdepth: 1
 
-    modules
+    packages/camphr
+    packages/camphr_transformers

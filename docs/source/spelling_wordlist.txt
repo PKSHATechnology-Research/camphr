@@ -1,9 +1,0 @@
-Udify
-tokenizer
-Camphr
-multitask
-pretrained
-sentencizer
-nlp
-hyperparameters
-plugin
