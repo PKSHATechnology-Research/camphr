@@ -51,7 +51,13 @@ def main(
     install_cmd: str = "poetry install",
     no_build: bool = False,
 ):
-    """Running test with docker"""
+    """Running test with docker.
+
+    Examples:
+
+    # testing 'camphr' package in python3.8 environment with Dockerfile.base
+    $ python test_docker.py 3.8 camphr base
+    """
     dockerfile = f"dockerfiles/Dockerfile.{dockerfile_ext}"
     tagname = f"camphr_{python_version}_{package}_{dockerfile_ext}"
     test_cmd = ["/root/test_local.sh", package]

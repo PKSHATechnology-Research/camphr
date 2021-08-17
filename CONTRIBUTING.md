@@ -3,14 +3,22 @@
 
 ## Contributing to the code base
 
+### Structure
+
+Camphr consists of several subpackages in [./packages/](./packages) directory:
+
+- camphr: Core Camphr package, including tokenizers and some basic interfaces (e.g. `DocProto`)
+- camphr_transformers: Huggingface Transformers integration
+
+See each package directory for details.
+
 ### Setup and Test
 
-Camphr uses [poetry package manager](https://github.com/python-poetry/poetry), and [pre-commit](https://pre-commit.com/).
+Camphr uses [poetry package manager](https://github.com/python-poetry/poetry).
 
 ```bash
 $ git clone https://github.com/PKSHATechnology-Research/camphr
 $ poetry install
-$ pre-commit install
 $ poetry run pytest tests
 ```
 
