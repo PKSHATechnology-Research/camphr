@@ -1,9 +1,6 @@
 # Contributing
 
-
-## Contributing to the code base
-
-### Structure
+## Project Structure
 
 Camphr consists of several subpackages in [./packages/](./packages) directory:
 
@@ -12,30 +9,30 @@ Camphr consists of several subpackages in [./packages/](./packages) directory:
 
 See each package directory for details.
 
-### Setup and Test
+## Setup and Test
 
 Camphr uses [poetry package manager](https://github.com/python-poetry/poetry).
 
 ```bash
 $ git clone https://github.com/PKSHATechnology-Research/camphr
-$ poetry install
-$ poetry run pytest tests
+
+# test in container
+# testing 'camphr' package in python3.8 environment with Dockerfile.base
+$ python test_docker.py 3.8 camphr base
 ```
 
-### Test MeCab, KNP (Japanese pipeline)
-
-For testing MeCab or KNP, you need to install `mecab` or `knp` in your system respectively.
-After that, put the following command:
-
-```bash
-$ poetry install -E mecab
-# or
-$ poetry install -E juman
-```
+See each package directory for details.
 
 # For maintainer
 
 ## Publish pypi package
 
-Publishing a package to pypi is automatically done by specific git commit to this repository.
-See `.github/workflows/fire_release.yml` for details.
+Publishing packages to PYPI is done automatically by specific git tags.
+
+1. `pip install pyversionup` (https://github.com/tamuhey/pyversionup)
+2. `cd packages/$PKG_TO_PUBLISH`: move to the package directory you want to publish
+3. `versionup $NEW_VERSION`: modify version strings
+4. `git push --tags`: push tags to GitHub, which fires the GitHub Action
+
+See `.github/workflows/main.yml` for details.
+
