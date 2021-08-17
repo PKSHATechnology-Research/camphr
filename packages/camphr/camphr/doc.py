@@ -1,3 +1,4 @@
+"""Module doc defines `Doc` interfaces and its surroundings, and the sample implementations."""
 from dataclasses import dataclass, field
 from typing import (
     Any,

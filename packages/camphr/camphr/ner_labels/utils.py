@@ -1,10 +1,3 @@
-"""Module utils defines utility for ner labels.
-
-This module can be called directly to generete "labels_**.py"
-
-Examples:
-    $ python utils.py
-"""
 import yaml  # type: ignore
 import subprocess
 from pathlib import Path
@@ -13,8 +6,6 @@ import json
 
 from typing_extensions import Literal
 
-
-__dir__ = Path(__file__).parent
 
 NER_LABEL_TYPE = Literal["BIO", "BILUO"]
 
@@ -86,11 +77,3 @@ def _generate_py(f: IO[str], keys: List[str]):
     for k in keys:
         f.write(f"{_crean_slash(k)} = '{k}'\n")
     f.write(f'\nALL_LABELS = [{" ,".join(map(_crean_slash, keys))}]\n')
-
-
-if __name__ == "__main__":
-    PREFIX = "labels_"
-    for y in __dir__.glob("*.yml"):
-        p = __dir__ / (PREFIX + y.stem + ".py")
-        _yml_to_py(y, p)
-    subprocess.run(["black", "."])

@@ -1,5 +1,3 @@
-.. include:: replaces.txt
-
 Camphr
 ==================================
 
@@ -30,5 +28,6 @@ Packages
 .. toctree::
     :maxdepth: 1
 
+    packages/modules
     packages/camphr
     packages/camphr_transformers
