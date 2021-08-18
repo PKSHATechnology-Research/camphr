@@ -1,4 +1,4 @@
-"""The utils module defines util functions used accross sub packages."""
+"""The utils module defines util functions for internal use."""
 from camphr.doc import DocProto, T_Ent, T_Token
 from typing import (
     Callable,
@@ -13,7 +13,7 @@ T_Co = TypeVar("T_Co", covariant=True)
 
 
 class _SequenceLike(Protocol[T_Co]):
-    """Only for type annotation in `binary_search`"""
+    """Only for type annotation in `binary_search`. Python should provide intersection typing..."""
 
     def __getitem__(self, idx: int) -> T_Co:
         ...
@@ -23,7 +23,7 @@ class _SequenceLike(Protocol[T_Co]):
 
 
 def binary_search(arr: _SequenceLike[T_Co], predicate: Callable[[T_Co], bool]) -> int:
-    """Returns minimum index of arr item which satisfies  `predicate`"""
+    """Returns minimum index of arr item which satisfies  `predicate`."""
     if not arr or predicate(arr[0]):
         return 0
     left: int = 0
@@ -46,6 +46,3 @@ def token_from_char_pos(doc: DocProto[T_Token, T_Ent], i: int) -> Optional[T_Tok
         else:
             return None
     return None
-
-
-T = TypeVar("T")
