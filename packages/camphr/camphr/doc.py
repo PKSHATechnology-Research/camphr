@@ -104,7 +104,12 @@ class Doc(DocProto["Token", "Ent"]):
 
 
 class SpanProto(UserDataProto, Protocol):
-    """Span of Doc, similar to spaCy's span."""
+    """Span of Doc, similar to spaCy's span.
+
+    Attributes:
+        start_char: start boundary in doc text (inclusive)
+        end_char: end boundary in doc text (exclusive)
+    """
 
     start_char: int  # left boundary in doc
     end_char: int  # right boundary in doc

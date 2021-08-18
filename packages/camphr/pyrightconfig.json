@@ -50,7 +50,7 @@
   "reportMissingTypeArgument": "error",
   "reportInvalidTypeVarUse": "warning",
   "reportCallInDefaultInitializer": "none",
-  "reportUnnecessaryIsInstance": "error",
+  "reportUnnecessaryIsInstance": "warning",
   "reportUnnecessaryCast": "error",
   "reportUnnecessaryComparison": "error",
   "reportAssertAlwaysTrue": "error",
