@@ -1,9 +1,0 @@
-The following models can be used:
-
-1. **Transformers official models**
-
-You can use pretrained models listed in `Transformers website <https://huggingface.co/models>`_ **without manually downloading them**. The models will be automatically downloaded and cached at the start of the training.
-
-2. **Transformers models in local directory**
-
-You can also use local models created by :code:`transformers.PretrainedModel.save_pretrained` method, by passing :code:`pretrained=/path/to/your-modles` in cli.

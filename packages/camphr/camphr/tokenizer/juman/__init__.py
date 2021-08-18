@@ -2,11 +2,18 @@
 from dataclasses import dataclass
 from camphr.doc import Doc, UserDataProto
 import itertools
-from typing import Any, Callable, Dict, Iterator, List, Optional
+import distutils.spawn
+from typing import Any, Callable, Dict, Iterator, List, Literal, Optional
 
 
-from camphr.utils import get_juman_command
 from camphr.serde import SerializationMixin
+
+
+def get_juman_command() -> Optional[Literal["juman", "jumanpp"]]:
+    for cmd in ["jumanpp", "juman"]:
+        if distutils.spawn.find_executable(cmd):
+            return cmd  # type: ignore
+    return None
 
 
 @dataclass

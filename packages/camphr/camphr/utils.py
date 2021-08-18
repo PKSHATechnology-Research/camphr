@@ -1,13 +1,12 @@
 """The utils module defines util functions used accross sub packages."""
 from camphr.doc import DocProto, T_Ent, T_Token
-import distutils.spawn
 from typing import (
     Callable,
     Optional,
     TypeVar,
 )
 
-from typing_extensions import Literal, Protocol
+from typing_extensions import Protocol
 
 
 T_Co = TypeVar("T_Co", covariant=True)
@@ -46,13 +45,6 @@ def token_from_char_pos(doc: DocProto[T_Token, T_Ent], i: int) -> Optional[T_Tok
             return token
         else:
             return None
-    return None
-
-
-def get_juman_command() -> Optional[Literal["juman", "jumanpp"]]:
-    for cmd in ["jumanpp", "juman"]:
-        if distutils.spawn.find_executable(cmd):
-            return cmd  # type: ignore
     return None
 
 
