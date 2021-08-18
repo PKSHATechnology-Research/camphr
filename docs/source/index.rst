@@ -6,10 +6,12 @@ Camphr is a *Natural Language Processing* library that helps in seamless integra
 Features
 ~~~~~~~~
 
-* SpaCy like interface - input texts, output :class:`camphr.doc.Doc`
-* No third party dependencies
-* `Transformers <https://huggingface.co/transformers/>`_ support - easily use NER
-* (for Japanese) MeCab, Juman support
+
+* SpaCy like interface - input texts, output :class:`camphr.doc.Doc`.
+* No third party dependencies.
+* `Transformers <https://huggingface.co/transformers/>`_ support - easily use NER.
+* (for Japanese) MeCab, Juman support.
+
 
 Installation
 ~~~~~~~~~~~~
@@ -28,6 +30,6 @@ Packages
 .. toctree::
     :maxdepth: 1
 
-    packages/modules
     packages/camphr
     packages/camphr_transformers
+

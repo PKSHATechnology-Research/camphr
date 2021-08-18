@@ -1,6 +1,11 @@
 camphr\_transformers package
 ============================
 
+.. automodule:: camphr_transformers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -16,14 +21,6 @@ camphr\_transformers.ner module
 -------------------------------
 
 .. automodule:: camphr_transformers.ner
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: camphr_transformers
    :members:
    :undoc-members:
    :show-inheritance:

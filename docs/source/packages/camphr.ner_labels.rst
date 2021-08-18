@@ -1,6 +1,11 @@
 camphr.ner\_labels package
 ==========================
 
+.. automodule:: camphr.ner_labels
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -40,14 +45,6 @@ camphr.ner\_labels.utils module
 -------------------------------
 
 .. automodule:: camphr.ner_labels.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: camphr.ner_labels
    :members:
    :undoc-members:
    :show-inheritance:

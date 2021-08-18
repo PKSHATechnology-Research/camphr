@@ -1,6 +1,11 @@
 camphr package
 ==============
 
+.. automodule:: camphr
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
@@ -12,14 +17,6 @@ Subpackages
 
 Submodules
 ----------
-
-camphr.VERSION module
----------------------
-
-.. automodule:: camphr.VERSION
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 camphr.doc module
 -----------------
@@ -57,14 +54,6 @@ camphr.utils module
 -------------------
 
 .. automodule:: camphr.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: camphr
    :members:
    :undoc-members:
    :show-inheritance:

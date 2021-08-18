@@ -1,7 +1,7 @@
-camphr_transformers
-===================
+camphr
+======
 
 .. toctree::
    :maxdepth: 2
 
-   camphr_transformers
+   camphr

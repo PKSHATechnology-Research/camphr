@@ -1,6 +1,11 @@
 camphr.tokenizer package
 ========================
 
+.. automodule:: camphr.tokenizer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
@@ -18,14 +23,6 @@ camphr.tokenizer.stop\_words module
 -----------------------------------
 
 .. automodule:: camphr.tokenizer.stop_words
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: camphr.tokenizer
    :members:
    :undoc-members:
    :show-inheritance:

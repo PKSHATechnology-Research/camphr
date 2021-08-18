@@ -1,4 +1,21 @@
-"""Module doc defines `Doc` interfaces and its surroundings, and the sample implementations."""
+"""Module doc defines `DocProto` interfaces and its surroundings, and the sample implementations.
+
+Interfaces:
+    * DocProto: Unit of pipeline data, simiar to spaCy's `Doc`
+    * SpanProto: Span of text, simiar to spaCy's `Doc`
+    * TokenProto: Token of text, simiar to spaCy's `Token`, special type of a `SpanProto`
+    * EntProto: Ent of text, special type of a `SpanProto`
+
+Implementors:
+    * Doc: DocProto
+    * Span: SpanProto
+    * Token: TokenProto
+    * Ent: EntProto
+
+Note:
+    It is better for external users to implement their own class that implements the interfaces, not use the implementors as possible.
+"""
+
 from dataclasses import dataclass, field
 from typing import (
     Any,
@@ -31,9 +48,14 @@ def unwrap(v: Optional[T]) -> T:
 
 @runtime_checkable
 class DocProto(UserDataProto, Protocol[T_Co, T_Ent]):
+    """Unit of the pipeline data in Camphr. Holding the input text and other parsed results.
+
+    It is better for libraries to depend only on this interface, not on `Doc` directly.
+    """
+
     text: str
     tokens: Optional[List[T_Co]]
-    ents: Optional[List[T_Ent]]
+    ents: Optional[List[T_Ent]]  # Named Entities
     user_data: Dict[str, Any] = field(default_factory=dict)
 
     def __getitem__(self, idx: int) -> T_Co:
@@ -48,6 +70,8 @@ class DocProto(UserDataProto, Protocol[T_Co, T_Ent]):
 
 @dataclass
 class Doc(DocProto["Token", "Ent"]):
+    """DocProto implementation for internal use."""
+
     text: str
     tokens: Optional[List["Token"]] = None
     ents: Optional[List["Ent"]] = None
@@ -55,6 +79,7 @@ class Doc(DocProto["Token", "Ent"]):
 
     @classmethod
     def from_words(cls, words: List[str]) -> "Doc":
+        """Create doc from list of words. The word boundaries (e.g. spaces) must remain kept."""
         doc = cls("".join(words))
         tokens: List[Token] = []
         left = 0
@@ -69,6 +94,7 @@ class Doc(DocProto["Token", "Ent"]):
         return unwrap(self.tokens)[idx]
 
     def __len__(self) -> int:
+        """Returns the number of tokens in doc. Raise if self is not tokenized."""
         return len(unwrap(self.tokens))
 
     def __iter__(self) -> Iterator["Token"]:
@@ -78,6 +104,8 @@ class Doc(DocProto["Token", "Ent"]):
 
 
 class SpanProto(UserDataProto, Protocol):
+    """Span of Doc, similar to spaCy's span."""
+
     start_char: int  # left boundary in doc
     end_char: int  # right boundary in doc
     doc: Doc
@@ -89,6 +117,8 @@ class SpanProto(UserDataProto, Protocol):
 
 @dataclass
 class Span(SpanProto):
+    """A SpanProto implementation for internal use."""
+
     start_char: int  # left boundary in doc
     end_char: int  # right boundary in doc
     doc: Doc
@@ -100,23 +130,41 @@ class Span(SpanProto):
 
 
 class TokenProto(SpanProto):
+    """`TokenProto` is a special type of `SpanProto`. It may contain `tag_` and `lemma_` information.
+
+    Attributes:
+        tag_: May contain `tag` information of this token. The underline after the field name is for compatibility with spaCy.
+        lemma_: May contain `lemma` information of this token. The underline after the field name is for compatibility with spaCy.
+    """
+
     tag_: Optional[str]
     lemma_: Optional[str]
 
 
 @dataclass
 class Token(TokenProto, Span):
+    """A TokenProto implementation for internal use."""
+
     doc: Doc
     tag_: Optional[str] = None
     lemma_: Optional[str] = None
 
 
 class EntProto(SpanProto):
+    """`EntProto` is a representation of Named Entity Span, and a special type of `SpanProto`.
+
+    Attributes:
+        label: Label of this ent, e.g. `PERSON`
+        score: May contain float score value
+    """
+
     label: Optional[str]
     score: Optional[float]
 
 
 @dataclass
 class Ent(EntProto, Span):
+    """A EntProto implementation for internal use."""
+
     label: Optional[str] = None
     score: Optional[float] = None

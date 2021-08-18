@@ -1,11 +1,11 @@
 PACKAGES := camphr camphr_transformers
 dev:
-	watchmedo shell-command --patterns='*.rst;source/conf.py' --ignore-pattern=_build/* --recursive --command='make html' &
+	watchmedo shell-command --patterns='*.rst;source/conf.py;../packages/**/*py' --ignore-pattern=_build/* --recursive --command='make html' &
 	cd build/html && python -m http.server 5000
 
 source/packages/%.rst: DIR = ../packages/$(basename $(notdir $@))
 source/packages/%.rst: $(shell find $(DIR) -type f -name "*.py" -not -path '*/.venv/*' -not -path '*/tests/*')
-	sphinx-apidoc -d 2 -f -o source/packages/ $(DIR) $(DIR)/tests
+	sphinx-apidoc -M -d 2 -f -o source/packages/ $(DIR) $(DIR)/tests '$(DIR)/*/VERSION.py'
 	
 
 # Minimal makefile for Sphinx documentation
