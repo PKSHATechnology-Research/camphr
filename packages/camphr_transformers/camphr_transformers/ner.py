@@ -13,6 +13,8 @@ from typing_extensions import TypedDict
 
 
 class TrfEnt(TypedDict):
+    """To annotate transformers' output."""
+
     entity_group: str
     score: float
     word: str
@@ -21,6 +23,20 @@ class TrfEnt(TypedDict):
 
 
 class Ner(Nlp, SerDe):
+    """Named Entity Recognition pipeline for transformers.
+
+    Example:
+        >>> nlp = Ner("dslim/bert-base-NER")
+        >>> doc = nlp("Hugging Face Inc. is a company based in New York City.")
+        >>> [(ent.text, ent.label) for ent in doc.ents]
+        [("Hugging Face Inc", "ORG"), ("New York City", "LOC")]
+
+    Args:
+        pretrained_model_name_or_path: passed to transformers' `from_pretrained` methods.
+        tokenizer_kwargs: passed to transformers' tokenizer constructor.
+        model_kwargs: passed to transformers' model constructor.
+    """
+
     def __init__(
         self,
         pretrained_model_name_or_path: str,
@@ -40,6 +56,7 @@ class Ner(Nlp, SerDe):
         tokenizer_kwargs: Dict[str, Any],
         model_kwargs: Dict[str, Any],
     ) -> Tuple[AutoTokenizer, AutoModelForTokenClassification]:
+        """Create transformers components."""
         tokenizer = AutoTokenizer.from_pretrained(
             pretrained_model_name_or_path, **tokenizer_kwargs
         )
@@ -49,6 +66,7 @@ class Ner(Nlp, SerDe):
         return tokenizer, model
 
     def __call__(self, text: str) -> Doc:  # type: ignore
+        """Takes a text and output a `Doc`, like `spacy.Doc`. Entities can be accessed via `doc.ents`"""
         inputs = self.tokenizer(text, return_tensors="pt")
         tokens: List[str] = self.tokenizer.convert_ids_to_tokens(inputs["input_ids"][0])
         mask: List[int] = list(
@@ -70,9 +88,11 @@ class Ner(Nlp, SerDe):
         doc = _decode_bio(text, tokens, mask, labels)
         return doc
 
-    # ser/de
+    # ser/de from here
     @dataclass
     class _SerdeMeta(SerDeDataclassMixin):
+        """For metadata ser/de"""
+
         tokenizer_kwargs: Dict[str, Any]
         model_kwargs: Dict[str, Any]
         FILENAME: ClassVar[str] = "camphr_meta.json"
@@ -89,11 +109,8 @@ class Ner(Nlp, SerDe):
         return cls(str(path), **asdict(meta))
 
 
-_DUMMY = "\u2581"
-
-
 def _norm_tokens(tokens: List[str], mask: List[int]) -> List[str]:
-    """Replace special characters to _DUMMY to prevent incrrectly matching"""
+    """Replace special characters to _DUMMY to prevent tokens incrrectly matching."""
     assert len(tokens) == len(mask)
     ret: List[str] = []
     for token, mi in zip(tokens, mask):
@@ -104,12 +121,16 @@ def _norm_tokens(tokens: List[str], mask: List[int]) -> List[str]:
     return ret
 
 
+_DUMMY = "\u2581"  # it is here for testing
+
+
 def _decode_bio(
     text: str,
     tokens: List[str],
     mask: List[int],
     labels: List[str],
 ) -> Doc:
+    """Create `Doc` from transformers output. Only support BIO label scheme."""
     assert len(labels) == len(tokens)
     doc = Doc(text)
 
