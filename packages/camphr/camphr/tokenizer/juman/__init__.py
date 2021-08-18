@@ -3,7 +3,8 @@ from dataclasses import dataclass
 from camphr.doc import Doc, UserDataProto
 import itertools
 import distutils.spawn
-from typing import Any, Callable, Dict, Iterator, List, Literal, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing_extensions import Literal
 
 
 from camphr.serde import SerializationMixin
