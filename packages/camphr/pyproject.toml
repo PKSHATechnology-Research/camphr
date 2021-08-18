@@ -37,7 +37,7 @@ pytextspan = ">=0.5.0,<1.0"
 dataclass-utils = "^0.7.12"
 dataclasses = "^0.6"
 typing-extensions = ">=3.7.4"
-PyYAML = "^5.4.1"
+PyYAML = "^5"
 
 [tool.poetry.extras]
 base = []
