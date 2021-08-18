@@ -1,5 +1,4 @@
 """Named entity recognition pipe component for transformers"""
-import logging
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, ClassVar, Dict, List, Optional, Tuple
@@ -11,8 +10,6 @@ from camphr.nlp import Nlp
 from camphr.serde import SerDe, SerDeDataclassMixin
 from transformers import AutoModelForTokenClassification, AutoTokenizer
 from typing_extensions import TypedDict
-
-logger = logging.getLogger(__name__)
 
 
 class TrfEnt(TypedDict):
